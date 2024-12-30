@@ -25,8 +25,7 @@ class AndroidBuildSdkProperties {
     private fun Class<*>.loadResource(name: String): InputStream =
       checkNotNull(getResourceAsStream(name)) { "Failed to find resource: $name." }
 
-    private fun Properties.getExpectedProperty(key: String): String {
-      return checkNotNull(getProperty(key)) { "Expected property to be present: $key" }
-    }
+    private fun Properties.getExpectedProperty(key: String): String =
+      checkNotNull(getProperty(key)) { "Expected property to be present: $key" }
   }
 }

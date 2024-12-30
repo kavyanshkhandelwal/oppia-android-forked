@@ -118,7 +118,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = CompletedStoryListActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class CompletedStoryListActivityTest {
   @get:Rule
@@ -131,11 +131,14 @@ class CompletedStoryListActivityTest {
   private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    CompletedStoryListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      CompletedStoryListActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -158,11 +161,11 @@ class CompletedStoryListActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProfileTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
@@ -178,8 +181,9 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createCompletedStoryListActivityIntent(internalProfileId)
-      .extractCurrentAppScreenName()
+    val screenName =
+      createCompletedStoryListActivityIntent(internalProfileId)
+        .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.COMPLETED_STORY_LIST_ACTIVITY)
   }
@@ -198,26 +202,26 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list))
         .perform(
           scrollToPosition<RecyclerView.ViewHolder>(
-            0
-          )
+            0,
+          ),
         )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
-          targetViewId = R.id.completed_story_lesson_thumbnail
-        )
+          targetViewId = R.id.completed_story_lesson_thumbnail,
+        ),
       ).check(
         matches(
-          withContentDescription(containsString("Matthew Goes to the Bakery"))
-        )
+          withContentDescription(containsString("Matthew Goes to the Bakery")),
+        ),
       )
     }
   }
@@ -226,25 +230,25 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
-          targetViewId = R.id.completed_story_name_text_view
-        )
+          targetViewId = R.id.completed_story_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Matthew Goes to the Bakery"))
-        )
+          withText(containsString("Matthew Goes to the Bakery")),
+        ),
       )
     }
   }
@@ -253,28 +257,31 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
-          targetViewId = R.id.completed_story_name_text_view
-        )
+          targetViewId = R.id.completed_story_name_text_view,
+        ),
       ).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_1
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.storyId = FRACTIONS_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_1
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.storyId = FRACTIONS_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -284,29 +291,32 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_configurationChange_clickOnItem0_intentIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
-          targetViewId = R.id.completed_story_name_text_view
-        )
+          targetViewId = R.id.completed_story_name_text_view,
+        ),
       ).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_1
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.storyId = FRACTIONS_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_1
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.storyId = FRACTIONS_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -316,25 +326,25 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem0_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 0,
-          targetViewId = R.id.completed_story_topic_name_text_view
-        )
+          targetViewId = R.id.completed_story_topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Fractions"))
-        )
+          withText(containsString("Fractions")),
+        ),
       )
     }
   }
@@ -343,25 +353,25 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_name_text_view
-        )
+          targetViewId = R.id.completed_story_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios: Part 1"))
-        )
+          withText(containsString("Ratios: Part 1")),
+        ),
       )
     }
   }
@@ -370,26 +380,26 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyNameIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_name_text_view
-        )
+          targetViewId = R.id.completed_story_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios: Part 1"))
-        )
+          withText(containsString("Ratios: Part 1")),
+        ),
       )
     }
   }
@@ -398,25 +408,25 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_lesson_thumbnail
-        )
+          targetViewId = R.id.completed_story_lesson_thumbnail,
+        ),
       ).check(
         matches(
-          withContentDescription(containsString("Ratios: Part 1"))
-        )
+          withContentDescription(containsString("Ratios: Part 1")),
+        ),
       )
     }
   }
@@ -425,26 +435,26 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_storyThumbnailDescriptionIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_lesson_thumbnail
-        )
+          targetViewId = R.id.completed_story_lesson_thumbnail,
+        ),
       ).check(
         matches(
-          withContentDescription(containsString("Ratios: Part 1"))
-        )
+          withContentDescription(containsString("Ratios: Part 1")),
+        ),
       )
     }
   }
@@ -453,25 +463,25 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_topic_name_text_view
-        )
+          targetViewId = R.id.completed_story_topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios and Proportional Reasoning"))
-        )
+          withText(containsString("Ratios and Proportional Reasoning")),
+        ),
       )
     }
   }
@@ -480,36 +490,35 @@ class CompletedStoryListActivityTest {
   fun testCompletedStoryList_changeOrientation_checkItem1_titleIsCorrect() {
     launch<CompletedStoryListActivity>(
       createCompletedStoryListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.completed_story_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.completed_story_list,
           position = 1,
-          targetViewId = R.id.completed_story_topic_name_text_view
-        )
+          targetViewId = R.id.completed_story_topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios and Proportional Reasoning"))
-        )
+          withText(containsString("Ratios and Proportional Reasoning")),
+        ),
       )
     }
   }
 
-  private fun createCompletedStoryListActivityIntent(internalProfileId: Int): Intent {
-    return CompletedStoryListActivity.createCompletedStoryListActivityIntent(
+  private fun createCompletedStoryListActivityIntent(internalProfileId: Int): Intent =
+    CompletedStoryListActivity.createCompletedStoryListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId
+      internalProfileId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -540,8 +549,8 @@ class CompletedStoryListActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -552,9 +561,13 @@ class CompletedStoryListActivityTest {
     fun inject(completedStoryListActivityTest: CompletedStoryListActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCompletedStoryListActivityTest_TestApplicationComponent.builder()
+      DaggerCompletedStoryListActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -563,9 +576,12 @@ class CompletedStoryListActivityTest {
       component.inject(completedStoryListActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

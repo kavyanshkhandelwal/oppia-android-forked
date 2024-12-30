@@ -113,7 +113,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ResumeLessonActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ResumeLessonActivityTest {
   @get:Rule
@@ -126,11 +126,14 @@ class ResumeLessonActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val resumeLessonActivityTestRule = ActivityTestRule(
-    ResumeLessonActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val resumeLessonActivityTestRule =
+    ActivityTestRule(
+      ResumeLessonActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -173,8 +176,8 @@ class ResumeLessonActivityTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.resume_lesson_activity_toolbar))
-        )
+          withParent(withId(R.id.resume_lesson_activity_toolbar)),
+        ),
       ).check(matches(withText("Resume Lesson")))
     }
   }
@@ -187,8 +190,8 @@ class ResumeLessonActivityTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.resume_lesson_activity_toolbar))
-        )
+          withParent(withId(R.id.resume_lesson_activity_toolbar)),
+        ),
       ).check(matches(withText("Resume Lesson")))
     }
   }
@@ -200,8 +203,8 @@ class ResumeLessonActivityTest {
     assertThat(resumeLessonActivityTestRule.activity.isFinishing).isTrue()
   }
 
-  private fun createResumeLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
+  private fun createResumeLessonActivityIntent(): Intent =
+    ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
@@ -209,9 +212,8 @@ class ResumeLessonActivityTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
-      checkpoint = ExplorationCheckpoint.getDefaultInstance()
+      checkpoint = ExplorationCheckpoint.getDefaultInstance(),
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -242,8 +244,8 @@ class ResumeLessonActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -254,9 +256,13 @@ class ResumeLessonActivityTest {
     fun inject(resumeLessonActivityTest: ResumeLessonActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerResumeLessonActivityTest_TestApplicationComponent.builder()
+      DaggerResumeLessonActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -265,9 +271,12 @@ class ResumeLessonActivityTest {
       component.inject(resumeLessonActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

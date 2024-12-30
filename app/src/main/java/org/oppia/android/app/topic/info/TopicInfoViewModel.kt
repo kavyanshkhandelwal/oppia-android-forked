@@ -14,86 +14,94 @@ import javax.inject.Inject
 
 /** [ViewModel] for showing topic info details. */
 @FragmentScope
-class TopicInfoViewModel @Inject constructor(
-  @TopicHtmlParserEntityType val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
-) : ObservableViewModel() {
+class TopicInfoViewModel
+  @Inject
+  constructor(
+    @TopicHtmlParserEntityType val entityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController,
+  ) : ObservableViewModel() {
+    val topic = ObservableField(DEFAULT_TOPIC)
+    val storyCountText: ObservableField<String> =
+      ObservableField(computeStoryCountText(DEFAULT_TOPIC))
+    val topicSizeText: ObservableField<String> = ObservableField("")
+    val topicTitle = ObservableField<CharSequence>(DEFAULT_TOPIC.title.html)
+    val topicDescription = ObservableField<CharSequence>(DEFAULT_TOPIC.description.html)
+    var downloadStatusIndicatorDrawableResourceId =
+      ObservableField(R.drawable.ic_available_offline_primary_24dp)
+    val isDescriptionExpanded = ObservableField(true)
+    val isSeeMoreVisible = ObservableField(true)
 
-  val topic = ObservableField(DEFAULT_TOPIC)
-  val storyCountText: ObservableField<String> =
-    ObservableField(computeStoryCountText(DEFAULT_TOPIC))
-  val topicSizeText: ObservableField<String> = ObservableField("")
-  val topicTitle = ObservableField<CharSequence>(DEFAULT_TOPIC.title.html)
-  val topicDescription = ObservableField<CharSequence>(DEFAULT_TOPIC.description.html)
-  var downloadStatusIndicatorDrawableResourceId =
-    ObservableField(R.drawable.ic_available_offline_primary_24dp)
-  val isDescriptionExpanded = ObservableField(true)
-  val isSeeMoreVisible = ObservableField(true)
-
-  fun setTopic(ephemeralTopic: EphemeralTopic) {
-    this.topic.set(ephemeralTopic.topic)
-    topicTitle.set(
-      translationController.extractString(
-        ephemeralTopic.topic.title, ephemeralTopic.writtenTranslationContext
+    fun setTopic(ephemeralTopic: EphemeralTopic) {
+      this.topic.set(ephemeralTopic.topic)
+      topicTitle.set(
+        translationController.extractString(
+          ephemeralTopic.topic.title,
+          ephemeralTopic.writtenTranslationContext,
+        ),
       )
-    )
-    topicDescription.set(
-      translationController.extractString(
-        ephemeralTopic.topic.description, ephemeralTopic.writtenTranslationContext
+      topicDescription.set(
+        translationController.extractString(
+          ephemeralTopic.topic.description,
+          ephemeralTopic.writtenTranslationContext,
+        ),
       )
-    )
-    storyCountText.set(computeStoryCountText(ephemeralTopic.topic))
-  }
+      storyCountText.set(computeStoryCountText(ephemeralTopic.topic))
+    }
 
-  fun calculateTopicSizeWithUnit() {
-    val sizeWithUnit = topic.get()?.let { topic ->
-      val sizeInBytes: Int = topic.diskSizeBytes.toInt()
-      val sizeInKb = sizeInBytes / 1024
-      val sizeInMb = sizeInKb / 1024
-      val sizeInGb = sizeInMb / 1024
-      return@let when {
-        sizeInGb >= 1 -> {
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.size_gb, roundUpToHundredsString(sizeInGb)
-          )
-        }
-        sizeInMb >= 1 -> {
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.size_mb, roundUpToHundredsString(sizeInMb)
-          )
-        }
-        sizeInKb >= 1 -> {
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.size_kb, roundUpToHundredsString(sizeInKb)
-          )
-        }
-        else -> {
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.size_bytes, roundUpToHundredsString(sizeInBytes)
-          )
-        }
-      }
-    } ?: resourceHandler.getStringInLocale(R.string.unknown_size)
-    topicSizeText.set(
-      resourceHandler.getStringInLocaleWithWrapping(R.string.topic_download_text, sizeWithUnit)
-    )
-  }
+    fun calculateTopicSizeWithUnit() {
+      val sizeWithUnit =
+        topic.get()?.let { topic ->
+          val sizeInBytes: Int = topic.diskSizeBytes.toInt()
+          val sizeInKb = sizeInBytes / 1024
+          val sizeInMb = sizeInKb / 1024
+          val sizeInGb = sizeInMb / 1024
+          return@let when {
+            sizeInGb >= 1 -> {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.size_gb,
+                roundUpToHundredsString(sizeInGb),
+              )
+            }
+            sizeInMb >= 1 -> {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.size_mb,
+                roundUpToHundredsString(sizeInMb),
+              )
+            }
+            sizeInKb >= 1 -> {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.size_kb,
+                roundUpToHundredsString(sizeInKb),
+              )
+            }
+            else -> {
+              resourceHandler.getStringInLocaleWithWrapping(
+                R.string.size_bytes,
+                roundUpToHundredsString(sizeInBytes),
+              )
+            }
+          }
+        } ?: resourceHandler.getStringInLocale(R.string.unknown_size)
+      topicSizeText.set(
+        resourceHandler.getStringInLocaleWithWrapping(R.string.topic_download_text, sizeWithUnit),
+      )
+    }
 
-  private fun computeStoryCountText(topic: Topic): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.story_count, topic.storyCount, topic.storyCount.toString()
-    )
-  }
+    private fun computeStoryCountText(topic: Topic): String =
+      resourceHandler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.story_count,
+        topic.storyCount,
+        topic.storyCount.toString(),
+      )
 
-  private fun roundUpToHundredsString(intValue: Int): String =
-    (((intValue + 9) / 10) * 10).toString()
+    private fun roundUpToHundredsString(intValue: Int): String = (((intValue + 9) / 10) * 10).toString()
 
-  fun clickSeeMore() {
-    isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
-  }
+    fun clickSeeMore() {
+      isDescriptionExpanded.set(!isDescriptionExpanded.get()!!)
+    }
 
-  private companion object {
-    private val DEFAULT_TOPIC = Topic.getDefaultInstance()
+    private companion object {
+      private val DEFAULT_TOPIC = Topic.getDefaultInstance()
+    }
   }
-}

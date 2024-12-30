@@ -73,8 +73,8 @@ class NumericExpressionEvaluator private constructor() {
      *
      * @return the [Real] representing the evaluated expression, or ``null`` if something went wrong
      */
-    fun MathExpression.evaluate(): Real? {
-      return when (expressionTypeCase) {
+    fun MathExpression.evaluate(): Real? =
+      when (expressionTypeCase) {
         CONSTANT -> constant
         VARIABLE -> null // Variables not supported in numeric expressions.
         BINARY_OPERATION -> binaryOperation.evaluate()
@@ -83,10 +83,9 @@ class NumericExpressionEvaluator private constructor() {
         GROUP -> group.evaluate()
         EXPRESSIONTYPE_NOT_SET, null -> null
       }
-    }
 
-    private fun MathBinaryOperation.evaluate(): Real? {
-      return when (operator) {
+    private fun MathBinaryOperation.evaluate(): Real? =
+      when (operator) {
         ADD -> rightOperand.evaluate()?.let { leftOperand.evaluate()?.plus(it) }
         SUBTRACT -> rightOperand.evaluate()?.let { leftOperand.evaluate()?.minus(it) }
         MULTIPLY -> rightOperand.evaluate()?.let { leftOperand.evaluate()?.times(it) }
@@ -94,23 +93,21 @@ class NumericExpressionEvaluator private constructor() {
         EXPONENTIATE -> rightOperand.evaluate()?.let { leftOperand.evaluate()?.pow(it) }
         BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null -> null
       }
-    }
 
-    private fun MathUnaryOperation.evaluate(): Real? {
-      return when (operator) {
+    private fun MathUnaryOperation.evaluate(): Real? =
+      when (operator) {
         NEGATE -> operand.evaluate()?.let { -it }
         POSITIVE -> operand.evaluate() // '+2' is the same as just '2'.
         UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null -> null
       }
-    }
 
-    private fun MathFunctionCall.evaluate(): Real? {
-      return when (functionType) {
+    private fun MathFunctionCall.evaluate(): Real? =
+      when (functionType) {
         SQUARE_ROOT -> argument.evaluate()?.let { sqrt(it) }
         FUNCTION_UNSPECIFIED,
         FunctionType.UNRECOGNIZED,
-        null -> null
+        null,
+        -> null
       }
-    }
   }
 }

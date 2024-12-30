@@ -115,12 +115,12 @@ class MyDownloadsFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.my_downloads_toolbar))
-        )
+          withParent(withId(R.id.my_downloads_toolbar)),
+        ),
       ).check(
         matches(
-          withText(R.string.my_downloads_activity_title)
-        )
+          withText(R.string.my_downloads_activity_title),
+        ),
       )
     }
   }
@@ -128,7 +128,8 @@ class MyDownloadsFragmentTest {
   @Test
   fun testMyDownloadsFragment_showsMyDownloadsFragmentWithMultipleTabs() {
     launch(MyDownloadsActivity::class.java).use {
-      onView(withId(R.id.my_downloads_tabs_container)).perform(click())
+      onView(withId(R.id.my_downloads_tabs_container))
+        .perform(click())
         .check(matches(isDisplayed()))
     }
   }
@@ -140,11 +141,12 @@ class MyDownloadsFragmentTest {
       onView(withId(R.id.my_downloads_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
+            MyDownloadsTab
+              .getTabForPosition(
+                1,
+              ).name,
+          ),
+        ),
       )
     }
   }
@@ -155,11 +157,12 @@ class MyDownloadsFragmentTest {
       onView(withId(R.id.my_downloads_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
+            MyDownloadsTab
+              .getTabForPosition(
+                0,
+              ).name,
+          ),
+        ),
       )
     }
   }
@@ -170,17 +173,18 @@ class MyDownloadsFragmentTest {
       onView(
         allOf(
           withText(MyDownloadsTab.getTabForPosition(0).name),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
+          isDescendantOfA(withId(R.id.my_downloads_tabs_container)),
+        ),
       ).perform(click())
       onView(withId(R.id.my_downloads_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              0
-            ).name
-          )
-        )
+            MyDownloadsTab
+              .getTabForPosition(
+                0,
+              ).name,
+          ),
+        ),
       )
     }
   }
@@ -191,17 +195,18 @@ class MyDownloadsFragmentTest {
       onView(
         allOf(
           withText(R.string.tab_updates),
-          isDescendantOfA(withId(R.id.my_downloads_tabs_container))
-        )
+          isDescendantOfA(withId(R.id.my_downloads_tabs_container)),
+        ),
       ).perform(click())
       onView(withId(R.id.my_downloads_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            MyDownloadsTab.getTabForPosition(
-              1
-            ).name
-          )
-        )
+            MyDownloadsTab
+              .getTabForPosition(
+                1,
+              ).name,
+          ),
+        ),
       )
     }
   }
@@ -239,8 +244,8 @@ class MyDownloadsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -251,9 +256,13 @@ class MyDownloadsFragmentTest {
     fun inject(myDownloadsFragmentTest: MyDownloadsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMyDownloadsFragmentTest_TestApplicationComponent.builder()
+      DaggerMyDownloadsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -262,9 +271,12 @@ class MyDownloadsFragmentTest {
       component.inject(myDownloadsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -19,7 +19,7 @@ class TextSizeItemViewModel(
   val readingTextSize: ReadingTextSize,
   private val selectedTextSize: LiveData<ReadingTextSize>,
   val textSizeRadioButtonListener: TextSizeRadioButtonListener,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
   private val defaultReadingTextSizeInFloat by lazy {
     resources.getDimension(R.dimen.default_reading_text_size)

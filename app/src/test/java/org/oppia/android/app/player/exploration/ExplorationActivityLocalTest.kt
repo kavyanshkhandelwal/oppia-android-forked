@@ -112,7 +112,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ExplorationActivityLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ExplorationActivityLocalTest {
   @get:Rule
@@ -151,7 +151,7 @@ class ExplorationActivityLocalTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     launch<ExplorationActivity>(
       createExplorationActivityIntent(
@@ -159,8 +159,8 @@ class ExplorationActivityLocalTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
+        TEST_EXPLORATION_ID_2,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getOldestEvent()
@@ -184,7 +184,7 @@ class ExplorationActivityLocalTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     markAllSpotlightsSeen()
 
@@ -194,15 +194,15 @@ class ExplorationActivityLocalTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
+        TEST_EXPLORATION_ID_2,
+      ),
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -234,7 +234,7 @@ class ExplorationActivityLocalTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
 
     markAllSpotlightsSeen()
@@ -248,15 +248,15 @@ class ExplorationActivityLocalTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
+        TEST_EXPLORATION_ID_2,
+      ),
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -283,7 +283,7 @@ class ExplorationActivityLocalTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     markAllSpotlightsSeen()
 
@@ -293,15 +293,15 @@ class ExplorationActivityLocalTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
-      )
+        TEST_EXPLORATION_ID_2,
+      ),
     ).use {
       explorationDataController.startPlayingNewExploration(
         internalProfileId,
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -325,7 +325,7 @@ class ExplorationActivityLocalTest {
       // Update the SurveyLastShownTimestamp to trigger an update in the data provider and notify
       // subscribers of an update.
       profileManagementController.updateSurveyLastShownTimestamp(
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       )
 
       onView(withText(R.string.survey_onboarding_title_text))
@@ -359,7 +359,7 @@ class ExplorationActivityLocalTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ) {
     launch(ExplorationInjectionActivity::class.java).use {
       it.onActivity { activity ->
@@ -370,7 +370,7 @@ class ExplorationActivityLocalTest {
           classroomId,
           topicId,
           storyId,
-          explorationId
+          explorationId,
         )
       }
     }
@@ -381,9 +381,9 @@ class ExplorationActivityLocalTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
-  ): Intent {
-    return ExplorationActivity.createExplorationActivityIntent(
+    explorationId: String,
+  ): Intent =
+    ExplorationActivity.createExplorationActivityIntent(
       ApplicationProvider.getApplicationContext(),
       ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
       classroomId,
@@ -391,9 +391,8 @@ class ExplorationActivityLocalTest {
       storyId,
       explorationId,
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
-      isCheckpointingEnabled = false
+      isCheckpointingEnabled = false,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -429,8 +428,8 @@ class ExplorationActivityLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -441,9 +440,13 @@ class ExplorationActivityLocalTest {
     fun inject(explorationActivityLocalTest: ExplorationActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationActivityLocalTest_TestApplicationComponent.builder()
+      DaggerExplorationActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -452,9 +455,12 @@ class ExplorationActivityLocalTest {
       component.inject(explorationActivityLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

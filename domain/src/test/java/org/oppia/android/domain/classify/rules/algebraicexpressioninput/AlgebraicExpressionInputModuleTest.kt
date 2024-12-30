@@ -33,7 +33,9 @@ import javax.inject.Singleton
 class AlgebraicExpressionInputModuleTest {
   @field:[Inject AlgebraicExpressionInputRules]
   lateinit var algebraicExpressionInputClassifiers: Map<
-    String, @JvmSuppressWildcards RuleClassifier>
+    String,
+    @JvmSuppressWildcards RuleClassifier,
+  >
 
   @Before
   fun setUp() {
@@ -48,7 +50,7 @@ class AlgebraicExpressionInputModuleTest {
   @Test
   fun testModule_hasNoDuplicateClassifiers() {
     assertThat(algebraicExpressionInputClassifiers.values.toSet()).hasSize(
-      algebraicExpressionInputClassifiers.size
+      algebraicExpressionInputClassifiers.size,
     )
   }
 
@@ -70,7 +72,9 @@ class AlgebraicExpressionInputModuleTest {
   private fun setUpTestApplicationComponent() {
     DaggerAlgebraicExpressionInputModuleTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -78,9 +82,7 @@ class AlgebraicExpressionInputModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -89,8 +91,8 @@ class AlgebraicExpressionInputModuleTest {
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      AlgebraicExpressionInputModule::class
-    ]
+      AlgebraicExpressionInputModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

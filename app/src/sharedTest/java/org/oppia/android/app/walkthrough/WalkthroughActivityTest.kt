@@ -103,7 +103,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = WalkthroughActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class WalkthroughActivityTest {
   @get:Rule
@@ -127,9 +127,12 @@ class WalkthroughActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = WalkthroughActivity.createWalkthroughActivityIntent(
-      context, 1
-    ).extractCurrentAppScreenName()
+    val currentScreenName =
+      WalkthroughActivity
+        .createWalkthroughActivityIntent(
+          context,
+          1,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.WALKTHROUGH_ACTIVITY)
   }
@@ -189,8 +192,8 @@ class WalkthroughActivityTest {
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.walkthrough_welcome_description)))
     }
   }
@@ -254,8 +257,8 @@ class WalkthroughActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -266,9 +269,13 @@ class WalkthroughActivityTest {
     fun inject(walkthroughActivityTest: WalkthroughActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWalkthroughActivityTest_TestApplicationComponent.builder()
+      DaggerWalkthroughActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -277,9 +284,12 @@ class WalkthroughActivityTest {
       component.inject(walkthroughActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

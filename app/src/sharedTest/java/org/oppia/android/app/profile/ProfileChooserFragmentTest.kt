@@ -123,7 +123,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileChooserFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileChooserFragmentTest {
   @get:Rule
@@ -132,9 +132,12 @@ class ProfileChooserFragmentTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
-    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> =
+    ActivityTestRule(
+      ProfileChooserActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
@@ -184,31 +187,31 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
-        stringToMatch = "Admin"
+        stringToMatch = "Admin",
       )
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_is_admin_text,
-        stringToMatch = context.getString(R.string.profile_chooser_admin)
+        stringToMatch = context.getString(R.string.profile_chooser_admin),
       )
       scrollToPosition(position = 1)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
-        stringToMatch = "Ben"
+        stringToMatch = "Ben",
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_is_admin_text
-        )
+          targetViewId = R.id.profile_is_admin_text,
+        ),
       ).check(matches(not(isDisplayed())))
       scrollToPosition(position = 3)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_add)
+        stringToMatch = context.getString(R.string.profile_chooser_add),
       )
     }
   }
@@ -224,13 +227,13 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_last_visited
-        )
+          targetViewId = R.id.profile_last_visited,
+        ),
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
-        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now",
       )
     }
   }
@@ -247,13 +250,13 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_last_visited
-        )
+          targetViewId = R.id.profile_last_visited,
+        ),
       ).check(matches(isDisplayed()))
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_last_visited,
-        stringToMatch = "${context.getString(R.string.profile_last_used)} just now"
+        stringToMatch = "${context.getString(R.string.profile_last_used)} just now",
       )
     }
   }
@@ -268,61 +271,61 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 0,
         targetView = R.id.profile_name_text,
-        stringToMatch = "Admin"
+        stringToMatch = "Admin",
       )
       scrollToPosition(position = 1)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.profile_name_text,
-        stringToMatch = "A"
+        stringToMatch = "A",
       )
       scrollToPosition(position = 2)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 2,
         targetView = R.id.profile_name_text,
-        stringToMatch = "B"
+        stringToMatch = "B",
       )
       scrollToPosition(position = 3)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 3,
         targetView = R.id.profile_name_text,
-        stringToMatch = "Ben"
+        stringToMatch = "Ben",
       )
       scrollToPosition(position = 4)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.profile_name_text,
-        stringToMatch = "C"
+        stringToMatch = "C",
       )
       scrollToPosition(position = 5)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 5,
         targetView = R.id.profile_name_text,
-        stringToMatch = "D"
+        stringToMatch = "D",
       )
       scrollToPosition(position = 6)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 6,
         targetView = R.id.profile_name_text,
-        stringToMatch = "E"
+        stringToMatch = "E",
       )
       scrollToPosition(position = 7)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 7,
         targetView = R.id.profile_name_text,
-        stringToMatch = "F"
+        stringToMatch = "F",
       )
       scrollToPosition(position = 8)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 8,
         targetView = R.id.profile_name_text,
-        stringToMatch = "G"
+        stringToMatch = "G",
       )
       scrollToPosition(position = 9)
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 9,
         targetView = R.id.profile_name_text,
-        stringToMatch = "H"
+        stringToMatch = "H",
       )
     }
   }
@@ -336,8 +339,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
@@ -350,7 +353,7 @@ class ProfileChooserFragmentTest {
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(
       profileId = adminProfileId,
-      profileType = ProfileType.SUPERVISOR
+      profileType = ProfileType.SUPERVISOR,
     )
 
     launch(ProfileChooserActivity::class.java).use {
@@ -358,8 +361,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
@@ -375,8 +378,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
     }
@@ -392,8 +395,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
     }
@@ -408,7 +411,7 @@ class ProfileChooserFragmentTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = false
+      isAdmin = false,
     )
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
 
@@ -417,8 +420,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       intended(hasComponent(IntroActivity::class.java.name))
     }
@@ -432,7 +435,7 @@ class ProfileChooserFragmentTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
     )
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -440,7 +443,7 @@ class ProfileChooserFragmentTest {
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       it.onActivity { activity ->
         assertThat(
-          activity.intent.extractCurrentUserProfileId().internalId
+          activity.intent.extractCurrentUserProfileId().internalId,
         ).isEqualTo(0)
       }
     }
@@ -452,11 +455,13 @@ class ProfileChooserFragmentTest {
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val profileRecyclerView = activity.findViewById<RecyclerView>(
-          R.id.profile_recycler_view
-        )
-        val layoutManager = profileRecyclerView
-          .layoutManager as LinearLayoutManager
+        val profileRecyclerView =
+          activity.findViewById<RecyclerView>(
+            R.id.profile_recycler_view,
+          )
+        val layoutManager =
+          profileRecyclerView
+            .layoutManager as LinearLayoutManager
         assertThat(layoutManager.orientation).isEqualTo(LinearLayoutManager.VERTICAL)
       }
     }
@@ -470,7 +475,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 1,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.set_up_multiple_profiles)
+        stringToMatch = context.getString(R.string.set_up_multiple_profiles),
       )
     }
   }
@@ -484,8 +489,8 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 1,
-          targetViewId = R.id.add_profile_description_text
-        )
+          targetViewId = R.id.add_profile_description_text,
+        ),
       ).check(matches(isDisplayed()))
     }
   }
@@ -498,7 +503,7 @@ class ProfileChooserFragmentTest {
       verifyTextOnProfileListItemAtPosition(
         itemPosition = 4,
         targetView = R.id.add_profile_text,
-        stringToMatch = context.getString(R.string.profile_chooser_add)
+        stringToMatch = context.getString(R.string.profile_chooser_add),
       )
     }
   }
@@ -512,8 +517,8 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 4,
-          targetViewId = R.id.add_profile_description_text
-        )
+          targetViewId = R.id.add_profile_description_text,
+        ),
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -537,8 +542,8 @@ class ProfileChooserFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.profile_recycler_view,
-          position = 4
-        )
+          position = 4,
+        ),
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
@@ -554,7 +559,7 @@ class ProfileChooserFragmentTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
     )
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -562,8 +567,8 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_chooser_item
-        )
+          targetViewId = R.id.profile_chooser_item,
+        ),
       ).perform(click())
       intended(hasComponent(HomeActivity::class.java.name))
       hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
@@ -580,7 +585,7 @@ class ProfileChooserFragmentTest {
       avatarImagePath = null,
       allowDownloadAccess = true,
       colorRgb = -10710042,
-      isAdmin = true
+      isAdmin = true,
     )
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
@@ -588,38 +593,37 @@ class ProfileChooserFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_chooser_item
-        )
+          targetViewId = R.id.profile_chooser_item,
+        ),
       ).perform(click())
       intended(hasComponent(ClassroomListActivity::class.java.name))
       hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
     }
   }
 
-  private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity
+  private fun createProfileChooserActivityIntent(): Intent =
+    ProfileChooserActivity
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
-  }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.profile_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
   private fun verifyTextOnProfileListItemAtPosition(
     itemPosition: Int,
     targetView: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.profile_recycler_view,
         position = itemPosition,
-        targetViewId = targetView
-      )
+        targetViewId = targetView,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
@@ -652,8 +656,8 @@ class ProfileChooserFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -664,9 +668,13 @@ class ProfileChooserFragmentTest {
     fun inject(profileChooserFragmentTest: ProfileChooserFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileChooserFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -675,9 +683,12 @@ class ProfileChooserFragmentTest {
       component.inject(profileChooserFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

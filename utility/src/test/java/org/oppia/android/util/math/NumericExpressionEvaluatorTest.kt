@@ -219,18 +219,20 @@ class NumericExpressionEvaluatorTest {
   private companion object {
     private fun parseNumericExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return MathExpressionParser.parseNumericExpression(
-        expression, errorCheckingMode
-      ).retrieveExpectedSuccessfulResult()
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      MathExpressionParser
+        .parseNumericExpression(
+          expression,
+          errorCheckingMode,
+        ).retrieveExpectedSuccessfulResult()
 
-    private fun parseAlgebraicExpression(expression: String): MathExpression {
-      return parseAlgebraicExpression(
-        expression, allowedVariables = listOf("x", "y", "z"), ALL_ERRORS
+    private fun parseAlgebraicExpression(expression: String): MathExpression =
+      parseAlgebraicExpression(
+        expression,
+        allowedVariables = listOf("x", "y", "z"),
+        ALL_ERRORS,
       ).retrieveExpectedSuccessfulResult()
-    }
 
     private fun <T> MathParsingResult<T>.retrieveExpectedSuccessfulResult(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

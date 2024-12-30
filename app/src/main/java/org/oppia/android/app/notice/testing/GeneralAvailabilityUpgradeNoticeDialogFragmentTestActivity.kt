@@ -7,7 +7,8 @@ import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the GA upgrade notice dialog. */
 class GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity :
-  TestActivity(), GeneralAvailabilityUpgradeNoticeClosedListener {
+  TestActivity(),
+  GeneralAvailabilityUpgradeNoticeClosedListener {
   /**
    * [GeneralAvailabilityUpgradeNoticeClosedListener] that must be initialized by the test, and is
    * presumed to be a Mockito mock (though this is not, strictly speaking, required).
@@ -18,7 +19,8 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    GeneralAvailabilityUpgradeNoticeDialogFragment.newInstance()
+    GeneralAvailabilityUpgradeNoticeDialogFragment
+      .newInstance()
       .showNow(supportFragmentManager, "ga_upgrade_notice_dialog")
   }
 

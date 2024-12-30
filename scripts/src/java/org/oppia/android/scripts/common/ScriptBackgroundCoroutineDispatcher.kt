@@ -53,12 +53,16 @@ import kotlin.coroutines.CoroutineContext
  */
 class ScriptBackgroundCoroutineDispatcher(
   private val closeTimeout: Long = 5,
-  private val closeTimeoutUnit: TimeUnit = TimeUnit.SECONDS
-) : CoroutineDispatcher(), Closeable {
+  private val closeTimeoutUnit: TimeUnit = TimeUnit.SECONDS,
+) : CoroutineDispatcher(),
+  Closeable {
   private val threadPool by lazy { Executors.newCachedThreadPool() }
   private val coroutineDispatcher by lazy { threadPool.asCoroutineDispatcher() }
 
-  override fun dispatch(context: CoroutineContext, block: Runnable) {
+  override fun dispatch(
+    context: CoroutineContext,
+    block: Runnable,
+  ) {
     coroutineDispatcher.dispatch(context, block)
   }
 
@@ -68,7 +72,10 @@ class ScriptBackgroundCoroutineDispatcher(
   }
 
   private companion object {
-    private fun ExecutorService.tryShutdownFully(timeout: Long, unit: TimeUnit) {
+    private fun ExecutorService.tryShutdownFully(
+      timeout: Long,
+      unit: TimeUnit,
+    ) {
       // Try to fully shutdown the executor service per https://stackoverflow.com/a/33690603 and
       // https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html.
       shutdown()

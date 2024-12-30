@@ -19,70 +19,72 @@ import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import javax.inject.Inject
 
 /** The ObservableViewModel for [WalkthroughTopicListFragment]. */
-class WalkthroughTopicViewModel @Inject constructor(
-  private val fragment: Fragment,
-  private val topicListController: TopicListController,
-  private val oppiaLogger: OppiaLogger,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
-) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+class WalkthroughTopicViewModel
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val topicListController: TopicListController,
+    private val oppiaLogger: OppiaLogger,
+    @TopicHtmlParserEntityType private val topicEntityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController,
+  ) : ObservableViewModel() {
+    private lateinit var profileId: ProfileId
 
-  val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
-    Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
-  }
+    val walkthroughTopicViewModelLiveData: LiveData<List<WalkthroughTopicItemViewModel>> by lazy {
+      Transformations.map(topicListSummaryLiveData, ::processCompletedTopicList)
+    }
 
-  private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
-    topicListController.getTopicList(profileId).toLiveData()
-  }
+    private val topicListSummaryResultLiveData: LiveData<AsyncResult<TopicList>> by lazy {
+      topicListController.getTopicList(profileId).toLiveData()
+    }
 
-  private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
-    Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
-  }
+    private val topicListSummaryLiveData: LiveData<TopicList> by lazy {
+      Transformations.map(topicListSummaryResultLiveData, ::processTopicListResult)
+    }
 
-  /**
-   * Initializes this view model with the specified [profileId].
-   *
-   * This MUST be called before the view model is interacted with.
-   */
-  fun initialize(profileId: ProfileId) {
-    this.profileId = profileId
-  }
+    /**
+     * Initializes this view model with the specified [profileId].
+     *
+     * This MUST be called before the view model is interacted with.
+     */
+    fun initialize(profileId: ProfileId) {
+      this.profileId = profileId
+    }
 
-  private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList {
-    return when (topicSummaryListResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "WalkthroughTopicSummaryListFragment",
-          "Failed to retrieve TopicSummary list: ",
-          topicSummaryListResult.error
-        )
-        TopicList.getDefaultInstance()
+    private fun processTopicListResult(topicSummaryListResult: AsyncResult<TopicList>): TopicList =
+      when (topicSummaryListResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "WalkthroughTopicSummaryListFragment",
+            "Failed to retrieve TopicSummary list: ",
+            topicSummaryListResult.error,
+          )
+          TopicList.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> TopicList.getDefaultInstance()
+        is AsyncResult.Success -> topicSummaryListResult.value
       }
-      is AsyncResult.Pending -> TopicList.getDefaultInstance()
-      is AsyncResult.Success -> topicSummaryListResult.value
+
+    private fun processCompletedTopicList(topicList: TopicList): List<WalkthroughTopicItemViewModel> {
+      // List with only the header
+      val itemViewModelList: MutableList<WalkthroughTopicItemViewModel> =
+        mutableListOf(
+          WalkthroughTopicHeaderViewModel() as WalkthroughTopicItemViewModel,
+        )
+
+      // Add the rest of the list
+      itemViewModelList.addAll(
+        topicList.topicSummaryList.map { ephemeralTopicSummary ->
+          WalkthroughTopicSummaryViewModel(
+            topicEntityType,
+            ephemeralTopicSummary,
+            fragment as TopicSummaryClickListener,
+            resourceHandler,
+            translationController,
+          )
+        },
+      )
+      return itemViewModelList
     }
   }
-
-  private fun processCompletedTopicList(topicList: TopicList): List<WalkthroughTopicItemViewModel> {
-    // List with only the header
-    val itemViewModelList: MutableList<WalkthroughTopicItemViewModel> = mutableListOf(
-      WalkthroughTopicHeaderViewModel() as WalkthroughTopicItemViewModel
-    )
-
-    // Add the rest of the list
-    itemViewModelList.addAll(
-      topicList.topicSummaryList.map { ephemeralTopicSummary ->
-        WalkthroughTopicSummaryViewModel(
-          topicEntityType,
-          ephemeralTopicSummary,
-          fragment as TopicSummaryClickListener,
-          resourceHandler,
-          translationController
-        )
-      }
-    )
-    return itemViewModelList
-  }
-}

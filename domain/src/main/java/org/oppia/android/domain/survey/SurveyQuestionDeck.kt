@@ -11,7 +11,7 @@ import org.oppia.android.app.model.SurveyQuestionName
 class SurveyQuestionDeck constructor(
   private val totalQuestionCount: Int,
   initialQuestion: SurveyQuestion,
-  private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean
+  private val isTopOfDeckTerminalChecker: (SurveyQuestion) -> Boolean,
 ) {
   private var pendingTopQuestion = initialQuestion
   private var viewedQuestionsCount: Int = 0
@@ -44,21 +44,19 @@ class SurveyQuestionDeck constructor(
   fun getTopQuestionIndex(): Int = questionIndex
 
   /** Returns whether this is the first question in the survey. */
-  private fun isCurrentQuestionInitial(): Boolean {
-    return questionIndex == 0
-  }
+  private fun isCurrentQuestionInitial(): Boolean = questionIndex == 0
 
   /** Returns the current [EphemeralSurveyQuestion] the learner is viewing. */
-  fun getCurrentEphemeralQuestion(): EphemeralSurveyQuestion {
-    return if (isCurrentQuestionTerminal()) {
+  fun getCurrentEphemeralQuestion(): EphemeralSurveyQuestion =
+    if (isCurrentQuestionTerminal()) {
       getCurrentTerminalQuestion()
     } else {
       getCurrentPendingQuestion()
     }
-  }
 
-  private fun getCurrentPendingQuestion(): EphemeralSurveyQuestion {
-    return EphemeralSurveyQuestion.newBuilder()
+  private fun getCurrentPendingQuestion(): EphemeralSurveyQuestion =
+    EphemeralSurveyQuestion
+      .newBuilder()
       .setHasPreviousQuestion(!isCurrentQuestionInitial())
       .setHasNextQuestion(!isCurrentQuestionTerminal())
       .setQuestion(pendingTopQuestion)
@@ -66,10 +64,10 @@ class SurveyQuestionDeck constructor(
       .setCurrentQuestionIndex(questionIndex)
       .setTotalQuestionCount(totalQuestionCount)
       .build()
-  }
 
-  private fun getCurrentTerminalQuestion(): EphemeralSurveyQuestion {
-    return EphemeralSurveyQuestion.newBuilder()
+  private fun getCurrentTerminalQuestion(): EphemeralSurveyQuestion =
+    EphemeralSurveyQuestion
+      .newBuilder()
       .setHasPreviousQuestion(!isCurrentQuestionInitial())
       .setHasNextQuestion(false)
       .setQuestion(pendingTopQuestion)
@@ -77,22 +75,15 @@ class SurveyQuestionDeck constructor(
       .setCurrentQuestionIndex(questionIndex)
       .setTotalQuestionCount(totalQuestionCount)
       .build()
-  }
 
   /** Returns whether this is the most recent question in the survey. */
-  fun isCurrentQuestionTopOfDeck(): Boolean {
-    return questionIndex == viewedQuestionsCount
-  }
+  fun isCurrentQuestionTopOfDeck(): Boolean = questionIndex == viewedQuestionsCount
 
   /** Returns whether this is the last question in the survey. */
-  fun isCurrentQuestionTerminal(): Boolean {
-    return isCurrentQuestionTopOfDeck() && isTopOfDeckTerminal()
-  }
+  fun isCurrentQuestionTerminal(): Boolean = isCurrentQuestionTopOfDeck() && isTopOfDeckTerminal()
 
   /** Returns whether the most recent card on the deck is terminal. */
-  private fun isTopOfDeckTerminal(): Boolean {
-    return isTopOfDeckTerminalChecker(pendingTopQuestion)
-  }
+  private fun isTopOfDeckTerminal(): Boolean = isTopOfDeckTerminalChecker(pendingTopQuestion)
 
   /** Stores a list of all the questions that have been answered in the survey. */
   fun trackAnsweredQuestions(questionName: SurveyQuestionName) {
@@ -106,7 +97,5 @@ class SurveyQuestionDeck constructor(
    * The user must have answered the [SurveyQuestionName.NPS] question for the survey to be
    * considered partially completed.
    */
-  fun hasAnsweredAllMandatoryQuestions(): Boolean {
-    return answeredQuestions.contains(SurveyQuestionName.NPS)
-  }
+  fun hasAnsweredAllMandatoryQuestions(): Boolean = answeredQuestions.contains(SurveyQuestionName.NPS)
 }

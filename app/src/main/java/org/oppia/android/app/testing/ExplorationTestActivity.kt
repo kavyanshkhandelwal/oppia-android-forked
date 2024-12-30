@@ -38,7 +38,7 @@ class ExplorationTestActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -49,13 +49,14 @@ class ExplorationTestActivity :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
   }
 
-  private fun getTestFragment() = checkNotNull(presenter.getTestFragment()) {
-    "Expected TestFragment to be present in inflated test activity. Did you try to retrieve the" +
-      " screen manager too early in the test?"
-  }
+  private fun getTestFragment() =
+    checkNotNull(presenter.getTestFragment()) {
+      "Expected TestFragment to be present in inflated test activity. Did you try to retrieve the" +
+        " screen manager too early in the test?"
+    }
 }

@@ -15,18 +15,22 @@ class CompletedStoryItemViewModel(
   val completedStory: CompletedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
-  translationController: TranslationController
-) : ObservableViewModel(), RouteToTopicPlayStoryListener {
+  translationController: TranslationController,
+) : ObservableViewModel(),
+  RouteToTopicPlayStoryListener {
   /** Holds lazily loaded completedStoryName [String] value. */
   val completedStoryName by lazy {
     translationController.extractString(
-      completedStory.storyTitle, completedStory.storyWrittenTranslationContext
+      completedStory.storyTitle,
+      completedStory.storyWrittenTranslationContext,
     )
   }
+
   /** Holds lazily loaded topicName [String] value. */
   val topicName by lazy {
     translationController.extractString(
-      completedStory.topicTitle, completedStory.topicWrittenTranslationContext
+      completedStory.topicTitle,
+      completedStory.topicWrittenTranslationContext,
     )
   }
 
@@ -36,7 +40,7 @@ class CompletedStoryItemViewModel(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       completedStory.classroomId,
       completedStory.topicId,
-      completedStory.storyId
+      completedStory.storyId,
     )
   }
 
@@ -44,15 +48,16 @@ class CompletedStoryItemViewModel(
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
-    val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
-      activity.applicationContext,
-      profileId.internalId,
-      classroomId,
-      topicId,
-      storyId
-    )
+    val intent =
+      intentFactoryShim.createTopicPlayStoryActivityIntent(
+        activity.applicationContext,
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId,
+      )
     activity.startActivity(intent)
   }
 }

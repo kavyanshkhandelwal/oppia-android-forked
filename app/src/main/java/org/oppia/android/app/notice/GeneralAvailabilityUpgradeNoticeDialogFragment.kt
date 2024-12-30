@@ -14,8 +14,7 @@ import javax.inject.Inject
 class GeneralAvailabilityUpgradeNoticeDialogFragment : InjectableDialogFragment() {
   companion object {
     /** Returns a new instance of [GeneralAvailabilityUpgradeNoticeDialogFragment]. */
-    fun newInstance(): GeneralAvailabilityUpgradeNoticeDialogFragment =
-      GeneralAvailabilityUpgradeNoticeDialogFragment()
+    fun newInstance(): GeneralAvailabilityUpgradeNoticeDialogFragment = GeneralAvailabilityUpgradeNoticeDialogFragment()
   }
 
   @Inject lateinit var presenter: GeneralAvailabilityUpgradeNoticeDialogFragmentPresenter
@@ -25,7 +24,5 @@ class GeneralAvailabilityUpgradeNoticeDialogFragment : InjectableDialogFragment(
     (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
-  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return presenter.handleOnCreateDialog()
-  }
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = presenter.handleOnCreateDialog()
 }

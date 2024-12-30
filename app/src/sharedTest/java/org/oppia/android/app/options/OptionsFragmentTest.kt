@@ -119,7 +119,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = OptionsFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class OptionsFragmentTest {
   @get:Rule
@@ -157,13 +157,13 @@ class OptionsFragmentTest {
 
   private fun createOptionActivityIntent(
     internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
+    isFromNavigationDrawer: Boolean,
   ): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       context = ApplicationProvider.getApplicationContext(),
       profileId = profileId,
-      isFromNavigationDrawer = isFromNavigationDrawer
+      isFromNavigationDrawer = isFromNavigationDrawer,
     )
   }
 
@@ -172,8 +172,8 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = false
-      )
+        isFromNavigationDrawer = false,
+      ),
     ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
@@ -185,8 +185,8 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
@@ -198,8 +198,8 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = false
-      )
+        isFromNavigationDrawer = false,
+      ),
     ).use {
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
         .check(doesNotExist())
@@ -211,8 +211,8 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = false
-      )
+        isFromNavigationDrawer = false,
+      ),
     ).use {
       rotateToLandscape()
       onView(withId(R.id.options_activity_fragment_navigation_drawer))
@@ -225,8 +225,8 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.options_fragment_placeholder))
@@ -240,18 +240,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
+          targetViewId = R.id.reading_text_size_text_view,
+        ),
       ).check(
-        matches(withText("Medium"))
+        matches(withText("Medium")),
       )
     }
   }
@@ -261,18 +261,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
+          targetViewId = R.id.reading_text_size_text_view,
+        ),
       ).check(
-        matches(withText("Medium"))
+        matches(withText("Medium")),
       )
     }
   }
@@ -283,18 +283,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
+          targetViewId = R.id.reading_text_size_text_view,
+        ),
       ).check(
-        matches(withText("Medium"))
+        matches(withText("Medium")),
       )
     }
   }
@@ -304,18 +304,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 1,
-          targetViewId = R.id.app_language_text_view
-        )
+          targetViewId = R.id.app_language_text_view,
+        ),
       ).check(
-        matches(withText("English"))
+        matches(withText("English")),
       )
     }
   }
@@ -325,18 +325,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 1,
-          targetViewId = R.id.app_language_text_view
-        )
+          targetViewId = R.id.app_language_text_view,
+        ),
       ).check(
-        matches(withText("English"))
+        matches(withText("English")),
       )
     }
   }
@@ -346,18 +346,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 2,
-          targetViewId = R.id.audio_language_text_view
-        )
+          targetViewId = R.id.audio_language_text_view,
+        ),
       ).check(
-        matches(withText("English"))
+        matches(withText("English")),
       )
     }
   }
@@ -367,18 +367,18 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 2,
-          targetViewId = R.id.audio_language_text_view
-        )
+          targetViewId = R.id.audio_language_text_view,
+        ),
       ).check(
-        matches(withText("English"))
+        matches(withText("English")),
       )
     }
   }
@@ -388,26 +388,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
+          targetViewId = R.id.reading_text_size_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
-        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-      }.build()
+      val expectedParams =
+        ReadingTextSizeActivityParams
+          .newBuilder()
+          .apply {
+            readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+          }.build()
       intended(
         allOf(
           hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
-          hasComponent(ReadingTextSizeActivity::class.java.name)
-        )
+          hasComponent(ReadingTextSizeActivity::class.java.name),
+        ),
       )
     }
   }
@@ -417,26 +420,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 0,
-          targetViewId = R.id.reading_text_size_text_view
-        )
+          targetViewId = R.id.reading_text_size_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = ReadingTextSizeActivityParams.newBuilder().apply {
-        readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
-      }.build()
+      val expectedParams =
+        ReadingTextSizeActivityParams
+          .newBuilder()
+          .apply {
+            readingTextSize = ReadingTextSize.MEDIUM_TEXT_SIZE
+          }.build()
       intended(
         allOf(
           hasProtoExtra("ReadingTextSizeActivity.params", expectedParams),
-          hasComponent(ReadingTextSizeActivity::class.java.name)
-        )
+          hasComponent(ReadingTextSizeActivity::class.java.name),
+        ),
       )
     }
   }
@@ -447,26 +453,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 1,
-          targetViewId = R.id.app_language_text_view
-        )
+          targetViewId = R.id.app_language_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
-        oppiaLanguage = OppiaLanguage.ENGLISH
-      }.build()
+      val expectedParams =
+        AppLanguageActivityParams
+          .newBuilder()
+          .apply {
+            oppiaLanguage = OppiaLanguage.ENGLISH
+          }.build()
       intended(
         allOf(
           hasProtoExtra("AppLanguageActivity.params", expectedParams),
-          hasComponent(AppLanguageActivity::class.java.name)
-        )
+          hasComponent(AppLanguageActivity::class.java.name),
+        ),
       )
     }
   }
@@ -477,26 +486,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 1,
-          targetViewId = R.id.app_language_text_view
-        )
+          targetViewId = R.id.app_language_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = AppLanguageActivityParams.newBuilder().apply {
-        oppiaLanguage = OppiaLanguage.ENGLISH
-      }.build()
+      val expectedParams =
+        AppLanguageActivityParams
+          .newBuilder()
+          .apply {
+            oppiaLanguage = OppiaLanguage.ENGLISH
+          }.build()
       intended(
         allOf(
           hasProtoExtra("AppLanguageActivity.params", expectedParams),
-          hasComponent(AppLanguageActivity::class.java.name)
-        )
+          hasComponent(AppLanguageActivity::class.java.name),
+        ),
       )
     }
   }
@@ -506,26 +518,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 2,
-          targetViewId = R.id.audio_language_text_view
-        )
+          targetViewId = R.id.audio_language_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      }.build()
+      val expectedParams =
+        AudioLanguageActivityParams
+          .newBuilder()
+          .apply {
+            audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+          }.build()
       intended(
         allOf(
           hasProtoExtra("AudioLanguageActivity.params", expectedParams),
-          hasComponent(AudioLanguageActivity::class.java.name)
-        )
+          hasComponent(AudioLanguageActivity::class.java.name),
+        ),
       )
     }
   }
@@ -535,26 +550,29 @@ class OptionsFragmentTest {
     launch<OptionsActivity>(
       createOptionActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       rotateToLandscape()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.options_recyclerview,
           position = 2,
-          targetViewId = R.id.audio_language_text_view
-        )
+          targetViewId = R.id.audio_language_text_view,
+        ),
       ).perform(click())
 
-      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
-        audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      }.build()
+      val expectedParams =
+        AudioLanguageActivityParams
+          .newBuilder()
+          .apply {
+            audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+          }.build()
       intended(
         allOf(
           hasProtoExtra("AudioLanguageActivity.params", expectedParams),
-          hasComponent(AudioLanguageActivity::class.java.name)
-        )
+          hasComponent(AudioLanguageActivity::class.java.name),
+        ),
       )
     }
   }
@@ -620,8 +638,8 @@ class OptionsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -632,9 +650,13 @@ class OptionsFragmentTest {
     fun inject(optionsFragmentTest: OptionsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOptionsFragmentTest_TestApplicationComponent.builder()
+      DaggerOptionsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -643,9 +665,12 @@ class OptionsFragmentTest {
       component.inject(optionsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

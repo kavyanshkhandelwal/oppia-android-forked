@@ -25,182 +25,187 @@ private const val STROKE_DASH_GAP_IN_DEGREE = 12
  *
  * Reference: // https://stackoverflow.com/a/39210676
  */
-class SegmentedCircularProgressView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+class SegmentedCircularProgressView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+  ) : View(context, attrs, defStyleAttr) {
+    @Inject
+    lateinit var resourceHandler: AppLanguageResourceHandler
 
-  private var sweepAngle = 0f
-  private var strokeWidth = 0f
-  private val isRtl by lazy {
-    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
-  }
+    private var sweepAngle = 0f
+    private var strokeWidth = 0f
+    private val isRtl by lazy {
+      resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+    }
 
-  private lateinit var baseRect: RectF
-  private lateinit var chapterFinishedArcPaint: Paint
-  private lateinit var chapterInProgressArcPaint: Paint
-  private lateinit var chapterNotStartedArcPaint: Paint
+    private lateinit var baseRect: RectF
+    private lateinit var chapterFinishedArcPaint: Paint
+    private lateinit var chapterInProgressArcPaint: Paint
+    private lateinit var chapterNotStartedArcPaint: Paint
 
-  private var chaptersNotStarted: Int = 0
-  private var chaptersFinished: Int = 0
-  private var chaptersInProgress: Int = 0
-  private var totalChapters: Int = 0
+    private var chaptersNotStarted: Int = 0
+    private var chaptersFinished: Int = 0
+    private var chaptersInProgress: Int = 0
+    private var totalChapters: Int = 0
 
-  /** Sets StoryChapterDetails to this view for displaying and finally initialises the view. */
-  fun setStoryChapterDetails(
-    totalChaptersCount: Int,
-    chaptersFinishedCount: Int,
-    chaptersInProgressCount: Int
-  ) {
-    if (this.totalChapters != totalChaptersCount ||
-      this.chaptersFinished != chaptersFinishedCount ||
-      this.chaptersInProgress != chaptersInProgressCount
+    /** Sets StoryChapterDetails to this view for displaying and finally initialises the view. */
+    fun setStoryChapterDetails(
+      totalChaptersCount: Int,
+      chaptersFinishedCount: Int,
+      chaptersInProgressCount: Int,
     ) {
-      this.totalChapters = totalChaptersCount
-      this.chaptersFinished = chaptersFinishedCount
-      this.chaptersInProgress = chaptersInProgressCount
-      this.chaptersNotStarted = totalChaptersCount - chaptersFinishedCount - chaptersInProgressCount
-      initialise()
+      if (this.totalChapters != totalChaptersCount ||
+        this.chaptersFinished != chaptersFinishedCount ||
+        this.chaptersInProgress != chaptersInProgressCount
+      ) {
+        this.totalChapters = totalChaptersCount
+        this.chaptersFinished = chaptersFinishedCount
+        this.chaptersInProgress = chaptersInProgressCount
+        this.chaptersNotStarted = totalChaptersCount - chaptersFinishedCount - chaptersInProgressCount
+        initialise()
+      }
     }
-  }
 
-  private fun initialise() {
-    chaptersNotStarted = totalChapters - chaptersFinished - chaptersInProgress
-    strokeWidth = dpToPx(4)
-    calculateSweepAngle()
+    private fun initialise() {
+      chaptersNotStarted = totalChapters - chaptersFinished - chaptersInProgress
+      strokeWidth = dpToPx(4)
+      calculateSweepAngle()
 
-    chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(
-      chapterFinishedArcPaint,
-      R.color.component_color_lessons_tab_activity_chapter_completed_progress_color
-    )
-
-    chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    setupArcPaint(
-      chapterInProgressArcPaint,
-      R.color.component_color_lessons_tab_activity_chapter_in_progress_progress_color
-    )
-
-    chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    if (chaptersFinished != 0) {
+      chapterFinishedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
       setupArcPaint(
-        chapterNotStartedArcPaint,
-        R.color.component_color_lessons_tab_activity_chapter_not_finished_progress_color
+        chapterFinishedArcPaint,
+        R.color.component_color_lessons_tab_activity_chapter_completed_progress_color,
       )
-    } else {
+
+      chapterInProgressArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
       setupArcPaint(
-        chapterNotStartedArcPaint,
-        R.color.component_color_lessons_tab_activity_chapter_not_started_progress_color
+        chapterInProgressArcPaint,
+        R.color.component_color_lessons_tab_activity_chapter_in_progress_progress_color,
       )
-    }
-  }
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-
-    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
-  }
-
-  override fun onDraw(canvas: Canvas) {
-    if (isRtl)
-      rotationY = 180f
-    super.onDraw(canvas)
-    if (!this::baseRect.isInitialized) {
-      val centerX = measuredWidth / 2
-      val centerY = measuredHeight / 2
-      val radius = Math.min(centerX, centerY)
-
-      val startTop = (strokeWidth / 2).toInt()
-      val startLeft = (strokeWidth / 2).toInt()
-
-      val endBottom = 2 * radius - startTop
-      val endRight = 2 * radius - startTop
-
-      // baseRect will define the drawing space for drawArc().
-      baseRect =
-        RectF(startLeft.toFloat(), startTop.toFloat(), endRight.toFloat(), endBottom.toFloat())
-    }
-
-    var angleStartPoint = -90f
-
-    if (totalChapters > 1) {
-      // Draws arc for every finished chapter.
-      for (i in 0 until chaptersFinished) {
-        val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
-            STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterFinishedArcPaint)
-      }
-      angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
-      // Draws arc for every chapter that is in progress.
-      for (i in 0 until chaptersInProgress) {
-        val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
-            STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterInProgressArcPaint)
-      }
-      angleStartPoint += chaptersInProgress * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
-      // Draws arc for every chapter that is not started.
-      for (i in 0 until chaptersNotStarted) {
-        val startAngle =
-          angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
-            STROKE_DASH_GAP_IN_DEGREE / 2
-        canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterNotStartedArcPaint)
-      }
-    } else if (totalChapters == 1) {
-      // Draws entire circle for finished an unfinished chapter.
-      if (chaptersFinished == 1) {
-        canvas.drawArc(
-          baseRect,
-          angleStartPoint,
-          360f,
-          false,
-          chapterFinishedArcPaint
-        )
-      } else if (chaptersInProgress == 1) {
-        canvas.drawArc(
-          baseRect,
-          angleStartPoint,
-          360f,
-          false,
-          chapterInProgressArcPaint
+      chapterNotStartedArcPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+      if (chaptersFinished != 0) {
+        setupArcPaint(
+          chapterNotStartedArcPaint,
+          R.color.component_color_lessons_tab_activity_chapter_not_finished_progress_color,
         )
       } else {
-        canvas.drawArc(
-          baseRect,
-          angleStartPoint,
-          360f,
-          false,
-          chapterNotStartedArcPaint
+        setupArcPaint(
+          chapterNotStartedArcPaint,
+          R.color.component_color_lessons_tab_activity_chapter_not_started_progress_color,
         )
       }
     }
-  }
 
-  private fun calculateSweepAngle() {
-    val totalRemainingDegrees = (360 - STROKE_DASH_GAP_IN_DEGREE * totalChapters).toFloat()
-    sweepAngle = totalRemainingDegrees / totalChapters
-  }
+    override fun onAttachedToWindow() {
+      super.onAttachedToWindow()
 
-  private fun dpToPx(dp: Int): Float {
-    return TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_DIP,
-      dp.toFloat(),
-      resources.displayMetrics
-    )
-  }
+      val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+    }
 
-  private fun setupArcPaint(arcPaint: Paint, color: Int) {
-    arcPaint.apply {
-      style = Paint.Style.STROKE
-      strokeCap = Paint.Cap.ROUND
-      strokeWidth = this@SegmentedCircularProgressView.strokeWidth
-      this.color = ContextCompat.getColor(context, color)
+    override fun onDraw(canvas: Canvas) {
+      if (isRtl) {
+        rotationY = 180f
+      }
+      super.onDraw(canvas)
+      if (!this::baseRect.isInitialized) {
+        val centerX = measuredWidth / 2
+        val centerY = measuredHeight / 2
+        val radius = Math.min(centerX, centerY)
+
+        val startTop = (strokeWidth / 2).toInt()
+        val startLeft = (strokeWidth / 2).toInt()
+
+        val endBottom = 2 * radius - startTop
+        val endRight = 2 * radius - startTop
+
+        // baseRect will define the drawing space for drawArc().
+        baseRect =
+          RectF(startLeft.toFloat(), startTop.toFloat(), endRight.toFloat(), endBottom.toFloat())
+      }
+
+      var angleStartPoint = -90f
+
+      if (totalChapters > 1) {
+        // Draws arc for every finished chapter.
+        for (i in 0 until chaptersFinished) {
+          val startAngle =
+            angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+              STROKE_DASH_GAP_IN_DEGREE / 2
+          canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterFinishedArcPaint)
+        }
+        angleStartPoint += chaptersFinished * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
+        // Draws arc for every chapter that is in progress.
+        for (i in 0 until chaptersInProgress) {
+          val startAngle =
+            angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+              STROKE_DASH_GAP_IN_DEGREE / 2
+          canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterInProgressArcPaint)
+        }
+        angleStartPoint += chaptersInProgress * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE)
+        // Draws arc for every chapter that is not started.
+        for (i in 0 until chaptersNotStarted) {
+          val startAngle =
+            angleStartPoint + i * (sweepAngle + STROKE_DASH_GAP_IN_DEGREE) +
+              STROKE_DASH_GAP_IN_DEGREE / 2
+          canvas.drawArc(baseRect, startAngle, sweepAngle, false, chapterNotStartedArcPaint)
+        }
+      } else if (totalChapters == 1) {
+        // Draws entire circle for finished an unfinished chapter.
+        if (chaptersFinished == 1) {
+          canvas.drawArc(
+            baseRect,
+            angleStartPoint,
+            360f,
+            false,
+            chapterFinishedArcPaint,
+          )
+        } else if (chaptersInProgress == 1) {
+          canvas.drawArc(
+            baseRect,
+            angleStartPoint,
+            360f,
+            false,
+            chapterInProgressArcPaint,
+          )
+        } else {
+          canvas.drawArc(
+            baseRect,
+            angleStartPoint,
+            360f,
+            false,
+            chapterNotStartedArcPaint,
+          )
+        }
+      }
+    }
+
+    private fun calculateSweepAngle() {
+      val totalRemainingDegrees = (360 - STROKE_DASH_GAP_IN_DEGREE * totalChapters).toFloat()
+      sweepAngle = totalRemainingDegrees / totalChapters
+    }
+
+    private fun dpToPx(dp: Int): Float =
+      TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp.toFloat(),
+        resources.displayMetrics,
+      )
+
+    private fun setupArcPaint(
+      arcPaint: Paint,
+      color: Int,
+    ) {
+      arcPaint.apply {
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = this@SegmentedCircularProgressView.strokeWidth
+        this.color = ContextCompat.getColor(context, color)
+      }
     }
   }
-}

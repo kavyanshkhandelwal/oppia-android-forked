@@ -29,16 +29,17 @@ import javax.inject.Singleton
 @Config(
   manifest = Config.NONE,
   sdk = [Build.VERSION_CODES.P],
-  shadows = [OppiaShadowActivityManager::class]
+  shadows = [OppiaShadowActivityManager::class],
 )
 class OppiaShadowActivityManagerTest {
   @Inject
   lateinit var context: Context
 
   private val oppiaShadowActivityManager: OppiaShadowActivityManager
-    get() = shadowOf(
-      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    ) as OppiaShadowActivityManager
+    get() =
+      shadowOf(
+        context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager,
+      ) as OppiaShadowActivityManager
 
   @Before
   fun setUp() {
@@ -65,11 +66,12 @@ class OppiaShadowActivityManagerTest {
 
   @Test
   fun testCustomShadow_setDebugMemoryInfo_returnsCorrectValue() {
-    val debugMemoryInfo = Debug.MemoryInfo().apply {
-      this.nativePss = 2
-      this.dalvikPss = 1
-      this.otherPss = 3
-    }
+    val debugMemoryInfo =
+      Debug.MemoryInfo().apply {
+        this.nativePss = 2
+        this.dalvikPss = 1
+        this.otherPss = 3
+      }
     oppiaShadowActivityManager.setProcessMemoryInfo(debugMemoryInfo)
 
     val returnedDebugMemoryInfo = oppiaShadowActivityManager.getProcessMemoryInfo(intArrayOf(0))
@@ -82,12 +84,13 @@ class OppiaShadowActivityManagerTest {
 
   @Test
   fun testCustomShadow_setMemoryInfo_returnsCorrectOutInfo() {
-    val memoryInfo = ActivityManager.MemoryInfo().apply {
-      this.availMem = 1
-      this.totalMem = 2
-      this.lowMemory = true
-      this.threshold = 10
-    }
+    val memoryInfo =
+      ActivityManager.MemoryInfo().apply {
+        this.availMem = 1
+        this.totalMem = 2
+        this.lowMemory = true
+        this.threshold = 10
+      }
     oppiaShadowActivityManager.setMemoryInfo(memoryInfo)
 
     val outInfo = ActivityManager.MemoryInfo()
@@ -100,20 +103,22 @@ class OppiaShadowActivityManagerTest {
 
   @Test
   fun testCustomShadow_setMemoryInfo_setDataInOutInfo_returnsCorrectDataInOutInfo() {
-    val memoryInfo = ActivityManager.MemoryInfo().apply {
-      this.availMem = 1
-      this.totalMem = 2
-      this.lowMemory = true
-      this.threshold = 10
-    }
+    val memoryInfo =
+      ActivityManager.MemoryInfo().apply {
+        this.availMem = 1
+        this.totalMem = 2
+        this.lowMemory = true
+        this.threshold = 10
+      }
     oppiaShadowActivityManager.setMemoryInfo(memoryInfo)
 
-    val outInfo = ActivityManager.MemoryInfo().apply {
-      this.availMem = 5
-      this.totalMem = 3
-      this.lowMemory = false
-      this.threshold = 43
-    }
+    val outInfo =
+      ActivityManager.MemoryInfo().apply {
+        this.availMem = 5
+        this.totalMem = 3
+        this.lowMemory = false
+        this.threshold = 43
+      }
 
     oppiaShadowActivityManager.getMemoryInfo(outInfo)
     assertThat(outInfo.totalMem).isEqualTo(2)
@@ -123,7 +128,8 @@ class OppiaShadowActivityManagerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaShadowActivityManagerTest_TestApplicationComponent.builder()
+    DaggerOppiaShadowActivityManagerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -134,17 +140,15 @@ class OppiaShadowActivityManagerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class
-    ]
+      TestModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

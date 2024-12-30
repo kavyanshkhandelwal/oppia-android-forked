@@ -9,16 +9,15 @@ import org.oppia.android.app.fragment.InjectableFragment
 
 /** Test-only fragment for verifying behaviors of [ColorBindingAdapters]. */
 class ColorBindingAdaptersTestFragment : InjectableFragment() {
-
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return inflater.inflate(
+    savedInstanceState: Bundle?,
+  ): View =
+    inflater.inflate(
       R.layout.color_binding_adapters_test_fragment,
       container,
-      /* attachToRoot= */ false
+      // attachToRoot=
+      false,
     )
-  }
 }

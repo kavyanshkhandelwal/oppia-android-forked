@@ -28,10 +28,9 @@ class ForceNetworkTypeActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns [Intent] for [ForceNetworkTypeActivity]. */
-    fun createForceNetworkTypeActivityIntent(context: Context): Intent {
-      return Intent(context, ForceNetworkTypeActivity::class.java).apply {
+    fun createForceNetworkTypeActivityIntent(context: Context): Intent =
+      Intent(context, ForceNetworkTypeActivity::class.java).apply {
         decorateWithScreenName(FORCE_NETWORK_TYPE_ACTIVITY)
       }
-    }
   }
 }

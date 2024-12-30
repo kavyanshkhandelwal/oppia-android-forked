@@ -25,16 +25,23 @@ fun main(vararg args: String) {
   val repoPath = "${args[0]}/"
   val repoRoot = File(repoPath)
 
-  data class Finding(val language: TranslationLanguage, val file: File, val errorLine: String)
+  data class Finding(
+    val language: TranslationLanguage,
+    val file: File,
+    val errorLine: String,
+  )
   val parser = StringResourceParser(repoRoot)
   val baseFile = parser.retrieveBaseStringFile()
   val otherTranslations = parser.retrieveAllNonEnglishTranslations()
-  val inconsistencies = otherTranslations.entries.fold(listOf<Finding>()) { errors, entry ->
-    val (_, translatedFile) = entry
-    errors + computeInconsistenciesBetween(baseFile, translatedFile).map { line ->
-      Finding(translatedFile.language, translatedFile.file, line)
-    }
-  }.groupBy(keySelector = { it.language to it.file }, valueTransform = { it.errorLine })
+  val inconsistencies =
+    otherTranslations.entries
+      .fold(listOf<Finding>()) { errors, entry ->
+        val (_, translatedFile) = entry
+        errors +
+          computeInconsistenciesBetween(baseFile, translatedFile).map { line ->
+            Finding(translatedFile.language, translatedFile.file, line)
+          }
+      }.groupBy(keySelector = { it.language to it.file }, valueTransform = { it.errorLine })
 
   if (inconsistencies.isNotEmpty()) {
     println("${inconsistencies.size} language(s) were found with string consistency errors.")
@@ -44,18 +51,20 @@ fun main(vararg args: String) {
       val (language, file) = context
       println(
         "${errorLines.size} consistency error(s) were found for ${language.name} strings (file:" +
-          " ${file.toRelativeString(repoRoot)}):"
+          " ${file.toRelativeString(repoRoot)}):",
       )
       errorLines.forEach { println("- $it") }
       println()
     }
     throw Exception("STRING RESOURCE VALIDATION CHECKS FAILED")
-  } else println("STRING RESOURCE VALIDATION CHECKS PASSED")
+  } else {
+    println("STRING RESOURCE VALIDATION CHECKS PASSED")
+  }
 }
 
 private fun computeInconsistenciesBetween(
   baseFile: StringFile,
-  translatedFile: StringFile
+  translatedFile: StringFile,
 ): List<String> {
   val commonTranslations = baseFile.strings.intersectWith(translatedFile.strings)
 
@@ -68,7 +77,9 @@ private fun computeInconsistenciesBetween(
       "string $stringName: original translation uses ${baseLines.size} line(s) but translation" +
         " uses ${translatedLines.size} line(s). Please remove any extra lines or add any that are" +
         " missing."
-    } else null // The number of lines match.
+    } else {
+      null // The number of lines match.
+    }
   }
 }
 

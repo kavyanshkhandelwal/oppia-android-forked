@@ -7,7 +7,6 @@ import com.squareup.moshi.JsonClass
 // TODO(#3016): Link backend domain model
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReportingAppContext(
-
   /** Corresponds to a location in the app that a user can access feedback reporting. */
   @Json(name = "entry_point") val entryPoint: GaeFeedbackReportingEntryPoint,
   /** The text size used in the app. */
@@ -25,6 +24,5 @@ data class GaeFeedbackReportingAppContext(
   /** The event log as recorded in the app, where each item in the list corresponds to a single event. */
   @Json(name = "event_logs") val eventLogs: List<String>,
   /** The logcat log as recorded in the app, where each item in the list corresponds to a single item logged. */
-  @Json(name = "logcat_logs") val logcatLogs: List<String>
-
+  @Json(name = "logcat_logs") val logcatLogs: List<String>,
 )

@@ -12,22 +12,24 @@ import javax.inject.Singleton
  * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
-class DebugFirestoreEventLoggerImpl @Inject constructor(
-  private val realEventLogger: FirestoreEventLoggerProdImpl
-) : FirestoreEventLogger {
-  private val eventList = CopyOnWriteArrayList<EventLog>()
+class DebugFirestoreEventLoggerImpl
+  @Inject
+  constructor(
+    private val realEventLogger: FirestoreEventLoggerProdImpl,
+  ) : FirestoreEventLogger {
+    private val eventList = CopyOnWriteArrayList<EventLog>()
 
-  override fun uploadEvent(eventLog: EventLog) {
-    eventList.add(eventLog)
-    realEventLogger.uploadEvent(eventLog)
+    override fun uploadEvent(eventLog: EventLog) {
+      eventList.add(eventLog)
+      realEventLogger.uploadEvent(eventLog)
+    }
+
+    /** Returns the list of all [EventLog]s logged for Firestore. */
+    fun getEventList(): List<EventLog> = eventList
+
+    /** Returns the most recently logged event. */
+    fun getMostRecentEvent(): EventLog = getEventList().last()
+
+    /** Clears all the events that are currently logged. */
+    fun clearAllEvents() = eventList.clear()
   }
-
-  /** Returns the list of all [EventLog]s logged for Firestore. */
-  fun getEventList(): List<EventLog> = eventList
-
-  /** Returns the most recently logged event. */
-  fun getMostRecentEvent(): EventLog = getEventList().last()
-
-  /** Clears all the events that are currently logged. */
-  fun clearAllEvents() = eventList.clear()
-}

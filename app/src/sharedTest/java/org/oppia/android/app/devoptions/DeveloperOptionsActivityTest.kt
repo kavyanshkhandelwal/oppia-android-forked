@@ -122,7 +122,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = DeveloperOptionsActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class DeveloperOptionsActivityTest {
   @get:Rule
@@ -137,11 +137,14 @@ class DeveloperOptionsActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    DeveloperOptionsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      DeveloperOptionsActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -184,10 +187,11 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
+      onView(withId(R.id.developer_options_linear_layout))
+        .perform(nestedScrollTo())
         .perform(click())
       onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
@@ -196,11 +200,12 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_configChange_selectDevOptionsNavItem_developerOptionsListIsDisplayed() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(internalProfileId),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
+      onView(withId(R.id.developer_options_linear_layout))
+        .perform(nestedScrollTo())
         .perform(click())
       onView(withId(R.id.developer_options_list)).check(matches(isDisplayed()))
     }
@@ -209,7 +214,7 @@ class DeveloperOptionsActivityTest {
   @Test
   fun testDeveloperOptions_selectMathExpressionsEquations_routesToMathExpressionParserActivity() {
     launch<DeveloperOptionsActivity>(
-      createDeveloperOptionsActivityIntent(internalProfileId)
+      createDeveloperOptionsActivityIntent(internalProfileId),
     ).use {
       onView(withId(R.id.developer_options_list))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
@@ -219,8 +224,8 @@ class DeveloperOptionsActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 3,
-          targetViewId = R.id.math_expressions_text_view
-        )
+          targetViewId = R.id.math_expressions_text_view,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -261,25 +266,26 @@ class DeveloperOptionsActivityTest {
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
-  private fun nestedScrollTo(): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "View is not NestedScrollView"
-      }
+  private fun nestedScrollTo(): ViewAction =
+    object : ViewAction {
+      override fun getDescription(): String = "View is not NestedScrollView"
 
-      override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return Matchers.allOf(
-          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
+      override fun getConstraints(): org.hamcrest.Matcher<View> =
+        Matchers.allOf(
+          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
         )
-      }
 
-      override fun perform(uiController: UiController, view: View) {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         try {
           val nestedScrollView =
             findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
         } catch (e: Exception) {
-          throw PerformException.Builder()
+          throw PerformException
+            .Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
             .withCause(e)
@@ -288,9 +294,11 @@ class DeveloperOptionsActivityTest {
         uiController.loopMainThreadUntilIdle()
       }
     }
-  }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+  private fun findFirstParentLayoutOfClass(
+    view: View,
+    parentClass: Class<out View>,
+  ): View {
     var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
@@ -306,13 +314,9 @@ class DeveloperOptionsActivityTest {
     return parent as View
   }
 
-  private fun findParent(view: View): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: View): ViewParent = view.getParent()
 
-  private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: ViewParent): ViewParent = view.getParent()
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -343,8 +347,8 @@ class DeveloperOptionsActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -355,9 +359,13 @@ class DeveloperOptionsActivityTest {
     fun inject(developerOptionsActivityTest: DeveloperOptionsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDeveloperOptionsActivityTest_TestApplicationComponent.builder()
+      DaggerDeveloperOptionsActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -366,9 +374,12 @@ class DeveloperOptionsActivityTest {
       component.inject(developerOptionsActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

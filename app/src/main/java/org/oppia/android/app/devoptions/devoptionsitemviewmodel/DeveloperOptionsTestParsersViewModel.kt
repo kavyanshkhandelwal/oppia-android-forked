@@ -7,7 +7,7 @@ import org.oppia.android.app.devoptions.RouteToMathExpressionParserTestListener
  * equations.
  */
 class DeveloperOptionsTestParsersViewModel(
-  private val routeToMathExpressionParserTestListener: RouteToMathExpressionParserTestListener
+  private val routeToMathExpressionParserTestListener: RouteToMathExpressionParserTestListener,
 ) : DeveloperOptionsItemViewModel() {
   /** Routes the user to an activity for testing math expressions & equations. */
   fun onMathExpressionsClicked() {

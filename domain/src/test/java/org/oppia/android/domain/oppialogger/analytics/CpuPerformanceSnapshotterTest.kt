@@ -58,17 +58,21 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = CpuPerformanceSnapshotterTest.TestApplication::class)
 class CpuPerformanceSnapshotterTest {
-
   @Inject
   lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
+
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+
   @Inject
   lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -160,10 +164,12 @@ class CpuPerformanceSnapshotterTest {
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.FOREGROUND_SCREEN)
     // Verifying that a CPU usage metric is logged after delay.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
-      .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
+      .isWithin(1e-5)
+      .of(TEST_CPU_USAGE_TWO)
     // Verifying that the logged CPU usage metric does not equal to the previously logged metric.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
-      .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isNotWithin(1e-5)
+      .of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
   }
 
   @Test
@@ -196,10 +202,12 @@ class CpuPerformanceSnapshotterTest {
     assertThat(latestEvent.currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
     // Verifying that a CPU usage metric is logged after delay.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
-      .isWithin(1e-5).of(TEST_CPU_USAGE_TWO)
+      .isWithin(1e-5)
+      .of(TEST_CPU_USAGE_TWO)
     // Verifying that the logged CPU usage metric does not equal to the previously logged metric.
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
-      .isNotWithin(1e-5).of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
+      .isNotWithin(1e-5)
+      .of(firstEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
   }
 
   @Test
@@ -246,7 +254,8 @@ class CpuPerformanceSnapshotterTest {
     val latestEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
     assertThat(latestEvent.loggableMetric.cpuUsageMetric.cpuUsageMetric)
-      .isWithin(1e-5).of(TEST_CPU_USAGE_ONE)
+      .isWithin(1e-5)
+      .of(TEST_CPU_USAGE_ONE)
   }
 
   @Test
@@ -330,7 +339,7 @@ class CpuPerformanceSnapshotterTest {
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(
-      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis
+      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis,
     )
 
     val count = fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
@@ -366,9 +375,10 @@ class CpuPerformanceSnapshotterTest {
     // Clearing up all app startup performance metrics: apk size and storage usage.
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     testCoroutineDispatchers.advanceTimeBy(
-      backgroundCpuLoggingTimePeriodMillis + TimeUnit.MINUTES.toMillis(
-        3
-      )
+      backgroundCpuLoggingTimePeriodMillis +
+        TimeUnit.MINUTES.toMillis(
+          3,
+        ),
     )
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -408,7 +418,7 @@ class CpuPerformanceSnapshotterTest {
   @Test
   fun testSnapshotter_withoutInitializing_doesNotLogEventAfterAutomaticBackgroundIconDelay() {
     testCoroutineDispatchers.advanceTimeBy(
-      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis
+      initialIconificationCutOffTimePeriodMillis + backgroundCpuLoggingTimePeriodMillis,
     )
 
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
@@ -426,11 +436,13 @@ class CpuPerformanceSnapshotterTest {
   @Test
   fun testSnapshotter_initializeOnce_initializeAgain_throwsErrorOnReinitialization() {
     cpuPerformanceSnapshotter.initialiseSnapshotter()
-    val exception = assertThrows<IllegalArgumentException>() {
-      cpuPerformanceSnapshotter.initialiseSnapshotter()
-    }
+    val exception =
+      assertThrows<IllegalArgumentException> {
+        cpuPerformanceSnapshotter.initialiseSnapshotter()
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("CpuPerformanceSnapshotter: Class has already been initialized.")
   }
 
@@ -443,9 +455,7 @@ class CpuPerformanceSnapshotterTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -464,7 +474,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -487,23 +496,27 @@ class CpuPerformanceSnapshotterTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class
-    ]
+      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(cpuPerformanceSnapshotterTest: CpuPerformanceSnapshotterTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCpuPerformanceSnapshotterTest_TestApplicationComponent.builder()
+      DaggerCpuPerformanceSnapshotterTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

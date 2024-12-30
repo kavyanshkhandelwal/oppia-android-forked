@@ -227,9 +227,7 @@ class LanguageConfigRetrieverProductionTest {
       .containsExactly(OppiaLanguage.ENGLISH, OppiaLanguage.NIGERIAN_PIDGIN)
   }
 
-  private fun SupportedLanguages.lookUpLanguage(
-    language: OppiaLanguage
-  ): LanguageSupportDefinition {
+  private fun SupportedLanguages.lookUpLanguage(language: OppiaLanguage): LanguageSupportDefinition {
     val definition = languageDefinitionsList.find { it.language == language }
     // Sanity check.
     assertThat(definition).isNotNull()
@@ -244,7 +242,8 @@ class LanguageConfigRetrieverProductionTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLanguageConfigRetrieverProductionTest_TestApplicationComponent.builder()
+    DaggerLanguageConfigRetrieverProductionTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -255,9 +254,7 @@ class LanguageConfigRetrieverProductionTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -265,8 +262,8 @@ class LanguageConfigRetrieverProductionTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
-    ]
+      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

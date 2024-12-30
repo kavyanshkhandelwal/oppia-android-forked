@@ -39,9 +39,10 @@ class LicenseTextsCheckTest {
     val thirdPartyDepsXmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     thirdPartyDepsXmlFile.writeText(WARNING_COMMENT)
 
-    val exception = assertThrows<Exception>() {
-      main(arrayOf())
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(arrayOf())
+      }
 
     assertThat(exception).hasMessageThat().contains(TOO_FEW_ARGS_PASSED_FAILURE)
   }
@@ -51,9 +52,10 @@ class LicenseTextsCheckTest {
     val thirdPartyDepsXmlFile = tempFolder.newFile("values/third_party_dependencies.xml")
     thirdPartyDepsXmlFile.writeText("")
 
-    val exception = assertThrows<Exception>() {
-      main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
+      }
 
     assertThat(exception).hasMessageThat().contains(LICENSE_TEXTS_CHECKED_IN_FAILURE)
   }
@@ -67,12 +69,13 @@ class LicenseTextsCheckTest {
       <resources>
         <string name="third_party_dependency_name_0">Glide</string>
       </resources>
-      """.trimIndent()
+      """.trimIndent(),
     )
 
-    val exception = assertThrows<Exception>() {
-      main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
+      }
 
     assertThat(exception).hasMessageThat().contains(LICENSE_TEXTS_CHECKED_IN_FAILURE)
   }
@@ -97,7 +100,7 @@ class LicenseTextsCheckTest {
       <resources>
         <string name="third_party_dependency_name_0">Glide</string>
       </resources>
-      """.trimIndent()
+      """.trimIndent(),
     )
 
     main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
@@ -108,12 +111,13 @@ class LicenseTextsCheckTest {
   @Test
   fun testLicenseTexsCheck_xmlFileNotPresent_checkFailsWithFileNotFoundException() {
     val pathToThirdPartyDepsXml = "${tempFolder.root}/values/third_party_dependencies.xml"
-    val exception = assertThrows<Exception>() {
-      main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(arrayOf("${tempFolder.root}/values/third_party_dependencies.xml"))
+      }
 
     assertThat(exception).hasMessageThat().contains(
-      "File does not exist: $pathToThirdPartyDepsXml"
+      "File does not exist: $pathToThirdPartyDepsXml",
     )
   }
 }

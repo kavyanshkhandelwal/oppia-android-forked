@@ -12,7 +12,7 @@ import java.util.Locale
 class ParameterizedMethod(
   val methodName: String,
   private val values: Map<String, List<ParameterValue>>,
-  private val parameterFields: List<Field>
+  private val parameterFields: List<Field>,
 ) {
   /** The names of all iterations run for this method. */
   val iterationNames: Collection<String> by lazy { values.keys }
@@ -25,19 +25,24 @@ class ParameterizedMethod(
    * method is called for each iteration (since the test method should be executed multiples, once
    * for each of its iteration).
    */
-  fun initializeForTest(testClassInstance: Any, iterationName: String) {
+  fun initializeForTest(
+    testClassInstance: Any,
+    iterationName: String,
+  ) {
     // Retrieve the setters for the fields (since these are expected to be used instead of direct
     // property access in Kotlin). Note that these need to be re-fetched since the instance class
     // may change (due to Robolectric instrumentation including custom class loading & bytecode
     // changes).
     val baseClass = testClassInstance.javaClass
-    val fieldSetters = parameterFields.associate { field ->
-      val fieldName = field.name.replaceFirstChar {
-        if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+    val fieldSetters =
+      parameterFields.associate { field ->
+        val fieldName =
+          field.name.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+          }
+        val setterMethod = baseClass.getDeclaredMethod("set$fieldName", field.type)
+        field.name to setterMethod
       }
-      val setterMethod = baseClass.getDeclaredMethod("set$fieldName", field.type)
-      field.name to setterMethod
-    }
     values.getValue(iterationName).forEach { parameterValue ->
       val fieldSetter = fieldSetters.getValue(parameterValue.key)
       fieldSetter.invoke(testClassInstance, parameterValue.value)

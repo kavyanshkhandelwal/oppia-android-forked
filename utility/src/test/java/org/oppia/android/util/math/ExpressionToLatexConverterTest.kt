@@ -208,42 +208,43 @@ class ExpressionToLatexConverterTest {
   }
 
   private companion object {
-    private fun parseNumericExpressionWithoutOptionalErrors(expression: String): MathExpression {
-      return parseNumericExpressionInternal(expression, ErrorCheckingMode.REQUIRED_ONLY)
-    }
+    private fun parseNumericExpressionWithoutOptionalErrors(expression: String): MathExpression =
+      parseNumericExpressionInternal(expression, ErrorCheckingMode.REQUIRED_ONLY)
 
-    private fun parseNumericExpressionWithAllErrors(expression: String): MathExpression {
-      return parseNumericExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS)
-    }
+    private fun parseNumericExpressionWithAllErrors(expression: String): MathExpression =
+      parseNumericExpressionInternal(expression, ErrorCheckingMode.ALL_ERRORS)
 
     private fun parseAlgebraicExpressionWithAllErrors(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathExpression {
-      return MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables,
-        ErrorCheckingMode.ALL_ERRORS
-      ).getExpectedSuccess()
-    }
+      allowedVariables: List<String> = listOf("x", "y", "z"),
+    ): MathExpression =
+      MathExpressionParser
+        .parseAlgebraicExpression(
+          expression,
+          allowedVariables,
+          ErrorCheckingMode.ALL_ERRORS,
+        ).getExpectedSuccess()
 
     private fun parseNumericExpressionInternal(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode
-    ): MathExpression {
-      return MathExpressionParser.parseNumericExpression(
-        expression, errorCheckingMode
-      ).getExpectedSuccess()
-    }
+      errorCheckingMode: ErrorCheckingMode,
+    ): MathExpression =
+      MathExpressionParser
+        .parseNumericExpression(
+          expression,
+          errorCheckingMode,
+        ).getExpectedSuccess()
 
     private fun parseAlgebraicEquationWithAllErrors(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathEquation {
-      return MathExpressionParser.parseAlgebraicEquation(
-        expression, allowedVariables,
-        ErrorCheckingMode.ALL_ERRORS
-      ).getExpectedSuccess()
-    }
+      allowedVariables: List<String> = listOf("x", "y", "z"),
+    ): MathEquation =
+      MathExpressionParser
+        .parseAlgebraicEquation(
+          expression,
+          allowedVariables,
+          ErrorCheckingMode.ALL_ERRORS,
+        ).getExpectedSuccess()
 
     private inline fun <reified T> MathParsingResult<T>.getExpectedSuccess(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

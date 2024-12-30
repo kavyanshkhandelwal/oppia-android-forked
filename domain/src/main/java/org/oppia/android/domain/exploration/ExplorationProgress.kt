@@ -67,7 +67,7 @@ internal class ExplorationProgress {
         check(
           playStage == PlayStage.LOADING_EXPLORATION ||
             playStage == PlayStage.VIEWING_STATE ||
-            playStage == PlayStage.SUBMITTING_ANSWER
+            playStage == PlayStage.SUBMITTING_ANSWER,
         ) {
           "Cannot transition to VIEWING_STATE from $playStage"
         }
@@ -95,9 +95,7 @@ internal class ExplorationProgress {
   }
 
   companion object {
-    internal fun isTopStateTerminal(state: State): Boolean {
-      return state.interaction.id == TERMINAL_INTERACTION_ID
-    }
+    internal fun isTopStateTerminal(state: State): Boolean = state.interaction.id == TERMINAL_INTERACTION_ID
   }
 
   /** Different stages in which the progress controller can exist. */
@@ -112,7 +110,7 @@ internal class ExplorationProgress {
     VIEWING_STATE,
 
     /** The controller is in the process of submitting an answer. */
-    SUBMITTING_ANSWER
+    SUBMITTING_ANSWER,
   }
 
   /**
@@ -125,7 +123,7 @@ internal class ExplorationProgress {
       stateGraph.getState(explorationCheckpoint.pendingStateName),
       getPreviousStatesFromCheckpoint(),
       explorationCheckpoint.pendingUserAnswersList,
-      explorationCheckpoint.stateIndex
+      explorationCheckpoint.stateIndex,
     )
   }
 
@@ -135,15 +133,15 @@ internal class ExplorationProgress {
    * @return [List] of [EphemeralState]s containing all the states that were completed before the
    *     checkpoint was created
    */
-  private fun getPreviousStatesFromCheckpoint(): List<EphemeralState> {
-    return explorationCheckpoint.completedStatesInCheckpointList
+  private fun getPreviousStatesFromCheckpoint(): List<EphemeralState> =
+    explorationCheckpoint.completedStatesInCheckpointList
       .mapIndexed { index, state ->
-        EphemeralState.newBuilder()
+        EphemeralState
+          .newBuilder()
           .setState(stateGraph.getState(state.stateName))
           .setHasPreviousState(index != 0)
           .setCompletedState(state.completedState)
           .setHasNextState(index != explorationCheckpoint.stateIndex)
           .build()
       }
-  }
 }

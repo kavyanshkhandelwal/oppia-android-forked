@@ -43,10 +43,13 @@ class RatioInputInteractionViewTestActivity :
    */
   val ratioExpressionInputInteractionViewModel by lazy {
     ratioViewModelFactory.create<RatioExpressionInputInteractionViewModel>(
-      interaction = Interaction.newBuilder().putCustomizationArgs(
-        "numberOfTerms",
-        SchemaObject.newBuilder().setSignedInt(3).build()
-      ).build()
+      interaction =
+        Interaction
+          .newBuilder()
+          .putCustomizationArgs(
+            "numberOfTerms",
+            SchemaObject.newBuilder().setSignedInt(3).build(),
+          ).build(),
     )
   }
 
@@ -58,22 +61,25 @@ class RatioInputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityRatioInputInteractionViewTestBinding>(
-      this, R.layout.activity_ratio_input_interaction_view_test
-    )
+    binding =
+      DataBindingUtil.setContentView<ActivityRatioInputInteractionViewTestBinding>(
+        this,
+        R.layout.activity_ratio_input_interaction_view_test,
+      )
 
     val params =
       intent.getProtoExtra(
         TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
-        InputInteractionViewTestActivityParams.getDefaultInstance()
+        InputInteractionViewTestActivityParams.getDefaultInstance(),
       )
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.ratioInteractionInputViewModel = ratioExpressionInputInteractionViewModel
-    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      ratioExpressionInputInteractionViewModel
-        .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    }
+    binding.getPendingAnswerErrorOnSubmitClick =
+      Runnable {
+        ratioExpressionInputInteractionViewModel
+          .checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      }
   }
 
   override fun onAnswerReadyForSubmission(answer: UserAnswer) { }
@@ -81,9 +87,9 @@ class RatioInputInteractionViewTestActivity :
   override fun onEditorAction(actionCode: Int) { }
 
   private inline fun <reified T : StateItemViewModel> InteractionItemFactory.create(
-    interaction: Interaction = Interaction.getDefaultInstance()
-  ): T {
-    return create(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+  ): T =
+    create(
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
@@ -92,9 +98,8 @@ class RatioInputInteractionViewTestActivity :
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs = null
+      timeToStartNoticeAnimationMs = null,
     ) as T
-  }
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
@@ -105,11 +110,10 @@ class RatioInputInteractionViewTestActivity :
      */
     fun createIntent(
       context: Context,
-      extras: InputInteractionViewTestActivityParams
-    ): Intent {
-      return Intent(context, RatioInputInteractionViewTestActivity::class.java).also {
+      extras: InputInteractionViewTestActivityParams,
+    ): Intent =
+      Intent(context, RatioInputInteractionViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
-    }
   }
 }

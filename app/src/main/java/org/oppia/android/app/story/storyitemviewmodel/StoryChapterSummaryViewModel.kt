@@ -30,20 +30,21 @@ class StoryChapterSummaryViewModel(
   private val ephemeralChapterSummary: EphemeralChapterSummary,
   val entityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
 ) : StoryItemViewModel() {
   val chapterSummary = ephemeralChapterSummary.chapterSummary
   val explorationId: String = chapterSummary.explorationId
   val description: String by lazy {
     translationController.extractString(
-      chapterSummary.description, ephemeralChapterSummary.writtenTranslationContext
+      chapterSummary.description,
+      ephemeralChapterSummary.writtenTranslationContext,
     )
   }
   val chapterThumbnail: LessonThumbnail = chapterSummary.chapterThumbnail
   val missingPrerequisiteChapterTitle by lazy {
     translationController.extractString(
       ephemeralChapterSummary.missingPrerequisiteChapter.chapterSummary.title,
-      ephemeralChapterSummary.missingPrerequisiteChapter.writtenTranslationContext
+      ephemeralChapterSummary.missingPrerequisiteChapter.writtenTranslationContext,
     )
   }
   val chapterPlayState: ChapterPlayState = chapterSummary.chapterPlayState
@@ -55,19 +56,24 @@ class StoryChapterSummaryViewModel(
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
-        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED -> true
+        ChapterPlayState.STARTED_NOT_COMPLETED, ChapterPlayState.NOT_STARTED,
+        -> true
         ChapterPlayState.COMPLETION_STATUS_UNSPECIFIED,
         ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES, ChapterPlayState.UNRECOGNIZED,
-        ChapterPlayState.COMPLETED -> false
+        ChapterPlayState.COMPLETED,
+        -> false
       }
     if (chapterPlayState == ChapterPlayState.IN_PROGRESS_SAVED) {
       val explorationCheckpointLiveData =
-        explorationCheckpointController.retrieveExplorationCheckpoint(
-          ProfileId.newBuilder().apply {
-            internalId = internalProfileId
-          }.build(),
-          explorationId
-        ).toLiveData()
+        explorationCheckpointController
+          .retrieveExplorationCheckpoint(
+            ProfileId
+              .newBuilder()
+              .apply {
+                internalId = internalProfileId
+              }.build(),
+            explorationId,
+          ).toLiveData()
 
       explorationCheckpointLiveData.observe(
         fragment,
@@ -84,7 +90,7 @@ class StoryChapterSummaryViewModel(
                 canExplorationBeResumed = true,
                 canHavePartialProgressSaved,
                 parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
-                explorationCheckpoint = it.value
+                explorationCheckpoint = it.value,
               )
             } else if (it is AsyncResult.Failure) {
               explorationCheckpointLiveData.removeObserver(this)
@@ -97,11 +103,11 @@ class StoryChapterSummaryViewModel(
                 canExplorationBeResumed = false,
                 canHavePartialProgressSaved,
                 parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
-                explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+                explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
               )
             }
           }
-        }
+        },
       )
     } else {
       explorationSelectionListener.selectExploration(
@@ -113,7 +119,7 @@ class StoryChapterSummaryViewModel(
         canExplorationBeResumed = false,
         canHavePartialProgressSaved,
         parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN,
-        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance()
+        explorationCheckpoint = ExplorationCheckpoint.getDefaultInstance(),
       )
     }
   }
@@ -121,10 +127,13 @@ class StoryChapterSummaryViewModel(
   fun computeChapterTitleText(): String {
     val title =
       translationController.extractString(
-        chapterSummary.title, ephemeralChapterSummary.writtenTranslationContext
+        chapterSummary.title,
+        ephemeralChapterSummary.writtenTranslationContext,
       )
     return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.chapter_name, (index + 1).toString(), title
+      R.string.chapter_name,
+      (index + 1).toString(),
+      title,
     )
   }
 }

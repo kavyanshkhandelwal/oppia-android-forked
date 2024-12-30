@@ -102,7 +102,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ForceNetworkTypeFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ForceNetworkTypeFragmentTest {
   @get:Rule
@@ -139,22 +139,22 @@ class ForceNetworkTypeFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 0,
-        stringToMatch = "Default"
+        stringToMatch = "Default",
       )
       scrollToPosition(position = 1)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 1,
-        stringToMatch = "Wifi"
+        stringToMatch = "Wifi",
       )
       scrollToPosition(position = 2)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 2,
-        stringToMatch = "Cellular"
+        stringToMatch = "Cellular",
       )
       scrollToPosition(position = 3)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 3,
-        stringToMatch = "No network"
+        stringToMatch = "No network",
       )
     }
   }
@@ -167,22 +167,22 @@ class ForceNetworkTypeFragmentTest {
       scrollToPosition(position = 0)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 0,
-        stringToMatch = "Default"
+        stringToMatch = "Default",
       )
       scrollToPosition(position = 1)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 1,
-        stringToMatch = "Wifi"
+        stringToMatch = "Wifi",
       )
       scrollToPosition(position = 2)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 2,
-        stringToMatch = "Cellular"
+        stringToMatch = "Cellular",
       )
       scrollToPosition(position = 3)
       verifyTextOnNetworkTypeListItemAtPosition(
         itemPosition = 3,
-        stringToMatch = "No network"
+        stringToMatch = "No network",
       )
     }
   }
@@ -325,14 +325,14 @@ class ForceNetworkTypeFragmentTest {
 
   private fun verifyTextOnNetworkTypeListItemAtPosition(
     itemPosition: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.force_network_type_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.network_type_text_view
-      )
+        targetViewId = R.id.network_type_text_view,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
@@ -341,8 +341,8 @@ class ForceNetworkTypeFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.force_network_type_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.selected_network_tick
-      )
+        targetViewId = R.id.selected_network_tick,
+      ),
     ).check(matches(isDisplayed()))
   }
 
@@ -351,8 +351,8 @@ class ForceNetworkTypeFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.force_network_type_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.selected_network_tick
-      )
+        targetViewId = R.id.selected_network_tick,
+      ),
     ).check(matches(not(isDisplayed())))
   }
 
@@ -361,18 +361,19 @@ class ForceNetworkTypeFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.force_network_type_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.network_type_layout
-      )
+        targetViewId = R.id.network_type_layout,
+      ),
     ).perform(click())
   }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.force_network_type_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(position)
+      scrollToPosition<ViewHolder>(position),
     )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** [ApplicationComponent] for [ForceNetworkTypeFragmentTest]. */
   @Singleton
   @Component(
     modules = [
@@ -401,10 +402,9 @@ class ForceNetworkTypeFragmentTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-  /** [ApplicationComponent] for [ForceNetworkTypeFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
@@ -420,9 +420,13 @@ class ForceNetworkTypeFragmentTest {
   }
 
   /** [Application] class for [ForceNetworkTypeFragmentTest]. */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerForceNetworkTypeFragmentTest_TestApplicationComponent.builder()
+      DaggerForceNetworkTypeFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -432,9 +436,12 @@ class ForceNetworkTypeFragmentTest {
       component.inject(forceNetworkTypeFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

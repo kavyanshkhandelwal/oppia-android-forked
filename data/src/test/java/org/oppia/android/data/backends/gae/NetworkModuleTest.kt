@@ -71,36 +71,38 @@ class NetworkModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
   @Component(
     modules = [
       TestModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(networkModuleTest: NetworkModuleTest)
+
     @OppiaRetrofit fun getRetrofit(): Optional<Retrofit>
+
     fun getFeedbackReportingService(): Optional<FeedbackReportingService>
+
     fun getPlatformParameterService(): Optional<PlatformParameterService>
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerNetworkModuleTest_TestApplicationComponent.builder()
+      DaggerNetworkModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -110,7 +112,9 @@ class NetworkModuleTest {
     }
 
     fun getRetrofit() = component.getRetrofit()
+
     fun getFeedbackReportingService() = component.getFeedbackReportingService()
+
     fun getPlatformParameterService() = component.getPlatformParameterService()
   }
 }

@@ -100,10 +100,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MyDownloadsActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MyDownloadsActivityTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -133,7 +132,7 @@ class MyDownloadsActivityTest {
     ActivityScenario.launch(MyDownloadsActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.title).isEqualTo(
-          context.getString(R.string.my_downloads_activity_title)
+          context.getString(R.string.my_downloads_activity_title),
         )
       }
     }
@@ -141,10 +140,12 @@ class MyDownloadsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = MyDownloadsActivity.createMyDownloadsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      1
-    ).extractCurrentAppScreenName()
+    val screenName =
+      MyDownloadsActivity
+        .createMyDownloadsActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          1,
+        ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MY_DOWNLOADS_ACTIVITY)
   }
@@ -198,8 +199,8 @@ class MyDownloadsActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -210,9 +211,13 @@ class MyDownloadsActivityTest {
     fun inject(myDownloadsActivityTest: MyDownloadsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: MyDownloadsActivityTest.TestApplicationComponent by lazy {
-      DaggerMyDownloadsActivityTest_TestApplicationComponent.builder()
+      DaggerMyDownloadsActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as MyDownloadsActivityTest.TestApplicationComponent
     }
@@ -221,9 +226,12 @@ class MyDownloadsActivityTest {
       component.inject(myDownloadsActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

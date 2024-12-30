@@ -14,9 +14,8 @@ class DragDropInteractionContentViewModel(
   var itemIndex: Int,
   var listSize: Int,
   val dragAndDropSortInteractionViewModel: DragAndDropSortInteractionViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
-
   fun handleGrouping(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     dragAndDropSortInteractionViewModel.updateList(itemIndex, adapter)
   }
@@ -37,35 +36,42 @@ class DragDropInteractionContentViewModel(
    * Returns a [StringList] corresponding to a list of HTML strings that can be displayed to the
    * user.
    */
-  fun computeStringList(): StringList = StringList.newBuilder().apply {
-    addAllHtml(htmlContent.contentIdsList.mapNotNull { contentIdHtmlMap[it.contentId] })
-  }.build()
+  fun computeStringList(): StringList =
+    StringList
+      .newBuilder()
+      .apply {
+        addAllHtml(htmlContent.contentIdsList.mapNotNull { contentIdHtmlMap[it.contentId] })
+      }.build()
 
-  fun computeDragDropMoveUpItemContentDescription(): String {
-    return if (itemIndex != 0) {
+  fun computeDragDropMoveUpItemContentDescription(): String =
+    if (itemIndex != 0) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.move_item_up_content_description, itemIndex.toString()
+        R.string.move_item_up_content_description,
+        itemIndex.toString(),
       )
-    } else resourceHandler.getStringInLocale(R.string.up_button_disabled)
-  }
+    } else {
+      resourceHandler.getStringInLocale(R.string.up_button_disabled)
+    }
 
-  fun computeDragDropMoveDownItemContentDescription(): String {
-    return if (itemIndex != listSize - 1) {
+  fun computeDragDropMoveDownItemContentDescription(): String =
+    if (itemIndex != listSize - 1) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.move_item_down_content_description, (itemIndex + 2).toString()
+        R.string.move_item_down_content_description,
+        (itemIndex + 2).toString(),
       )
-    } else resourceHandler.getStringInLocale(R.string.down_button_disabled)
-  }
+    } else {
+      resourceHandler.getStringInLocale(R.string.down_button_disabled)
+    }
 
-  fun computeDragDropGroupItemContentDescription(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.link_to_item_below, (itemIndex + 2).toString()
+  fun computeDragDropGroupItemContentDescription(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.link_to_item_below,
+      (itemIndex + 2).toString(),
     )
-  }
 
-  fun computeDragDropUnlinkItemContentDescription(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.unlink_items, (itemIndex + 1).toString()
+  fun computeDragDropUnlinkItemContentDescription(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.unlink_items,
+      (itemIndex + 1).toString(),
     )
-  }
 }

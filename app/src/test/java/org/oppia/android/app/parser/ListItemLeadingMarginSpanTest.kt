@@ -122,21 +122,26 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ListItemLeadingMarginSpanTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 @DefineAppLanguageLocaleContext(
   oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
   appStringIetfTag = "en",
-  appStringAndroidLanguageId = "en"
+  appStringAndroidLanguageId = "en",
 )
 class ListItemLeadingMarginSpanTest {
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
   @Inject lateinit var androidLocaleFactory: AndroidLocaleFactory
+
   @Inject lateinit var formatterFactory: OppiaBidiFormatter.Factory
+
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val spacingBeforeText by lazy {
@@ -155,8 +160,8 @@ class ListItemLeadingMarginSpanTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        ListItemLeadingMarginSpanTestActivity::class.java
-      )
+        ListItemLeadingMarginSpanTestActivity::class.java,
+      ),
     )
 
   // Note that the locale rule must be initialized first since the scenario rule can depend on the
@@ -180,30 +185,32 @@ class ListItemLeadingMarginSpanTest {
 
   @Test
   fun testListLeadingMarginSpan_forBulletItemsLeadingMargin_isComputedToProperlyIndentText() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another</li></ul>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-    }
+    val htmlResult =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        return@runWithActivity htmlParser.parseOppiaHtml(
+          "<p>You should know the following before going on:<br></p>" +
+            "<ul><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+            "<li>How to tell whether one counting number is bigger or " +
+            "smaller than another</li></ul>",
+          textView,
+        )
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.UlSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
 
@@ -220,43 +227,45 @@ class ListItemLeadingMarginSpanTest {
 
   @Test
   fun testListLeadingMarginSpan_nestedBulletLeadingMargin_hasCorrectLeadingMargin() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<ul>" +
-          "        <li>" +
-          "          \"Usage Data\", such as:" +
-          "          <ul>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "            <li>" +
-          "              the page from which you navigated to the Site and the page to" +
-          "              which you navigate when you leave the Site;" +
-          "            </li>" +
-          "            <li>" +
-          "              any contributions you make to the Site (such as feedback on" +
-          "              Lessons, edits to Lessons, and Lessons created);" +
-          "            </li>" +
-          "          </ul>" +
-          "        </li>" +
-          "      </ul>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-    }
+    val htmlResult =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        return@runWithActivity htmlParser.parseOppiaHtml(
+          "<ul>" +
+            "        <li>" +
+            "          \"Usage Data\", such as:" +
+            "          <ul>" +
+            "            <li>your answers to Lessons;</li>" +
+            "            <li>when you begin and end a Lesson;</li>" +
+            "            <li>" +
+            "              the page from which you navigated to the Site and the page to" +
+            "              which you navigate when you leave the Site;" +
+            "            </li>" +
+            "            <li>" +
+            "              any contributions you make to the Site (such as feedback on" +
+            "              Lessons, edits to Lessons, and Lessons created);" +
+            "            </li>" +
+            "          </ul>" +
+            "        </li>" +
+            "      </ul>",
+          textView,
+        )
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.UlSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
@@ -272,43 +281,45 @@ class ListItemLeadingMarginSpanTest {
 
   @Test
   fun testListLeadingMarginSpan_nestedNumberedItemsLeadingMargin_hasCorrectLeadingMargin() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<ol>" +
-          "        <li>" +
-          "          \"Usage Data\", such as:" +
-          "          <ol>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "            <li>" +
-          "              the page from which you navigated to the Site and the page to" +
-          "              which you navigate when you leave the Site;" +
-          "            </li>" +
-          "            <li>" +
-          "              any contributions you make to the Site (such as feedback on" +
-          "              Lessons, edits to Lessons, and Lessons created);" +
-          "            </li>" +
-          "          </ol>" +
-          "        </li>" +
-          "        </ol>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-    }
+    val htmlResult =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        return@runWithActivity htmlParser.parseOppiaHtml(
+          "<ol>" +
+            "        <li>" +
+            "          \"Usage Data\", such as:" +
+            "          <ol>" +
+            "            <li>your answers to Lessons;</li>" +
+            "            <li>when you begin and end a Lesson;</li>" +
+            "            <li>" +
+            "              the page from which you navigated to the Site and the page to" +
+            "              which you navigate when you leave the Site;" +
+            "            </li>" +
+            "            <li>" +
+            "              any contributions you make to the Site (such as feedback on" +
+            "              Lessons, edits to Lessons, and Lessons created);" +
+            "            </li>" +
+            "          </ol>" +
+            "        </li>" +
+            "        </ol>",
+          textView,
+        )
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.OlSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
@@ -327,30 +338,32 @@ class ListItemLeadingMarginSpanTest {
 
   @Test
   fun testListLeadingMarginSpan_forNumberedItemsLeadingMargin_hasCorrectLeadingMargin() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      return@runWithActivity htmlParser.parseOppiaHtml(
-        "<p>You should know the following before going on:<br></p>" +
-          "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
-          "<li>How to tell whether one counting number is bigger or " +
-          "smaller than another</li></ol>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-    }
+    val htmlResult =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        return@runWithActivity htmlParser.parseOppiaHtml(
+          "<p>You should know the following before going on:<br></p>" +
+            "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
+            "<li>How to tell whether one counting number is bigger or " +
+            "smaller than another</li></ol>",
+          textView,
+        )
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.OlSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(2)
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
@@ -372,38 +385,41 @@ class ListItemLeadingMarginSpanTest {
     val x = 10
     val dir = 1
 
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<ul>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ul>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ul>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "      </ul>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<ul>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ul>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ul>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "      </ul>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.UlSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
@@ -412,41 +428,69 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       3,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, 0, 0, 96, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      0,
+      0,
+      96,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, 96, 0, 182, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      96,
+      0,
+      182,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, 182, 0, 268, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      182,
+      0,
+      268,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, 354, 0, 440, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      354,
+      0,
+      440,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val shadowCanvas = shadowOf(canvas)
@@ -468,7 +512,7 @@ class ListItemLeadingMarginSpanTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedBulletItems_inRtl_isDrawnCorrectlyWithIndentation() {
@@ -481,41 +525,44 @@ class ListItemLeadingMarginSpanTest {
     val x = 960
     val dir = -1
 
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = displayLocale
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      testCoroutineDispatchers.runCurrent()
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<ul>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ul>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ul>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "      </ul>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = displayLocale,
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        testCoroutineDispatchers.runCurrent()
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<ul>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ul>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ul>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "      </ul>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
     assertThat(displayLocale.getLayoutDirection()).isEqualTo(ViewCompat.LAYOUT_DIRECTION_RTL)
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_RTL)
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.UlSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
@@ -524,42 +571,70 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       26,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
 
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, 0, 0, 96, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      0,
+      0,
+      96,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, 96, 0, 182, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      96,
+      0,
+      182,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, 182, 0, 268, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      182,
+      0,
+      268,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, 354, 0, 440, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      354,
+      0,
+      440,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(926.0f)
@@ -579,7 +654,7 @@ class ListItemLeadingMarginSpanTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = "en"
+    appStringAndroidLanguageId = "en",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedBulletItems_inLtr_isDrawnCorrectlyWithIndentation() {
@@ -592,41 +667,44 @@ class ListItemLeadingMarginSpanTest {
     val x = 0
     val dir = 1
 
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = displayLocale
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      testCoroutineDispatchers.runCurrent()
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<ul>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ul>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ul>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "      </ul>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = displayLocale,
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        testCoroutineDispatchers.runCurrent()
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<ul>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ul>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ul>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "      </ul>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
     assertThat(displayLocale.getLayoutDirection()).isEqualTo(ViewCompat.LAYOUT_DIRECTION_LTR)
     assertThat(textView.textDirection).isEqualTo(View.TEXT_DIRECTION_LTR)
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.UlSpan::class.java
+        ListItemLeadingMarginSpan.UlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
     val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.UlSpan
@@ -635,42 +713,70 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       26,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
 
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, 0, 0, 96, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      0,
+      0,
+      96,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.UlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, 96, 0, 182, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      96,
+      0,
+      182,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, 182, 0, 268, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      182,
+      0,
+      268,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.UlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, 354, 0, 440, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      354,
+      0,
+      440,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     assertThat(shadowCanvas.getDrawnCircle(0).centerX).isWithin(1e-5f).of(33.0f)
@@ -691,7 +797,7 @@ class ListItemLeadingMarginSpanTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedNumberedListItems_inRtl_isDrawnCorrectlyWithIndentation() {
@@ -706,40 +812,43 @@ class ListItemLeadingMarginSpanTest {
     val top = 0
     val bottom = 0
 
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = displayLocale
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<p>" +
-          "<ol>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ol>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ol>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "</ol>" +
-          "   </p>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = displayLocale,
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<p>" +
+              "<ol>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ol>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ol>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "</ol>" +
+              "   </p>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.OlSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
 
@@ -749,41 +858,69 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       3,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 78, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      78,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 164, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      164,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 250, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      250,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 422, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      422,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
@@ -809,7 +946,7 @@ class ListItemLeadingMarginSpanTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = "en"
+    appStringAndroidLanguageId = "en",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testDrawLeadingMargin_forNestedNumberedListItems_inLtr_isDrawnCorrectlyWithIndentation() {
@@ -824,40 +961,43 @@ class ListItemLeadingMarginSpanTest {
     val top = 0
     val bottom = 0
 
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = displayLocale
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<p>" +
-          "<ol>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ol>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ol>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "</ol>" +
-          "   </p>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = displayLocale,
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<p>" +
+              "<ol>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ol>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ol>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "</ol>" +
+              "   </p>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.OlSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
 
@@ -867,41 +1007,69 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       3,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 78, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      78,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 164, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      164,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 250, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      250,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 422, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      422,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     assertThat(shadowCanvas.textHistoryCount).isEqualTo(4)
@@ -930,40 +1098,43 @@ class ListItemLeadingMarginSpanTest {
     val dir = 1
     val top = 0
     val bottom = 0
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val (textView, htmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
-      val htmlResult = htmlParser.parseOppiaHtml(
-        "<p>" +
-          "<ol>" +
-          "        <li> Usage Data\", such as:" +
-          "          <ol>" +
-          "            <li>your answers to Lessons;</li>" +
-          "            <li>when you begin and end a Lesson;</li>" +
-          "          </ol>" +
-          "        </li>" +
-          "        <li> any contributions you make to the Site (such as feedback on" +
-          "            Lessons, edits to Lessons, and Lessons created);</li>" +
-          "</ol>" +
-          "   </p>",
-        textView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = true,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
       )
-      textView.text = htmlResult
-      return@runWithActivity textView to htmlResult
-    }
+    val (textView, htmlResult) =
+      activityScenarioRule.scenario.runWithActivity {
+        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        val htmlResult =
+          htmlParser.parseOppiaHtml(
+            "<p>" +
+              "<ol>" +
+              "        <li> Usage Data\", such as:" +
+              "          <ol>" +
+              "            <li>your answers to Lessons;</li>" +
+              "            <li>when you begin and end a Lesson;</li>" +
+              "          </ol>" +
+              "        </li>" +
+              "        <li> any contributions you make to the Site (such as feedback on" +
+              "            Lessons, edits to Lessons, and Lessons created);</li>" +
+              "</ol>" +
+              "   </p>",
+            textView,
+          )
+        textView.text = htmlResult
+        return@runWithActivity textView to htmlResult
+      }
 
-    /* Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345 */
+    // Reference: https://medium.com/androiddevelopers/spantastic-text-styling-with-spans-17b0c16b4568#e345
     val bulletSpans =
       htmlResult.getSpans(
         0,
         htmlResult.length,
-        ListItemLeadingMarginSpan.OlSpan::class.java
+        ListItemLeadingMarginSpan.OlSpan::class.java,
       )
     assertThat(bulletSpans.size.toLong()).isEqualTo(4)
 
@@ -973,41 +1144,69 @@ class ListItemLeadingMarginSpanTest {
       bulletSpan0,
       0,
       3,
-      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
     bulletSpan0.drawLeadingMargin(
-      canvas, paint, x, dir, top, 78, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      78,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan0),
       htmlResult.getSpanEnd(bulletSpan0),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
     bulletSpan1.drawLeadingMargin(
-      canvas, paint, x, dir, top, 164, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      164,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan1),
       htmlResult.getSpanEnd(bulletSpan1),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val bulletSpan2 = bulletSpans[2] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan2).isNotNull()
     bulletSpan2.drawLeadingMargin(
-      canvas, paint, x, dir, top, 250, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      250,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan2),
       htmlResult.getSpanEnd(bulletSpan2),
       true,
-      textView.layout
+      textView.layout,
     )
     val bulletSpan3 = bulletSpans[3] as ListItemLeadingMarginSpan.OlSpan
     assertThat(bulletSpan3).isNotNull()
     bulletSpan3.drawLeadingMargin(
-      canvas, paint, x, dir, top, 422, bottom, htmlResult,
+      canvas,
+      paint,
+      x,
+      dir,
+      top,
+      422,
+      bottom,
+      htmlResult,
       htmlResult.getSpanStart(bulletSpan3),
       htmlResult.getSpanEnd(bulletSpan3),
       true,
-      textView.layout
+      textView.layout,
     )
 
     val shadowCanvas = shadowOf(canvas)
@@ -1030,9 +1229,7 @@ class ListItemLeadingMarginSpanTest {
     assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("2.")
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(crossinline action: (A) -> V): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
     val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
@@ -1079,10 +1276,9 @@ class ListItemLeadingMarginSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
@@ -1092,9 +1288,13 @@ class ListItemLeadingMarginSpanTest {
     fun inject(listItemLeadingMarginSpanTest: ListItemLeadingMarginSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerListItemLeadingMarginSpanTest_TestApplicationComponent.builder()
+      DaggerListItemLeadingMarginSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1103,9 +1303,12 @@ class ListItemLeadingMarginSpanTest {
       component.inject(listItemLeadingMarginSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
@@ -1115,42 +1318,78 @@ class ListItemLeadingMarginSpanTest {
   }
 
   private companion object {
-    private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ENGLISH
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "en"
-          }.build()
+    private val US_ENGLISH_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ENGLISH
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "en"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.UNITED_STATES
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "US"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.UNITED_STATES
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "US"
-        }.build()
-      }.build()
-    }.build()
 
-    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ARABIC
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "ar"
-          }.build()
+    private val EGYPT_ARABIC_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ARABIC
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "ar"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.REGION_UNSPECIFIED
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "EG"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.REGION_UNSPECIFIED
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "EG"
-        }.build()
-      }.build()
-    }.build()
   }
 }

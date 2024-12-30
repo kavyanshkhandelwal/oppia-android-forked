@@ -113,14 +113,19 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = IntroFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class IntroFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val testProfileNickname = "John"
@@ -154,9 +159,9 @@ class IntroFragmentTest {
         withText(
           context.getString(
             R.string.onboarding_learner_intro_feedback_text,
-            context.getString(R.string.app_name)
-          )
-        )
+            context.getString(R.string.app_name),
+          ),
+        ),
       ).check(matches(isDisplayed()))
     }
   }
@@ -229,21 +234,23 @@ class IntroFragmentTest {
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
-    ActivityScenario<IntroActivity>? {
-      val params = IntroActivityParams.newBuilder()
+  private fun launchOnboardingLearnerIntroActivity(): ActivityScenario<IntroActivity>? {
+    val params =
+      IntroActivityParams
+        .newBuilder()
         .setProfileNickname(testProfileNickname)
         .build()
 
-      val scenario = ActivityScenario.launch<IntroActivity>(
+    val scenario =
+      ActivityScenario.launch<IntroActivity>(
         IntroActivity.createIntroActivity(context).apply {
           putProtoExtra(IntroActivity.PARAMS_KEY, params)
           decorateWithUserProfileId(testProfileId)
-        }
+        },
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -278,8 +285,8 @@ class IntroFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -288,9 +295,13 @@ class IntroFragmentTest {
     fun inject(introFragmentTest: IntroFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerIntroFragmentTest_TestApplicationComponent.builder()
+      DaggerIntroFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -299,9 +310,12 @@ class IntroFragmentTest {
       component.inject(introFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -137,19 +137,23 @@ class PlatformParameterIntegrationTest {
   lateinit var context: Context
 
   private val mockPlatformParameterListWithToastEnabled by lazy {
-    val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
-      .setName(SPLASH_SCREEN_WELCOME_MSG)
-      .setBoolean(SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
-      .build()
+    val mockSplashScreenWelcomeMsgParam =
+      PlatformParameter
+        .newBuilder()
+        .setName(SPLASH_SCREEN_WELCOME_MSG)
+        .setBoolean(SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
+        .build()
 
     listOf<PlatformParameter>(mockSplashScreenWelcomeMsgParam)
   }
 
   private val mockPlatformParameterListWithToastDisabled by lazy {
-    val mockSplashScreenWelcomeMsgParam = PlatformParameter.newBuilder()
-      .setName(SPLASH_SCREEN_WELCOME_MSG)
-      .setBoolean(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-      .build()
+    val mockSplashScreenWelcomeMsgParam =
+      PlatformParameter
+        .newBuilder()
+        .setName(SPLASH_SCREEN_WELCOME_MSG)
+        .setBoolean(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
+        .build()
 
     listOf<PlatformParameter>(mockSplashScreenWelcomeMsgParam)
   }
@@ -158,10 +162,12 @@ class PlatformParameterIntegrationTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(platformParameterSyncUpWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -187,7 +193,7 @@ class PlatformParameterIntegrationTest {
   @Test
   fun testIntegration_updateEmptyDatabase_readDatabase_checkWelcomeMsgIsVisible() {
     platformParameterController.updatePlatformParameterDatabase(
-      mockPlatformParameterListWithToastEnabled
+      mockPlatformParameterListWithToastEnabled,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -210,7 +216,7 @@ class PlatformParameterIntegrationTest {
       // Set up versionName to get correct network response from mock platform parameter service.
       setUpApplicationForVersionName(MockPlatformParameterService.appVersionForCorrectResponse)
       platformParameterController.updatePlatformParameterDatabase(
-        mockPlatformParameterListWithToastDisabled
+        mockPlatformParameterListWithToastDisabled,
       )
 
       val workManager = WorkManager.getInstance(context)
@@ -241,7 +247,7 @@ class PlatformParameterIntegrationTest {
       // Set up versionName to get incorrect network response from mock platform parameter service.
       setUpApplicationForVersionName(MockPlatformParameterService.appVersionForWrongResponse)
       platformParameterController.updatePlatformParameterDatabase(
-        mockPlatformParameterListWithToastDisabled
+        mockPlatformParameterListWithToastDisabled,
       )
 
       val workManager = WorkManager.getInstance(context)
@@ -269,11 +275,13 @@ class PlatformParameterIntegrationTest {
   private fun setUpApplicationForVersionName(testAppVersionName: String) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -282,14 +290,18 @@ class PlatformParameterIntegrationTest {
   }
 
   private fun setUpAndEnqueueSyncUpWorkerRequest(workManager: WorkManager): UUID {
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the work request to fetch and cache the platform parameters from backend service.
     workManager.enqueue(request)
@@ -302,26 +314,28 @@ class PlatformParameterIntegrationTest {
 
   @Module
   class TestNetworkModule {
-
     @OppiaRetrofit
     @Provides
     @Singleton
     fun provideRetrofitInstance(
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
+      @BaseUrl baseUrl: String,
     ): Optional<Retrofit> {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
+      val client =
+        OkHttpClient
+          .Builder()
+          .addInterceptor(jsonPrefixNetworkInterceptor)
+          .addInterceptor(remoteAuthNetworkInterceptor)
+          .build()
 
       return Optional.of(
-        Retrofit.Builder()
+        Retrofit
+          .Builder()
           .baseUrl(baseUrl)
           .addConverterFactory(MoshiConverterFactory.create())
           .client(client)
-          .build()
+          .build(),
       )
     }
 
@@ -330,9 +344,7 @@ class PlatformParameterIntegrationTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): Optional<PlatformParameterService> {
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
       return Optional.of(MockPlatformParameterService(delegate))
     }
@@ -367,8 +379,8 @@ class PlatformParameterIntegrationTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -379,9 +391,13 @@ class PlatformParameterIntegrationTest {
     fun inject(platformParameterIntegrationTest: PlatformParameterIntegrationTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterIntegrationTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterIntegrationTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -390,9 +406,12 @@ class PlatformParameterIntegrationTest {
       component.inject(platformParameterIntegrationTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

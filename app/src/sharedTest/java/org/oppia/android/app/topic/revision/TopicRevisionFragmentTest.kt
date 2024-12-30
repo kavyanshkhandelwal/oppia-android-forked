@@ -123,7 +123,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicRevisionFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicRevisionFragmentTest {
   @get:Rule
@@ -171,7 +171,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
@@ -185,7 +185,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
@@ -193,8 +193,8 @@ class TopicRevisionFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.revision_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(hasComponent(RevisionCardActivity::class.java.name))
     }
@@ -205,7 +205,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
@@ -213,14 +213,14 @@ class TopicRevisionFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0,
-          targetViewId = R.id.subtopic_image_view
-        )
+          targetViewId = R.id.subtopic_image_view,
+        ),
       ).check(
         matches(
           withDrawable(
-            subtopicThumbnail
-          )
-        )
+            subtopicThumbnail,
+          ),
+        ),
       )
     }
   }
@@ -230,7 +230,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -245,7 +245,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -254,14 +254,14 @@ class TopicRevisionFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0,
-          targetViewId = R.id.subtopic_image_view
-        )
+          targetViewId = R.id.subtopic_image_view,
+        ),
       ).check(
         matches(
           withDrawable(
-            subtopicThumbnail
-          )
-        )
+            subtopicThumbnail,
+          ),
+        ),
       )
     }
   }
@@ -271,7 +271,7 @@ class TopicRevisionFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
-      topicId = FRACTIONS_TOPIC_ID
+      topicId = FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
@@ -279,8 +279,8 @@ class TopicRevisionFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.revision_recycler_view,
           position = 0,
-          targetViewId = R.id.subtopic_image_view
-        )
+          targetViewId = R.id.subtopic_image_view,
+        ),
       ).check(matches(hasScaleType(ImageView.ScaleType.FIT_CENTER)))
     }
   }
@@ -297,41 +297,40 @@ class TopicRevisionFragmentTest {
   private fun createTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
-  ): Intent {
-    return TopicActivity.createTopicActivityIntent(
+    topicId: String,
+  ): Intent =
+    TopicActivity.createTopicActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
       profileId = profileId,
       classroomId = classroomId,
-      topicId = topicId
+      topicId = topicId,
     )
-  }
 
   private fun launchTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
-  ): ActivityScenario<TopicActivity> {
-    return launch(
+    topicId: String,
+  ): ActivityScenario<TopicActivity> =
+    launch(
       createTopicActivityIntent(
         profileId = profileId,
         classroomId = classroomId,
-        topicId = topicId
-      )
+        topicId = topicId,
+      ),
     )
-  }
 
   private fun clickRevisionTab() {
     onView(
       allOf(
         withText(
-          TopicTab.getTabForPosition(
-            position = 3,
-            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
-          ).name
+          TopicTab
+            .getTabForPosition(
+              position = 3,
+              enableExtraTopicTabsUi = enableExtraTopicTabsUi.value,
+            ).name,
         ),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
+        isDescendantOfA(withId(R.id.topic_tabs_container)),
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -339,8 +338,8 @@ class TopicRevisionFragmentTest {
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.revision_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -374,8 +373,8 @@ class TopicRevisionFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -386,9 +385,13 @@ class TopicRevisionFragmentTest {
     fun inject(topicRevisionFragmentTest: TopicRevisionFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicRevisionFragmentTest_TestApplicationComponent.builder()
+      DaggerTopicRevisionFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -397,9 +400,12 @@ class TopicRevisionFragmentTest {
       component.inject(topicRevisionFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

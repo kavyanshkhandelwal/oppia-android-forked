@@ -7,9 +7,8 @@ import retrofit2.mock.BehaviorDelegate
 
 /** Mock [FeedbackReportingService] to check that the service is properly requested. */
 class MockFeedbackReportingService(
-  private val delegate: BehaviorDelegate<FeedbackReportingService>
+  private val delegate: BehaviorDelegate<FeedbackReportingService>,
 ) : FeedbackReportingService {
-  override fun postFeedbackReport(report: GaeFeedbackReport): Call<Unit> {
-    return delegate.returningResponse(kotlin.Unit).postFeedbackReport(report)
-  }
+  override fun postFeedbackReport(report: GaeFeedbackReport): Call<Unit> =
+    delegate.returningResponse(kotlin.Unit).postFeedbackReport(report)
 }

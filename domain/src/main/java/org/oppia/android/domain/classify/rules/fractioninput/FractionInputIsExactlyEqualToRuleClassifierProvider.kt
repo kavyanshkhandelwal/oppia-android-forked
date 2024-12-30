@@ -15,23 +15,22 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L38
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class FractionInputIsExactlyEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
+class FractionInputIsExactlyEqualToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<Fraction> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.FRACTION,
+        "f",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.FRACTION,
-      "f",
-      this
-    )
+    override fun matches(
+      answer: Fraction,
+      input: Fraction,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer == input
   }
-
-  override fun matches(
-    answer: Fraction,
-    input: Fraction,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    return answer == input
-  }
-}

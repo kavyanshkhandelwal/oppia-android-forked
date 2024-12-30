@@ -31,32 +31,35 @@ fun main(vararg args: String) {
   val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
 
   // Check if the repo has any filename failure.
-  val hasFilenameCheckFailure = retrieveFilenameChecks()
-    .fold(initial = false) { hasFailingFile, filenameCheck ->
-      val fileFails = checkProhibitedFileNamePattern(
-        repoRoot,
-        searchFiles,
-        filenameCheck,
-      )
-      return@fold hasFailingFile || fileFails
-    }
+  val hasFilenameCheckFailure =
+    retrieveFilenameChecks()
+      .fold(initial = false) { hasFailingFile, filenameCheck ->
+        val fileFails =
+          checkProhibitedFileNamePattern(
+            repoRoot,
+            searchFiles,
+            filenameCheck,
+          )
+        return@fold hasFailingFile || fileFails
+      }
 
   // Check if the repo has any file content failure.
   val contentChecks = retrieveFileContentChecks().map { MatchableFileContentCheck.createFrom(it) }
   val hasFileContentCheckFailure =
     searchFiles.sorted().fold(initial = false) { hasFailingFile, searchFile ->
-      val fileFails = checkFileContent(
-        repoRoot,
-        searchFile,
-        contentChecks
-      )
+      val fileFails =
+        checkFileContent(
+          repoRoot,
+          searchFile,
+          contentChecks,
+        )
       return@fold hasFailingFile || fileFails
     }
 
   if (hasFilenameCheckFailure || hasFileContentCheckFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#regexpatternvalidation-check for more details on how to fix this.\n"
+        "#regexpatternvalidation-check for more details on how to fix this.\n",
     )
   }
 
@@ -72,24 +75,22 @@ fun main(vararg args: String) {
  *
  * @return a list of all the FilenameChecks
  */
-private fun retrieveFilenameChecks(): List<FilenameCheck> {
-  return loadProto(
+private fun retrieveFilenameChecks(): List<FilenameCheck> =
+  loadProto(
     "filename_pattern_validation_checks.pb",
-    FilenameChecks.getDefaultInstance()
+    FilenameChecks.getDefaultInstance(),
   ).filenameChecksList
-}
 
 /**
  * Retrieves all file content checks.
  *
  * @return a list of all the FileContentChecks
  */
-private fun retrieveFileContentChecks(): List<FileContentCheck> {
-  return loadProto(
+private fun retrieveFileContentChecks(): List<FileContentCheck> =
+  loadProto(
     "file_content_validation_checks.pb",
-    FileContentChecks.getDefaultInstance()
+    FileContentChecks.getDefaultInstance(),
   ).fileContentChecksList
-}
 
 /**
  * Helper function to parse the textproto file to a proto class.
@@ -98,16 +99,20 @@ private fun retrieveFileContentChecks(): List<FileContentCheck> {
  * @param proto instance of the proto class
  * @return proto class from the parsed textproto file
  */
-private fun <T : MessageLite> loadProto(textProtoFileName: String, proto: T): T {
+private fun <T : MessageLite> loadProto(
+  textProtoFileName: String,
+  proto: T,
+): T {
   val protoBinaryFile = File("scripts/assets/$textProtoFileName")
   val builder = proto.newBuilderForType()
 
   // This cast is type-safe since proto guarantees type consistency from mergeFrom(),
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
-  return FileInputStream(protoBinaryFile).use {
-    builder.mergeFrom(it)
-  }.build() as T
+  return FileInputStream(protoBinaryFile)
+    .use {
+      builder.mergeFrom(it)
+    }.build() as T
 }
 
 /**
@@ -125,11 +130,12 @@ private fun checkProhibitedFileNamePattern(
 ): Boolean {
   val prohibitedFilenameRegex = filenameCheck.prohibitedFilenameRegex.toRegex()
 
-  val matchedFiles = searchFiles.filter { file ->
-    val fileRelativePath = file.toRelativeString(repoRoot)
-    return@filter fileRelativePath !in filenameCheck.exemptedFileNameList &&
-      prohibitedFilenameRegex.matches(fileRelativePath)
-  }
+  val matchedFiles =
+    searchFiles.filter { file ->
+      val fileRelativePath = file.toRelativeString(repoRoot)
+      return@filter fileRelativePath !in filenameCheck.exemptedFileNameList &&
+        prohibitedFilenameRegex.matches(fileRelativePath)
+    }
 
   logProhibitedFilenameFailure(repoRoot, filenameCheck.failureMessage, matchedFiles)
   return matchedFiles.isNotEmpty()
@@ -146,29 +152,32 @@ private fun checkProhibitedFileNamePattern(
 private fun checkFileContent(
   repoRoot: File,
   searchFile: File,
-  fileContentChecks: Iterable<MatchableFileContentCheck>
+  fileContentChecks: Iterable<MatchableFileContentCheck>,
 ): Boolean {
   val fileContent = searchFile.readText()
   val lines = fileContent.lines()
   return fileContentChecks.fold(initial = false) { hasFailingFile, fileContentCheck ->
     val fileRelativePath = searchFile.toRelativeString(repoRoot)
-    val fileFails = if (fileContentCheck.isFileAffectedByCheck(fileRelativePath)) {
-      val affectedLines = fileContentCheck.computeAffectedLines(lines)
-      if (affectedLines.isNotEmpty()) {
-        affectedLines.forEach { lineIndex ->
-          logProhibitedContentFailure(
-            lineIndex + 1, // Increment by 1 since line numbers begin at 1 rather than 0.
-            fileContentCheck.failureMessage,
-            fileRelativePath
-          )
+    val fileFails =
+      if (fileContentCheck.isFileAffectedByCheck(fileRelativePath)) {
+        val affectedLines = fileContentCheck.computeAffectedLines(lines)
+        if (affectedLines.isNotEmpty()) {
+          affectedLines.forEach { lineIndex ->
+            logProhibitedContentFailure(
+              lineIndex + 1, // Increment by 1 since line numbers begin at 1 rather than 0.
+              fileContentCheck.failureMessage,
+              fileRelativePath,
+            )
+          }
         }
+        val hasRequiredRegex = fileContentCheck.doesFileContainRequiredRegex(fileContent)
+        if (!hasRequiredRegex) {
+          logRequiredContentFailure(fileContentCheck.failureMessage, fileRelativePath)
+        }
+        affectedLines.isNotEmpty() || !hasRequiredRegex
+      } else {
+        false
       }
-      val hasRequiredRegex = fileContentCheck.doesFileContainRequiredRegex(fileContent)
-      if (!hasRequiredRegex) {
-        logRequiredContentFailure(fileContentCheck.failureMessage, fileRelativePath)
-      }
-      affectedLines.isNotEmpty() || !hasRequiredRegex
-    } else false
     return@fold hasFailingFile || fileFails
   }
 }
@@ -183,7 +192,7 @@ private fun checkFileContent(
 private fun logProhibitedFilenameFailure(
   repoRoot: File,
   errorToShow: String,
-  matchedFiles: List<File>
+  matchedFiles: List<File>,
 ) {
   if (matchedFiles.isNotEmpty()) {
     println("File name/path violation: $errorToShow")
@@ -204,7 +213,7 @@ private fun logProhibitedFilenameFailure(
 private fun logProhibitedContentFailure(
   lineNumber: Int,
   errorToShow: String,
-  filePath: String
+  filePath: String,
 ) {
   val failureMessage = "$filePath:$lineNumber: $errorToShow"
   println(failureMessage)
@@ -218,7 +227,7 @@ private fun logProhibitedContentFailure(
  */
 private fun logRequiredContentFailure(
   errorToShow: String,
-  filePath: String
+  filePath: String,
 ) {
   val failureMessage = "$filePath: $errorToShow"
   println(failureMessage)
@@ -231,14 +240,13 @@ private data class MatchableFileContentCheck(
   val failureMessage: String,
   val exemptedFileNames: List<String>,
   val exemptedFilePatterns: List<Regex>,
-  val requiredContentRegex: Regex?
+  val requiredContentRegex: Regex?,
 ) {
   /**
    * Returns whether the relative file given by the specified path should be affected by this check
    * (i.e. that it matches the inclusion pattern and is not explicitly or implicitly excluded).
    */
-  fun isFileAffectedByCheck(relativePath: String): Boolean =
-    filePathRegex.containsMatchIn(relativePath) && !isFileExempted(relativePath)
+  fun isFileAffectedByCheck(relativePath: String): Boolean = filePathRegex.containsMatchIn(relativePath) && !isFileExempted(relativePath)
 
   /**
    * Returns the list of line indexes which contain prohibited content per this check (given an
@@ -246,22 +254,23 @@ private data class MatchableFileContentCheck(
    * provided iterable.
    */
   fun computeAffectedLines(lines: Iterable<String>): List<Int> {
-    if (prohibitedContentRegex != null)
-      return lines.withIndex().filter { (_, line) ->
-        prohibitedContentRegex.containsMatchIn(line)
-      }.map { (index, _) -> index }
-    else return emptyList()
+    if (prohibitedContentRegex != null) {
+      return lines
+        .withIndex()
+        .filter { (_, line) ->
+          prohibitedContentRegex.containsMatchIn(line)
+        }.map { (index, _) -> index }
+    } else {
+      return emptyList()
+    }
   }
 
   /** Returns a boolean indicating whether the file contains the required content or not. */
-  fun doesFileContainRequiredRegex(fileContent: String): Boolean {
-    return requiredContentRegex?.containsMatchIn(fileContent) ?: true
-  }
+  fun doesFileContainRequiredRegex(fileContent: String): Boolean = requiredContentRegex?.containsMatchIn(fileContent) ?: true
 
-  private fun isFileExempted(relativePath: String): Boolean {
-    return relativePath in exemptedFileNames ||
+  private fun isFileExempted(relativePath: String): Boolean =
+    relativePath in exemptedFileNames ||
       exemptedFilePatterns.any { it.containsMatchIn(relativePath) }
-  }
 
   companion object {
     /** Returns a new [MatchableFileContentCheck] based on the specified [FileContentCheck]. */
@@ -277,7 +286,7 @@ private data class MatchableFileContentCheck(
         requiredContentRegex = requiredContentRegex,
         failureMessage = fileContentCheck.failureMessage,
         exemptedFileNames = fileContentCheck.exemptedFileNameList,
-        exemptedFilePatterns = fileContentCheck.exemptedFilePatternsList.map { it.toRegex() }
+        exemptedFilePatterns = fileContentCheck.exemptedFilePatternsList.map { it.toRegex() },
       )
     }
   }

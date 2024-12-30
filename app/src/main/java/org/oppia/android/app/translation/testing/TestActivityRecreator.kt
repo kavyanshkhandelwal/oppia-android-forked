@@ -16,14 +16,16 @@ import javax.inject.Singleton
  * Recreation flows can also be directly tested using ActivityScenario if needed.
  */
 @Singleton
-class TestActivityRecreator @Inject constructor() : ActivityRecreator {
-  private var recreationCount: Int = 0
+class TestActivityRecreator
+  @Inject
+  constructor() : ActivityRecreator {
+    private var recreationCount: Int = 0
 
-  override fun recreate(activity: AppCompatActivity) {
-    // Do nothing since activity recreation doesn't work correctly in Robolectric.
-    ++recreationCount
+    override fun recreate(activity: AppCompatActivity) {
+      // Do nothing since activity recreation doesn't work correctly in Robolectric.
+      ++recreationCount
+    }
+
+    /** Returns the number of times [recreate] was called for this recreator. */
+    fun getRecreateCount(): Int = recreationCount
   }
-
-  /** Returns the number of times [recreate] was called for this recreator. */
-  fun getRecreateCount(): Int = recreationCount
-}

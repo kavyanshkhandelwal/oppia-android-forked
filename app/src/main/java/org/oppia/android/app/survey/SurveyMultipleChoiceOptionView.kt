@@ -18,62 +18,64 @@ import javax.inject.Inject
  * A custom [RecyclerView] for displaying a variable list of items that may be selected by a user as
  * part of the multiple choice option selection.
  */
-class SurveyMultipleChoiceOptionView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : RecyclerView(context, attrs, defStyleAttr) {
-  @Inject
-  lateinit var bindingInterface: ViewBindingShim
+class SurveyMultipleChoiceOptionView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+  ) : RecyclerView(context, attrs, defStyleAttr) {
+    @Inject
+    lateinit var bindingInterface: ViewBindingShim
 
-  @Inject
-  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-  private lateinit var dataList: ObservableList<MultipleChoiceOptionContentViewModel>
+    @Inject
+    lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private lateinit var dataList: ObservableList<MultipleChoiceOptionContentViewModel>
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
-    maybeInitializeAdapter()
-  }
-
-  /**
-   * Sets the view's RecyclerView [MultipleChoiceOptionContentViewModel] data list.
-   *
-   * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
-   * since this one takes into account initialization order with other binding properties.
-   */
-  fun setSelectionData(dataList: ObservableList<MultipleChoiceOptionContentViewModel>) {
-    this.dataList = dataList
-    maybeInitializeAdapter()
-  }
-
-  private fun maybeInitializeAdapter() {
-    if (::singleTypeBuilderFactory.isInitialized &&
-      ::dataList.isInitialized
-    ) {
-      adapter = createAdapter().also { it.setData(dataList) }
+    override fun onAttachedToWindow() {
+      super.onAttachedToWindow()
+      val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+      maybeInitializeAdapter()
     }
-  }
 
-  private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
-    return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideMultipleChoiceItemsInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.provideMultipleChoiceOptionViewModel(
-            view,
-            viewModel
-          )
-        }
-      )
-      .build()
+    /**
+     * Sets the view's RecyclerView [MultipleChoiceOptionContentViewModel] data list.
+     *
+     * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
+     * since this one takes into account initialization order with other binding properties.
+     */
+    fun setSelectionData(dataList: ObservableList<MultipleChoiceOptionContentViewModel>) {
+      this.dataList = dataList
+      maybeInitializeAdapter()
+    }
+
+    private fun maybeInitializeAdapter() {
+      if (::singleTypeBuilderFactory.isInitialized &&
+        ::dataList.isInitialized
+      ) {
+        adapter = createAdapter().also { it.setData(dataList) }
+      }
+    }
+
+    private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> =
+      singleTypeBuilderFactory
+        .create<MultipleChoiceOptionContentViewModel>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            bindingInterface.provideMultipleChoiceItemsInflatedView(
+              LayoutInflater.from(parent.context),
+              parent,
+              // attachToParent=
+              false,
+            )
+          },
+          bindView = { view, viewModel ->
+            bindingInterface.provideMultipleChoiceOptionViewModel(
+              view,
+              viewModel,
+            )
+          },
+        ).build()
   }
-}

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.viewmodel.ObservableViewModel
 
 // TODO(#59): Make this view model only included in relevant tests instead of all prod builds.
+
 /** [ObservableViewModel] for testing circular progress indicator adapters. */
 class CircularProgressIndicatorAdaptersTestViewModel : ObservableViewModel() {
   /** The default minimum progress value to bind for circular progress indicators. */

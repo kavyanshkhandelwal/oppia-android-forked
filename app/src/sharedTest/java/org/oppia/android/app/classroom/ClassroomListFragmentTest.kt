@@ -148,7 +148,7 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ClassroomListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ClassroomListFragmentTest {
   @get:Rule
@@ -226,7 +226,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.SOLE_LEARNER
+      profileId = profileId,
+      profileType = ProfileType.SOLE_LEARNER,
     )
 
     val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -243,7 +244,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.SUPERVISOR
+      profileId = profileId,
+      profileType = ProfileType.SUPERVISOR,
     )
 
     val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -260,7 +262,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.ADDITIONAL_LEARNER
+      profileId = profileId,
+      profileType = ProfileType.ADDITIONAL_LEARNER,
     )
 
     val profileOnboardingEndedEvent = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -276,7 +279,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.SOLE_LEARNER
+      profileId = profileId,
+      profileType = ProfileType.SOLE_LEARNER,
     )
     profileTestHelper.markProfileOnboardingStarted(profileId)
 
@@ -284,9 +288,10 @@ class ClassroomListFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
-      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
-    }
+    val hasAppOnboardingEvent =
+      fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
 
     assertThat(hasAppOnboardingEvent).isTrue()
   }
@@ -297,7 +302,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.SUPERVISOR
+      profileId = profileId,
+      profileType = ProfileType.SUPERVISOR,
     )
     profileTestHelper.markProfileOnboardingStarted(profileId)
 
@@ -305,9 +311,10 @@ class ClassroomListFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
-      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
-    }
+    val hasAppOnboardingEvent =
+      fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
 
     assertThat(hasAppOnboardingEvent).isTrue()
   }
@@ -318,7 +325,8 @@ class ClassroomListFragmentTest {
 
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
-      profileId = profileId, profileType = ProfileType.ADDITIONAL_LEARNER
+      profileId = profileId,
+      profileType = ProfileType.ADDITIONAL_LEARNER,
     )
     profileTestHelper.markProfileOnboardingStarted(profileId)
 
@@ -326,9 +334,10 @@ class ClassroomListFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    val hasAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
-      it.context.activityContextCase == COMPLETE_APP_ONBOARDING
-    }
+    val hasAppOnboardingEvent =
+      fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+      }
 
     assertThat(hasAppOnboardingEvent).isFalse()
   }
@@ -359,7 +368,7 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).assertIsDisplayed()
 
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToNode(
-      hasTestTag(ALL_TOPICS_HEADER_TEST_TAG)
+      hasTestTag(ALL_TOPICS_HEADER_TEST_TAG),
     )
     composeRule.onNodeWithTag(ALL_TOPICS_HEADER_TEST_TAG).assertIsDisplayed()
   }
@@ -378,7 +387,8 @@ class ClassroomListFragmentTest {
     onView(isRoot()).perform(orientationLandscape())
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(WELCOME_TEST_TAG)
+    composeRule
+      .onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good evening, Admin!")
       .assertIsDisplayed()
   }
@@ -393,7 +403,8 @@ class ClassroomListFragmentTest {
     // Refresh the welcome text content.
     logIntoAdmin()
 
-    composeRule.onNodeWithTag(WELCOME_TEST_TAG)
+    composeRule
+      .onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good morning, Admin!")
       .assertIsDisplayed()
   }
@@ -408,7 +419,8 @@ class ClassroomListFragmentTest {
     // Refresh the welcome text content.
     logIntoAdmin()
 
-    composeRule.onNodeWithTag(WELCOME_TEST_TAG)
+    composeRule
+      .onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good afternoon, Admin!")
       .assertIsDisplayed()
   }
@@ -423,7 +435,8 @@ class ClassroomListFragmentTest {
     // Refresh the welcome text content.
     logIntoAdmin()
 
-    composeRule.onNodeWithTag(WELCOME_TEST_TAG)
+    composeRule
+      .onNodeWithTag(WELCOME_TEST_TAG)
       .assertTextContains("Good evening, Admin!")
       .assertIsDisplayed()
   }
@@ -444,14 +457,16 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recently_played_stories))
       .assertIsDisplayed()
   }
@@ -464,22 +479,23 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(1)
       .assertTextContains(
-        machineLocale.run { context.getString(R.string.view_all).toMachineUpperCase() }
-      )
-      .assertIsDisplayed()
+        machineLocale.run { context.getString(R.string.view_all).toMachineUpperCase() },
+      ).assertIsDisplayed()
   }
 
   @Test
@@ -490,15 +506,17 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.last_played_stories))
       .assertIsDisplayed()
   }
@@ -511,10 +529,12 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
@@ -541,14 +561,18 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains("What is a Fraction?")
       .assertTextContains("FRACTIONS")
       .assertTextContains("MATHS")
@@ -561,7 +585,9 @@ class ClassroomListFragmentTest {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     logIntoAdminTwice()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
@@ -587,13 +613,15 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
     logIntoAdminTwice()
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(1)
       .assertDoesNotExist()
   }
 
@@ -605,18 +633,22 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains("Fifth Exploration")
       .assertTextContains("SECOND TEST TOPIC")
       .assertTextContains("SCIENCE")
@@ -649,18 +681,20 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.stories_for_you))
       .assertIsDisplayed()
 
@@ -694,14 +728,18 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains("What is a Ratio?")
       .assertTextContains("RATIOS AND PROPORTIONAL REASONING")
       .assertTextContains("MATHS")
@@ -716,10 +754,12 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.recommended_stories))
       .assertIsDisplayed()
 
@@ -746,22 +786,24 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
 
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(1)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(1)
       .assertIsDisplayed()
       .performClick()
 
@@ -776,17 +818,19 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
     logIntoAdminTwice()
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+      .onChildAt(0)
       .assertTextContains(context.getString(R.string.stories_for_you))
       .assertIsDisplayed()
 
@@ -813,26 +857,28 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
       .onChildAt(0)
       .onChildAt(1)
       .assertTextContains("Third Test Topic")
@@ -847,14 +893,16 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
       .onChildAt(0)
       .onChildAt(1)
       .assertTextContains("Third Test Topic")
@@ -869,27 +917,29 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_HEADER_TEST_TAG)
       .assertTextContains(context.getString(R.string.coming_soon))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
+    composeRule
+      .onNodeWithTag(COMING_SOON_TOPIC_LIST_TEST_TAG)
       .onChildAt(0)
       .onChildAt(1)
       .assertTextContains("Third Test Topic")
@@ -904,23 +954,28 @@ class ClassroomListFragmentTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
 
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG).onChildAt(0)
+    composeRule
+      .onNodeWithTag(PROMOTED_STORY_LIST_TEST_TAG)
+      .onChildAt(0)
       .assertIsDisplayed()
       .performClick()
 
     testCoroutineDispatchers.runCurrent()
 
-    val args = TopicActivityParams.newBuilder().apply {
-      this.classroomId = TEST_CLASSROOM_ID_1
-      this.topicId = FRACTIONS_TOPIC_ID
-      this.storyId = FRACTIONS_STORY_ID_0
-    }.build()
+    val args =
+      TopicActivityParams
+        .newBuilder()
+        .apply {
+          this.classroomId = TEST_CLASSROOM_ID_1
+          this.topicId = FRACTIONS_TOPIC_ID
+          this.storyId = FRACTIONS_STORY_ID_0
+        }.build()
     intended(hasComponent(TopicActivity::class.java.name))
     intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     Intents.release()
@@ -936,7 +991,9 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("First Test Topic")
       .assertTextContains("3 Lessons")
       .assertIsDisplayed()
@@ -944,11 +1001,14 @@ class ClassroomListFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    val args = TopicActivityParams.newBuilder().apply {
-      this.classroomId = TEST_CLASSROOM_ID_0
-      this.topicId = TEST_TOPIC_ID_0
-      this.storyId = TEST_STORY_ID_0
-    }.build()
+    val args =
+      TopicActivityParams
+        .newBuilder()
+        .apply {
+          this.classroomId = TEST_CLASSROOM_ID_0
+          this.topicId = TEST_TOPIC_ID_0
+          this.storyId = TEST_STORY_ID_0
+        }.build()
     intended(hasComponent(TopicActivity::class.java.name))
     intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
   }
@@ -969,17 +1029,19 @@ class ClassroomListFragmentTest {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(
-      CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
-      useUnmergedTree = true
-    ).assertIsDisplayed()
+    composeRule
+      .onNodeWithTag(
+        CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
+        useUnmergedTree = true,
+      ).assertIsDisplayed()
 
     composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).performScrollToIndex(3)
 
-    composeRule.onNodeWithTag(
-      CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
-      useUnmergedTree = true
-    ).assertDoesNotExist()
+    composeRule
+      .onNodeWithTag(
+        CLASSROOM_CARD_ICON_TEST_TAG + "_Science",
+        useUnmergedTree = true,
+      ).assertDoesNotExist()
   }
 
   @Test
@@ -993,11 +1055,15 @@ class ClassroomListFragmentTest {
     testCoroutineDispatchers.runCurrent()
 
     // Check that Science classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("First Test Topic")
       .assertTextContains("3 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Second Test Topic")
       .assertTextContains("1 Lesson")
       .assertIsDisplayed()
@@ -1007,11 +1073,15 @@ class ClassroomListFragmentTest {
     testCoroutineDispatchers.runCurrent()
 
     // Check that Maths classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("Fractions")
       .assertTextContains("2 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Ratios and Proportional Reasoning")
       .assertTextContains("4 Lessons")
       .assertIsDisplayed()
@@ -1028,7 +1098,9 @@ class ClassroomListFragmentTest {
     testCoroutineDispatchers.runCurrent()
 
     // Check that Fractions topic is displayed and perform click.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("Fractions")
       .assertTextContains("2 Lessons")
       .assertIsDisplayed()
@@ -1037,11 +1109,15 @@ class ClassroomListFragmentTest {
     pressBack()
 
     // Check that Maths classroom is selected & its topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("Fractions")
       .assertTextContains("2 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Ratios and Proportional Reasoning")
       .assertTextContains("4 Lessons")
       .assertIsDisplayed()
@@ -1058,11 +1134,15 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
     // Check that Science classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("First Test Topic")
       .assertTextContains("3 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Second Test Topic")
       .assertTextContains("1 Lesson")
       .assertIsDisplayed()
@@ -1071,11 +1151,15 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(1).performClick()
     testCoroutineDispatchers.runCurrent()
     // Check that Maths classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("Fractions")
       .assertTextContains("2 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Ratios and Proportional Reasoning")
       .assertTextContains("4 Lessons")
       .assertIsDisplayed()
@@ -1084,11 +1168,15 @@ class ClassroomListFragmentTest {
     composeRule.onNodeWithTag(CLASSROOM_LIST_TEST_TAG).onChildAt(0).performClick()
     testCoroutineDispatchers.runCurrent()
     // Check that Science classroom's topics are displayed.
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(4)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(4)
       .assertTextContains("First Test Topic")
       .assertTextContains("3 Lessons")
       .assertIsDisplayed()
-    composeRule.onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG).onChildAt(5)
+    composeRule
+      .onNodeWithTag(CLASSROOM_LIST_SCREEN_TEST_TAG)
+      .onChildAt(5)
       .assertTextContains("Second Test Topic")
       .assertTextContains("1 Lesson")
       .assertIsDisplayed()
@@ -1141,7 +1229,7 @@ class ClassroomListFragmentTest {
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class, TestImageLoaderModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1156,9 +1244,13 @@ class ClassroomListFragmentTest {
     fun getProfileTestHelper(): ProfileTestHelper
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerClassroomListFragmentTest_TestApplicationComponent.builder()
+      DaggerClassroomListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1171,9 +1263,12 @@ class ClassroomListFragmentTest {
       super.attachBaseContext(base)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

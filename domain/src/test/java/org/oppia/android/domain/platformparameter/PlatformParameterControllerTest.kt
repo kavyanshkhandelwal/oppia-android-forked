@@ -48,18 +48,30 @@ private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 @Config(application = PlatformParameterControllerTest.TestApplication::class)
 class PlatformParameterControllerTest {
   @Inject lateinit var platformParameterController: PlatformParameterController
+
   @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val mockPlatformParameterList by lazy {
     listOf<PlatformParameter>(
-      PlatformParameter.newBuilder().setName(STRING_PLATFORM_PARAMETER_NAME)
-        .setString(STRING_PLATFORM_PARAMETER_VALUE).build(),
-      PlatformParameter.newBuilder().setName(INTEGER_PLATFORM_PARAMETER_NAME)
-        .setInteger(INTEGER_PLATFORM_PARAMETER_VALUE).build(),
-      PlatformParameter.newBuilder().setName(BOOLEAN_PLATFORM_PARAMETER_NAME)
-        .setBoolean(BOOLEAN_PLATFORM_PARAMETER_VALUE).build()
+      PlatformParameter
+        .newBuilder()
+        .setName(STRING_PLATFORM_PARAMETER_NAME)
+        .setString(STRING_PLATFORM_PARAMETER_VALUE)
+        .build(),
+      PlatformParameter
+        .newBuilder()
+        .setName(INTEGER_PLATFORM_PARAMETER_NAME)
+        .setInteger(INTEGER_PLATFORM_PARAMETER_VALUE)
+        .build(),
+      PlatformParameter
+        .newBuilder()
+        .setName(BOOLEAN_PLATFORM_PARAMETER_NAME)
+        .setBoolean(BOOLEAN_PLATFORM_PARAMETER_VALUE)
+        .build(),
     )
   }
 
@@ -78,7 +90,7 @@ class PlatformParameterControllerTest {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        mockPlatformParameterList
+        mockPlatformParameterList,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -106,12 +118,13 @@ class PlatformParameterControllerTest {
     verifyEntriesInsidePlatformParameterMap(platformParameterSingleton.getPlatformParameterMap())
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testController_updateExistingDatabase_readPlatformParameters_platformParameterMapHasNewValues() { // ktlint-disable max-line-length
+  fun testController_updateExistingDatabase_readPlatformParameters_platformParameterMapHasNewValues() {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        mockPlatformParameterList
+        mockPlatformParameterList,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -142,7 +155,7 @@ class PlatformParameterControllerTest {
     // Simulate that previous app already has cached platform parameter values in cache store.
     executeInPrevious { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        mockPlatformParameterList
+        mockPlatformParameterList,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -161,9 +174,7 @@ class PlatformParameterControllerTest {
    * [platformParameterMap] that was retrieved from cache store.
    * @param platformParameterMap Map<String, PlatformParameter> map of cached values
    */
-  private fun verifyEntriesInsidePlatformParameterMap(
-    platformParameterMap: Map<String, PlatformParameter>
-  ) {
+  private fun verifyEntriesInsidePlatformParameterMap(platformParameterMap: Map<String, PlatformParameter>) {
     assertThat(platformParameterMap.size).isEqualTo(mockPlatformParameterList.size)
     mockPlatformParameterList.forEach {
       assertThat(platformParameterMap[it.name]).isEqualTo(it)
@@ -179,9 +190,10 @@ class PlatformParameterControllerTest {
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
 
     block(
-      DaggerPlatformParameterControllerTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build()
+        .build(),
     )
   }
 
@@ -190,15 +202,12 @@ class PlatformParameterControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton
-    fun providePlatformParameterSingleton(
-      platformParameterSingletonImpl: PlatformParameterSingletonImpl
-    ): PlatformParameterSingleton = platformParameterSingletonImpl
+    fun providePlatformParameterSingleton(platformParameterSingletonImpl: PlatformParameterSingletonImpl): PlatformParameterSingleton =
+      platformParameterSingletonImpl
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -220,14 +229,15 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class
-    ]
+      TestModule::class, TestLogReportingModule::class, NetworkConnectionUtilDebugModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -238,9 +248,12 @@ class PlatformParameterControllerTest {
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterControllerTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

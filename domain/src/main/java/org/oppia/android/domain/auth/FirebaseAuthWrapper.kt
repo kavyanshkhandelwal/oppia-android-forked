@@ -6,5 +6,8 @@ interface FirebaseAuthWrapper {
   val currentUser: FirebaseUserWrapper?
 
   /** Returns the authentication result. */
-  fun signInAnonymously(onSuccess: () -> Unit, onFailure: (Throwable) -> Unit)
+  fun signInAnonymously(
+    onSuccess: () -> Unit,
+    onFailure: (Throwable) -> Unit,
+  )
 }

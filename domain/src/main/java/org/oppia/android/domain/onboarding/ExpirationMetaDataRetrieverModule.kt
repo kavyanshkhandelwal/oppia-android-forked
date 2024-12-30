@@ -7,7 +7,5 @@ import dagger.Module
 @Module
 interface ExpirationMetaDataRetrieverModule {
   @Binds
-  fun bindExpirationMetadataRetriever(
-    impl: ExpirationMetaDataRetrieverImpl
-  ): ExpirationMetaDataRetriever
+  fun bindExpirationMetadataRetriever(impl: ExpirationMetaDataRetrieverImpl): ExpirationMetaDataRetriever
 }

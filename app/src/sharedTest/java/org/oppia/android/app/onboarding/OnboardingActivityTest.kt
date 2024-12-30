@@ -85,6 +85,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
 /** Tests for [OnboardingActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -97,9 +98,12 @@ class OnboardingActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<OnboardingActivity> = ActivityTestRule(
-    OnboardingActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<OnboardingActivity> =
+    ActivityTestRule(
+      OnboardingActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -130,11 +134,10 @@ class OnboardingActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createOnboardingActivity(): Intent {
-    return OnboardingActivity.createOnboardingActivity(
-      ApplicationProvider.getApplicationContext()
+  private fun createOnboardingActivity(): Intent =
+    OnboardingActivity.createOnboardingActivity(
+      ApplicationProvider.getApplicationContext(),
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -165,8 +168,8 @@ class OnboardingActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -177,9 +180,13 @@ class OnboardingActivityTest {
     fun inject(onboardingActivityTest: OnboardingActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingActivityTest_TestApplicationComponent.builder()
+      DaggerOnboardingActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -188,9 +195,12 @@ class OnboardingActivityTest {
       component.inject(onboardingActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

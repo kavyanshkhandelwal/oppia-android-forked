@@ -23,7 +23,7 @@ class ClickableAreasImage(
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
   private val clickableAreas: List<LabeledRegion>,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
 ) {
   private var imageLabel: String? = null
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
@@ -42,7 +42,10 @@ class ClickableAreasImage(
    * @param x the relative x coordinate according to image
    * @param y the relative y coordinate according to image
    */
-  private fun onPhotoTap(x: Float, y: Float) {
+  private fun onPhotoTap(
+    x: Float,
+    y: Float,
+  ) {
     // Show default region for non-accessibility cases and this will be only called when user taps
     // on unspecified region.
     if (!isAccessibilityEnabled) {
@@ -65,40 +68,35 @@ class ClickableAreasImage(
   }
 
   /** Get X co-ordinate scaled according to image. */
-  private fun getXCoordinate(x: Float): Float {
-    return x * getImageViewContentWidth()
-  }
+  private fun getXCoordinate(x: Float): Float = x * getImageViewContentWidth()
 
   /** Get Y co-ordinate scaled according to image. */
-  private fun getYCoordinate(y: Float): Float {
-    return y * getImageViewContentHeight()
-  }
+  private fun getYCoordinate(y: Float): Float = y * getImageViewContentHeight()
 
-  private fun getImageViewContentWidth(): Int {
-    return imageView.width - imageView.paddingStart - imageView.paddingEnd
-  }
+  private fun getImageViewContentWidth(): Int = imageView.width - imageView.paddingStart - imageView.paddingEnd
 
-  private fun getImageViewContentHeight(): Int {
-    return imageView.height - imageView.paddingTop - imageView.paddingBottom
-  }
+  private fun getImageViewContentHeight(): Int = imageView.height - imageView.paddingTop - imageView.paddingBottom
 
   /** Add selectable regions to [FrameLayout]. */
   fun addRegionViews() {
     // Remove all views other than the default region & selectable image.
-    parentView.children.filter {
-      it.id != imageView.id && it.id != defaultRegionView.id
-    }.forEach(parentView::removeView)
+    parentView.children
+      .filter {
+        it.id != imageView.id && it.id != defaultRegionView.id
+      }.forEach(parentView::removeView)
     clickableAreas.forEach { clickableArea ->
-      val imageRect = RectF(
-        getXCoordinate(clickableArea.region.area.upperLeft.x),
-        getYCoordinate(clickableArea.region.area.upperLeft.y),
-        getXCoordinate(clickableArea.region.area.lowerRight.x),
-        getYCoordinate(clickableArea.region.area.lowerRight.y)
-      )
-      val layoutParams = FrameLayout.LayoutParams(
-        imageRect.width().roundToInt(),
-        imageRect.height().roundToInt()
-      )
+      val imageRect =
+        RectF(
+          getXCoordinate(clickableArea.region.area.upperLeft.x),
+          getYCoordinate(clickableArea.region.area.upperLeft.y),
+          getXCoordinate(clickableArea.region.area.lowerRight.x),
+          getYCoordinate(clickableArea.region.area.lowerRight.y),
+        )
+      val layoutParams =
+        FrameLayout.LayoutParams(
+          imageRect.width().roundToInt(),
+          imageRect.height().roundToInt(),
+        )
       val newView = View(parentView.context)
       // ClickableArea coordinates are not laid-out properly in RTL. The image region coordinates
       // are from left-to-right with an upper left origin and touch coordinates from Android start
@@ -142,13 +140,16 @@ class ClickableAreasImage(
     }
   }
 
-  private fun showOrHideRegion(newView: View, clickableArea: LabeledRegion) {
+  private fun showOrHideRegion(
+    newView: View,
+    clickableArea: LabeledRegion,
+  ) {
     resetRegionSelectionViews()
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(
         clickableArea.label,
-        clickableArea.contentDescription
-      )
+        clickableArea.contentDescription,
+      ),
     )
     newView.setBackgroundResource(R.drawable.selected_region_background)
   }

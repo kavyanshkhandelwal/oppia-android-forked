@@ -13,6 +13,7 @@ import java.util.Locale
 import java.util.Objects
 
 // TODO(#3766): Restrict DisplayLocaleImpl and formattingLocale to be 'internal'.
+
 /**
  * Implementation of [OppiaLocale.DisplayLocale].
  *
@@ -25,7 +26,7 @@ class DisplayLocaleImpl(
   localeContext: OppiaLocaleContext,
   val formattingLocale: Locale,
   private val machineLocale: MachineLocale,
-  private val formatterFactory: OppiaBidiFormatter.Factory
+  private val formatterFactory: OppiaBidiFormatter.Factory,
 ) : OppiaLocale.DisplayLocale(localeContext) {
   private val dateFormat by lazy {
     DateFormat.getDateInstance(DATE_FORMAT_LENGTH, formattingLocale)
@@ -40,6 +41,7 @@ class DisplayLocaleImpl(
   private val bidiFormatter by lazy { formatterFactory.createFormatter(formattingLocale) }
 
   // TODO(#3766): Restrict to be 'internal'.
+
   /**
    * Updates the specified [Configuration] to reference the formatting locale backing this display
    * locale. Note that this may not be sufficient for actually updating the configuration--it may
@@ -56,71 +58,70 @@ class DisplayLocaleImpl(
 
   override fun toHumanReadableString(number: Int): String = numberFormat.format(number)
 
-  override fun computeDateString(timestampMillis: Long): String =
-    dateFormat.format(Date(timestampMillis))
+  override fun computeDateString(timestampMillis: Long): String = dateFormat.format(Date(timestampMillis))
 
-  override fun computeTimeString(timestampMillis: Long): String =
-    timeFormat.format(Date(timestampMillis))
+  override fun computeTimeString(timestampMillis: Long): String = timeFormat.format(Date(timestampMillis))
 
-  override fun computeDateTimeString(timestampMillis: Long): String =
-    dateTimeFormat.format(Date(timestampMillis))
+  override fun computeDateTimeString(timestampMillis: Long): String = dateTimeFormat.format(Date(timestampMillis))
 
-  override fun getLayoutDirection(): Int {
-    return TextUtilsCompat.getLayoutDirectionFromLocale(formattingLocale)
-  }
+  override fun getLayoutDirection(): Int = TextUtilsCompat.getLayoutDirectionFromLocale(formattingLocale)
 
-  override fun String.formatInLocaleWithWrapping(vararg args: CharSequence): String {
-    return formatInLocaleWithoutWrapping(
-      *args.map { arg -> bidiFormatter.wrapText(arg) }.toTypedArray()
+  override fun String.formatInLocaleWithWrapping(vararg args: CharSequence): String =
+    formatInLocaleWithoutWrapping(
+      *args.map { arg -> bidiFormatter.wrapText(arg) }.toTypedArray(),
     )
-  }
 
-  override fun String.formatInLocaleWithoutWrapping(vararg args: CharSequence): String =
-    format(formattingLocale, *args)
+  override fun String.formatInLocaleWithoutWrapping(vararg args: CharSequence): String = format(formattingLocale, *args)
 
   override fun String.capitalizeForHumans(): String =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(formattingLocale) else it.toString() }
 
-  override fun Resources.getStringInLocale(@StringRes id: Int): String = getString(id)
+  override fun Resources.getStringInLocale(
+    @StringRes id: Int,
+  ): String = getString(id)
 
   override fun Resources.getStringInLocaleWithWrapping(
     id: Int,
-    vararg formatArgs: CharSequence
+    vararg formatArgs: CharSequence,
   ): String = getStringInLocale(id).formatInLocaleWithWrapping(*formatArgs)
 
   override fun Resources.getStringInLocaleWithoutWrapping(
     id: Int,
-    vararg formatArgs: CharSequence
+    vararg formatArgs: CharSequence,
   ): String = getStringInLocale(id).formatInLocaleWithoutWrapping(*formatArgs)
 
-  override fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String> =
-    getStringArray(id).toList()
+  override fun Resources.getStringArrayInLocale(
+    @ArrayRes id: Int,
+  ): List<String> = getStringArray(id).toList()
 
-  override fun Resources.getQuantityStringInLocale(id: Int, quantity: Int): String =
-    getQuantityTextInLocale(id, quantity).toString()
+  override fun Resources.getQuantityStringInLocale(
+    id: Int,
+    quantity: Int,
+  ): String = getQuantityTextInLocale(id, quantity).toString()
 
   override fun Resources.getQuantityStringInLocaleWithWrapping(
     id: Int,
     quantity: Int,
-    vararg formatArgs: CharSequence
+    vararg formatArgs: CharSequence,
   ): String = getQuantityStringInLocale(id, quantity).formatInLocaleWithWrapping(*formatArgs)
 
   override fun Resources.getQuantityStringInLocaleWithoutWrapping(
     id: Int,
     quantity: Int,
-    vararg formatArgs: CharSequence
+    vararg formatArgs: CharSequence,
   ): String = getQuantityStringInLocale(id, quantity).formatInLocaleWithoutWrapping(*formatArgs)
 
-  override fun Resources.getQuantityTextInLocale(id: Int, quantity: Int): CharSequence =
-    getQuantityText(id, quantity)
+  override fun Resources.getQuantityTextInLocale(
+    id: Int,
+    quantity: Int,
+  ): CharSequence = getQuantityText(id, quantity)
 
   override fun toString(): String = "DisplayLocaleImpl[context=$localeContext]"
 
-  override fun equals(other: Any?): Boolean {
-    return (other as? DisplayLocaleImpl)?.let { locale ->
+  override fun equals(other: Any?): Boolean =
+    (other as? DisplayLocaleImpl)?.let { locale ->
       localeContext == locale.localeContext && machineLocale == locale.machineLocale
     } ?: false
-  }
 
   override fun hashCode(): Int = Objects.hash(localeContext, machineLocale)
 

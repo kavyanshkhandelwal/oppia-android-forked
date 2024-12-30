@@ -14,7 +14,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 
 /** [DialogFragment] that gives option to delete profile. */
 class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
-
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     /** Argument key for pop up of Profile Deletion Dialog in [ProfileEditActivity]. */
@@ -50,16 +49,16 @@ class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
     profileEditDialogInterface =
       parentFragment as ProfileEditFragment
 
-    val alertDialog = AlertDialog.Builder(activity as Context, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.profile_edit_delete_dialog_title)
-      .setMessage(R.string.profile_edit_delete_dialog_message)
-      .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.profile_edit_delete_dialog_positive) { _, _ ->
-        profileEditDialogInterface.deleteProfileByInternalProfileId(internalProfileId)
-      }
-      .create()
+    val alertDialog =
+      AlertDialog
+        .Builder(activity as Context, R.style.OppiaAlertDialogTheme)
+        .setTitle(R.string.profile_edit_delete_dialog_title)
+        .setMessage(R.string.profile_edit_delete_dialog_message)
+        .setNegativeButton(R.string.profile_edit_delete_dialog_negative) { dialog, _ ->
+          dialog.dismiss()
+        }.setPositiveButton(R.string.profile_edit_delete_dialog_positive) { _, _ ->
+          profileEditDialogInterface.deleteProfileByInternalProfileId(internalProfileId)
+        }.create()
     return alertDialog
   }
 }

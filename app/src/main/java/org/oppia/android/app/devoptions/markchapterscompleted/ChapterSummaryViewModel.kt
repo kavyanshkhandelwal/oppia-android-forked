@@ -11,7 +11,7 @@ class ChapterSummaryViewModel(
   val nextStoryIndex: Int,
   val storyId: String,
   val topicId: String,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : MarkChaptersCompletedItemViewModel() {
   /** The summary of the chapter being displayed. */
   val chapterSummary = ephemeralChapterSummary.chapterSummary
@@ -19,11 +19,11 @@ class ChapterSummaryViewModel(
   /** The localized title of the chapter being displayed. */
   val chapterTitle by lazy {
     translationController.extractString(
-      chapterSummary.title, ephemeralChapterSummary.writtenTranslationContext
+      chapterSummary.title,
+      ephemeralChapterSummary.writtenTranslationContext,
     )
   }
 
   /** Returns whether the chapter represented by the current view model is completed. */
-  fun checkIfChapterIsCompleted(): Boolean =
-    chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED
+  fun checkIfChapterIsCompleted(): Boolean = chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED
 }

@@ -97,13 +97,14 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MathExpressionParserActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MathExpressionParserActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
 
   @Before
@@ -119,8 +120,10 @@ class MathExpressionParserActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = MathExpressionParserActivity.createIntent(context)
-      .extractCurrentAppScreenName()
+    val screenName =
+      MathExpressionParserActivity
+        .createIntent(context)
+        .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY)
   }
@@ -130,7 +133,7 @@ class MathExpressionParserActivityTest {
     launchMathExpressionParserActivity().use { scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.title).isEqualTo(
-          context.getString(R.string.math_expression_parser_activity_title)
+          context.getString(R.string.math_expression_parser_activity_title),
         )
       }
     }
@@ -179,8 +182,8 @@ class MathExpressionParserActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -191,9 +194,13 @@ class MathExpressionParserActivityTest {
     fun inject(mathExpressionParserActivityTest: MathExpressionParserActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMathExpressionParserActivityTest_TestApplicationComponent.builder()
+      DaggerMathExpressionParserActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -202,9 +209,12 @@ class MathExpressionParserActivityTest {
       component.inject(mathExpressionParserActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

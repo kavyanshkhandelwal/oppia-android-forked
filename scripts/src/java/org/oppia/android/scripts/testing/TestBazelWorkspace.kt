@@ -15,8 +15,9 @@ const val BAZEL_VERSION = "6.5.0"
  * Note that constructing this class is insufficient to start using Bazel locally. At minimum,
  * [initEmptyWorkspace] must be called first.
  */
-class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
-
+class TestBazelWorkspace(
+  private val temporaryRootFolder: TemporaryFolder,
+) {
   /** The [File] corresponding to the Bazel WORKSPACE file. */
   val workspaceFile by lazy { temporaryRootFolder.newFile("WORKSPACE") }
 
@@ -33,9 +34,9 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     temporaryRootFolder.newFile(".bazelrc").also {
       it.writeText(
         """
-          --noenable_bzlmod
-          build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-        """.trimIndent()
+        --noenable_bzlmod
+        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+        """.trimIndent(),
       )
     }
   }
@@ -73,12 +74,12 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     sourceContent: String,
     testContent: String,
     sourceSubpackage: String,
-    testSubpackage: String
+    testSubpackage: String,
   ) {
     addSourceContentAndBuildFile(
       filename,
       sourceContent,
-      sourceSubpackage
+      sourceSubpackage,
     )
 
     addTestContentAndBuildFile(
@@ -86,7 +87,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       testFilename,
       testContent,
       sourceSubpackage,
-      testSubpackage
+      testSubpackage,
     )
   }
 
@@ -105,13 +106,13 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     sourceContent: String,
     testContentShared: String,
     testContentLocal: String,
-    subpackage: String
+    subpackage: String,
   ) {
     val sourceSubpackage = "$subpackage/main/java/com/example"
     addSourceContentAndBuildFile(
       filename,
       sourceContent,
-      sourceSubpackage
+      sourceSubpackage,
     )
 
     val testSubpackageShared = "$subpackage/sharedTest/java/com/example"
@@ -121,7 +122,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       testFileNameShared,
       testContentShared,
       sourceSubpackage,
-      testSubpackageShared
+      testSubpackageShared,
     )
 
     val testSubpackageLocal = "$subpackage/test/java/com/example"
@@ -131,7 +132,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       testFileNameLocal,
       testContentLocal,
       sourceSubpackage,
-      testSubpackageLocal
+      testSubpackageLocal,
     )
   }
 
@@ -147,12 +148,12 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   fun addSourceContentAndBuildFile(
     filename: String,
     sourceContent: String,
-    sourceSubpackage: String
+    sourceSubpackage: String,
   ) {
     initEmptyWorkspace()
     ensureWorkspaceIsConfiguredForKotlin()
     setUpWorkspaceForRulesJvmExternal(
-      listOf("junit:junit:4.12")
+      listOf("junit:junit:4.12"),
     )
 
     // Create the source subpackage directory if it doesn't exist
@@ -161,9 +162,10 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     }
 
     // Create the source file
-    val sourceFile = temporaryRootFolder.newFile(
-      "${sourceSubpackage.replace(".", "/")}/$filename.kt"
-    )
+    val sourceFile =
+      temporaryRootFolder.newFile(
+        "${sourceSubpackage.replace(".", "/")}/$filename.kt",
+      )
     sourceFile.writeText(sourceContent)
 
     // Create or update the BUILD file for the source file
@@ -181,7 +183,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
           srcs = ["$filename.kt"],
           visibility = ["//visibility:public"]
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
@@ -199,7 +201,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testName: String,
     testContent: String,
     sourceSubpackage: String,
-    testSubpackage: String
+    testSubpackage: String,
   ) {
     initEmptyWorkspace()
 
@@ -233,7 +235,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
           visibility = ["//visibility:public"],
           test_class = "com.example.$testName",
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
@@ -258,41 +260,52 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testFile: File,
     withGeneratedDependency: Boolean = false,
     withExtraDependency: String? = null,
-    subpackage: String? = null
+    subpackage: String? = null,
   ): Iterable<File> {
     initEmptyWorkspace() // Ensure the workspace is at least initialized.
 
     check(testName !in testFileMap) { "Test '$testName' already set up" }
     val prereqFiles = ensureWorkspaceIsConfiguredForKotlin()
-    val (dependencyTargetName, libPrereqFiles) = if (withGeneratedDependency) {
-      createLibrary("${testName}Dependency")
-    } else null to listOf()
-    val buildFile = if (subpackage != null) {
-      if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
-        temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
+    val (dependencyTargetName, libPrereqFiles) =
+      if (withGeneratedDependency) {
+        createLibrary("${testName}Dependency")
+      } else {
+        null to listOf()
       }
-      val newBuildFileRelativePath = "${subpackage.replace(".", "/")}/BUILD.bazel"
-      val newBuildFile = File(temporaryRootFolder.root, newBuildFileRelativePath)
-      if (newBuildFile.exists()) {
-        newBuildFile
-      } else temporaryRootFolder.newFile(newBuildFileRelativePath)
-    } else rootBuildFile
+    val buildFile =
+      if (subpackage != null) {
+        if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
+          temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
+        }
+        val newBuildFileRelativePath = "${subpackage.replace(".", "/")}/BUILD.bazel"
+        val newBuildFile = File(temporaryRootFolder.root, newBuildFileRelativePath)
+        if (newBuildFile.exists()) {
+          newBuildFile
+        } else {
+          temporaryRootFolder.newFile(newBuildFileRelativePath)
+        }
+      } else {
+        rootBuildFile
+      }
     prepareBuildFileForTests(buildFile)
 
     testFileMap[testName] = testFile
-    val generatedDependencyExpression = if (withGeneratedDependency) {
-      testDependencyNameMap[testName] = dependencyTargetName ?: error("Something went wrong.")
-      "\"$dependencyTargetName\","
-    } else ""
+    val generatedDependencyExpression =
+      if (withGeneratedDependency) {
+        testDependencyNameMap[testName] = dependencyTargetName ?: error("Something went wrong.")
+        "\"$dependencyTargetName\","
+      } else {
+        ""
+      }
     val extraDependencyExpression = withExtraDependency?.let { "\"$it\"," } ?: ""
     buildFile.appendText(
       """
-        kt_jvm_test(
-            name = "$testName",
-            srcs = ["${testFile.name}"],
-            deps = [$generatedDependencyExpression$extraDependencyExpression],
-        )
-      """.trimIndent() + "\n"
+      kt_jvm_test(
+          name = "$testName",
+          srcs = ["${testFile.name}"],
+          deps = [$generatedDependencyExpression$extraDependencyExpression],
+      )
+      """.trimIndent() + "\n",
     )
 
     return setOf(testFile, buildFile) + prereqFiles + libPrereqFiles
@@ -308,24 +321,27 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
     testName: String,
     withGeneratedDependency: Boolean = false,
     withExtraDependency: String? = null,
-    subpackage: String? = null
+    subpackage: String? = null,
   ): Iterable<File> {
     // Note that the workspace doesn't need to be explicitly initialized here since the call below
     // to addTestToBuildFile() will initialize it.
 
     check(testName !in testFileMap) { "Test '$testName' already exists" }
-    val testFile = if (subpackage != null) {
-      if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
-        temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
+    val testFile =
+      if (subpackage != null) {
+        if (!File(temporaryRootFolder.root, subpackage.replace(".", "/")).exists()) {
+          temporaryRootFolder.newFolder(*(subpackage.split(".")).toTypedArray())
+        }
+        temporaryRootFolder.newFile("${subpackage.replace(".", "/")}/$testName.kt")
+      } else {
+        temporaryRootFolder.newFile("$testName.kt")
       }
-      temporaryRootFolder.newFile("${subpackage.replace(".", "/")}/$testName.kt")
-    } else temporaryRootFolder.newFile("$testName.kt")
     return addTestToBuildFile(
       testName,
       testFile,
       withGeneratedDependency,
       withExtraDependency,
-      subpackage
+      subpackage,
     )
   }
 
@@ -356,7 +372,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
           name = "$libTargetName",
           srcs = ["${depFile.name}"],
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
 
     return "//:$libTargetName" to (setOf(depFile, rootBuildFile) + prereqFiles)
@@ -372,8 +388,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * Returns the source library file corresponding to the library with the specified
    * [dependencyName], if one exists (otherwise an exception is thrown).
    */
-  fun retrieveLibraryFile(dependencyName: String): File =
-    libraryFileMap.getValue("${dependencyName}_lib")
+  fun retrieveLibraryFile(dependencyName: String): File = libraryFileMap.getValue("${dependencyName}_lib")
 
   /**
    * Returns the source library file corresponding to the library that was generated when creating
@@ -383,12 +398,11 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * This function is only valid to call for tests that were initialized by setting
    * 'withGeneratedDependency' to 'true' when calling either [addTestToBuildFile] or [createTest].
    */
-  fun retrieveTestDependencyFile(testName: String): File {
-    return libraryFileMap.getValue(
+  fun retrieveTestDependencyFile(testName: String): File =
+    libraryFileMap.getValue(
       testDependencyNameMap[testName]
-        ?: error("No entry for '$testName'. Was the test created without dependencies?")
+        ?: error("No entry for '$testName'. Was the test created without dependencies?"),
     )
-  }
 
   /** Appends rules_jvm_external configuration to the WORKSPACE file if not done already. */
   fun setUpWorkspaceForRulesJvmExternal(depsList: List<String>) {
@@ -422,7 +436,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
                 "https://repo1.maven.org/maven2",
             ],
         )
-        """.trimIndent() + "\n"
+        """.trimIndent() + "\n",
       )
 
       isConfiguredForRulesJvmExternal = true
@@ -450,7 +464,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         kotlin_repositories()
         load("$rulesKotlinBazelPrefix:core.bzl", "kt_register_toolchains")
         kt_register_toolchains()
-        """.trimIndent() + "\n"
+        """.trimIndent() + "\n",
       )
       isConfiguredForKotlin = true
       return listOf(workspaceFile)
@@ -468,7 +482,7 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
   private fun prepareBuildFileForLibraries(buildFile: File) {
     if (buildFile !in filesConfiguredForLibraries) {
       buildFile.appendText(
-        "load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_library\")\n"
+        "load(\"@io_bazel_rules_kotlin//kotlin:jvm.bzl\", \"kt_jvm_library\")\n",
       )
       filesConfiguredForLibraries += buildFile
     }

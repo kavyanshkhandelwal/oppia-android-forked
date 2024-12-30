@@ -101,7 +101,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = LicenseTextViewerActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class LicenseTextViewerActivityTest {
   @get:Rule
@@ -111,11 +111,14 @@ class LicenseTextViewerActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<LicenseTextViewerActivity> = ActivityTestRule(
-    LicenseTextViewerActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<LicenseTextViewerActivity> =
+    ActivityTestRule(
+      LicenseTextViewerActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var fakeAccessibilityService: FakeAccessibilityService
@@ -130,8 +133,9 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createLicenseTextViewerActivityIntent(0, 0)
-      .extractCurrentAppScreenName()
+    val currentScreenName =
+      createLicenseTextViewerActivityIntent(0, 0)
+        .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY)
   }
@@ -141,8 +145,8 @@ class LicenseTextViewerActivityTest {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -150,8 +154,8 @@ class LicenseTextViewerActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(
       context.getString(
-        R.string.license_name_0
-      )
+        R.string.license_name_0,
+      ),
     )
   }
 
@@ -161,15 +165,16 @@ class LicenseTextViewerActivityTest {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     )
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
     ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+    Espresso
+      .onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
@@ -182,15 +187,16 @@ class LicenseTextViewerActivityTest {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     )
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
     ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+    Espresso
+      .onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
@@ -203,15 +209,16 @@ class LicenseTextViewerActivityTest {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     )
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
     ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+    Espresso
+      .onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
@@ -224,15 +231,16 @@ class LicenseTextViewerActivityTest {
     activityTestRule.launchActivity(
       createLicenseTextViewerActivityIntent(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     )
 
     val activityToolbarTitle: TextView =
       activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
     ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+    Espresso
+      .onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
       .perform(ViewActions.click())
     assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
     assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
@@ -245,14 +253,13 @@ class LicenseTextViewerActivityTest {
 
   private fun createLicenseTextViewerActivityIntent(
     dependencyIndex: Int,
-    licenseIndex: Int
-  ): Intent {
-    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+    licenseIndex: Int,
+  ): Intent =
+    LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
       ApplicationProvider.getApplicationContext(),
       dependencyIndex,
-      licenseIndex
+      licenseIndex,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -283,11 +290,10 @@ class LicenseTextViewerActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -296,9 +302,13 @@ class LicenseTextViewerActivityTest {
     fun inject(licenseTextViewerActivityTest: LicenseTextViewerActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseTextViewerActivityTest_TestApplicationComponent.builder()
+      DaggerLicenseTextViewerActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -307,9 +317,12 @@ class LicenseTextViewerActivityTest {
       component.inject(licenseTextViewerActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -7,7 +7,9 @@ import android.app.Application
  *
  * @param <T> The type of data being provided.
  */
-abstract class DataProvider<T>(val application: Application) {
+abstract class DataProvider<T>(
+  val application: Application,
+) {
   /**
    * Returns a unique identifier that corresponds to this data provider. This should be a trivially
    * copyable and immutable object. This ID is used to determine which data provider subscribers

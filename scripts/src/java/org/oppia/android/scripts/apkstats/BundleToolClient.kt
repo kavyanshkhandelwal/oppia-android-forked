@@ -19,7 +19,7 @@ import java.util.zip.ZipFile
 class BundleToolClient(
   private val workingDirectoryPath: String,
   scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
 ) {
   private val workingDirectory by lazy { File(workingDirectoryPath) }
 
@@ -37,18 +37,20 @@ class BundleToolClient(
   fun buildApks(
     inputBundlePath: String,
     outputApksListPath: String,
-    outputApkDirPath: String
+    outputApkDirPath: String,
   ): List<File> {
     val destDir = File(outputApkDirPath)
     return buildApkList(inputBundlePath, outputApksListPath).use { zipFile ->
       val apkEntries =
-        zipFile.entries()
+        zipFile
+          .entries()
           .asSequence()
           .filter { !it.isDirectory && it.name.endsWith(".apk", ignoreCase = true) }
-      return@use apkEntries.map { entry ->
-        val outputApkFile = File(destDir, entry.name.substringAfter('/'))
-        zipFile.extractTo(entry.name, outputApkFile.absolutePath)
-      }.toList()
+      return@use apkEntries
+        .map { entry ->
+          val outputApkFile = File(destDir, entry.name.substringAfter('/'))
+          zipFile.extractTo(entry.name, outputApkFile.absolutePath)
+        }.toList()
     }
   }
 
@@ -56,19 +58,24 @@ class BundleToolClient(
    * Builds and returns the file to a universal APK built in the specified output directory path and
    * built according to the specified Android app bundle.
    */
-  fun buildUniversalApk(inputBundlePath: String, outputApkPath: String): File {
-    return buildApkList(inputBundlePath, "$outputApkPath.apks", "--mode=universal").use { zipFile ->
+  fun buildUniversalApk(
+    inputBundlePath: String,
+    outputApkPath: String,
+  ): File =
+    buildApkList(inputBundlePath, "$outputApkPath.apks", "--mode=universal").use { zipFile ->
       zipFile.extractTo("universal.apk", outputApkPath)
     }
-  }
 
   private fun buildApkList(
     inputBundlePath: String,
     outputApksListPath: String,
-    vararg additionalArgs: String
+    vararg additionalArgs: String,
   ): ZipFile {
     executeBundleToolCommand(
-      "build-apks", "--bundle=$inputBundlePath", "--output=$outputApksListPath", *additionalArgs
+      "build-apks",
+      "--bundle=$inputBundlePath",
+      "--output=$outputApksListPath",
+      *additionalArgs,
     )
     return ZipFile(File(outputApksListPath))
   }
@@ -84,7 +91,7 @@ class BundleToolClient(
         "-classpath",
         computeAbsoluteClasspath(),
         "com.android.tools.build.bundletool.BundleToolMain",
-        *arguments
+        *arguments,
       )
     check(result.exitCode == 0) {
       "Expected zero exit code (not ${result.exitCode}) for command: ${result.command}." +
@@ -97,7 +104,10 @@ class BundleToolClient(
   private companion object {
     private val currentDirectory by lazy { File(".") }
 
-    private fun ZipFile.extractTo(entryName: String, destPath: String): File {
+    private fun ZipFile.extractTo(
+      entryName: String,
+      destPath: String,
+    ): File {
       val destFile = File(destPath)
       destFile.outputStream().use { outputStream ->
         getInputStream(getEntry(entryName)).copyTo(outputStream)
@@ -108,16 +118,15 @@ class BundleToolClient(
     private fun computeAbsoluteClasspath(): String {
       val classpath = System.getProperty("java.class.path") ?: "."
       val classpathComponents = classpath.split(":")
-      return classpathComponents.map {
-        it.convertToAbsolutePath()
-      }.filterNot {
-        it.isAndroidDependencyToOmit()
-      }.joinToString(":")
+      return classpathComponents
+        .map {
+          it.convertToAbsolutePath()
+        }.filterNot {
+          it.isAndroidDependencyToOmit()
+        }.joinToString(":")
     }
 
-    private fun String.convertToAbsolutePath(): String {
-      return File(currentDirectory, this).absolutePath
-    }
+    private fun String.convertToAbsolutePath(): String = File(currentDirectory, this).absolutePath
 
     private fun String.isAndroidDependencyToOmit(): Boolean {
       // This is a hacky way to work around the classpath actually pulling in two versions of

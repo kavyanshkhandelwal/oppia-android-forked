@@ -12,15 +12,15 @@ class PreviousResponsesHeaderViewModel(
   var isExpanded: ObservableBoolean,
   private val previousResponsesHeaderClickListener: PreviousResponsesHeaderClickListener,
   val isSplitView: Boolean,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : StateItemViewModel(ViewType.PREVIOUS_RESPONSES_HEADER) {
   /** Called when the user clicks on the previous response header. */
   fun onResponsesHeaderClicked() = previousResponsesHeaderClickListener.onResponsesHeaderClicked()
 
   /** Returns the user-readable header text for previous responses. */
-  fun computePreviousResponsesHeaderText(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.previous_responses_header, previousAnswerCount.toString()
+  fun computePreviousResponsesHeaderText(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.previous_responses_header,
+      previousAnswerCount.toString(),
     )
-  }
 }

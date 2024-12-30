@@ -97,7 +97,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = SurveyActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class SurveyActivityTest {
   @get:Rule
@@ -115,11 +115,14 @@ class SurveyActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    SurveyActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      SurveyActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Before
   fun setUp() {
@@ -146,23 +149,31 @@ class SurveyActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenNameWithIntent = SurveyActivity.createSurveyActivityIntent(
-      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
-    ).extractCurrentAppScreenName()
+    val currentScreenNameWithIntent =
+      SurveyActivity
+        .createSurveyActivityIntent(
+          context,
+          profileId,
+          TEST_TOPIC_ID_0,
+          TEST_EXPLORATION_ID_2,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntent).isEqualTo(ScreenName.SURVEY_ACTIVITY)
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
-  private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
-    return SurveyActivity.createSurveyActivityIntent(
-      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
+  private fun createSurveyActivityIntent(profileId: ProfileId): Intent =
+    SurveyActivity.createSurveyActivityIntent(
+      context,
+      profileId,
+      TEST_TOPIC_ID_0,
+      TEST_EXPLORATION_ID_2,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -193,8 +204,8 @@ class SurveyActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -203,9 +214,13 @@ class SurveyActivityTest {
     fun inject(surveyActivityTest: SurveyActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyActivityTest_TestApplicationComponent.builder()
+      DaggerSurveyActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -214,9 +229,12 @@ class SurveyActivityTest {
       component.inject(surveyActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

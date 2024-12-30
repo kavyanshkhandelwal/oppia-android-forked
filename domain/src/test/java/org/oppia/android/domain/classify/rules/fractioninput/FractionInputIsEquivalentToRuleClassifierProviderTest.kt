@@ -21,61 +21,60 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsEquivalentToRuleClassifierProviderTest {
-
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 123
+      value = 123,
     )
   private val WHOLE_NUMBER_VALUE_TEST_254 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 254
+      value = 254,
     )
   private val FRACTION_VALUE_TEST_2_OVER_8 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 2,
-      denominator = 8
+      denominator = 8,
     )
   private val FRACTION_VALUE_TEST_1_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 4
+      denominator = 4,
     )
   private val FRACTION_VALUE_TEST_1_OVER_5 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 5
+      denominator = 5,
     )
   private val FRACTION_VALUE_TEST_13_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 13,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_6_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 6,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_55_1_OVER_4 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 55,
       numerator = 1,
-      denominator = 4
+      denominator = 4,
     )
   private val NEGATIVE_VALUE_TEST_679_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 679,
       numerator = 2,
-      denominator = 3
+      denominator = 3,
     )
 
   @Inject
@@ -100,7 +99,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -114,7 +113,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -128,7 +127,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -142,7 +141,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_8,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -156,7 +155,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_1_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -170,7 +169,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -184,7 +183,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -198,7 +197,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = FRACTION_VALUE_TEST_13_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -212,7 +211,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_254,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -226,7 +225,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_55_1_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -240,7 +239,7 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
       inputIsEquivalentToRuleClassifier.matches(
         answer = MIXED_NUMBER_VALUE_TEST_6_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -250,13 +249,14 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   fun testEquivalence_missingInput_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_8)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsEquivalentToRuleClassifier.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_8,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsEquivalentToRuleClassifier.matches(
+          answer = FRACTION_VALUE_TEST_2_OVER_8,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -266,7 +266,9 @@ class FractionInputIsEquivalentToRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Singleton

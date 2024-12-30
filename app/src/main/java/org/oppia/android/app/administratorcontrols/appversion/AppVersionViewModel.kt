@@ -12,24 +12,24 @@ import javax.inject.Inject
 
 /** [ViewModel] for [AppVersionFragment]. */
 @FragmentScope
-class AppVersionViewModel @Inject constructor(
-  private val resourceHandler: AppLanguageResourceHandler,
-  context: Context
-) : ObservableViewModel() {
+class AppVersionViewModel
+  @Inject
+  constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+    context: Context,
+  ) : ObservableViewModel() {
+    private val versionName: String = context.getVersionName()
+    private val lastUpdateDateTime = context.getLastUpdateTime()
 
-  private val versionName: String = context.getVersionName()
-  private val lastUpdateDateTime = context.getLastUpdateTime()
+    /** Returns a localized, human-readable app version name. */
+    fun computeVersionNameText(): String = resourceHandler.getStringInLocaleWithWrapping(R.string.app_version_name, versionName)
 
-  /** Returns a localized, human-readable app version name. */
-  fun computeVersionNameText(): String =
-    resourceHandler.getStringInLocaleWithWrapping(R.string.app_version_name, versionName)
+    /** Returns a localized, human-readable lastUpdateDateTime. */
+    fun computeLastUpdatedDateText(): String =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.app_last_update_date,
+        getDateTime(lastUpdateDateTime),
+      )
 
-  /** Returns a localized, human-readable lastUpdateDateTime. */
-  fun computeLastUpdatedDateText(): String =
-    resourceHandler.getStringInLocaleWithWrapping(
-      R.string.app_last_update_date, getDateTime(lastUpdateDateTime)
-    )
-
-  private fun getDateTime(lastUpdateTime: Long): String =
-    resourceHandler.computeDateString(lastUpdateTime)
-}
+    private fun getDateTime(lastUpdateTime: Long): String = resourceHandler.computeDateString(lastUpdateTime)
+  }

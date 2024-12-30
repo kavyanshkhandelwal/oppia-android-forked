@@ -30,33 +30,37 @@ import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 @Composable
 fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
   Card(
-    modifier = Modifier
-      .padding(
-        start = dimensionResource(R.dimen.topic_card_margin_start),
-        end = dimensionResource(R.dimen.topic_card_margin_end),
-      )
-      .clickable { topicSummaryViewModel.clickOnSummaryTile() },
+    modifier =
+      Modifier
+        .padding(
+          start = dimensionResource(R.dimen.topic_card_margin_start),
+          end = dimensionResource(R.dimen.topic_card_margin_end),
+        ).clickable { topicSummaryViewModel.clickOnSummaryTile() },
     elevation = dimensionResource(id = R.dimen.topic_card_elevation),
   ) {
     Column(
       verticalArrangement = Arrangement.Center,
     ) {
       Image(
-        painter = painterResource(
-          id = topicSummaryViewModel.topicSummary.topicThumbnail.getDrawableResource()
-        ),
-        contentDescription = "Picture of a " +
-          "${topicSummaryViewModel.topicSummary.topicThumbnail.thumbnailGraphic.name}.",
-        modifier = Modifier
-          .aspectRatio(4f / 3f)
-          .background(
-            Color(
-              (
-                0xff000000L or
-                  topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb.toLong()
-                ).toInt()
-            )
-          )
+        painter =
+          painterResource(
+            id = topicSummaryViewModel.topicSummary.topicThumbnail.getDrawableResource(),
+          ),
+        contentDescription =
+          "Picture of a " +
+            "${topicSummaryViewModel.topicSummary.topicThumbnail.thumbnailGraphic.name}.",
+        modifier =
+          Modifier
+            .aspectRatio(4f / 3f)
+            .background(
+              Color(
+                (
+                  0xff000000L or
+                    topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb
+                      .toLong()
+                ).toInt(),
+              ),
+            ),
       )
       TopicCardTextSection(topicSummaryViewModel)
     }
@@ -67,23 +71,26 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
 @Composable
 fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
   Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .background(
-        color = colorResource(
-          id = R.color.component_color_shared_topic_card_item_background_color
-        )
-      ),
+    modifier =
+      Modifier
+        .fillMaxWidth()
+        .background(
+          color =
+            colorResource(
+              id = R.color.component_color_shared_topic_card_item_background_color,
+            ),
+        ),
     verticalArrangement = Arrangement.SpaceBetween,
   ) {
     Text(
       text = topicSummaryViewModel.title,
-      modifier = Modifier
-        .padding(
-          start = dimensionResource(id = R.dimen.topic_list_item_text_padding),
-          top = dimensionResource(id = R.dimen.topic_list_item_text_padding),
-          end = dimensionResource(id = R.dimen.topic_list_item_text_padding)
-        ),
+      modifier =
+        Modifier
+          .padding(
+            start = dimensionResource(id = R.dimen.topic_list_item_text_padding),
+            top = dimensionResource(id = R.dimen.topic_list_item_text_padding),
+            end = dimensionResource(id = R.dimen.topic_list_item_text_padding),
+          ),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
       fontSize = dimensionResource(id = R.dimen.topic_list_item_text_size).value.sp,
@@ -93,8 +100,9 @@ fun TopicCardTextSection(topicSummaryViewModel: TopicSummaryViewModel) {
     )
     Text(
       text = topicSummaryViewModel.computeLessonCountText(),
-      modifier = Modifier
-        .padding(all = dimensionResource(id = R.dimen.topic_list_item_text_padding)),
+      modifier =
+        Modifier
+          .padding(all = dimensionResource(id = R.dimen.topic_list_item_text_padding)),
       color = colorResource(id = R.color.component_color_shared_secondary_4_text_color),
       fontFamily = FontFamily.SansSerif,
       fontWeight = FontWeight.Light,

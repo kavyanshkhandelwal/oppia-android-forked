@@ -24,9 +24,10 @@ class ProfileRenameFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): ProfileRenameFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return ProfileRenameFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -39,7 +40,7 @@ class ProfileRenameFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileRenameFragment" }
@@ -48,7 +49,7 @@ class ProfileRenameFragment : InjectableFragment() {
     return profileRenameFragmentPresenter.handleCreateView(
       inflater,
       container,
-      profileId
+      profileId,
     )
   }
 }

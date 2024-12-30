@@ -152,7 +152,7 @@ private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = RevisionCardFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class RevisionCardFragmentTest {
   @get:Rule
@@ -198,16 +198,16 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.prev_subtopic_title)).check(
         matches(
           ViewMatchers.withContentDescription(
-            "The previous subtopic is What is a Fraction?"
-          )
-        )
+            "The previous subtopic is What is a Fraction?",
+          ),
+        ),
       )
     }
   }
@@ -220,16 +220,16 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.next_subtopic_title)).check(
         matches(
           ViewMatchers.withContentDescription(
-            "The next subtopic is Mixed Numbers"
-          )
-        )
+            "The next subtopic is Mixed Numbers",
+          ),
+        ),
       )
     }
   }
@@ -243,15 +243,15 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       it.onActivity { activity ->
         activity.revisionCardActivityPresenter
           .loadRevisionCardFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(67F))
+        matches(withFontSize(67F)),
       )
     }
   }
@@ -265,15 +265,15 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       it.onActivity { activity ->
         activity.revisionCardActivityPresenter
           .loadRevisionCardFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(58F))
+        matches(withFontSize(58F)),
       )
     }
   }
@@ -287,17 +287,17 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       it.onActivity { activity ->
         activity.revisionCardActivityPresenter
           .loadRevisionCardFragment(
-            ReadingTextSize.MEDIUM_TEXT_SIZE
+            ReadingTextSize.MEDIUM_TEXT_SIZE,
           )
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(48F))
+        matches(withFontSize(48F)),
       )
     }
   }
@@ -311,15 +311,15 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       it.onActivity { activity ->
         activity.revisionCardActivityPresenter
           .loadRevisionCardFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withFontSize(38F))
+        matches(withFontSize(38F)),
       )
     }
   }
@@ -332,15 +332,16 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.options_menu_bottom_sheet_container)).inRoot(isDialog())
+      onView(withId(R.id.options_menu_bottom_sheet_container))
+        .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
@@ -353,8 +354,8 @@ class RevisionCardFragmentTest {
         profileId,
         TEST_TOPIC_ID_0,
         SUBTOPIC_TOPIC_ID,
-        1
-      )
+        1,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_studying_text_view)).check(matches(not(isDisplayed())))
@@ -369,8 +370,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.continue_studying_text_view)).perform(scrollTo())
@@ -386,8 +387,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -395,15 +396,19 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(context.getString(R.string.menu_help))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
-      val args = HelpActivityParams.newBuilder().apply {
-        this.isFromNavigationDrawer = false
-      }.build()
+      val args =
+        HelpActivityParams
+          .newBuilder()
+          .apply {
+            this.isFromNavigationDrawer = false
+          }.build()
       intended(hasComponent(HelpActivity::class.java.name))
       intended(
         hasProtoExtra(
           HelpActivity.HELP_ACTIVITY_PARAMS_KEY,
-          /* value= */ args
-        )
+          // value=
+          args,
+        ),
       )
     }
   }
@@ -416,8 +421,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
@@ -426,14 +431,17 @@ class RevisionCardFragmentTest {
       onView(withText(context.getString(R.string.menu_options))).inRoot(isDialog()).perform(click())
       testCoroutineDispatchers.runCurrent()
       val args =
-        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(false)
+        OptionsActivityParams
+          .newBuilder()
+          .setIsFromNavigationDrawer(false)
           .build()
       intended(hasComponent(OptionsActivity::class.java.name))
       intended(
         hasProtoExtra(
           OptionsActivity.OPTIONS_ACTIVITY_PARAMS_KEY,
-          /* value= */ args
-        )
+          // value=
+          args,
+        ),
       )
     }
   }
@@ -446,8 +454,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.action_bottom_sheet_options_menu)).perform(click())
@@ -469,8 +477,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -487,8 +495,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -507,8 +515,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_0,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
@@ -527,8 +535,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
@@ -547,8 +555,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_3,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
@@ -568,17 +576,20 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.previous_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      val args = RevisionCardActivityParams.newBuilder().apply {
-        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
-      }.build()
+      val args =
+        RevisionCardActivityParams
+          .newBuilder()
+          .apply {
+            this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_0
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+          }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
       intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
@@ -594,34 +605,38 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_SUBTOPIC_TOPIC_ID_1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.revision_card_fragment_navigation_card_container)).perform(scrollTo())
       onView(withId(R.id.next_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val args = RevisionCardActivityParams.newBuilder().apply {
-        this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
-      }.build()
+      val args =
+        RevisionCardActivityParams
+          .newBuilder()
+          .apply {
+            this.subtopicId = FRACTIONS_SUBTOPIC_TOPIC_ID_2
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.subtopicListSize = FRACTIONS_SUBTOPIC_LIST_SIZE
+          }.build()
       intended(hasComponent(RevisionCardActivity::class.java.name))
       intended(hasProtoExtra(RevisionCardActivity.REVISION_CARD_ACTIVITY_PARAMS_KEY, args))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() { // ktlint-disable max-line-length
+  fun testRevisionCardTestActivity_configurationChange_toolbarTitle_fractionSubtopicId1_isDisplayedCorrectly() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -633,16 +648,17 @@ class RevisionCardFragmentTest {
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() { // ktlint-disable max-line-length
+  fun testRevisionCardTestActivity_configurationChange_fractionSubtopicId2_checkExplanationAreDisplayedSuccessfully() {
     launch<RevisionCardActivity>(
       createRevisionCardActivityIntent(
         context,
         profileId,
         FRACTIONS_TOPIC_ID,
         SUBTOPIC_TOPIC_ID_2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -662,13 +678,13 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withText(containsString("Description of subtopic is here.")))
+        matches(withText(containsString("Description of subtopic is here."))),
       )
     }
   }
@@ -681,8 +697,8 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -690,7 +706,7 @@ class RevisionCardFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).check(
-        matches(withText(containsString("Description of subtopic is here.")))
+        matches(withText(containsString("Description of subtopic is here."))),
       )
     }
   }
@@ -703,13 +719,13 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).perform(
-        openClickableSpan("This concept card demonstrates overall concept card functionality.")
+        openClickableSpan("This concept card demonstrates overall concept card functionality."),
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -728,15 +744,15 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
       onView(withId(R.id.revision_card_explanation_text)).perform(
-        openClickableSpan("This concept card demonstrates overall concept card functionality.")
+        openClickableSpan("This concept card demonstrates overall concept card functionality."),
       )
       testCoroutineDispatchers.runCurrent()
 
@@ -757,8 +773,8 @@ class RevisionCardFragmentTest {
         profileId,
         "test_topic_id_0",
         subtopicId = 1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -778,8 +794,8 @@ class RevisionCardFragmentTest {
         profileId,
         "test_topic_id_0",
         subtopicId = 1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -803,8 +819,8 @@ class RevisionCardFragmentTest {
         profileId,
         "test_topic_id_0",
         subtopicId = 1,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -821,21 +837,24 @@ class RevisionCardFragmentTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         subtopicId = 2,
-        FRACTIONS_SUBTOPIC_LIST_SIZE
-      )
+        FRACTIONS_SUBTOPIC_LIST_SIZE,
+      ),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val revisionCardFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment
-        val arguments = checkNotNull(revisionCardFragment.arguments) {
-          "Expected arguments to be passed to StoryFragment"
-        }
-        val args = arguments.getProto(
-          RevisionCardFragment.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
-          RevisionCardFragmentArguments.getDefaultInstance()
-        )
+        val revisionCardFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.revision_card_fragment_placeholder) as RevisionCardFragment
+        val arguments =
+          checkNotNull(revisionCardFragment.arguments) {
+            "Expected arguments to be passed to StoryFragment"
+          }
+        val args =
+          arguments.getProto(
+            RevisionCardFragment.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
+            RevisionCardFragmentArguments.getDefaultInstance(),
+          )
         val receivedTopicId =
           checkNotNull(args?.topicId) {
             "Expected topicId to be passed to RevisionCardFragment"
@@ -854,52 +873,59 @@ class RevisionCardFragmentTest {
 
   /** See the version in StateFragmentTest for documentation details. */
   @Suppress("SameParameterValue")
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
   /** See the version in StateFragmentTest for documentation details. */
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
+    return (viewText as Spannable)
+      .getSpans(
+        // start=
+        0, // end=
+        text.length,
+        ClickableSpan::class.java,
+      ).map {
+        viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+      }
   }
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
-    text: String
-  ): ClickableSpan? = find { text in it.first }?.second
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String): ClickableSpan? = find { text in it.first }?.second
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
@@ -907,8 +933,7 @@ class RevisionCardFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     @LoadImagesFromAssets
@@ -944,8 +969,8 @@ class RevisionCardFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -956,9 +981,13 @@ class RevisionCardFragmentTest {
     fun inject(revisionCardFragmentTest: RevisionCardFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRevisionCardFragmentTest_TestApplicationComponent.builder()
+      DaggerRevisionCardFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -967,9 +996,12 @@ class RevisionCardFragmentTest {
       component.inject(revisionCardFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

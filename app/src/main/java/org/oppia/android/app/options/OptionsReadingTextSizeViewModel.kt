@@ -9,7 +9,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 class OptionsReadingTextSizeViewModel(
   private val routeToReadingTextSizeListener: RouteToReadingTextSizeListener,
   private val loadReadingTextSizeListener: LoadReadingTextSizeListener,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : OptionsItemViewModel() {
   val readingTextSize = ObservableField(ReadingTextSize.TEXT_SIZE_UNSPECIFIED)
   val textSizeName: String

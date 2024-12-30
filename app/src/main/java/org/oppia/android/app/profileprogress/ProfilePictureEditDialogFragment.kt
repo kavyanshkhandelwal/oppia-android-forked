@@ -20,9 +20,7 @@ class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
      *
      * @return [ProfilePictureEditDialogFragment]: DialogFragment
      */
-    fun newInstance(): ProfilePictureEditDialogFragment {
-      return ProfilePictureEditDialogFragment()
-    }
+    fun newInstance(): ProfilePictureEditDialogFragment = ProfilePictureEditDialogFragment()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,11 +29,13 @@ class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val view = View.inflate(
-      context,
-      R.layout.profile_picture_edit_dialog,
-      /* root= */ null
-    )
+    val view =
+      View.inflate(
+        context,
+        R.layout.profile_picture_edit_dialog,
+        // root=
+        null,
+      )
     val viewProfilePicture =
       view.findViewById<TextView>(R.id.profile_picture_edit_dialog_view_picture)
     val chooseFromGallery =
@@ -58,7 +58,6 @@ class ProfilePictureEditDialogFragment : InjectableDialogFragment() {
       .setView(view)
       .setNegativeButton(R.string.profile_picture_edit_alert_dialog_cancel_button) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

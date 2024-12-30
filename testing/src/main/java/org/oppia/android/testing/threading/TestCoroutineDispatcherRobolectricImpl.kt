@@ -42,9 +42,9 @@ import kotlin.coroutines.CoroutineContext
 @OptIn(InternalCoroutinesApi::class)
 class TestCoroutineDispatcherRobolectricImpl private constructor(
   private val fakeSystemClock: FakeSystemClock,
-  private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher(), Delay {
-
+  private val realCoroutineDispatcher: CoroutineDispatcher,
+) : TestCoroutineDispatcher(),
+  Delay {
   /** Sorted set that first sorts on when a task should be executed, then insertion order. */
   private val taskQueue = CopyOnWriteArraySet<Task>()
   private val lock = ReentrantLock()
@@ -67,7 +67,7 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       delegate = realCoroutineDispatcher,
       testDispatcher = this,
       this::incrementExecutingTaskCount,
-      this::decrementExecutingTaskCount
+      this::decrementExecutingTaskCount,
     )
   }
 
@@ -82,49 +82,60 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     CoroutineScope(queueCoroutineDispatcher)
   }
 
-  override fun dispatch(context: CoroutineContext, block: Runnable) {
+  override fun dispatch(
+    context: CoroutineContext,
+    block: Runnable,
+  ) {
     enqueueTask(createDeferredRunnable(context, block))
   }
 
   override fun scheduleResumeAfterDelay(
     timeMillis: Long,
-    continuation: CancellableContinuation<Unit>
+    continuation: CancellableContinuation<Unit>,
   ) {
     enqueueTask(createContinuationRunnable(continuation), delayMillis = timeMillis)
   }
 
-  override fun runCurrent(timeout: Long, timeoutUnit: TimeUnit) {
+  override fun runCurrent(
+    timeout: Long,
+    timeoutUnit: TimeUnit,
+  ) {
     flushTaskQueueBlocking(fakeSystemClock.getTimeMillis(), timeoutUnit.toMillis(timeout))
   }
 
   override fun hasPendingTasks(): Boolean = taskQueue.isNotEmpty()
 
-  override fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? {
-    return createSortedTaskSet().firstOrNull { task -> task.timeMillis > timeMillis }?.timeMillis
-  }
+  override fun getNextFutureTaskCompletionTimeMillis(timeMillis: Long): Long? =
+    createSortedTaskSet().firstOrNull { task -> task.timeMillis > timeMillis }?.timeMillis
 
-  override fun hasPendingCompletableTasks(): Boolean {
-    return taskQueue.hasPendingCompletableTasks(fakeSystemClock.getTimeMillis())
-  }
+  override fun hasPendingCompletableTasks(): Boolean = taskQueue.hasPendingCompletableTasks(fakeSystemClock.getTimeMillis())
 
   override fun setTaskIdleListener(taskIdleListener: TaskIdleListener) {
     this.taskIdleListener = taskIdleListener
     dispatchCurrentState(lock.withLock { state })
   }
 
-  private fun enqueueTask(block: Runnable, delayMillis: Long = 0L) {
-    taskQueue += Task(
-      timeMillis = fakeSystemClock.getTimeMillis() + delayMillis,
-      block = block,
-      insertionOrder = totalTaskCount.incrementAndGet()
-    )
+  private fun enqueueTask(
+    block: Runnable,
+    delayMillis: Long = 0L,
+  ) {
+    taskQueue +=
+      Task(
+        timeMillis = fakeSystemClock.getTimeMillis() + delayMillis,
+        block = block,
+        insertionOrder = totalTaskCount.incrementAndGet(),
+      )
     maybeNotifyNewState()
   }
 
-  private fun flushTaskQueueBlocking(currentTimeMillis: Long, timeoutMillis: Long) {
-    val flushTaskDeferred = queueCoroutineScope.async {
-      flushTaskQueueNonBlocking(currentTimeMillis)
-    }
+  private fun flushTaskQueueBlocking(
+    currentTimeMillis: Long,
+    timeoutMillis: Long,
+  ) {
+    val flushTaskDeferred =
+      queueCoroutineScope.async {
+        flushTaskQueueNonBlocking(currentTimeMillis)
+      }
     runBlocking {
       try {
         withTimeout(timeoutMillis) {
@@ -132,7 +143,8 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
         }
       } catch (e: TimeoutCancellationException) {
         throw IllegalStateException(
-          "Dispatcher failed to finish flush queue in ${timeoutMillis}ms", e
+          "Dispatcher failed to finish flush queue in ${timeoutMillis}ms",
+          e,
         )
       }
     }
@@ -162,32 +174,34 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
   private fun flushActiveTaskQueue(currentTimeMillis: Long): Boolean {
     if (isTaskQueueActive(currentTimeMillis)) {
       // Create a copy of the task queue in case it's changed during modification.
-      val tasksToRemove = createSortedTaskSet().filter { task ->
-        if (task.timeMillis <= currentTimeMillis) {
-          // Only remove the task if it was executed.
-          task.block.run()
-          return@filter true
+      val tasksToRemove =
+        createSortedTaskSet().filter { task ->
+          if (task.timeMillis <= currentTimeMillis) {
+            // Only remove the task if it was executed.
+            task.block.run()
+            return@filter true
+          }
+          return@filter false
         }
-        return@filter false
-      }
       return taskQueue.removeAll(tasksToRemove.toSet())
     }
     return false
   }
 
-  private fun isTaskQueueActive(currentTimeMillis: Long): Boolean {
-    return taskQueue.hasPendingCompletableTasks(currentTimeMillis) ||
+  private fun isTaskQueueActive(currentTimeMillis: Long): Boolean =
+    taskQueue.hasPendingCompletableTasks(currentTimeMillis) ||
       lock.withLock { executingTaskCount } != 0
-  }
 
-  private fun createDeferredRunnable(context: CoroutineContext, block: Runnable): Runnable {
-    return Runnable {
+  private fun createDeferredRunnable(
+    context: CoroutineContext,
+    block: Runnable,
+  ): Runnable =
+    Runnable {
       monitoredCoroutineDispatcher.dispatch(context, block)
     }
-  }
 
-  private fun createContinuationRunnable(continuation: CancellableContinuation<Unit>): Runnable {
-    return Runnable {
+  private fun createContinuationRunnable(continuation: CancellableContinuation<Unit>): Runnable =
+    Runnable {
       // Delegate the continuation to the monitored dispatcher so that the executing task count can
       // be correctly decremented after the task is finished (to avoid race conditions against the
       // caller). Note that the Runnable check is for compatibility with the particular Kotlin
@@ -196,7 +210,6 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
       check(continuation is Runnable) { "Expected continuation to be a Runnable" }
       monitoredCoroutineDispatcher.resumeContinuation(continuation)
     }
-  }
 
   private fun incrementExecutingTaskCount() {
     lock.withLock {
@@ -216,27 +229,30 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
 
   @SuppressLint("NewApi") // Robolectric-only code that's not bound by SDK.
   private fun createSortedTaskSet(): Set<Task> {
-    val sortedSet = TreeSet(
-      Comparator.comparingLong(Task::timeMillis)
-        .thenComparing(Task::insertionOrder)
-    )
+    val sortedSet =
+      TreeSet(
+        Comparator
+          .comparingLong(Task::timeMillis)
+          .thenComparing(Task::insertionOrder),
+      )
     sortedSet.addAll(taskQueue)
     return sortedSet
   }
 
   private fun maybeNotifyNewState() {
-    val (previousState, newState) = lock.withLock {
-      val newState = State.inferFromExecutingTaskCount(executingTaskCount)
-      val previousState = state
-      state = newState
-      // Once state has been checked, see if a dispatch is needed.
-      consideringNewState = false
-      if (newState != previousState) {
-        // A dispatch is needed.
-        pendingDispatchCounts++
+    val (previousState, newState) =
+      lock.withLock {
+        val newState = State.inferFromExecutingTaskCount(executingTaskCount)
+        val previousState = state
+        state = newState
+        // Once state has been checked, see if a dispatch is needed.
+        consideringNewState = false
+        if (newState != previousState) {
+          // A dispatch is needed.
+          pendingDispatchCounts++
+        }
+        return@withLock previousState to newState
       }
-      return@withLock previousState to newState
-    }
     if (previousState != newState) {
       dispatchCurrentState(newState)
       // Record that the dispatch has fired to unblock any locks waiting on the state.
@@ -260,27 +276,24 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     private data class Task(
       val block: Runnable,
       val timeMillis: Long,
-      val insertionOrder: Int
+      val insertionOrder: Int,
     )
 
-    private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(
-      currentTimeMillis: Long
-    ): Boolean {
-      return any { task -> task.timeMillis <= currentTimeMillis }
-    }
+    private fun CopyOnWriteArraySet<Task>.hasPendingCompletableTasks(currentTimeMillis: Long): Boolean =
+      any { task -> task.timeMillis <= currentTimeMillis }
   }
 
   private enum class State {
     IDLE,
-    RUNNING;
+    RUNNING,
+    ;
 
     companion object {
-      fun inferFromExecutingTaskCount(taskCount: Int): State {
-        return when (taskCount) {
+      fun inferFromExecutingTaskCount(taskCount: Int): State =
+        when (taskCount) {
           0 -> IDLE
           else -> RUNNING
         }
-      }
     }
   }
 
@@ -294,7 +307,10 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
     private val incrementExecutingTaskCount: () -> Unit,
     private val decrementExecutingTaskCount: () -> Unit,
   ) : CoroutineDispatcher() {
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
+    override fun dispatch(
+      context: CoroutineContext,
+      block: Runnable,
+    ) {
       incrementExecutingTaskCount()
       delegate.dispatch(context) {
         try {
@@ -327,11 +343,12 @@ class TestCoroutineDispatcherRobolectricImpl private constructor(
    * Injectable implementation of [TestCoroutineDispatcher.Factory] for
    * [TestCoroutineDispatcherEspressoImpl].
    */
-  class FactoryImpl @Inject constructor(
-    private val fakeSystemClock: FakeSystemClock
-  ) : Factory {
-    override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher {
-      return TestCoroutineDispatcherRobolectricImpl(fakeSystemClock, realDispatcher)
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val fakeSystemClock: FakeSystemClock,
+    ) : Factory {
+      override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher =
+        TestCoroutineDispatcherRobolectricImpl(fakeSystemClock, realDispatcher)
     }
-  }
 }

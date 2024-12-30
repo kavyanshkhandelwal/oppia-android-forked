@@ -105,7 +105,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = WalkthroughFinalFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class WalkthroughFinalFragmentTest {
   @get:Rule
@@ -133,12 +133,11 @@ class WalkthroughFinalFragmentTest {
     Intents.release()
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
-    return WalkthroughActivity.createWalkthroughActivityIntent(
+  private fun createWalkthroughActivityIntent(profileId: Int): Intent =
+    WalkthroughActivity.createWalkthroughActivityIntent(
       context,
-      profileId
+      profileId,
     )
-  }
 
   @Test
   fun testWalkthroughFinalFragment_topicSelected_firstTestTopicIsDisplayed() {
@@ -153,14 +152,14 @@ class WalkthroughFinalFragmentTest {
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           1,
-          R.id.walkthrough_topic_name_text_view
-        )
+          R.id.walkthrough_topic_name_text_view,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
-          withText(containsString("First Test Topic"))
-        )
+          withText(containsString("First Test Topic")),
+        ),
       )
     }
   }
@@ -178,14 +177,14 @@ class WalkthroughFinalFragmentTest {
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
-          R.id.walkthrough_topic_name_text_view
-        )
+          R.id.walkthrough_topic_name_text_view,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
-          withText(containsString("Second Test Topic"))
-        )
+          withText(containsString("Second Test Topic")),
+        ),
       )
     }
   }
@@ -203,21 +202,21 @@ class WalkthroughFinalFragmentTest {
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
-          R.id.walkthrough_topic_name_text_view
-        )
+          R.id.walkthrough_topic_name_text_view,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
-          withText(containsString("Second Test Topic"))
-        )
+          withText(containsString("Second Test Topic")),
+        ),
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_final_topic_text_view)).check(
         matches(
-          withText(containsString("Second Test Topic"))
-        )
+          withText(containsString("Second Test Topic")),
+        ),
       )
     }
   }
@@ -235,12 +234,14 @@ class WalkthroughFinalFragmentTest {
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
-          R.id.walkthrough_topic_name_text_view
-        )
+          R.id.walkthrough_topic_name_text_view,
+        ),
       ).perform(click())
-      onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
+      onView(withId(R.id.walkthrough_final_no_button))
+        .perform(scrollTo())
         .check(matches(isDisplayed()))
-      onView(withId(R.id.walkthrough_final_yes_button)).perform(scrollTo())
+      onView(withId(R.id.walkthrough_final_yes_button))
+        .perform(scrollTo())
         .check(matches(isDisplayed()))
     }
   }
@@ -258,10 +259,11 @@ class WalkthroughFinalFragmentTest {
         atPositionOnView(
           R.id.walkthrough_topic_recycler_view,
           2,
-          R.id.walkthrough_topic_name_text_view
-        )
+          R.id.walkthrough_topic_name_text_view,
+        ),
       ).perform(click())
-      onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
+      onView(withId(R.id.walkthrough_final_no_button))
+        .perform(scrollTo())
         .perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
     }
@@ -300,8 +302,8 @@ class WalkthroughFinalFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -312,9 +314,13 @@ class WalkthroughFinalFragmentTest {
     fun inject(walkthroughFinalFragmentTest: WalkthroughFinalFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWalkthroughFinalFragmentTest_TestApplicationComponent.builder()
+      DaggerWalkthroughFinalFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -323,9 +329,12 @@ class WalkthroughFinalFragmentTest {
       component.inject(walkthroughFinalFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

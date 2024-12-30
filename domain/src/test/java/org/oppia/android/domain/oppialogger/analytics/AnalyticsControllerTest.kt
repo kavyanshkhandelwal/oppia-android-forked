@@ -95,16 +95,27 @@ private const val TEST_SUB_TOPIC_ID = 1
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
   @Inject lateinit var analyticsControllerProvider: Provider<AnalyticsController>
+
   @Inject lateinit var oppiaLogger: OppiaLogger
+
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
+
   @Inject lateinit var profileManagementControllerProvider: Provider<ProfileManagementController>
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var oppiaClock: OppiaClock
+
   @Inject lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -120,11 +131,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -142,10 +154,10 @@ class AnalyticsControllerTest {
         TEST_CLASSROOM_ID,
         TEST_TOPIC_ID,
         TEST_STORY_ID,
-        TEST_EXPLORATION_ID
+        TEST_EXPLORATION_ID,
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -159,7 +171,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withOpenInfoTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -173,7 +187,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withOpenPracticeTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -187,7 +203,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withOpenLessonsTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -201,7 +219,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withOpenRevisionTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -217,7 +237,7 @@ class AnalyticsControllerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -233,7 +253,7 @@ class AnalyticsControllerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -247,7 +267,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_withConceptCardContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -337,7 +359,9 @@ class AnalyticsControllerTest {
   fun testController_logImportantEvent_noProfile_hasNoProfileId() {
     setUpTestApplicationComponent()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -350,7 +374,9 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     val profileId = addNewProfileAndLogIn()
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -366,11 +392,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -388,10 +415,10 @@ class AnalyticsControllerTest {
         TEST_CLASSROOM_ID,
         TEST_TOPIC_ID,
         TEST_STORY_ID,
-        TEST_EXPLORATION_ID
+        TEST_EXPLORATION_ID,
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -405,7 +432,9 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withOpenInfoTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -419,7 +448,9 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withOpenPracticeTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenPracticeTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -433,7 +464,9 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withOpenLessonsTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -447,7 +480,9 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withOpenRevisionTabContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenRevisionTabContext(TEST_TOPIC_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -463,7 +498,7 @@ class AnalyticsControllerTest {
     analyticsController.logLowPriorityEvent(
       oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -479,7 +514,7 @@ class AnalyticsControllerTest {
     analyticsController.logLowPriorityEvent(
       oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -493,7 +528,9 @@ class AnalyticsControllerTest {
   fun testController_logLowPriorityEvent_withConceptCardContext_checkLogsEvent() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -514,11 +551,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -539,11 +577,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -623,7 +662,9 @@ class AnalyticsControllerTest {
   fun testController_logPriorityEvent_noProfile_hasNoProfileId() {
     setUpTestApplicationComponent()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId = null, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId = null,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -636,7 +677,9 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     val profileId = addNewProfileAndLogIn()
     analyticsController.logLowPriorityEvent(
-      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID), profileId, TEST_TIMESTAMP
+      oppiaLogger.createOpenConceptCardContext(TEST_SKILL_ID),
+      profileId,
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -679,22 +722,24 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -715,11 +760,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -727,11 +773,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -786,11 +833,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556094120000
+      1556094120000,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -806,11 +854,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556094120000
+      1556094120000,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -875,9 +924,10 @@ class AnalyticsControllerTest {
   @Test
   fun testController_uploadEventLogs_noLogs_returnsPendingAndSimpleSuccessDataProvider() {
     setUpTestApplicationComponent()
-    val uploadResults = monitorFactory.waitForAllNextResults {
-      analyticsController.uploadEventLogs()
-    }
+    val uploadResults =
+      monitorFactory.waitForAllNextResults {
+        analyticsController.uploadEventLogs()
+      }
 
     assertThat(uploadResults).hasSize(2)
     assertThat(uploadResults[0]).isPending()
@@ -969,9 +1019,10 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     logTwoEvents()
 
-    val uploadResults = monitorFactory.waitForAllNextResults {
-      analyticsController.uploadEventLogs()
-    }
+    val uploadResults =
+      monitorFactory.waitForAllNextResults {
+        analyticsController.uploadEventLogs()
+      }
 
     // There's no progress to report since the events have already been uploaded.
     assertThat(uploadResults).hasSize(2)
@@ -984,9 +1035,10 @@ class AnalyticsControllerTest {
     setUpTestApplicationComponent()
     logTwoEventsOffline()
 
-    val uploadResults = monitorFactory.waitForAllNextResults {
-      analyticsController.uploadEventLogs()
-    }
+    val uploadResults =
+      monitorFactory.waitForAllNextResults {
+        analyticsController.uploadEventLogs()
+      }
 
     // Progress should be reported for each uploaded event. Note that this is inherently flaky since
     // only the *last* result is guaranteed in DataProviders. As a result, *some* simple control
@@ -1187,11 +1239,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556094120000
+      1556094120000,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1199,11 +1252,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556094110000
+      1556094110000,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1211,11 +1265,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556093100000
+      1556093100000,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1223,11 +1278,12 @@ class AnalyticsControllerTest {
       oppiaLogger.createOpenQuestionPlayerContext(
         TEST_QUESTION_ID,
         listOf(
-          TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID
-        )
+          TEST_SKILL_LIST_ID,
+          TEST_SKILL_LIST_ID,
+        ),
       ),
       profileId = null,
-      1556094100000
+      1556094100000,
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -1245,25 +1301,30 @@ class AnalyticsControllerTest {
   }
 
   private fun logTwoCachedEventsDirectlyOnDisk() {
-    persistentCacheStoryFactory.create(
-      "event_logs", OppiaEventLogs.getDefaultInstance()
-    ).storeDataAsync {
-      OppiaEventLogs.newBuilder().apply {
-        addEventLogsToUpload(createEventLog(context = oppiaLogger.createOpenHomeContext()))
-        addEventLogsToUpload(createEventLog(context = oppiaLogger.createOpenHomeContext()))
-      }.build()
-    }.waitForSuccessfulResult()
+    persistentCacheStoryFactory
+      .create(
+        "event_logs",
+        OppiaEventLogs.getDefaultInstance(),
+      ).storeDataAsync {
+        OppiaEventLogs
+          .newBuilder()
+          .apply {
+            addEventLogsToUpload(createEventLog(context = oppiaLogger.createOpenHomeContext()))
+            addEventLogsToUpload(createEventLog(context = oppiaLogger.createOpenHomeContext()))
+          }.build()
+      }.waitForSuccessfulResult()
   }
 
   private fun addNewProfileAndLogIn(): ProfileId {
-    val addProfileProvider = profileManagementController.addProfile(
-      name = "Test Profile",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = false,
-      colorRgb = 0,
-      isAdmin = false
-    )
+    val addProfileProvider =
+      profileManagementController.addProfile(
+        name = "Test Profile",
+        pin = "",
+        avatarImagePath = null,
+        allowDownloadAccess = false,
+        colorRgb = 0,
+        isAdmin = false,
+      )
     monitorFactory.ensureDataProviderExecutes(addProfileProvider)
 
     return ProfileId.newBuilder().apply { internalId = 0 }.build().also { expectedProfileId ->
@@ -1272,38 +1333,46 @@ class AnalyticsControllerTest {
     }
   }
 
-  private fun ensureAppLanguageIsUpdatedTo(profileId: ProfileId, language: OppiaLanguage) {
+  private fun ensureAppLanguageIsUpdatedTo(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
     val resultProvider =
       translationController.updateAppLanguage(
-        profileId, AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build()
+        profileId,
+        AppLanguageSelection.newBuilder().apply { selectedLanguage = language }.build(),
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
     profileId: ProfileId,
-    language: OppiaLanguage
+    language: OppiaLanguage,
   ) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
         profileId,
-        WrittenTranslationLanguageSelection.newBuilder().apply {
-          selectedLanguage = language
-        }.build()
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
   private fun ensureAudioTranslationsLanguageIsUpdatedTo(
     profileId: ProfileId,
-    language: OppiaLanguage
+    language: OppiaLanguage,
   ) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
         profileId,
-        AudioTranslationLanguageSelection.newBuilder().apply {
-          selectedLanguage = language
-        }.build()
+        AudioTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
@@ -1311,48 +1380,47 @@ class AnalyticsControllerTest {
   private fun runSynchronously(operation: suspend () -> Unit) =
     CoroutineScope(backgroundDispatcher).async { operation() }.waitForSuccessfulResult()
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult() {
-    return when (val result = waitForResult()) {
+  private fun <T> Deferred<T>.waitForSuccessfulResult() =
+    when (val result = waitForResult()) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
-  }
 
   private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      CoroutineScope(backgroundDispatcher)
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
+  private fun <T> StateFlow<T>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun createEventLog(
     context: EventLog.Context,
     priority: EventLog.Priority = EventLog.Priority.ESSENTIAL,
-    timestamp: Long = oppiaClock.getCurrentTimeMs()
-  ) = EventLog.newBuilder().apply {
-    this.timestamp = timestamp
-    this.priority = priority
-    this.context = context
-  }.build()
+    timestamp: Long = oppiaClock.getCurrentTimeMs(),
+  ) = EventLog
+    .newBuilder()
+    .apply {
+      this.timestamp = timestamp
+      this.priority = priority
+      this.context = context
+    }.build()
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -1392,23 +1460,27 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
-    ]
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(analyticsControllerTest: AnalyticsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
+      DaggerAnalyticsControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

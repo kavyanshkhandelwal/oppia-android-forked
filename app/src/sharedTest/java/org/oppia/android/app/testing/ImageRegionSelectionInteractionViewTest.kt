@@ -119,7 +119,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ImageRegionSelectionInteractionViewTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ImageRegionSelectionInteractionViewTest {
   @get:Rule
@@ -167,18 +167,19 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
-          capture(regionClickedEvent)
+          capture(regionClickedEvent),
         )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
-          )
+            regionLabel = "Region 3",
+            contentDescription = "You have selected Region 3",
+          ),
         )
     }
   }
@@ -192,34 +193,35 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.7f, pointY = 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       verify(
         onClickableAreaClickedListener,
-        times(2)
+        times(2),
       ).onClickableAreaTouched(
         capture(
-          regionClickedEvent
-        )
+          regionClickedEvent,
+        ),
       )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
-          )
+            regionLabel = "Region 2",
+            contentDescription = "You have selected Region 2",
+          ),
         )
     }
   }
@@ -233,14 +235,14 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.0f, pointY = 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f),
       )
       onView(withId(R.id.default_selected_region)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
-          capture(regionClickedEvent)
+          capture(regionClickedEvent),
         )
       assertThat(regionClickedEvent.value).isInstanceOf(DefaultRegionClickedEvent::class.java)
     }
@@ -254,34 +256,35 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.7f, pointY = 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       verify(
         onClickableAreaClickedListener,
-        times(2)
+        times(2),
       ).onClickableAreaTouched(
         capture(
-          regionClickedEvent
-        )
+          regionClickedEvent,
+        ),
       )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
-          )
+            regionLabel = "Region 2",
+            contentDescription = "You have selected Region 2",
+          ),
         )
     }
   }
@@ -294,22 +297,23 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
-          capture(regionClickedEvent)
+          capture(regionClickedEvent),
         )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
-          )
+            regionLabel = "Region 3",
+            contentDescription = "You have selected Region 3",
+          ),
         )
     }
   }
@@ -322,10 +326,10 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.0f, pointY = 0.0f)
+        clickPoint(pointX = 0.0f, pointY = 0.0f),
       )
       onView(withId(R.id.default_selected_region)).check(
-        matches(not(isDisplayed()))
+        matches(not(isDisplayed())),
       )
 
       assertThat(regionClickedEvent.value).isInstanceOf(DefaultRegionClickedEvent::class.java)
@@ -342,18 +346,19 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
 
       verify(onClickableAreaClickedListener)
         .onClickableAreaTouched(
-          capture(regionClickedEvent)
+          capture(regionClickedEvent),
         )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
-          )
+            regionLabel = "Region 3",
+            contentDescription = "You have selected Region 3",
+          ),
         )
     }
   }
@@ -368,34 +373,35 @@ class ImageRegionSelectionInteractionViewTest {
         activity.setMockOnClickableAreaClickedListener(onClickableAreaClickedListener)
       }
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.3f, pointY = 0.3f)
+        clickPoint(pointX = 0.3f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 3"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       onView(withId(R.id.clickable_image_view)).perform(
-        clickPoint(pointX = 0.7f, pointY = 0.3f)
+        clickPoint(pointX = 0.7f, pointY = 0.3f),
       )
       onView(allOf(withTagValue(`is`("Region 2"))))
         .check(
-          matches(isDisplayed())
+          matches(isDisplayed()),
         )
 
       verify(
         onClickableAreaClickedListener,
-        times(2)
+        times(2),
       ).onClickableAreaTouched(
         capture(
-          regionClickedEvent
-        )
+          regionClickedEvent,
+        ),
       )
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
-          )
+            regionLabel = "Region 2",
+            contentDescription = "You have selected Region 2",
+          ),
         )
     }
   }
@@ -404,17 +410,18 @@ class ImageRegionSelectionInteractionViewTest {
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_withBlankInput_submit_emptyInputErrorIsDisplayed() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed()))
         .perform(
-          click()
+          click(),
         )
       onView(withId(R.id.image_input_error))
         .check(
           matches(
             withText(
-              R.string.image_error_empty_input
-            )
-          )
+              R.string.image_error_empty_input,
+            ),
+          ),
         )
     }
   }
@@ -456,8 +463,8 @@ class ImageRegionSelectionInteractionViewTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -468,9 +475,13 @@ class ImageRegionSelectionInteractionViewTest {
     fun inject(imageRegionSelectionInteractionViewTest: ImageRegionSelectionInteractionViewTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerImageRegionSelectionInteractionViewTest_TestApplicationComponent.builder()
+      DaggerImageRegionSelectionInteractionViewTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -479,9 +490,12 @@ class ImageRegionSelectionInteractionViewTest {
       component.inject(imageRegionSelectionInteractionViewTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

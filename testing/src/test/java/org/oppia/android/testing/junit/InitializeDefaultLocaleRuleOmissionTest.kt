@@ -104,14 +104,15 @@ class InitializeDefaultLocaleRuleOmissionTest {
   @Test
   fun testSuite_withoutRule_doesNotInitializeLocaleHandlerWithDefaultContext() {
     // Not including the rule should result in a helpful exception being thrown.
-    val exception = assertThrows<IllegalStateException>() {
-      appLanguageLocaleHandler.getDisplayLocale()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        appLanguageLocaleHandler.getDisplayLocale()
+      }
     assertThat(exception)
       .hasMessageThat()
       .contains(
         "Expected locale to be initialized. If this is in a test, did you remember to include" +
-          " InitializeDefaultLocaleRule?"
+          " InitializeDefaultLocaleRule?",
       )
   }
 
@@ -147,8 +148,8 @@ class InitializeDefaultLocaleRuleOmissionTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -162,9 +163,13 @@ class InitializeDefaultLocaleRuleOmissionTest {
     fun inject(initializeDefaultLocaleRuleOmissionTest: InitializeDefaultLocaleRuleOmissionTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerInitializeDefaultLocaleRuleOmissionTest_TestApplicationComponent.builder()
+      DaggerInitializeDefaultLocaleRuleOmissionTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -173,9 +178,12 @@ class InitializeDefaultLocaleRuleOmissionTest {
       component.inject(initializeDefaultLocaleRuleOmissionTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

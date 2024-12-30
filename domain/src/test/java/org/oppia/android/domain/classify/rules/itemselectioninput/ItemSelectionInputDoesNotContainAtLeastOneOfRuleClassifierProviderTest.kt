@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
-
   private val ITEM_SET_12345 =
     createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5")
   private val ITEM_SET_1 = createSetOfTranslatableHtmlContentIds("test1")
@@ -52,11 +51,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SET_1)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -65,11 +65,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SET_16)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -78,11 +79,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SET_12)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -91,11 +93,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SET_126)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -104,11 +107,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SET_EMPTY)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -117,11 +121,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SET_6)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -130,11 +135,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswerIsEmpty_inputIsNonEmpty_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_EMPTY,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_EMPTY,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -143,11 +149,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsASuperset_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SET_12,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -156,13 +163,14 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_inputIsMissing_throwsException() {
     val inputs = mapOf("y" to ITEM_SET_1)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+          answer = ITEM_SET_12345,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -173,13 +181,14 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_inputHasTheWrongType_throwsException() {
     val inputs = mapOf("x" to DIFFERENT_INTERACTION_OBJECT_TYPE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+          answer = ITEM_SET_12345,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -190,13 +199,14 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_answerHasTheWrongType_throwsException() {
     val inputs = mapOf("x" to ITEM_SET_12345)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+          answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -204,7 +214,8 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest_TestApplicationComponent // ktlint-disable max-line-length
+    @Suppress("ktlint:standard:max-line-length")
+    DaggerItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()

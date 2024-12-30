@@ -95,18 +95,28 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioPlayerControllerTest.TestApplication::class)
 class AudioPlayerControllerTest {
-
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
   @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
+
   @Captor lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var audioPlayerController: AudioPlayerController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var profileManagementController: ProfileManagementController
+
   @Inject lateinit var explorationDataController: ExplorationDataController
+
   @Inject lateinit var explorationProgressController: ExplorationProgressController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var shadowMediaPlayer: ShadowMediaPlayer
@@ -437,11 +447,13 @@ class AudioPlayerControllerTest {
   @Test
   fun testController_notInitialized_releasePlayer_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows<IllegalStateException>() {
-      audioPlayerController.releaseMediaPlayer()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        audioPlayerController.releaseMediaPlayer()
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Media player has not been previously initialized")
   }
 
@@ -459,9 +471,10 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePlay_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows<IllegalStateException>() {
-      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+      }
 
     assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
@@ -469,9 +482,10 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokePause_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows<IllegalStateException>() {
-      audioPlayerController.pause(isFromExplicitUserAction = true)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        audioPlayerController.pause(isFromExplicitUserAction = true)
+      }
 
     assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
@@ -479,9 +493,10 @@ class AudioPlayerControllerTest {
   @Test
   fun testError_notPrepared_invokeSeekTo_fails() {
     setUpMediaReadyApplication()
-    val exception = assertThrows<IllegalStateException>() {
-      audioPlayerController.seekTo(500)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        audioPlayerController.seekTo(500)
+      }
 
     assertThat(exception).hasMessageThat().contains("Media Player not in a prepared state")
   }
@@ -522,7 +537,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
 
     audioPlayerController.play(isPlayingFromAutoPlay = true, reloadingMainContent = false)
@@ -560,7 +575,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = true)
@@ -598,7 +613,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
@@ -636,7 +651,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
 
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
@@ -671,7 +686,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -711,7 +726,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -751,7 +766,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
     audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
     testCoroutineDispatchers.runCurrent()
@@ -775,7 +790,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
@@ -797,7 +812,7 @@ class AudioPlayerControllerTest {
       classroomId = "test_classroom_id",
       topicId = "test_topic_id",
       storyId = "test_story_id",
-      explorationId
+      explorationId,
     )
     testCoroutineDispatchers.runCurrent()
     fakeAnalyticsEventLogger.clearAllEvents() // Remove unrelated events.
@@ -809,7 +824,10 @@ class AudioPlayerControllerTest {
     assertThat(fakeAnalyticsEventLogger.noEventsPresent()).isTrue()
   }
 
-  private fun arrangeMediaPlayer(contentId: String? = null, languageCode: String = "en") {
+  private fun arrangeMediaPlayer(
+    contentId: String? = null,
+    languageCode: String = "en",
+  ) {
     audioPlayerController.initializeMediaPlayer().observeForever(mockAudioPlayerObserver)
     audioPlayerController.changeDataSource(TEST_URL, contentId, languageCode)
     shadowMediaPlayer.invokePreparedListener()
@@ -820,32 +838,35 @@ class AudioPlayerControllerTest {
     val dataSource = DataSource.toDataSource(context, Uri.parse(TEST_URL))
     val dataSource2 = DataSource.toDataSource(context, Uri.parse(TEST_URL2))
     val dataSource3 = DataSource.toDataSource(context, Uri.parse(TEST_FAIL_URL))
-    val mediaInfo = ShadowMediaPlayer.MediaInfo(
-      /* duration= */ 2000,
-      /* preparationDelay= */ 0
-    )
+    val mediaInfo =
+      ShadowMediaPlayer.MediaInfo(
+        // duration=
+        2000,
+        // preparationDelay=
+        0,
+      )
     ShadowMediaPlayer.addMediaInfo(dataSource, mediaInfo)
     ShadowMediaPlayer.addMediaInfo(dataSource2, mediaInfo)
     ShadowMediaPlayer.addException(dataSource3, IOException("Invalid URL"))
   }
 
-  private fun AsyncResult<PlayProgress>.hasStatus(playStatus: PlayStatus): Boolean {
-    return (this is AsyncResult.Success) && value.type == playStatus
-  }
+  private fun AsyncResult<PlayProgress>.hasStatus(playStatus: PlayStatus): Boolean =
+    (this is AsyncResult.Success) && value.type == playStatus
 
   private fun logIntoAnalyticsReadyAdminProfile() {
     val rootProfileId = ProfileId.getDefaultInstance()
-    val addProfileProvider = profileManagementController.addProfile(
-      name = "Admin",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = 0,
-      isAdmin = true
-    )
+    val addProfileProvider =
+      profileManagementController.addProfile(
+        name = "Admin",
+        pin = "",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = 0,
+        isAdmin = true,
+      )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId),
     )
   }
 
@@ -853,21 +874,25 @@ class AudioPlayerControllerTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ) {
     val playingProvider =
       explorationDataController.startPlayingNewExploration(
-        internalProfileId = 0, classroomId, topicId, storyId, explorationId
+        internalProfileId = 0,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
       )
     monitorFactory.waitForNextSuccessfulResult(playingProvider)
     monitorFactory.waitForNextSuccessfulResult(explorationProgressController.getCurrentState())
   }
 
-  private fun loadExploration(explorationId: String): Exploration {
-    return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId, explorationId)
-    ).exploration
-  }
+  private fun loadExploration(explorationId: String): Exploration =
+    monitorFactory
+      .waitForNextSuccessfulResult(
+        explorationDataController.getExplorationById(profileId, explorationId),
+      ).exploration
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
     TestModule.enableLearnerStudyAnalytics = true
@@ -902,9 +927,7 @@ class AudioPlayerControllerTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // The scoping here is to ensure changes to the module value above don't change the parameter
     // within the same application instance.
@@ -915,7 +938,7 @@ class AudioPlayerControllerTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
 
@@ -926,21 +949,18 @@ class AudioPlayerControllerTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
 
     @Provides
     @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
+    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> = PlatformParameterValue.createDefaultParameter(defaultValue = true)
 
     @Provides
     @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
+    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(defaultValue = true)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -959,23 +979,27 @@ class AudioPlayerControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
       HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: AudioPlayerControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAudioPlayerControllerTest_TestApplicationComponent.builder()
+      DaggerAudioPlayerControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

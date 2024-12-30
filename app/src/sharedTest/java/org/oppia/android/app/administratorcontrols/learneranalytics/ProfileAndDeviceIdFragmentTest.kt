@@ -149,22 +149,33 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileAndDeviceIdFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileAndDeviceIdFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var oppiaLogger: OppiaLogger
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+
   @Inject lateinit var syncStatusManager: TestSyncStatusManager
+
   @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private val clipboardManager by lazy {
@@ -181,10 +192,12 @@ class ProfileAndDeviceIdFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
 
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(logUploadWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -662,10 +675,10 @@ class ProfileAndDeviceIdFragmentTest {
           matches(
             withText(
               containsString(
-                "Please connect to a WiFi or Cellular network in order to upload profile data"
-              )
-            )
-          )
+                "Please connect to a WiFi or Cellular network in order to upload profile data",
+              ),
+            ),
+          ),
         )
     }
   }
@@ -696,7 +709,7 @@ class ProfileAndDeviceIdFragmentTest {
 
       onSyncStatusAt(position = 2)
         .check(
-          matches(withText(containsString("Something went wrong when trying to upload events")))
+          matches(withText(containsString("Something went wrong when trying to upload events"))),
         )
     }
   }
@@ -774,7 +787,7 @@ class ProfileAndDeviceIdFragmentTest {
 
       onSyncStatusAt(position = 2)
         .check(
-          matches(withText(containsString("Something went wrong when trying to upload events")))
+          matches(withText(containsString("Something went wrong when trying to upload events"))),
         )
     }
   }
@@ -929,14 +942,13 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
-  private fun runWithLaunchedActivityAndAddedFragment(
-    testBlock: ActivityScenario<TestActivity>.() -> Unit
-  ) {
+  private fun runWithLaunchedActivityAndAddedFragment(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
     ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
       scenario.onActivity { activity ->
         activity.setContentView(R.layout.test_activity)
 
-        activity.supportFragmentManager.beginTransaction()
+        activity.supportFragmentManager
+          .beginTransaction()
           .add(R.id.test_fragment_placeholder, ProfileAndDeviceIdFragment())
           .commitNow()
       }
@@ -954,49 +966,46 @@ class ProfileAndDeviceIdFragmentTest {
 
   private fun onDeviceIdLabelAt(position: Int) = onProfileListItemAt(position, R.id.device_id_label)
 
-  private fun onDeviceIdCopyButtonAt(position: Int) =
-    onProfileListItemAt(position, R.id.device_id_copy_button)
+  private fun onDeviceIdCopyButtonAt(position: Int) = onProfileListItemAt(position, R.id.device_id_copy_button)
 
-  private fun onProfileNameAt(position: Int) =
-    onProfileListItemAt(position, R.id.profile_id_view_profile_name)
+  private fun onProfileNameAt(position: Int) = onProfileListItemAt(position, R.id.profile_id_view_profile_name)
 
-  private fun onLearnerIdAt(position: Int) =
-    onProfileListItemAt(position, R.id.profile_id_view_learner_id)
+  private fun onLearnerIdAt(position: Int) = onProfileListItemAt(position, R.id.profile_id_view_learner_id)
 
-  private fun onLearnerIdCopyButtonAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_id_copy_button)
+  private fun onLearnerIdCopyButtonAt(position: Int) = onProfileListItemAt(position, R.id.learner_id_copy_button)
 
-  private fun onAwaitingUploadLearnerEventsCountAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_events_waiting_upload_count)
+  private fun onAwaitingUploadLearnerEventsCountAt(position: Int) = onProfileListItemAt(position, R.id.learner_events_waiting_upload_count)
 
-  private fun onUploadedLearnerEventsCountAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_events_uploaded_count)
+  private fun onUploadedLearnerEventsCountAt(position: Int) = onProfileListItemAt(position, R.id.learner_events_uploaded_count)
 
   private fun onAwaitingUploadUncategorizedEventsCountAt(position: Int) =
     onProfileListItemAt(position, R.id.uncategorized_events_waiting_upload_count)
 
-  private fun onUploadedUncategorizedEventsCountAt(position: Int) =
-    onProfileListItemAt(position, R.id.uncategorized_events_uploaded_count)
+  private fun onUploadedUncategorizedEventsCountAt(position: Int) = onProfileListItemAt(position, R.id.uncategorized_events_uploaded_count)
 
-  private fun onSyncStatusAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_analytics_sync_status_text_view)
+  private fun onSyncStatusAt(position: Int) = onProfileListItemAt(position, R.id.learner_analytics_sync_status_text_view)
 
-  private fun onShareIdsAndEventsButtonAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_analytics_share_ids_and_events_button)
+  private fun onShareIdsAndEventsButtonAt(position: Int) = onProfileListItemAt(position, R.id.learner_analytics_share_ids_and_events_button)
 
-  private fun onUploadLogsButtonAt(position: Int) =
-    onProfileListItemAt(position, R.id.learner_analytics_upload_logs_now_button)
+  private fun onUploadLogsButtonAt(position: Int) = onProfileListItemAt(position, R.id.learner_analytics_upload_logs_now_button)
 
-  private fun onProfileListItemAt(position: Int, @IdRes viewId: Int): ViewInteraction {
+  private fun onProfileListItemAt(
+    position: Int,
+    @IdRes viewId: Int,
+  ): ViewInteraction {
     scrollTo(position)
     return onView(profileListItemAt(position, viewId))
   }
 
-  private fun profileListItemAt(position: Int, @IdRes viewId: Int): Matcher<View> {
-    return atPositionOnView(
-      recyclerViewId = R.id.profile_and_device_id_recycler_view, position, targetViewId = viewId
+  private fun profileListItemAt(
+    position: Int,
+    @IdRes viewId: Int,
+  ): Matcher<View> =
+    atPositionOnView(
+      recyclerViewId = R.id.profile_and_device_id_recycler_view,
+      position,
+      targetViewId = viewId,
     )
-  }
 
   private fun getCurrentClipData(): ClipData? = clipboardManager.primaryClip
 
@@ -1005,15 +1014,19 @@ class ProfileAndDeviceIdFragmentTest {
     @Suppress("UsePropertyAccessSyntax")
     clipboardManager.setPrimaryClip(
       ClipData.newPlainText(
-        /* label = */ "Label of text from another app", /* text = */ "Text copied from another app"
-      )
+        // label =
+        "Label of text from another app", // text =
+        "Text copied from another app",
+      ),
     )
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun logAnalyticsEvent(profileId: ProfileId? = null) {
     learnerAnalyticsLogger.logAppInForeground(
-      installationId = TEST_INSTALLATION_ID, profileId, learnerId = TEST_LEARNER_ID
+      installationId = TEST_INSTALLATION_ID,
+      profileId,
+      learnerId = TEST_LEARNER_ID,
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -1031,9 +1044,13 @@ class ProfileAndDeviceIdFragmentTest {
   private fun flushEventWorkerQueue() {
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY, LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
     val request = OneTimeWorkRequestBuilder<LogUploadWorker>().setInputData(inputData).build()
     workManager.enqueue(request)
@@ -1054,19 +1071,18 @@ class ProfileAndDeviceIdFragmentTest {
     disconnectNetwork()
   }
 
-  private fun String.computeSha1Hash(): String {
-    return machineLocale.run {
-      MessageDigest.getInstance("SHA-1")
+  private fun String.computeSha1Hash(): String =
+    machineLocale.run {
+      MessageDigest
+        .getInstance("SHA-1")
         .digest(this@computeSha1Hash.toByteArray())
         .joinToString("") { "%02x".formatForMachines(it) }
     }
-  }
 
-  private fun decodeEventLogString(encodedEventLogs: String): OppiaEventLogs {
-    return GZIPInputStream(Base64.getDecoder().decode(encodedEventLogs).inputStream()).use { inps ->
+  private fun decodeEventLogString(encodedEventLogs: String): OppiaEventLogs =
+    GZIPInputStream(Base64.getDecoder().decode(encodedEventLogs).inputStream()).use { inps ->
       OppiaEventLogs.newBuilder().mergeFrom(inps).build()
     }
-  }
 
   private fun EventLogSubject.hasCommonProperties() {
     hasNoLanguageInformation()
@@ -1141,8 +1157,8 @@ class ProfileAndDeviceIdFragmentTest {
       TestingBuildFlavorModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
       ApplicationLifecycleModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1153,9 +1169,13 @@ class ProfileAndDeviceIdFragmentTest {
     fun inject(test: ProfileAndDeviceIdFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileAndDeviceIdFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileAndDeviceIdFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1164,9 +1184,12 @@ class ProfileAndDeviceIdFragmentTest {
       component.inject(test)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
@@ -1180,8 +1203,11 @@ class ProfileAndDeviceIdFragmentTest {
     private val LEARNER_PROFILE_ID_0 = createProfileId(internalProfileId = 1)
     private val LEARNER_PROFILE_ID_1 = createProfileId(internalProfileId = 2)
 
-    private fun createProfileId(internalProfileId: Int) = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
+    private fun createProfileId(internalProfileId: Int) =
+      ProfileId
+        .newBuilder()
+        .apply {
+          internalId = internalProfileId
+        }.build()
   }
 }

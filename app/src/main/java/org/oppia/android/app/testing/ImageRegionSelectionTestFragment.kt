@@ -15,8 +15,11 @@ import javax.inject.Inject
 const val IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG = "image_region_selection_test_fragment"
 
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
+
 /** Test Fragment used for testing [ClickableAreasImage] functionality. */
-class ImageRegionSelectionTestFragment : InjectableFragment(), OnClickableAreaClickedListener {
+class ImageRegionSelectionTestFragment :
+  InjectableFragment(),
+  OnClickableAreaClickedListener {
   @Inject
   lateinit var imageRegionSelectionTestFragmentPresenter:
     ImageRegionSelectionTestFragmentPresenter
@@ -31,10 +34,8 @@ class ImageRegionSelectionTestFragment : InjectableFragment(), OnClickableAreaCl
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return imageRegionSelectionTestFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = imageRegionSelectionTestFragmentPresenter.handleCreateView(inflater, container)
 
   override fun onClickableAreaTouched(region: RegionClickedEvent) {
     mockOnClickableAreaClickedListener.onClickableAreaTouched(region)

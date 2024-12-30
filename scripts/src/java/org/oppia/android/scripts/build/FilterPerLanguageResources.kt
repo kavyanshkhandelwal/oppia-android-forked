@@ -37,7 +37,8 @@ fun main(vararg args: String) {
       " </absolute/path/to/output_module.zip:Path>"
   }
   FilterPerLanguageResources().filterPerLanguageResources(
-    inputModuleZip = File(args[0]), outputModuleZip = File(args[1])
+    inputModuleZip = File(args[0]),
+    outputModuleZip = File(args[1]),
   )
 }
 
@@ -46,35 +47,44 @@ private class FilterPerLanguageResources {
    * Filters the resources for the given input module & writes an updated copy of it to the
    * specified output module file.
    */
-  fun filterPerLanguageResources(inputModuleZip: File, outputModuleZip: File) {
-    val (resourceTable, supportedLanguages) = ZipFile(inputModuleZip).use { zipFile ->
-      val resourceTableEntry = checkNotNull(zipFile.getEntry("resources.pb")) {
-        "Expected resources.pb in input zip file: $inputModuleZip."
+  fun filterPerLanguageResources(
+    inputModuleZip: File,
+    outputModuleZip: File,
+  ) {
+    val (resourceTable, supportedLanguages) =
+      ZipFile(inputModuleZip).use { zipFile ->
+        val resourceTableEntry =
+          checkNotNull(zipFile.getEntry("resources.pb")) {
+            "Expected resources.pb in input zip file: $inputModuleZip."
+          }
+        val supportedLangsEntry =
+          checkNotNull(zipFile.getEntry("assets/supported_languages.pb")) {
+            "Expected assets/supported_languages.pb in input zip file: $inputModuleZip."
+          }
+        val resourceTableData = zipFile.getInputStream(resourceTableEntry).readBytes()
+        val supportedLanguages = zipFile.getInputStream(supportedLangsEntry).readBytes()
+        ResourceTable.parseFrom(resourceTableData) to SupportedLanguages.parseFrom(supportedLanguages)
       }
-      val supportedLangsEntry = checkNotNull(zipFile.getEntry("assets/supported_languages.pb")) {
-        "Expected assets/supported_languages.pb in input zip file: $inputModuleZip."
+    val pkg =
+      resourceTable.packageList.single().also {
+        check(it.packageName == "org.oppia.android") {
+          "Expected Oppia package, not: ${it.packageName}."
+        }
       }
-      val resourceTableData = zipFile.getInputStream(resourceTableEntry).readBytes()
-      val supportedLanguages = zipFile.getInputStream(supportedLangsEntry).readBytes()
-      ResourceTable.parseFrom(resourceTableData) to SupportedLanguages.parseFrom(supportedLanguages)
-    }
-    val pkg = resourceTable.packageList.single().also {
-      check(it.packageName == "org.oppia.android") {
-        "Expected Oppia package, not: ${it.packageName}."
-      }
-    }
 
     val allReferencedLanguageLocales =
-      pkg.typeList.flatMap { it.entryList }
+      pkg.typeList
+        .flatMap { it.entryList }
         .flatMap { it.configValueList }
         .map { it.config }
         .map { it.locale }
         .map { LanguageLocale.createFrom(it) }
         .toSet()
     val supportedLanguageLocales =
-      supportedLanguages.languageDefinitionsList.mapNotNull {
-        LanguageLocale.createFrom(it)
-      }.toSet()
+      supportedLanguages.languageDefinitionsList
+        .mapNotNull {
+          LanguageLocale.createFrom(it)
+        }.toSet()
     val removedLanguageCodes =
       (allReferencedLanguageLocales - supportedLanguageLocales).sortedBy {
         it.androidBcp47QualifiedCode
@@ -85,8 +95,8 @@ private class FilterPerLanguageResources {
         " being removed that are tied to unsupported languages: ${removedLanguageCodes.map {
           it.androidBcp47QualifiedCode
         } } (size reduction: ${
-        resourceTable.serializedSize - updatedResourceTable.serializedSize
-        } bytes)."
+          resourceTable.serializedSize - updatedResourceTable.serializedSize
+        } bytes).",
     )
 
     ZipOutputStream(outputModuleZip.outputStream()).use { outputStream ->
@@ -95,7 +105,9 @@ private class FilterPerLanguageResources {
           outputStream.putNextEntry(ZipEntry(entry.name))
           if (entry.name == "resources.pb") {
             updatedResourceTable.writeTo(outputStream)
-          } else zipFile.getInputStream(entry).use { it.copyTo(outputStream) }
+          } else {
+            zipFile.getInputStream(entry).use { it.copyTo(outputStream) }
+          }
         }
       }
     }
@@ -103,10 +115,11 @@ private class FilterPerLanguageResources {
 
   private fun ResourceTable.recompute(allowedLanguageLocales: Set<LanguageLocale>): ResourceTable {
     val updatedPackages = packageList.mapNotNull { it.recompute(allowedLanguageLocales) }
-    return toBuilder().apply {
-      clearPackage()
-      addAllPackage(updatedPackages)
-    }.build()
+    return toBuilder()
+      .apply {
+        clearPackage()
+        addAllPackage(updatedPackages)
+      }.build()
   }
 
   private fun ResourceTable.countResources(): Int = packageList.sumOf { it.countResources() }
@@ -114,11 +127,14 @@ private class FilterPerLanguageResources {
   private fun Package.recompute(allowedLanguageLocales: Set<LanguageLocale>): Package? {
     val updatedTypes = typeList.mapNotNull { it.recompute(allowedLanguageLocales) }
     return if (updatedTypes.isNotEmpty()) {
-      toBuilder().apply {
-        clearType()
-        addAllType(updatedTypes)
-      }.build()
-    } else null
+      toBuilder()
+        .apply {
+          clearType()
+          addAllType(updatedTypes)
+        }.build()
+    } else {
+      null
+    }
   }
 
   private fun Package.countResources(): Int = typeList.sumOf { it.countResources() }
@@ -126,11 +142,14 @@ private class FilterPerLanguageResources {
   private fun Type.recompute(allowedLanguageLocales: Set<LanguageLocale>): Type? {
     val updatedEntries = entryList.mapNotNull { it.recompute(allowedLanguageLocales) }
     return if (updatedEntries.isNotEmpty()) {
-      toBuilder().apply {
-        clearEntry()
-        addAllEntry(updatedEntries)
-      }.build()
-    } else null
+      toBuilder()
+        .apply {
+          clearEntry()
+          addAllEntry(updatedEntries)
+        }.build()
+    } else {
+      null
+    }
   }
 
   private fun Type.countResources(): Int = entryList.sumOf { it.configValueCount }
@@ -138,11 +157,14 @@ private class FilterPerLanguageResources {
   private fun Entry.recompute(allowedLanguageLocales: Set<LanguageLocale>): Entry? {
     val updatedConfigValues = configValueList.filter { it.isKept(allowedLanguageLocales) }
     return if (updatedConfigValues.isNotEmpty()) {
-      toBuilder().apply {
-        clearConfigValue()
-        addAllConfigValue(updatedConfigValues)
-      }.build()
-    } else null
+      toBuilder()
+        .apply {
+          clearConfigValue()
+          addAllConfigValue(updatedConfigValues)
+        }.build()
+    } else {
+      null
+    }
   }
 
   private fun ConfigValue.isKept(allowedLanguageLocales: Set<LanguageLocale>) =
@@ -164,7 +186,9 @@ private class FilterPerLanguageResources {
      *
      * @property languageCode the 2-character identifier code corresponding to the language
      */
-    private data class GlobalLanguage(val languageCode: String) : LanguageLocale() {
+    private data class GlobalLanguage(
+      val languageCode: String,
+    ) : LanguageLocale() {
       override val bcp47QualifiedCode = languageCode
       override val androidBcp47QualifiedCode: String
         get() = if (languageCode == "en") "" else languageCode
@@ -178,7 +202,7 @@ private class FilterPerLanguageResources {
      */
     private data class RegionalLanguage(
       val globalLanguage: GlobalLanguage,
-      val regionCode: String
+      val regionCode: String,
     ) : LanguageLocale() {
       override val bcp47QualifiedCode =
         "${globalLanguage.bcp47QualifiedCode}-${regionCode.uppercase()}"
@@ -191,12 +215,13 @@ private class FilterPerLanguageResources {
        * Returns a new [LanguageLocale] from the provided [qualifiedLanguageCode] (which may be
        * either IETF BCP-47 or the Android version of it).
        */
-      fun createFrom(qualifiedLanguageCode: String): LanguageLocale {
-        return if ("-" in qualifiedLanguageCode) {
+      fun createFrom(qualifiedLanguageCode: String): LanguageLocale =
+        if ("-" in qualifiedLanguageCode) {
           val (languageCode, regionCode) = qualifiedLanguageCode.split('-', limit = 2)
           RegionalLanguage(createGlobalLanguageLocale(languageCode), regionCode.lowercase())
-        } else createGlobalLanguageLocale(qualifiedLanguageCode)
-      }
+        } else {
+          createGlobalLanguageLocale(qualifiedLanguageCode)
+        }
 
       /** Returns a new [LanguageLocale] to represent the provided [definition]. */
       fun createFrom(definition: LanguageSupportDefinition): LanguageLocale? {
@@ -210,10 +235,9 @@ private class FilterPerLanguageResources {
         }
       }
 
-      private fun createGlobalLanguageLocale(languageCode: String): GlobalLanguage {
-        return languageCode.lowercase().takeIf(String::isNotEmpty)?.let(::GlobalLanguage)
+      private fun createGlobalLanguageLocale(languageCode: String): GlobalLanguage =
+        languageCode.lowercase().takeIf(String::isNotEmpty)?.let(::GlobalLanguage)
           ?: GlobalLanguage(languageCode = "en")
-      }
     }
   }
 }

@@ -9,11 +9,10 @@ import javax.inject.Singleton
 class AuthenticationModule {
   @Provides
   @Singleton
-  fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper):
-    FirebaseAuthWrapper = FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapper)
+  fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper): FirebaseAuthWrapper =
+    FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapper)
 
   @Provides
   @Singleton
-  fun provideFirebaseAuthInstanceWrapper(): FirebaseAuthInstanceWrapper =
-    FirebaseAuthInstanceWrapperImpl()
+  fun provideFirebaseAuthInstanceWrapper(): FirebaseAuthInstanceWrapper = FirebaseAuthInstanceWrapperImpl()
 }

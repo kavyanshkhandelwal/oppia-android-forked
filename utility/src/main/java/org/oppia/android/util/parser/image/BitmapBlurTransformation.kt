@@ -7,7 +7,9 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import java.security.MessageDigest
 
 /** [BitmapTransformation] to blur bitmaps. See [BitmapBlurrer] for specifics. */
-class BitmapBlurTransformation(context: Context) : BitmapTransformation() {
+class BitmapBlurTransformation(
+  context: Context,
+) : BitmapTransformation() {
   private val bitmapBlurrer by lazy { BitmapBlurrer(context) }
 
   private companion object {
@@ -19,7 +21,7 @@ class BitmapBlurTransformation(context: Context) : BitmapTransformation() {
     pool: BitmapPool,
     toTransform: Bitmap,
     outWidth: Int,
-    outHeight: Int
+    outHeight: Int,
   ): Bitmap = bitmapBlurrer.blur(toTransform)
 
   override fun updateDiskCacheKey(messageDigest: MessageDigest) {

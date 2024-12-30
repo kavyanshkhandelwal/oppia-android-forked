@@ -66,7 +66,7 @@ class XmlSyntaxErrorHandlerTest {
     val errorList = xmlSyntaxErrorHandler.retrieveErrorList()
     assertThat(errorList).hasSize(1)
     assertThat(errorList.first().message).isEqualTo(
-      "Content is not allowed in trailing section."
+      "Content is not allowed in trailing section.",
     )
     assertThat(errorList.first().getLineNumber()).isEqualTo(6)
     assertThat(errorList.first().getColumnNumber()).isEqualTo(9)
@@ -134,7 +134,7 @@ class XmlSyntaxErrorHandlerTest {
     assertThat(errorList.elementAt(1).getLineNumber()).isEqualTo(2)
     assertThat(errorList.elementAt(1).getColumnNumber()).isEqualTo(2)
     assertThat(errorList.elementAt(2).message).isEqualTo(
-      "Content is not allowed in trailing section."
+      "Content is not allowed in trailing section.",
     )
     assertThat(errorList.elementAt(2).getLineNumber()).isEqualTo(6)
     assertThat(errorList.elementAt(2).getColumnNumber()).isEqualTo(9)
@@ -146,7 +146,10 @@ class XmlSyntaxErrorHandlerTest {
    * @param docBuilder the builder which will parse the XML file
    * @param file the file to be checked for
    */
-  private fun parseXml(docBuilder: DocumentBuilder, file: File) {
+  private fun parseXml(
+    docBuilder: DocumentBuilder,
+    file: File,
+  ) {
     try {
       docBuilder.parse(file)
     } catch (e: SAXParseException) {

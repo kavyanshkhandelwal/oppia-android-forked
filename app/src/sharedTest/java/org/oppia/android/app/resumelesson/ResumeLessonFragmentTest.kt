@@ -120,7 +120,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ResumeLessonFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ResumeLessonFragmentTest {
   @get:Rule
@@ -133,11 +133,14 @@ class ResumeLessonFragmentTest {
   lateinit var context: Context
 
   @get:Rule
-  val resumeLessonActivityTestRule = ActivityTestRule(
-    ResumeLessonActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val resumeLessonActivityTestRule =
+    ActivityTestRule(
+      ResumeLessonActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -163,7 +166,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
+        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework)),
       )
     }
   }
@@ -174,7 +177,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
+        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework)),
       )
     }
   }
@@ -187,7 +190,7 @@ class ResumeLessonFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_thumbnail_image_view)).check(
-        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework))
+        matches(withDrawable(R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework)),
       )
     }
   }
@@ -197,7 +200,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_title_text_view)).check(
-        matches(withText("What is a Fraction?"))
+        matches(withText("What is a Fraction?")),
       )
     }
   }
@@ -209,7 +212,7 @@ class ResumeLessonFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_title_text_view)).check(
-        matches(withText("What is a Fraction?"))
+        matches(withText("What is a Fraction?")),
       )
     }
   }
@@ -219,7 +222,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("Matthew learns about fractions."))
+        matches(withText("Matthew learns about fractions.")),
       )
     }
   }
@@ -229,7 +232,7 @@ class ResumeLessonFragmentTest {
     launch<ResumeLessonActivity>(createResumeRatiosLessonActivityIntent()).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(not(isDisplayed()))
+        matches(not(isDisplayed())),
       )
     }
   }
@@ -240,9 +243,10 @@ class ResumeLessonFragmentTest {
       scenario.onActivity { activity ->
         activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
         testCoroutineDispatchers.runCurrent()
-        val topicDescriptionTextview: TextView = activity.findViewById(
-          R.id.resume_lesson_chapter_description_text_view
-        )
+        val topicDescriptionTextview: TextView =
+          activity.findViewById(
+            R.id.resume_lesson_chapter_description_text_view,
+          )
         assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -254,9 +258,10 @@ class ResumeLessonFragmentTest {
       scenario.onActivity { activity ->
         activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
         testCoroutineDispatchers.runCurrent()
-        val topicDescriptionTextview: TextView = activity.findViewById(
-          R.id.resume_lesson_chapter_description_text_view
-        )
+        val topicDescriptionTextview: TextView =
+          activity.findViewById(
+            R.id.resume_lesson_chapter_description_text_view,
+          )
         assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -269,7 +274,7 @@ class ResumeLessonFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withText("Matthew learns about fractions."))
+        matches(withText("Matthew learns about fractions.")),
       )
     }
   }
@@ -280,14 +285,16 @@ class ResumeLessonFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val resumeLessonFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.resume_lesson_fragment_placeholder) as ResumeLessonFragment
-        val args = checkNotNull(resumeLessonFragment.arguments) {
-          "Expected arguments to be provided for fragment."
-        }.getProto(
-          ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
-          ResumeLessonFragmentArguments.getDefaultInstance()
-        )
+        val resumeLessonFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.resume_lesson_fragment_placeholder) as ResumeLessonFragment
+        val args =
+          checkNotNull(resumeLessonFragment.arguments) {
+            "Expected arguments to be provided for fragment."
+          }.getProto(
+            ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+            ResumeLessonFragmentArguments.getDefaultInstance(),
+          )
         val receivedProfileId = args.profileId
         val receivedClassroomId = args.classroomId
         val receivedTopicId = args.topicId
@@ -309,8 +316,8 @@ class ResumeLessonFragmentTest {
     }
   }
 
-  private fun createResumeLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
+  private fun createResumeLessonActivityIntent(): Intent =
+    ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
@@ -318,12 +325,11 @@ class ResumeLessonFragmentTest {
       FRACTIONS_STORY_ID_0,
       FRACTIONS_EXPLORATION_ID_0,
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
-      checkpoint = ExplorationCheckpoint.getDefaultInstance()
+      checkpoint = ExplorationCheckpoint.getDefaultInstance(),
     )
-  }
 
-  private fun createResumeRatiosLessonActivityIntent(): Intent {
-    return ResumeLessonActivity.createResumeLessonActivityIntent(
+  private fun createResumeRatiosLessonActivityIntent(): Intent =
+    ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
       ProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
@@ -331,9 +337,8 @@ class ResumeLessonFragmentTest {
       RATIOS_STORY_ID_0,
       RATIOS_EXPLORATION_ID_0,
       parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
-      checkpoint = ExplorationCheckpoint.getDefaultInstance()
+      checkpoint = ExplorationCheckpoint.getDefaultInstance(),
     )
-  }
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
@@ -344,7 +349,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(67F))
+        matches(withFontSize(67F)),
       )
     }
   }
@@ -358,7 +363,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.LARGE_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(58F))
+        matches(withFontSize(58F)),
       )
     }
   }
@@ -372,7 +377,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.MEDIUM_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(48F))
+        matches(withFontSize(48F)),
       )
     }
   }
@@ -386,7 +391,7 @@ class ResumeLessonFragmentTest {
           .loadResumeLessonFragment(ReadingTextSize.SMALL_TEXT_SIZE)
       }
       onView(withId(R.id.resume_lesson_chapter_description_text_view)).check(
-        matches(withFontSize(38F))
+        matches(withFontSize(38F)),
       )
     }
   }
@@ -420,8 +425,8 @@ class ResumeLessonFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -432,9 +437,13 @@ class ResumeLessonFragmentTest {
     fun inject(resumeLessonFragmentTest: ResumeLessonFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerResumeLessonFragmentTest_TestApplicationComponent.builder()
+      DaggerResumeLessonFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -443,9 +452,12 @@ class ResumeLessonFragmentTest {
       component.inject(resumeLessonFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

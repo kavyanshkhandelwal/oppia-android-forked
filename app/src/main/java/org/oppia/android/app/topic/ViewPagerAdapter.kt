@@ -15,13 +15,12 @@ class ViewPagerAdapter(
   private val classroomId: String,
   private val topicId: String,
   private val storyId: String,
-  private val enableExtraTopicTabsUi: Boolean
+  private val enableExtraTopicTabsUi: Boolean,
 ) : FragmentStateAdapter(fragment) {
-
   override fun getItemCount(): Int = TopicTab.getTabCount(enableExtraTopicTabsUi)
 
-  override fun createFragment(position: Int): Fragment {
-    return when (TopicTab.getTabForPosition(position, enableExtraTopicTabsUi)) {
+  override fun createFragment(position: Int): Fragment =
+    when (TopicTab.getTabForPosition(position, enableExtraTopicTabsUi)) {
       TopicTab.INFO -> {
         TopicInfoFragment.newInstance(profileId, topicId)
       }
@@ -35,5 +34,4 @@ class ViewPagerAdapter(
         TopicRevisionFragment.newInstance(profileId, topicId)
       }
     }
-  }
 }

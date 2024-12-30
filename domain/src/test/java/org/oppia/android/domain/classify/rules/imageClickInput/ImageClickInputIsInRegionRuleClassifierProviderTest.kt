@@ -51,7 +51,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -65,7 +65,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -79,7 +79,7 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
       isInRegionClassifierProvider.matches(
         answer = IMAGE_REGION_ABC_POSITION_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -89,18 +89,19 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isInRegionClassifierProvider.matches(
-        answer = IMAGE_REGION_ABC_POSITION_1,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isInRegionClassifierProvider.matches(
+          answer = IMAGE_REGION_ABC_POSITION_1,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT"
+        "Expected input value to be of type NORMALIZED_STRING not NON_NEGATIVE_INT",
       )
   }
 
@@ -108,39 +109,47 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   fun testAnswer_testString_missingInputX_throwsException() {
     val inputs = mapOf("y" to createString(ITEM_REGION_A))
 
-    val exception = assertThrows<IllegalStateException>() {
-      isInRegionClassifierProvider.matches(
-        answer = IMAGE_REGION_ABC_POSITION_1,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isInRegionClassifierProvider.matches(
+          answer = IMAGE_REGION_ABC_POSITION_1,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected classifier inputs to contain parameter with name 'x' but had: [y]")
   }
 
-  private fun createClickOnImage(point: Point2d, regions: List<String>): InteractionObject {
-    val clickOnImage = ClickOnImage.newBuilder()
-      .addAllClickedRegions(regions)
-      .setClickPosition(point)
-      .build()
+  private fun createClickOnImage(
+    point: Point2d,
+    regions: List<String>,
+  ): InteractionObject {
+    val clickOnImage =
+      ClickOnImage
+        .newBuilder()
+        .addAllClickedRegions(regions)
+        .setClickPosition(point)
+        .build()
 
     return InteractionObject.newBuilder().setClickOnImage(clickOnImage).build()
   }
 
-  private fun createString(value: String): InteractionObject {
-    return InteractionObject.newBuilder().setNormalizedString(value).build()
-  }
+  private fun createString(value: String): InteractionObject = InteractionObject.newBuilder().setNormalizedString(value).build()
 
-  private fun createPoint2d(x: Float, y: Float): Point2d {
-    return Point2d.newBuilder().setX(x).setY(y).build()
-  }
+  private fun createPoint2d(
+    x: Float,
+    y: Float,
+  ): Point2d =
+    Point2d
+      .newBuilder()
+      .setX(x)
+      .setY(y)
+      .build()
 
-  private fun createNonNegativeInt(value: Int): InteractionObject {
-    return InteractionObject.newBuilder().setNonNegativeInt(value).build()
-  }
+  private fun createNonNegativeInt(value: Int): InteractionObject = InteractionObject.newBuilder().setNonNegativeInt(value).build()
 
   @Before
   fun setUp() {
@@ -150,7 +159,9 @@ class ImageClickInputIsInRegionRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerImageClickInputIsInRegionRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

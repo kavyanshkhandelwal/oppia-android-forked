@@ -39,7 +39,7 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TestCoroutineDispatcherTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TestCoroutineDispatcherTest {
   @Inject
@@ -194,9 +194,7 @@ class TestCoroutineDispatcherTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -214,8 +212,7 @@ class TestCoroutineDispatcherTest {
 
     @Provides
     @IsOnRobolectric
-    fun provideIsOnRobolectric(): Boolean =
-      checkNotNull(isOnRobolectric) { "Test is not correctly initialized" }()
+    fun provideIsOnRobolectric(): Boolean = checkNotNull(isOnRobolectric) { "Test is not correctly initialized" }()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -224,23 +221,27 @@ class TestCoroutineDispatcherTest {
     modules = [
       TestDispatcherModule::class,
       TestModule::class,
-      TestLogReportingModule::class
-    ]
+      TestLogReportingModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: TestCoroutineDispatcherTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestCoroutineDispatcherTest_TestApplicationComponent.builder()
+      DaggerTestCoroutineDispatcherTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

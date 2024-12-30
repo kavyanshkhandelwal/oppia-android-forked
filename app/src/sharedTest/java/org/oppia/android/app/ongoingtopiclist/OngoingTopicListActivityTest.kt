@@ -117,7 +117,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = OngoingTopicListActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class OngoingTopicListActivityTest {
   @get:Rule
@@ -132,11 +132,14 @@ class OngoingTopicListActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    OngoingTopicListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      OngoingTopicListActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var storyProfileTestHelper: StoryProgressTestHelper
@@ -174,17 +177,17 @@ class OngoingTopicListActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     // Start the second ratios story so that the ratios topic is considered in-progress despite the
     // first story being completed.
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProfileTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
@@ -202,25 +205,25 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios and Proportional Reasoning"))
-        )
+          withText(containsString("Ratios and Proportional Reasoning")),
+        ),
       )
     }
   }
@@ -229,27 +232,30 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        classroomId = TEST_CLASSROOM_ID_1
-        topicId = RATIOS_TOPIC_ID
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            classroomId = TEST_CLASSROOM_ID_1
+            topicId = RATIOS_TOPIC_ID
+          }.build()
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
@@ -261,28 +267,31 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_clickItem0_intentIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        classroomId = TEST_CLASSROOM_ID_1
-        topicId = RATIOS_TOPIC_ID
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            classroomId = TEST_CLASSROOM_ID_1
+            topicId = RATIOS_TOPIC_ID
+          }.build()
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
@@ -294,25 +303,25 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem0_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
-          targetViewId = R.id.story_count_text_view
-        )
+          targetViewId = R.id.story_count_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("2 Lessons"))
-        )
+          withText(containsString("2 Lessons")),
+        ),
       )
     }
   }
@@ -321,26 +330,26 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Fractions"))
-        )
+          withText(containsString("Fractions")),
+        ),
       )
     }
   }
@@ -348,24 +357,24 @@ class OngoingTopicListActivityTest {
   @Test
   fun testOngoingTopicList_checkItem1_titleIsCorrect() {
     launch<OngoingTopicListActivity>(
-      createOngoingTopicListActivityIntent(internalProfileId)
+      createOngoingTopicListActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Fractions"))
-        )
+          withText(containsString("Fractions")),
+        ),
       )
     }
   }
@@ -374,25 +383,25 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
-          targetViewId = R.id.story_count_text_view
-        )
+          targetViewId = R.id.story_count_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("1 Lesson"))
-        )
+          withText(containsString("1 Lesson")),
+        ),
       )
     }
   }
@@ -401,26 +410,26 @@ class OngoingTopicListActivityTest {
   fun testOngoingTopicList_changeConfiguration_checkItem1_storyCountIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 1,
-          targetViewId = R.id.story_count_text_view
-        )
+          targetViewId = R.id.story_count_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("1 Lesson"))
-        )
+          withText(containsString("1 Lesson")),
+        ),
       )
     }
   }
@@ -429,36 +438,35 @@ class OngoingTopicListActivityTest {
   fun testTopicPracticeFragment_loadFragment_changeConfiguration_topicNameIsCorrect() {
     launch<OngoingTopicListActivity>(
       createOngoingTopicListActivityIntent(
-        internalProfileId = internalProfileId
-      )
+        internalProfileId = internalProfileId,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_topic_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.ongoing_topic_list,
           position = 0,
-          targetViewId = R.id.topic_name_text_view
-        )
+          targetViewId = R.id.topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("Ratios and Proportional Reasoning"))
-        )
+          withText(containsString("Ratios and Proportional Reasoning")),
+        ),
       )
     }
   }
 
-  private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
-    return OngoingTopicListActivity.createOngoingTopicListActivityIntent(
+  private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent =
+    OngoingTopicListActivity.createOngoingTopicListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId
+      internalProfileId = internalProfileId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -489,8 +497,8 @@ class OngoingTopicListActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -501,9 +509,13 @@ class OngoingTopicListActivityTest {
     fun inject(ongoingTopicListActivityTest: OngoingTopicListActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOngoingTopicListActivityTest_TestApplicationComponent.builder()
+      DaggerOngoingTopicListActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -512,9 +524,12 @@ class OngoingTopicListActivityTest {
       component.inject(ongoingTopicListActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

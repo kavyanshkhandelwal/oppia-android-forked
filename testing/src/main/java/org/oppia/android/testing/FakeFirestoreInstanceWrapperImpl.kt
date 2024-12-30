@@ -9,8 +9,9 @@ import javax.inject.Inject
  * of [FirebaseApp], which is difficult to mock or fake hence this implementation always returns
  * null when an instance of [FirebaseFirestore] is requested.
  */
-class FakeFirestoreInstanceWrapperImpl @Inject constructor() : FirestoreInstanceWrapper {
-
-  override val firestoreInstance: FirestoreInstance?
-    get() = null
-}
+class FakeFirestoreInstanceWrapperImpl
+  @Inject
+  constructor() : FirestoreInstanceWrapper {
+    override val firestoreInstance: FirestoreInstance?
+      get() = null
+  }

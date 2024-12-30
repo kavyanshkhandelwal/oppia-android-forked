@@ -48,7 +48,7 @@ import kotlin.math.roundToInt
  * and blocks the main thread).
  */
 class MathBitmapModelLoader private constructor(
-  private val application: Application
+  private val application: Application,
 ) : ModelLoader<MathModel, ByteBuffer> {
   // Ref: https://bumptech.github.io/glide/tut/custom-modelloader.html#writing-the-modelloader.
 
@@ -74,9 +74,9 @@ class MathBitmapModelLoader private constructor(
     model: MathModel,
     width: Int,
     height: Int,
-    options: Options
-  ): ModelLoader.LoadData<ByteBuffer> {
-    return ModelLoader.LoadData(
+    options: Options,
+  ): ModelLoader.LoadData<ByteBuffer> =
+    ModelLoader.LoadData(
       model.toKeySignature(),
       LatexModelDataFetcher(
         application,
@@ -85,10 +85,9 @@ class MathBitmapModelLoader private constructor(
         height,
         backgroundDispatcher,
         blockingDispatcher,
-        consoleLogger
-      )
+        consoleLogger,
+      ),
     )
-  }
 
   override fun handles(model: MathModel): Boolean = true
 
@@ -99,90 +98,108 @@ class MathBitmapModelLoader private constructor(
     private val targetHeight: Int,
     private val backgroundDispatcher: CoroutineDispatcher,
     private val blockingDispatcher: CoroutineDispatcher,
-    private val consoleLogger: ConsoleLogger
+    private val consoleLogger: ConsoleLogger,
   ) : DataFetcher<ByteBuffer> {
-    override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in ByteBuffer>) {
+    override fun loadData(
+      priority: Priority,
+      callback: DataFetcher.DataCallback<in ByteBuffer>,
+    ) {
       // Defer execution to the app's dispatchers since synchronization is needed (and more
       // performant and easier to achieve with coroutines).
-      CoroutineScope(backgroundDispatcher).launch {
-        // KotliTeX drawable initialization loads shared static state that's susceptible to race
-        // conditions. This synchronizes span creation so that the race condition can't happen,
-        // though it will likely slow down LaTeX loading a bit. Fortunately, rendering & PNG
-        // creation can still happen in parallel, and those are the more expensive steps.
-        val span = withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
-          MathExpressionSpan(
-            model.rawLatex,
-            model.lineHeight,
-            application.assets,
-            !model.useInlineRendering,
-            // TODO(#1523): Test color parameter in MathBitmapModelLoader
-            ResourcesCompat.getColor(
-              application.resources,
-              R.color.component_color_shared_equation_color,
-              /* theme = */null
+      CoroutineScope(backgroundDispatcher)
+        .launch {
+          // KotliTeX drawable initialization loads shared static state that's susceptible to race
+          // conditions. This synchronizes span creation so that the race condition can't happen,
+          // though it will likely slow down LaTeX loading a bit. Fortunately, rendering & PNG
+          // creation can still happen in parallel, and those are the more expensive steps.
+          val span =
+            withContext(CoroutineScope(blockingDispatcher).coroutineContext) {
+              MathExpressionSpan(
+                model.rawLatex,
+                model.lineHeight,
+                application.assets,
+                !model.useInlineRendering,
+                // TODO(#1523): Test color parameter in MathBitmapModelLoader
+                ResourcesCompat.getColor(
+                  application.resources,
+                  R.color.component_color_shared_equation_color,
+                  // theme =
+                  null,
+                ),
+              ).also { it.ensureDrawable() }
+            }
+          val renderableText =
+            SpannableStringBuilder("\uFFFC").apply {
+              setSpan(span, /* start= */ 0, /* end= */ 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+
+          // Use Android's StaticLayout to ensure the text is rendered correctly. Note that the
+          // constants are derived from TextView's defaults (except width which is defaulted to 0
+          // since the width isn't necessarily known ahead of time).
+          // Any TextPaint can be used since the span will use its own.
+          val textPaint = TextPaint()
+
+          @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
+          val staticTextLayout =
+            StaticLayout(
+              renderableText,
+              textPaint,
+              // width=
+              0,
+              Layout.Alignment.ALIGN_NORMAL,
+              // spacingmult=
+              1f,
+              // spacingadd=
+              0f,
+              // includepad=
+              true,
             )
-          ).also { it.ensureDrawable() }
-        }
-        val renderableText = SpannableStringBuilder("\uFFFC").apply {
-          setSpan(span, /* start= */ 0, /* end= */ 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
 
-        // Use Android's StaticLayout to ensure the text is rendered correctly. Note that the
-        // constants are derived from TextView's defaults (except width which is defaulted to 0
-        // since the width isn't necessarily known ahead of time).
-        // Any TextPaint can be used since the span will use its own.
-        val textPaint = TextPaint()
+          // Estimate the surface necessary for rendering the LaTeX, then compute a tightly-packed
+          // bitmap containing rendered pixels. See drawText in BoundsCalculatingSurface and
+          // renderAutoSizingBitmap for more details.
+          val surface = BoundsCalculatingSurface()
+          val totalBounds =
+            surface
+              .also {
+                // The x and y are mostly unused by the draw routine.
+                span.draw(it, renderableText, x = 0f, y = 0, textPaint)
+              }.computeTotalBounds()
+          val boundsWidth = totalBounds.width().roundToInt()
+          val boundsHeight = totalBounds.height().roundToInt()
+          val canvasBitmap =
+            renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
+              staticTextLayout.draw(it)
+            }
 
-        @Suppress("DEPRECATION") // This call is necessary for the supported min API version.
-        val staticTextLayout =
-          StaticLayout(
-            renderableText,
-            textPaint,
-            /* width= */ 0,
-            Layout.Alignment.ALIGN_NORMAL,
-            /* spacingmult= */ 1f,
-            /* spacingadd= */ 0f,
-            /* includepad= */ true
-          )
+          val finalWidth =
+            if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
+          val finalHeight =
+            if (targetHeight == Target.SIZE_ORIGINAL) canvasBitmap.height else targetHeight
 
-        // Estimate the surface necessary for rendering the LaTeX, then compute a tightly-packed
-        // bitmap containing rendered pixels. See drawText in BoundsCalculatingSurface and
-        // renderAutoSizingBitmap for more details.
-        val surface = BoundsCalculatingSurface()
-        val totalBounds = surface.also {
-          // The x and y are mostly unused by the draw routine.
-          span.draw(it, renderableText, x = 0f, y = 0, textPaint)
-        }.computeTotalBounds()
-        val boundsWidth = totalBounds.width().roundToInt()
-        val boundsHeight = totalBounds.height().roundToInt()
-        val canvasBitmap =
-          renderToAutoSizingBitmap(estimatedWidth = boundsWidth, estimatedHeight = boundsHeight) {
-            staticTextLayout.draw(it)
+          // Compute the final bitmap (which might need to be scaled depending on options). Note that
+          // any actual scaling here is likely to distort the image since it can be automatically
+          // cropped to minimize excess whitespace during rendering.
+          val bitmap =
+            if (canvasBitmap.width != finalWidth || canvasBitmap.height != finalHeight) {
+              // Glide is requesting the image in a different size, so adjust it.
+              Bitmap.createScaledBitmap(canvasBitmap, finalWidth, finalHeight, /* filter= */ true)
+            } else {
+              canvasBitmap // Otherwise, the original bitmap is the correct size.
+            }
+
+          // Convert the bitmap to a PNG to store within Glide's cache for later retrieval.
+          val rawBitmap =
+            ByteArrayOutputStream()
+              .also { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, outputStream)
+              }.toByteArray()
+          callback.onDataReady(ByteBuffer.wrap(rawBitmap))
+        }.invokeOnCompletion {
+          if (it != null) {
+            consoleLogger.e("ImageLoading", "Failed to convert LaTeX to SVG (model: $model)", it)
           }
-
-        val finalWidth =
-          if (targetWidth == Target.SIZE_ORIGINAL) canvasBitmap.width else targetWidth
-        val finalHeight =
-          if (targetHeight == Target.SIZE_ORIGINAL) canvasBitmap.height else targetHeight
-
-        // Compute the final bitmap (which might need to be scaled depending on options). Note that
-        // any actual scaling here is likely to distort the image since it can be automatically
-        // cropped to minimize excess whitespace during rendering.
-        val bitmap = if (canvasBitmap.width != finalWidth || canvasBitmap.height != finalHeight) {
-          // Glide is requesting the image in a different size, so adjust it.
-          Bitmap.createScaledBitmap(canvasBitmap, finalWidth, finalHeight, /* filter= */ true)
-        } else canvasBitmap // Otherwise, the original bitmap is the correct size.
-
-        // Convert the bitmap to a PNG to store within Glide's cache for later retrieval.
-        val rawBitmap = ByteArrayOutputStream().also { outputStream ->
-          bitmap.compress(Bitmap.CompressFormat.PNG, /* quality= */ 100, outputStream)
-        }.toByteArray()
-        callback.onDataReady(ByteBuffer.wrap(rawBitmap))
-      }.invokeOnCompletion {
-        if (it != null) {
-          consoleLogger.e("ImageLoading", "Failed to convert LaTeX to SVG (model: $model)", it)
         }
-      }
     }
 
     override fun cleanup() {}
@@ -219,21 +236,38 @@ class MathBitmapModelLoader private constructor(
         currentClip = currentClip.intersection(rect)
       }
 
-      override fun drawLine(x0: Float, y0: Float, x1: Float, y1: Float, paint: Paint) {
+      override fun drawLine(
+        x0: Float,
+        y0: Float,
+        x1: Float,
+        y1: Float,
+        paint: Paint,
+      ) {
         currentBounds.ensureIncludes(x0, y0)
         currentBounds.ensureIncludes(x1, y1)
       }
 
-      override fun drawPath(path: Path, paint: Paint) {
+      override fun drawPath(
+        path: Path,
+        paint: Paint,
+      ) {
         val pathBounds = RectF().also { path.computeBounds(it, /* unusedExact= */ true) }
         currentBounds.union(pathBounds.intersection(currentClip))
       }
 
-      override fun drawRect(rect: RectF, paint: Paint) {
+      override fun drawRect(
+        rect: RectF,
+        paint: Paint,
+      ) {
         currentBounds.union(rect.intersection(currentClip))
       }
 
-      override fun drawText(text: String, x: Float, y: Float, paint: Paint) {
+      override fun drawText(
+        text: String,
+        x: Float,
+        y: Float,
+        paint: Paint,
+      ) {
         /*
          * Text is particularly difficult to track size for since it's not obvious to actually get
          * the dimensions and position of the space that the actual rendered pixels will occupy.
@@ -261,11 +295,15 @@ class MathBitmapModelLoader private constructor(
           StaticLayout(
             "$text\n(",
             paint as TextPaint,
-            /* width= */ 0,
+            // width=
+            0,
             Layout.Alignment.ALIGN_NORMAL,
-            /* spacingmult= */ 1f,
-            /* spacingadd= */ 0f,
-            /* includepad= */ true
+            // spacingmult=
+            1f,
+            // spacingadd=
+            0f,
+            // includepad=
+            true,
           )
         val textBounds = staticLayout.getLineBounds().apply { offsetTo(x, y) }
         currentBounds.union(textBounds.intersection(currentClip))
@@ -298,22 +336,23 @@ class MathBitmapModelLoader private constructor(
       private fun renderToAutoSizingBitmap(
         estimatedWidth: Int,
         estimatedHeight: Int,
-        render: (Canvas) -> Unit
+        render: (Canvas) -> Unit,
       ): Bitmap {
         val fullWidth = estimatedWidth * 2
         val fullHeight = estimatedHeight * 2
         val drawX = (fullWidth.toFloat() / 2) - (estimatedWidth.toFloat() / 2)
         val drawY = (fullHeight.toFloat() / 2) - (estimatedHeight.toFloat() / 2)
-        val fullRender = Bitmap.createBitmap(fullWidth, fullHeight, ARGB_8888).also { bitmap ->
-          Canvas(bitmap).also { canvas ->
-            canvas.save()
-            // Move initial drawing such that there's a width/2 and height/2 boundary around the
-            // entire drawing space for rendering that may overflow.
-            canvas.translate(drawX, drawY)
-            render(canvas)
-            canvas.restore()
+        val fullRender =
+          Bitmap.createBitmap(fullWidth, fullHeight, ARGB_8888).also { bitmap ->
+            Canvas(bitmap).also { canvas ->
+              canvas.save()
+              // Move initial drawing such that there's a width/2 and height/2 boundary around the
+              // entire drawing space for rendering that may overflow.
+              canvas.translate(drawX, drawY)
+              render(canvas)
+              canvas.restore()
+            }
           }
-        }
 
         // Initialize with the largest possible "empty" (inverted) rectangle so that *any* pixel
         // will become the entire initial rectangular region.
@@ -341,9 +380,11 @@ class MathBitmapModelLoader private constructor(
               filledRegion.left.toInt(),
               filledRegion.top.toInt(),
               neededWidth,
-              neededHeight
+              neededHeight,
             )
-          } else fullRender // Otherwise, just return the original (since the full space is needed).
+          } else {
+            fullRender // Otherwise, just return the original (since the full space is needed).
+          }
         } else {
           // The entire render is empty so default to a 1x1 bitmap to conserve memory.
           Bitmap.createBitmap(/* width= */ 1, /* height= */ 1, ARGB_8888)
@@ -351,8 +392,11 @@ class MathBitmapModelLoader private constructor(
       }
 
       private fun RectF.getActualLeft(): Float = min(left, right)
+
       private fun RectF.getActualRight(): Float = max(left, right)
+
       private fun RectF.getActualTop(): Float = min(top, bottom)
+
       private fun RectF.getActualBottom(): Float = max(top, bottom)
 
       private fun RectF.intersection(other: RectF): RectF {
@@ -365,16 +409,25 @@ class MathBitmapModelLoader private constructor(
         // Make sure that rectangles which don't at least partially overlap result in a degenerate
         // rectangle rather than a negative one (which would actually represent the union along
         // whichever axis doesn't overlap).
-        val (actualLeft, actualRight) = if (intersectedRight < intersectedLeft) {
-          0f to 0f
-        } else intersectedLeft to intersectedRight
-        val (actualTop, actualBottom) = if (intersectedBottom < intersectedTop) {
-          0f to 0f
-        } else intersectedTop to intersectedBottom
+        val (actualLeft, actualRight) =
+          if (intersectedRight < intersectedLeft) {
+            0f to 0f
+          } else {
+            intersectedLeft to intersectedRight
+          }
+        val (actualTop, actualBottom) =
+          if (intersectedBottom < intersectedTop) {
+            0f to 0f
+          } else {
+            intersectedTop to intersectedBottom
+          }
         return RectF(actualLeft, actualTop, actualRight, actualBottom)
       }
 
-      private fun RectF.ensureIncludes(x: Float, y: Float) {
+      private fun RectF.ensureIncludes(
+        x: Float,
+        y: Float,
+      ) {
         // Note the '+1' here is necessary since 'right' and 'bottom' are exclusive bounds in the
         // rectangle class (in order for the 'width' and 'height' computations to operate
         // correctly).
@@ -384,24 +437,21 @@ class MathBitmapModelLoader private constructor(
         bottom = max(bottom, y + 1)
       }
 
-      private fun StaticLayout.getLineBounds(line: Int = 0): RectF {
-        return RectF(
+      private fun StaticLayout.getLineBounds(line: Int = 0): RectF =
+        RectF(
           getLineLeft(line),
           getLineTop(line).toFloat(),
           getLineRight(line),
-          getLineBottom(line).toFloat()
+          getLineBottom(line).toFloat(),
         )
-      }
     }
   }
 
   /** [ModelLoaderFactory] for creating new [MathBitmapModelLoader]s. */
   class Factory(
-    private val application: Application
+    private val application: Application,
   ) : ModelLoaderFactory<MathModel, ByteBuffer> {
-    override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> {
-      return MathBitmapModelLoader(application)
-    }
+    override fun build(factory: MultiModelLoaderFactory): ModelLoader<MathModel, ByteBuffer> = MathBitmapModelLoader(application)
 
     override fun teardown() {}
   }

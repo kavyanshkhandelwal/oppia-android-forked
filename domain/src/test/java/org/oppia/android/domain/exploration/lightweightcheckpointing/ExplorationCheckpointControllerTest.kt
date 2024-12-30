@@ -109,13 +109,21 @@ private const val TEST_CHECKPOINTING_FAKE_EXP_ID = "test_checkpointing_fake_expl
 @Config(application = ExplorationCheckpointControllerTest.TestApplication::class)
 class ExplorationCheckpointControllerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
+
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject lateinit var explorationDataController: ExplorationDataController
+
   @Inject lateinit var explorationProgressController: ExplorationProgressController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
@@ -156,13 +164,13 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_retrieveSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     monitorFactory.waitForNextSuccessfulResult(retrieveCheckpointProvider)
@@ -172,13 +180,13 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_retrieveUnsavedCheckpoint_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_1
+        FRACTIONS_EXPLORATION_ID_1,
       )
 
     val error = monitorFactory.waitForNextFailureResult(retrieveCheckpointProvider)
@@ -189,13 +197,13 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_retrieveCheckpointWithDifferentProfileId_isFailure() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         secondTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     val error = monitorFactory.waitForNextFailureResult(retrieveCheckpointProvider)
@@ -206,17 +214,17 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoint_updateSavedCheckpoint_checkUpdatedCheckpointIsRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     val updatedCheckpoint = monitorFactory.waitForNextSuccessfulResult(retrieveCheckpointProvider)
@@ -228,16 +236,16 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCheckpoints_retrieveOldestCheckpointDetails_correctCheckpointRetrieved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION,
     )
 
     val checkpointProvider =
       explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(
-        firstTestProfile
+        firstTestProfile,
       )
 
     val oldestCheckpointDetails = monitorFactory.waitForNextSuccessfulResult(checkpointProvider)
@@ -249,7 +257,7 @@ class ExplorationCheckpointControllerTest {
   fun testCheckpointController_databaseEmpty_retrieveOldestCheckpointDetails_isDefaultDetails() {
     val checkpointProvider =
       explorationCheckpointController.retrieveOldestSavedExplorationCheckpointDetails(
-        firstTestProfile
+        firstTestProfile,
       )
 
     val checkpointDetails = monitorFactory.waitForNextSuccessfulResult(checkpointProvider)
@@ -260,13 +268,13 @@ class ExplorationCheckpointControllerTest {
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val deleteCheckpointProvider =
       explorationCheckpointController.deleteSavedExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     monitorFactory.waitForNextSuccessfulResult(deleteCheckpointProvider)
@@ -276,12 +284,12 @@ class ExplorationCheckpointControllerTest {
   fun testCheckpointController_saveCheckpoint_deleteSavedCheckpoint_checkpointWasDeleted() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
     val deleteCheckpointProvider =
       explorationCheckpointController.deleteSavedExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     monitorFactory.ensureDataProviderExecutes(deleteCheckpointProvider)
 
@@ -289,7 +297,7 @@ class ExplorationCheckpointControllerTest {
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     val error = monitorFactory.waitForNextFailureResult(retrieveCheckpointProvider)
@@ -303,7 +311,7 @@ class ExplorationCheckpointControllerTest {
     val deleteCheckpointProvider =
       explorationCheckpointController.deleteSavedExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     val error = monitorFactory.waitForNextFailureResult(deleteCheckpointProvider)
@@ -318,7 +326,7 @@ class ExplorationCheckpointControllerTest {
     val deleteCheckpointProvider =
       explorationCheckpointController.deleteSavedExplorationCheckpoint(
         secondTestProfile,
-        createExplorationIdForIndex(0)
+        createExplorationIdForIndex(0),
       )
 
     val error = monitorFactory.waitForNextFailureResult(deleteCheckpointProvider)
@@ -331,13 +339,13 @@ class ExplorationCheckpointControllerTest {
   fun testController_saveCompatibleCheckpoint_retrieveCheckpoint_isSuccessful() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = firstTestProfile,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     val checkpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(
         firstTestProfile,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     monitorFactory.waitForNextSuccessfulResult(checkpointProvider)
@@ -349,7 +357,8 @@ class ExplorationCheckpointControllerTest {
 
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
-        firstTestProfile, expIdToLoadInstead = "test_checkpointing_base_exploration"
+        firstTestProfile,
+        expIdToLoadInstead = "test_checkpointing_base_exploration",
       )
 
     // This is a test arrangement verification to ensure that the base test exploration has
@@ -373,7 +382,8 @@ class ExplorationCheckpointControllerTest {
 
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
-        firstTestProfile, expIdToLoadInstead = "test_checkpointing_exploration_new_version"
+        firstTestProfile,
+        expIdToLoadInstead = "test_checkpointing_exploration_new_version",
       )
 
     // Check that a new version can be loaded without an automatic failure.
@@ -387,7 +397,8 @@ class ExplorationCheckpointControllerTest {
 
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
-        firstTestProfile, expIdToLoadInstead = "test_checkpointing_exploration_new_title"
+        firstTestProfile,
+        expIdToLoadInstead = "test_checkpointing_exploration_new_title",
       )
 
     // Titles can be changed without issue since they don't necessarily play a significant role in
@@ -404,7 +415,8 @@ class ExplorationCheckpointControllerTest {
 
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
-        firstTestProfile, expIdToLoadInstead = "test_checkpointing_exploration_missing_first_state"
+        firstTestProfile,
+        expIdToLoadInstead = "test_checkpointing_exploration_missing_first_state",
       )
 
     // If the state structure for the submitted part of the lesson changes, it cannot be recovered.
@@ -423,7 +435,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_html"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_html",
       )
 
     // It's fine for feedback HTML to change (since the classification structure otherwise matches,
@@ -442,7 +454,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_id"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_id",
       )
 
     // A change in feedback ID cannot be reconciled since IDs will only change with significant
@@ -462,7 +474,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_interaction"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_interaction",
       )
 
     // A new interaction is too much of a structural change to try and migrate a checkpoint (and
@@ -482,7 +494,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_compat_rule_spec"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_compat_rule_spec",
       )
 
     // If the rule spec is changed to have the same answer outcome then old checkpoints should be
@@ -498,7 +510,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_incompat_rule_spec"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_incompat_rule_spec",
       )
 
     // If the rule spec is changed in a way that doesn't result in the same feedback, there's
@@ -519,7 +531,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_destination"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_destination",
       )
 
     // A different destination means that there are definitely pedagogical differences in the
@@ -539,7 +551,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_correctness_label"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_correctness_label",
       )
 
     // An answer no longer marked as correct may indicate a pedagogical difference in the lesson, so
@@ -558,7 +570,8 @@ class ExplorationCheckpointControllerTest {
 
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
-        firstTestProfile, expIdToLoadInstead = "test_checkpointing_base_exploration"
+        firstTestProfile,
+        expIdToLoadInstead = "test_checkpointing_base_exploration",
       )
 
     // This is a test arrangement verification to ensure that the base test exploration has
@@ -582,7 +595,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_missing_first_state"
+        expIdToLoadInstead = "test_checkpointing_exploration_missing_first_state",
       )
 
     // If the pending state has been removed, the checkpoint cannot be migrated.
@@ -601,7 +614,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_html"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_html",
       )
 
     // It's fine for feedback HTML to change (since the classification structure otherwise matches,
@@ -619,7 +632,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_id"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_feedback_id",
       )
 
     // A change in feedback ID cannot be reconciled since IDs will only change with significant
@@ -639,7 +652,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_interaction"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_interaction",
       )
 
     // A new interaction is too much of a structural change to try and migrate a checkpoint (and
@@ -659,7 +672,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_compat_rule_spec"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_compat_rule_spec",
       )
 
     // If the rule spec is changed to have the same answer outcome then old checkpoints should be
@@ -675,7 +688,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_incompat_rule_spec"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_incompat_rule_spec",
       )
 
     // If the rule spec is changed in a way that doesn't result in the same feedback, there's
@@ -696,7 +709,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_destination"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_destination",
       )
 
     // The destination state can change for the pending state since its pathway hasn't yet been
@@ -712,7 +725,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_correctness_label"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_correctness_label",
       )
 
     // The correct answer can now be incorrect (or not marked as correct) and not affect the pending
@@ -728,7 +741,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_new_correct_answer"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_new_correct_answer",
       )
 
     // The answer which was previously incorrect is now considered correct--this results in a
@@ -748,7 +761,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_second_state_removed"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_second_state_removed",
       )
 
     // A future (unplayed) state can be removed without requiring the learner to restart (since they
@@ -764,7 +777,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_updated_hints"
+        expIdToLoadInstead = "test_checkpointing_exploration_updated_first_state_updated_hints",
       )
 
     // Updated hints are ignored since the help index is reset.
@@ -780,7 +793,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_new_version"
+        expIdToLoadInstead = "test_checkpointing_exploration_new_version",
       )
 
     // Even if there are no changed to hints, reset them anyway (since there isn't enough
@@ -797,7 +810,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_multiple_compatible_updates"
+        expIdToLoadInstead = "test_checkpointing_exploration_multiple_compatible_updates",
       )
 
     // Many different changes should compound and lead to an updated checkpoint, so long as the
@@ -814,7 +827,7 @@ class ExplorationCheckpointControllerTest {
     val checkpointProvider =
       retrieveExplorationCheckpointWithOverride(
         firstTestProfile,
-        expIdToLoadInstead = "test_checkpointing_exploration_multiple_updates_one_incompatible"
+        expIdToLoadInstead = "test_checkpointing_exploration_multiple_updates_one_incompatible",
       )
 
     // Even one incompatible change is enough to trigger a failed migration attempt, even if all of
@@ -827,16 +840,23 @@ class ExplorationCheckpointControllerTest {
     }
   }
 
-  private fun saveCheckpoint(profileId: ProfileId, index: Int): Any? {
-    val recordProvider = explorationCheckpointController.recordExplorationCheckpoint(
-      profileId = profileId,
-      explorationId = createExplorationIdForIndex(index),
-      explorationCheckpoint = createCheckpoint(index)
-    )
+  private fun saveCheckpoint(
+    profileId: ProfileId,
+    index: Int,
+  ): Any? {
+    val recordProvider =
+      explorationCheckpointController.recordExplorationCheckpoint(
+        profileId = profileId,
+        explorationId = createExplorationIdForIndex(index),
+        explorationCheckpoint = createCheckpoint(index),
+      )
     return monitorFactory.waitForNextSuccessfulResult(recordProvider)
   }
 
-  private fun saveMultipleCheckpoints(profileId: ProfileId, numberOfCheckpoints: Int) {
+  private fun saveMultipleCheckpoints(
+    profileId: ProfileId,
+    numberOfCheckpoints: Int,
+  ) {
     for (index in 0 until numberOfCheckpoints) {
       saveCheckpoint(profileId, index)
     }
@@ -856,8 +876,7 @@ class ExplorationCheckpointControllerTest {
    *         test exploration will be of the form "test_exploration_#", where the symbol "#"
    *         represents an non-negative integer.
    */
-  private fun createExplorationIdForIndex(index: Int): String =
-    BASE_TEST_EXPLORATION_ID + index
+  private fun createExplorationIdForIndex(index: Int): String = BASE_TEST_EXPLORATION_ID + index
 
   /**
    * Similar to [createExplorationIdForIndex], exploration title for any test exploration  are
@@ -869,11 +888,11 @@ class ExplorationCheckpointControllerTest {
    * @return a unique explorationTitle for every test exploration. The explorationTitle for any
    *         test exploration is of the form "Test Exploration #".
    */
-  private fun createExplorationTitleForIndex(index: Int): String =
-    BASE_TEST_EXPLORATION_TITLE + index
+  private fun createExplorationTitleForIndex(index: Int): String = BASE_TEST_EXPLORATION_TITLE + index
 
   private fun createCheckpoint(index: Int): ExplorationCheckpoint =
-    ExplorationCheckpoint.newBuilder()
+    ExplorationCheckpoint
+      .newBuilder()
       .setExplorationTitle(createExplorationTitleForIndex(index))
       .setPendingStateName("first_state")
       .setStateIndex(0)
@@ -881,32 +900,34 @@ class ExplorationCheckpointControllerTest {
 
   private fun retrieveExplorationCheckpointWithOverride(
     profileId: ProfileId,
-    expIdToLoadInstead: String
+    expIdToLoadInstead: String,
   ): DataProvider<ExplorationCheckpoint> {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_CHECKPOINTING_FAKE_EXP_ID, expIdToLoadInstead
+      expIdToLoad = TEST_CHECKPOINTING_FAKE_EXP_ID,
+      expIdToLoadInstead,
     )
     return explorationCheckpointController.retrieveExplorationCheckpoint(
       profileId,
-      TEST_CHECKPOINTING_FAKE_EXP_ID
+      TEST_CHECKPOINTING_FAKE_EXP_ID,
     )
   }
 
   private fun createCheckpointForTestExploration(
     profileId: ProfileId,
-    playRoutine: () -> Unit
+    playRoutine: () -> Unit,
   ) {
     fakeExplorationRetriever.setExplorationProxy(
       expIdToLoad = TEST_CHECKPOINTING_FAKE_EXP_ID,
-      expIdToLoadInstead = "test_checkpointing_base_exploration"
+      expIdToLoadInstead = "test_checkpointing_base_exploration",
     )
-    explorationDataController.startPlayingNewExploration(
-      internalProfileId = profileId.internalId,
-      classroomId = "<none>",
-      topicId = "<none>",
-      storyId = "<none>",
-      explorationId = TEST_CHECKPOINTING_FAKE_EXP_ID
-    ).ensureSucceeds()
+    explorationDataController
+      .startPlayingNewExploration(
+        internalProfileId = profileId.internalId,
+        classroomId = "<none>",
+        topicId = "<none>",
+        storyId = "<none>",
+        explorationId = TEST_CHECKPOINTING_FAKE_EXP_ID,
+      ).ensureSucceeds()
     fakeExplorationRetriever.clearExplorationProxy(expIdToLoad = TEST_CHECKPOINTING_FAKE_EXP_ID)
 
     playRoutine()
@@ -938,7 +959,8 @@ class ExplorationCheckpointControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -951,9 +973,7 @@ class ExplorationCheckpointControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -971,8 +991,7 @@ class ExplorationCheckpointControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -992,23 +1011,27 @@ class ExplorationCheckpointControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
-    ]
+      ExplorationProgressModule::class, TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(explorationCheckpointControllerTest: ExplorationCheckpointControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationCheckpointControllerTest_TestApplicationComponent.builder()
+      DaggerExplorationCheckpointControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

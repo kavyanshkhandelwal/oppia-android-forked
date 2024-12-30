@@ -89,12 +89,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileChooserFragmentLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileChooserFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -113,10 +114,9 @@ class ProfileChooserFragmentLocalTest {
     }
   }
 
-  private fun createProfileChooserActivityIntent(): Intent {
-    return ProfileChooserActivity
+  private fun createProfileChooserActivityIntent(): Intent =
+    ProfileChooserActivity
       .createProfileChooserActivity(ApplicationProvider.getApplicationContext())
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -150,8 +150,8 @@ class ProfileChooserFragmentLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -162,9 +162,13 @@ class ProfileChooserFragmentLocalTest {
     fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerProfileChooserFragmentLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -173,9 +177,12 @@ class ProfileChooserFragmentLocalTest {
       component.inject(profileChooserFragmentLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

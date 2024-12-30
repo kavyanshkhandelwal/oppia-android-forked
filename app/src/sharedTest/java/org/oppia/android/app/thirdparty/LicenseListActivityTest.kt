@@ -99,11 +99,14 @@ class LicenseListActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<LicenseListActivity> = ActivityTestRule(
-    LicenseListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<LicenseListActivity> =
+    ActivityTestRule(
+      LicenseListActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -115,8 +118,9 @@ class LicenseListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createLicenseListActivityIntent(0)
-      .extractCurrentAppScreenName()
+    val currentScreenName =
+      createLicenseListActivityIntent(0)
+        .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_LIST_ACTIVITY)
   }
@@ -125,8 +129,8 @@ class LicenseListActivityTest {
   fun testLicenseListActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
       createLicenseListActivityIntent(
-        dependencyIndex = 0
-      )
+        dependencyIndex = 0,
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -134,8 +138,8 @@ class LicenseListActivityTest {
     // correct string when it's read out.
     assertThat(title).isEqualTo(
       context.getString(
-        R.string.license_list_activity_title
-      )
+        R.string.license_list_activity_title,
+      ),
     )
   }
 
@@ -143,12 +147,11 @@ class LicenseListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
+  private fun createLicenseListActivityIntent(dependencyIndex: Int): Intent =
+    LicenseListActivity.createLicenseListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      dependencyIndex
+      dependencyIndex,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -179,12 +182,10 @@ class LicenseListActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -193,9 +194,13 @@ class LicenseListActivityTest {
     fun inject(licenseListActivityTest: LicenseListActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseListActivityTest_TestApplicationComponent.builder()
+      DaggerLicenseListActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -204,9 +209,12 @@ class LicenseListActivityTest {
       component.inject(licenseListActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

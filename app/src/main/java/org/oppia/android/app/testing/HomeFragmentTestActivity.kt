@@ -19,31 +19,35 @@ import org.oppia.android.app.testing.activity.TestActivity
  * This activity must implement listeners so the tests can use it as a [HomeFragment].
  */
 class HomeFragmentTestActivity :
+  TestActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
   RouteToRecentlyPlayedListener,
-  TestActivity(),
   ExitProfileListener {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
   }
 
   companion object {
-    fun createHomeFragmentTestActivity(context: Context): Intent {
-      return Intent(context, HomeFragmentTestActivity::class.java)
-    }
+    fun createHomeFragmentTestActivity(context: Context): Intent = Intent(context, HomeFragmentTestActivity::class.java)
   }
 
   // Override functions are needed to fulfill listener definitions.
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {}
+  override fun routeToTopic(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+  ) {}
+
   override fun routeToTopicPlayStory(
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {}
+
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {}
+
   override fun exitProfile(profileType: ProfileType) {}
 }

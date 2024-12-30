@@ -13,7 +13,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 
 /** The activity for testing [MarkTopicsCompletedFragment]. */
 class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,25 +25,30 @@ class MarkTopicsCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity
     internalProfileId = profileId?.internalId ?: -1
     if (getMarkTopicsCompletedFragment() == null) {
       val markTopicsCompletedFragment = MarkTopicsCompletedFragment.newInstance(internalProfileId)
-      supportFragmentManager.beginTransaction().add(
-        R.id.mark_topics_completed_container,
-        markTopicsCompletedFragment
-      ).commitNow()
+      supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.mark_topics_completed_container,
+          markTopicsCompletedFragment,
+        ).commitNow()
     }
   }
 
-  private fun getMarkTopicsCompletedFragment(): MarkTopicsCompletedFragment? {
-    return supportFragmentManager
+  private fun getMarkTopicsCompletedFragment(): MarkTopicsCompletedFragment? =
+    supportFragmentManager
       .findFragmentById(R.id.mark_topics_completed_container) as MarkTopicsCompletedFragment?
-  }
 
   companion object {
     /** Returns an [Intent] for [MarkTopicsCompletedTestActivity]. */
-    fun createMarkTopicsCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkTopicsCompletedTestIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val intent = Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
-        decorateWithUserProfileId(profileId)
-      }
+      val intent =
+        Intent(context, MarkTopicsCompletedTestActivity::class.java).apply {
+          decorateWithUserProfileId(profileId)
+        }
       return intent
     }
   }

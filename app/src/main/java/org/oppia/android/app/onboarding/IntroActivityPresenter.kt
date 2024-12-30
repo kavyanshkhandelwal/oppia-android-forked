@@ -19,41 +19,47 @@ const val PROFILE_NICKNAME_ARGUMENT_KEY = "IntroFragment.Arguments"
 
 /** The Presenter for [IntroActivity]. */
 @ActivityScope
-class IntroActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-  private lateinit var binding: IntroActivityBinding
+class IntroActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    private lateinit var binding: IntroActivityBinding
 
-  /** Handle creation and binding of the [IntroActivity] layout. */
-  fun handleOnCreate(profileNickname: String, profileId: ProfileId) {
-    binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
-    binding.lifecycleOwner = activity
+    /** Handle creation and binding of the [IntroActivity] layout. */
+    fun handleOnCreate(
+      profileNickname: String,
+      profileId: ProfileId,
+    ) {
+      binding = DataBindingUtil.setContentView(activity, R.layout.intro_activity)
+      binding.lifecycleOwner = activity
 
-    if (getIntroFragment() == null) {
-      val introFragment = IntroFragment()
+      if (getIntroFragment() == null) {
+        val introFragment = IntroFragment()
 
-      val argumentsProto =
-        IntroFragmentArguments.newBuilder().setProfileNickname(profileNickname).build()
+        val argumentsProto =
+          IntroFragmentArguments.newBuilder().setProfileNickname(profileNickname).build()
 
-      val args = Bundle().apply {
-        decorateWithUserProfileId(profileId)
-        putProto(PROFILE_NICKNAME_ARGUMENT_KEY, argumentsProto)
+        val args =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+            putProto(PROFILE_NICKNAME_ARGUMENT_KEY, argumentsProto)
+          }
+
+        introFragment.arguments = args
+
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.learner_intro_fragment_placeholder,
+            introFragment,
+            TAG_LEARNER_INTRO_FRAGMENT,
+          ).commitNow()
       }
-
-      introFragment.arguments = args
-
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.learner_intro_fragment_placeholder,
-        introFragment,
-        TAG_LEARNER_INTRO_FRAGMENT
-      )
-        .commitNow()
     }
-  }
 
-  private fun getIntroFragment(): IntroFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_LEARNER_INTRO_FRAGMENT
-    ) as? IntroFragment
+    private fun getIntroFragment(): IntroFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_LEARNER_INTRO_FRAGMENT,
+      ) as? IntroFragment
   }
-}

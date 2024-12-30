@@ -21,7 +21,6 @@ class SurveyFragment :
   InjectableFragment(),
   SelectedAnswerAvailabilityReceiver,
   SelectedAnswerHandler {
-
   companion object {
     /** Arguments key for SurveyFragment. */
     const val SURVEY_FRAGMENT_ARGUMENTS_KEY = "SurveyFragment.arguments"
@@ -35,17 +34,21 @@ class SurveyFragment :
      */
     fun newInstance(
       internalProfileId: Int,
-      topicId: String
+      topicId: String,
     ): SurveyFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val args = SurveyFragmentArguments.newBuilder().apply {
-        this.topicId = topicId
-      }.build()
+      val args =
+        SurveyFragmentArguments
+          .newBuilder()
+          .apply {
+            this.topicId = topicId
+          }.build()
       return SurveyFragment().apply {
-        arguments = Bundle().apply {
-          putProto(SURVEY_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(SURVEY_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -61,13 +64,13 @@ class SurveyFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-
-    val args = arguments!!.getProto(
-      SURVEY_FRAGMENT_ARGUMENTS_KEY,
-      SurveyFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments!!.getProto(
+        SURVEY_FRAGMENT_ARGUMENTS_KEY,
+        SurveyFragmentArguments.getDefaultInstance(),
+      )
 
     val internalProfileId = arguments!!.extractCurrentUserProfileId().internalId
     val topicId = args.topicId!!
@@ -79,7 +82,7 @@ class SurveyFragment :
       internalProfileId,
       explorationId,
       topicId,
-      this
+      this,
     )
   }
 

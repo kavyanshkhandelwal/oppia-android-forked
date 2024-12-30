@@ -11,5 +11,8 @@ interface ShowHintAvailabilityListener {
    * @param isCurrentStatePendingState whether the current state being viewed by the learner is
    *     pending and should have hints enabled
    */
-  fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean)
+  fun onHintAvailable(
+    helpIndex: HelpIndex,
+    isCurrentStatePendingState: Boolean,
+  )
 }

@@ -12,8 +12,7 @@ import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 class ProfileProgressHeaderViewModel(
   activity: AppCompatActivity,
   fragment: Fragment,
-) :
-  ProfileProgressItemViewModel() {
+) : ProfileProgressItemViewModel() {
   private val routeToCompletedStoryListListener = activity as RouteToCompletedStoryListListener
   private val routeToOngoingTopicListListener = activity as RouteToOngoingTopicListListener
   private val routeToRecentlyPlayedActivity = activity as RouteToRecentlyPlayedListener
@@ -25,12 +24,11 @@ class ProfileProgressHeaderViewModel(
 
   private var recentlyPlayedTopicCount: Int = 0
 
-  private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle {
-    return when (completedStoryCount.get()) {
+  private fun getRecentlyPlayedActivityTitle(): RecentlyPlayedActivityTitle =
+    when (completedStoryCount.get()) {
       in 2..Int.MAX_VALUE -> RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
       else -> RecentlyPlayedActivityTitle.STORIES_FOR_YOU
     }
-  }
 
   fun setProfile(currentProfile: Profile) {
     profile.set(currentProfile)
@@ -65,18 +63,18 @@ class ProfileProgressHeaderViewModel(
   }
 
   /** Returns the visibility for the "View All" button. */
-  fun getViewAllButtonVisibility(): Int {
-    return if (recentlyPlayedTopicCount > 0) {
+  fun getViewAllButtonVisibility(): Int =
+    if (recentlyPlayedTopicCount > 0) {
       View.VISIBLE
-    } else
+    } else {
       View.INVISIBLE
-  }
+    }
 
   /** Returns the visibility for the header "Recently-played Stories" text. */
-  fun getHeaderTextVisibility(): Int {
-    return if (recentlyPlayedTopicCount > 0) {
+  fun getHeaderTextVisibility(): Int =
+    if (recentlyPlayedTopicCount > 0) {
       View.VISIBLE
-    } else
+    } else {
       View.INVISIBLE
-  }
+    }
 }

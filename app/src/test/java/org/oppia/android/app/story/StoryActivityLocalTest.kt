@@ -95,12 +95,13 @@ private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = StoryActivityLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class StoryActivityLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val internalProfileId = 0
@@ -118,33 +119,33 @@ class StoryActivityLocalTest {
 
   @Test
   fun testStoryActivity_onLaunch_logsEvent() {
-    ActivityScenario.launch<StoryActivity>(
-      createStoryActivityIntent(internalProfileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    ActivityScenario
+      .launch<StoryActivity>(
+        createStoryActivityIntent(internalProfileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
-      assertThat(event.context.openStoryActivity.storyId).matches(TEST_STORY_ID)
-      assertThat(event.context.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
-    }
+        assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+        assertThat(event.context.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
+        assertThat(event.context.openStoryActivity.storyId).matches(TEST_STORY_ID)
+        assertThat(event.context.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
+      }
   }
 
   private fun createStoryActivityIntent(
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String
-  ): Intent {
-    return StoryActivity.createStoryActivityIntent(
+    storyId: String,
+  ): Intent =
+    StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       classroomId,
       topicId,
-      storyId
+      storyId,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -178,8 +179,8 @@ class StoryActivityLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -190,9 +191,13 @@ class StoryActivityLocalTest {
     fun inject(storyActivityLocalTest: StoryActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStoryActivityLocalTest_TestApplicationComponent.builder()
+      DaggerStoryActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -201,9 +206,12 @@ class StoryActivityLocalTest {
       component.inject(storyActivityLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

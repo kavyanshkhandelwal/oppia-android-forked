@@ -8,25 +8,17 @@ import dagger.Provides
 class HtmlParserEntityTypeModule {
   @Provides
   @ExplorationHtmlParserEntityType
-  fun provideExplorationHtmlParserEntityType(): String {
-    return "exploration"
-  }
+  fun provideExplorationHtmlParserEntityType(): String = "exploration"
 
   @Provides
   @ConceptCardHtmlParserEntityType
-  fun provideConceptCardHtmlParserEntityType(): String {
-    return "skill"
-  }
+  fun provideConceptCardHtmlParserEntityType(): String = "skill"
 
   @Provides
   @TopicHtmlParserEntityType
-  fun provideReviewCardHtmlParserEntityType(): String {
-    return "topic"
-  }
+  fun provideReviewCardHtmlParserEntityType(): String = "topic"
 
   @Provides
   @StoryHtmlParserEntityType
-  fun provideStoryHtmlParserEntityType(): String {
-    return "story"
-  }
+  fun provideStoryHtmlParserEntityType(): String = "story"
 }

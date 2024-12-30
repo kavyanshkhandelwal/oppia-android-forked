@@ -139,7 +139,7 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicInfoFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicInfoFragmentTest {
   @get:Rule
@@ -155,9 +155,12 @@ class TopicInfoFragmentTest {
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  var activityTestRule: ActivityTestRule<TopicActivity> =
+    ActivityTestRule(
+      TopicActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -183,7 +186,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(matches(withText(containsString(TOPIC_NAME))))
@@ -195,17 +198,17 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_description_text_view)).check(
         matches(
           withText(
             containsString(
-              TOPIC_DESCRIPTION
-            )
-          )
-        )
+              TOPIC_DESCRIPTION,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -217,15 +220,16 @@ class TopicInfoFragmentTest {
         context = context,
         profileId = profileId,
         classroomId = TEST_CLASSROOM_ID,
-        topicId = TEST_TOPIC_ID
-      )
+        topicId = TEST_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     onView(withId(R.id.topic_description_text_view)).check { view, _ ->
-      val topicDescriptionTextview: TextView = view.findViewById(
-        R.id.topic_description_text_view
-      )
+      val topicDescriptionTextview: TextView =
+        view.findViewById(
+          R.id.topic_description_text_view,
+        )
       assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
     }
   }
@@ -237,15 +241,16 @@ class TopicInfoFragmentTest {
         context = context,
         profileId = profileId,
         classroomId = TEST_CLASSROOM_ID,
-        topicId = TEST_TOPIC_ID
-      )
+        topicId = TEST_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
     onView(withId(R.id.topic_description_text_view)).check { view, _ ->
-      val topicDescriptionTextview: TextView = view.findViewById(
-        R.id.topic_description_text_view
-      )
+      val topicDescriptionTextview: TextView =
+        view.findViewById(
+          R.id.topic_description_text_view,
+        )
       assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
     }
   }
@@ -255,7 +260,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(matches(withDrawable(topicThumbnail)))
@@ -267,13 +272,13 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_thumbnail_image_view)).check(
         matches(
-          hasScaleType(ImageView.ScaleType.FIT_CENTER)
-        )
+          hasScaleType(ImageView.ScaleType.FIT_CENTER),
+        ),
       )
     }
   }
@@ -283,7 +288,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -292,10 +297,10 @@ class TopicInfoFragmentTest {
           matches(
             withText(
               containsString(
-                TOPIC_NAME
-              )
-            )
-          )
+                TOPIC_NAME,
+              ),
+            ),
+          ),
         )
     }
   }
@@ -305,7 +310,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -319,7 +324,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = TEST_TOPIC_ID
+      topicId = TEST_TOPIC_ID,
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.topic_thumbnail_image_view)).check(doesNotExist())
@@ -332,15 +337,15 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.topic_description_text_view))
         .check(
           matches(
             maxLines(
-              lineCount = 5
-            )
-          )
+              lineCount = 5,
+            ),
+          ),
         )
     }
   }
@@ -351,12 +356,12 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
-        )
+          DUMMY_TOPIC_DESCRIPTION_LONG,
+        ),
       )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
@@ -370,12 +375,12 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
-        )
+          DUMMY_TOPIC_DESCRIPTION_LONG,
+        ),
       )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
@@ -383,9 +388,9 @@ class TopicInfoFragmentTest {
         .check(
           matches(
             maxLines(
-              lineCount = 5
-            )
-          )
+              lineCount = 5,
+            ),
+          ),
         )
     }
   }
@@ -396,12 +401,12 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.topic_description_text_view)).perform(
         setTextInTextView(
-          DUMMY_TOPIC_DESCRIPTION_LONG
-        )
+          DUMMY_TOPIC_DESCRIPTION_LONG,
+        ),
       )
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
@@ -416,7 +421,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).check(matches(isDisplayed()))
@@ -430,7 +435,7 @@ class TopicInfoFragmentTest {
     launchTopicActivityIntent(
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
-      topicId = RATIOS_TOPIC_ID
+      topicId = RATIOS_TOPIC_ID,
     ).use {
       onView(withId(R.id.see_more_text_view)).perform(scrollTo())
       onView(withId(R.id.see_more_text_view)).perform(click())
@@ -442,51 +447,48 @@ class TopicInfoFragmentTest {
   private fun launchTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
+    topicId: String,
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
         profileId,
         classroomId,
-        topicId
+        topicId,
       )
     return ActivityScenario.launch(intent)
   }
 
   /** Custom function to set dummy text in the TextView. */
-  private fun setTextInTextView(value: String): ViewAction {
-    return object : ViewAction {
-      override fun getConstraints(): Matcher<View> {
-        return CoreMatchers.allOf(
+  private fun setTextInTextView(value: String): ViewAction =
+    object : ViewAction {
+      override fun getConstraints(): Matcher<View> =
+        CoreMatchers.allOf(
           isDisplayed(),
-          ViewMatchers.isAssignableFrom(TextView::class.java)
+          ViewMatchers.isAssignableFrom(TextView::class.java),
         )
-      }
 
-      override fun perform(uiController: UiController, view: View) {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         (view as TextView).text = value
       }
 
-      override fun getDescription(): String {
-        return "replace text"
-      }
+      override fun getDescription(): String = "replace text"
     }
-  }
 
   // Reference: https://stackoverflow.com/a/46296194
+
   /** Custom function to check the maxLines value for a TextView. */
-  private fun maxLines(lineCount: Int): TypeSafeMatcher<View> {
-    return object : TypeSafeMatcher<View>() {
-      override fun matchesSafely(item: View): Boolean {
-        return (item as TextView).lineCount == lineCount
-      }
+  private fun maxLines(lineCount: Int): TypeSafeMatcher<View> =
+    object : TypeSafeMatcher<View>() {
+      override fun matchesSafely(item: View): Boolean = (item as TextView).lineCount == lineCount
 
       override fun describeTo(description: Description) {
         description.appendText("isTextInLines")
       }
     }
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -517,8 +519,8 @@ class TopicInfoFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -529,9 +531,13 @@ class TopicInfoFragmentTest {
     fun inject(topicInfoFragmentTest: TopicInfoFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicInfoFragmentTest_TestApplicationComponent.builder()
+      DaggerTopicInfoFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -540,9 +546,12 @@ class TopicInfoFragmentTest {
       component.inject(topicInfoFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

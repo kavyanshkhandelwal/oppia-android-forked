@@ -30,7 +30,7 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
     surveyActivityPresenter.handleOnCreate(
       profileId,
       params.topicId,
-      params.explorationId
+      params.explorationId,
     )
   }
 
@@ -50,28 +50,29 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
       context: Context,
       profileId: ProfileId,
       topicId: String,
-      explorationId: String
+      explorationId: String,
     ): Intent {
-      val params = SurveyActivityParams.newBuilder().apply {
-        this.profileId = profileId
-        this.topicId = topicId
-        this.explorationId = explorationId
-      }.build()
+      val params =
+        SurveyActivityParams
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.topicId = topicId
+            this.explorationId = explorationId
+          }.build()
       return createSurveyActivityIntent(context, params)
     }
 
     /** Returns a new [Intent] open a [SurveyActivity] with the specified [params]. */
     fun createSurveyActivityIntent(
       context: Context,
-      params: SurveyActivityParams
-    ): Intent {
-      return Intent(context, SurveyActivity::class.java).apply {
+      params: SurveyActivityParams,
+    ): Intent =
+      Intent(context, SurveyActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(ScreenName.SURVEY_ACTIVITY)
       }
-    }
 
-    private fun Intent.extractParams() =
-      getProtoExtra(PARAMS_KEY, SurveyActivityParams.getDefaultInstance())
+    private fun Intent.extractParams() = getProtoExtra(PARAMS_KEY, SurveyActivityParams.getDefaultInstance())
   }
 }

@@ -279,7 +279,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -353,7 +353,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -381,7 +381,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -408,7 +408,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -432,7 +432,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -456,7 +456,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -481,7 +481,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -506,7 +506,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -532,7 +532,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -557,7 +557,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -582,7 +582,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -608,7 +608,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -642,7 +642,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -681,7 +681,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -700,10 +700,10 @@ class KdocValidityCheckTest {
   fun testKdoc_emptyCompanionObject_withoutKdoc_checkShouldPass() {
     val testContent =
       """
-        /** Test Kdoc. */
-        class Test {
-          companion object {}
-        }
+      /** Test Kdoc. */
+      class Test {
+        companion object {}
+      }
       """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
@@ -725,7 +725,7 @@ class KdocValidityCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -768,7 +768,7 @@ class KdocValidityCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -799,18 +799,31 @@ class KdocValidityCheckTest {
       }
       """.trimIndent()
     tempFolder.newFolder(
-      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "home"
+      "testfiles",
+      "app",
+      "src",
+      "main",
+      "java",
+      "org",
+      "oppia",
+      "android",
+      "app",
+      "home",
     )
-    val exemptedFile = tempFolder.newFile(
-      "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"
-    )
+    val exemptedFile =
+      tempFolder.newFile(
+        "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt",
+      )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = KdocValidityExemptions.newBuilder().apply {
-      this.addAllExemptedFilePath(
-        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
-      )
-    }.build()
+    val exemptions =
+      KdocValidityExemptions
+        .newBuilder()
+        .apply {
+          this.addAllExemptedFilePath(
+            listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     runScript()
@@ -831,21 +844,34 @@ class KdocValidityCheckTest {
       }
       """.trimIndent()
     tempFolder.newFolder(
-      "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "app", "home"
+      "testfiles",
+      "app",
+      "src",
+      "main",
+      "java",
+      "org",
+      "oppia",
+      "android",
+      "app",
+      "home",
     )
-    val exemptedFile = tempFolder.newFile(
-      "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"
-    )
+    val exemptedFile =
+      tempFolder.newFile(
+        "testfiles/app/src/main/java/org/oppia/android/app/home/HomeActivity.kt",
+      )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = KdocValidityExemptions.newBuilder().apply {
-      this.addAllExemptedFilePath(
-        listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt")
-      )
-    }.build()
+    val exemptions =
+      KdocValidityExemptions
+        .newBuilder()
+        .apply {
+          this.addAllExemptedFilePath(
+            listOf("app/src/main/java/org/oppia/android/app/home/HomeActivity.kt"),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -865,19 +891,23 @@ class KdocValidityCheckTest {
         return error?.let(context::getString)
       }
       """.trimIndent()
-    val exemptedFile = tempFolder.newFile(
-      "testfiles/HomeActivity.kt"
-    )
+    val exemptedFile =
+      tempFolder.newFile(
+        "testfiles/HomeActivity.kt",
+      )
     exemptedFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = KdocValidityExemptions.newBuilder().apply {
-      this.addAllExemptedFilePath(
-        listOf("app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt")
-      )
-    }.build()
+    val exemptions =
+      KdocValidityExemptions
+        .newBuilder()
+        .apply {
+          this.addAllExemptedFilePath(
+            listOf("app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -895,9 +925,7 @@ class KdocValidityCheckTest {
   }
 
   /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
-  }
+  private fun retrieveTestFilesDirectoryPath(): String = "${tempFolder.root}/testfiles"
 
   /** Runs the kdoc_validity_check. */
   private fun runScript() {

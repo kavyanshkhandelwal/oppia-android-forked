@@ -177,11 +177,14 @@ class QuestionPlayerActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
-    QuestionPlayerActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<QuestionPlayerActivity> =
+    ActivityTestRule(
+      QuestionPlayerActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
@@ -218,14 +221,16 @@ class QuestionPlayerActivityTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
-    val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundCoroutineDispatcher)
-    )
+    val executorService =
+      MockGlideExecutor.newTestExecutor(
+        CoroutineExecutorService(backgroundCoroutineDispatcher),
+      )
     Glide.init(
       context,
-      GlideBuilder().setDiskCacheExecutor(executorService)
+      GlideBuilder()
+        .setDiskCacheExecutor(executorService)
         .setAnimationExecutor(executorService)
-        .setSourceExecutor(executorService)
+        .setSourceExecutor(executorService),
     )
   }
 
@@ -236,9 +241,13 @@ class QuestionPlayerActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-      context, ArrayList(SKILL_ID_LIST), profileId
-    ).extractCurrentAppScreenName()
+    val currentScreenName =
+      QuestionPlayerActivity
+        .createQuestionPlayerActivityIntent(
+          context,
+          ArrayList(SKILL_ID_LIST),
+          profileId,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.QUESTION_PLAYER_ACTIVITY)
   }
@@ -264,8 +273,8 @@ class QuestionPlayerActivityTest {
 
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("To refresh your memory, take a look at this refresher lesson"))
-        )
+          withText(containsString("To refresh your memory, take a look at this refresher lesson")),
+        ),
       )
     }
   }
@@ -281,8 +290,8 @@ class QuestionPlayerActivityTest {
 
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("To refresh your memory, take a look at this refresher lesson"))
-        )
+          withText(containsString("To refresh your memory, take a look at this refresher lesson")),
+        ),
       )
     }
   }
@@ -329,8 +338,8 @@ class QuestionPlayerActivityTest {
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -345,8 +354,8 @@ class QuestionPlayerActivityTest {
       rotateToLandscape()
       onView(withId(R.id.answer_tick)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -361,8 +370,8 @@ class QuestionPlayerActivityTest {
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -377,8 +386,8 @@ class QuestionPlayerActivityTest {
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -394,8 +403,8 @@ class QuestionPlayerActivityTest {
       selectMultipleChoiceOption(optionPosition = 2)
       onView(withId(R.id.answer_tick)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -457,9 +466,9 @@ class QuestionPlayerActivityTest {
           matches(
             withContentDescription(
               "To write a fraction, you need to know its denominator, which is the total " +
-                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
-            )
-          )
+                "number of pieces in the whole. All of these pieces should be the same size.\n\n",
+            ),
+          ),
         )
     }
   }
@@ -615,14 +624,14 @@ class QuestionPlayerActivityTest {
       atPositionOnView(
         recyclerViewId = R.id.question_recycler_view,
         position = 0,
-        targetViewId = R.id.content_text_view
-      )
+        targetViewId = R.id.content_text_view,
+      ),
     ).check(
       matches(
         FontSizeMatcher.withFontSize(
-          fontSize = fontSize
-        )
-      )
+          fontSize = fontSize,
+        ),
+      ),
     )
   }
 
@@ -630,14 +639,15 @@ class QuestionPlayerActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun launchForSkillList(
-    skillIdList: List<String>
-  ): ActivityScenario<QuestionPlayerActivity> {
-    val scenario = ActivityScenario.launch<QuestionPlayerActivity>(
-      QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, ArrayList(skillIdList), profileId
+  private fun launchForSkillList(skillIdList: List<String>): ActivityScenario<QuestionPlayerActivity> {
+    val scenario =
+      ActivityScenario.launch<QuestionPlayerActivity>(
+        QuestionPlayerActivity.createQuestionPlayerActivityIntent(
+          context,
+          ArrayList(skillIdList),
+          profileId,
+        ),
       )
-    )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.question_recycler_view)).check(matches(isDisplayed()))
     return scenario
@@ -660,10 +670,13 @@ class QuestionPlayerActivityTest {
     typeTextIntoInteraction(text, interactionViewId = R.id.text_input_interaction_view)
   }
 
-  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+  private fun typeTextIntoInteraction(
+    text: String,
+    interactionViewId: Int,
+  ) {
     onView(withId(interactionViewId)).perform(
       editTextInputAction.appendText(text),
-      closeSoftKeyboard()
+      closeSoftKeyboard(),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -682,25 +695,34 @@ class QuestionPlayerActivityTest {
   }
 
   @Suppress("SameParameterValue")
-  private fun clickSelection(optionPosition: Int, targetViewId: Int) {
+  private fun clickSelection(
+    optionPosition: Int,
+    targetViewId: Int,
+  ) {
     scrollToViewType(SELECTION_INTERACTION)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
@@ -725,14 +747,14 @@ class QuestionPlayerActivityTest {
       atPositionOnView(
         recyclerViewId = R.id.question_recycler_view,
         position = 0,
-        targetViewId = R.id.content_text_view
-      )
+        targetViewId = R.id.content_text_view,
+      ),
     ).check(matches(withText(containsString(expectedHtml))))
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.question_recycler_view)).perform(
-      scrollToHolder(StateViewHolderTypeMatcher(viewType))
+      scrollToHolder(StateViewHolderTypeMatcher(viewType)),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -742,15 +764,13 @@ class QuestionPlayerActivityTest {
    * StateFragment's RecyclerView.
    */
   private class StateViewHolderTypeMatcher(
-    private val viewType: StateItemViewModel.ViewType
+    private val viewType: StateItemViewModel.ViewType,
   ) : BaseMatcher<RecyclerView.ViewHolder>() {
     override fun describeTo(description: Description?) {
       description?.appendText("item view type of $viewType")
     }
 
-    override fun matches(item: Any?): Boolean {
-      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
-    }
+    override fun matches(item: Any?): Boolean = (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
   }
 
   /**
@@ -759,49 +779,48 @@ class QuestionPlayerActivityTest {
    * inspired by https://stackoverflow.com/q/38314077.
    */
   @Suppress("SameParameterValue")
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
   /**
    * Returns a matcher that matches against text views with clickable spans that contain the
    * specified text.
    */
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
+    return (viewText as Spannable)
+      .getSpans(
+        // start=
+        0, // end=
+        text.length,
+        ClickableSpan::class.java,
+      ).map {
+        viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+      }
   }
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
-    text: String
-  ): ClickableSpan? {
-    return find { text in it.first }?.second
-  }
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String): ClickableSpan? = find { text in it.first }?.second
 
   @Module
   class TestModule {
@@ -881,8 +900,8 @@ class QuestionPlayerActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -893,9 +912,13 @@ class QuestionPlayerActivityTest {
     fun inject(questionPlayerActivityTest: QuestionPlayerActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerQuestionPlayerActivityTest_TestApplicationComponent.builder()
+      DaggerQuestionPlayerActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -904,9 +927,12 @@ class QuestionPlayerActivityTest {
       component.inject(questionPlayerActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

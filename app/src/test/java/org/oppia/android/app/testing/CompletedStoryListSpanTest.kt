@@ -109,8 +109,8 @@ class CompletedStoryListSpanTest {
     val completedStoryListRecyclerVIew =
       completedStoryListFragment?.view?.findViewWithTag<RecyclerView>(
         activity.resources.getString(
-          R.string.completed_story_list_recyclerview_tag
-        )
+          R.string.completed_story_list_recyclerview_tag,
+        ),
       )
     return (completedStoryListRecyclerVIew?.layoutManager as GridLayoutManager).spanCount
   }
@@ -183,8 +183,8 @@ class CompletedStoryListSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -195,9 +195,13 @@ class CompletedStoryListSpanTest {
     fun inject(completedStoryListSpanTest: CompletedStoryListSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCompletedStoryListSpanTest_TestApplicationComponent.builder()
+      DaggerCompletedStoryListSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -206,9 +210,12 @@ class CompletedStoryListSpanTest {
       component.inject(completedStoryListSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

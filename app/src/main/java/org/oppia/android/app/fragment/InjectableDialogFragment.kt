@@ -11,7 +11,9 @@ import org.oppia.android.app.view.ViewComponentFactory
  * A fragment that facilitates field injection to children. This fragment can only be used with
  * [org.oppia.android.app.activity.InjectableAppCompatActivity] contexts.
  */
-abstract class InjectableDialogFragment : DialogFragment(), ViewComponentFactory {
+abstract class InjectableDialogFragment :
+  DialogFragment(),
+  ViewComponentFactory {
   /**
    * The [FragmentComponent] corresponding to this fragment. This cannot be used before [onAttach]
    * is called, and can be used to inject lateinit fields in child fragments during fragment
@@ -27,6 +29,10 @@ abstract class InjectableDialogFragment : DialogFragment(), ViewComponentFactory
 
   override fun createViewComponent(view: View): ViewComponent {
     val builderInjector = fragmentComponent as ViewComponentBuilderInjector
-    return builderInjector.getViewComponentBuilderProvider().get().setView(view).build()
+    return builderInjector
+      .getViewComponentBuilderProvider()
+      .get()
+      .setView(view)
+      .build()
   }
 }

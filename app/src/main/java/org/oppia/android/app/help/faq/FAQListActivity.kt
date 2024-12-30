@@ -11,8 +11,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The FAQ page activity for placement of different FAQs. */
-class FAQListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToFAQSingleListener {
-
+class FAQListActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
+  RouteToFAQSingleListener {
   @Inject
   lateinit var faqListActivityPresenter: FAQListActivityPresenter
 
@@ -23,14 +24,16 @@ class FAQListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToFAQSi
   }
 
   companion object {
-    fun createFAQListActivityIntent(context: Context): Intent {
-      return Intent(context, FAQListActivity::class.java).apply {
+    fun createFAQListActivityIntent(context: Context): Intent =
+      Intent(context, FAQListActivity::class.java).apply {
         decorateWithScreenName(FAQ_LIST_ACTIVITY)
       }
-    }
   }
 
-  override fun onRouteToFAQSingle(question: String, answer: String) {
+  override fun onRouteToFAQSingle(
+    question: String,
+    answer: String,
+  ) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 }

@@ -24,7 +24,7 @@ import java.security.MessageDigest
 class CoverageRunner(
   private val repoRoot: File,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutor: CommandExecutor,
 ) {
   private val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
 
@@ -34,9 +34,7 @@ class CoverageRunner(
    * @param bazelTestTarget Bazel test target to analyze coverage
    * @return the analysed coverage data report
    */
-  fun retrieveCoverageDataForTestTarget(
-    bazelTestTarget: String
-  ): List<CoverageReport> {
+  fun retrieveCoverageDataForTestTarget(bazelTestTarget: String): List<CoverageReport> {
     val coverageResults = bazelClient.runCoverageForTestTarget(bazelTestTarget)
 
     return coverageResults
@@ -45,76 +43,90 @@ class CoverageRunner(
       }.takeIf { it.isNotEmpty() } ?: listOf(
       generateFailedCoverageReport(
         bazelTestTarget,
-        "Coverage retrieval failed for the test target: $bazelTestTarget"
-      )
+        "Coverage retrieval failed for the test target: $bazelTestTarget",
+      ),
     )
   }
 
   private fun parseCoverageDataFileLines(
     coverageData: List<String>,
-    bazelTestTarget: String
+    bazelTestTarget: String,
   ): CoverageReport {
     val extractedFileName = "${extractTargetName(bazelTestTarget)}.kt"
 
-    val sfStartIdx = coverageData.indexOfFirst {
-      it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
-    }
+    val sfStartIdx =
+      coverageData.indexOfFirst {
+        it.startsWith("SF:") && it.substringAfter("SF:").substringAfterLast("/") == extractedFileName
+      }
     if (sfStartIdx == -1) {
       return generateFailedCoverageReport(
         bazelTestTarget,
-        "Source File: $extractedFileName not found in the coverage data"
+        "Source File: $extractedFileName not found in the coverage data",
       )
     }
-    val eofIdx = coverageData.subList(sfStartIdx, coverageData.size)
-      .indexOfFirst {
-        it.startsWith("end_of_record")
-      }
+    val eofIdx =
+      coverageData
+        .subList(sfStartIdx, coverageData.size)
+        .indexOfFirst {
+          it.startsWith("end_of_record")
+        }
 
     if (eofIdx == -1) {
       return generateFailedCoverageReport(
         bazelTestTarget,
-        "End of record for the test target $bazelTestTarget not found in the coverage report"
+        "End of record for the test target $bazelTestTarget not found in the coverage report",
       )
     }
 
     val fileSpecificCovDatLines = coverageData.subList(sfStartIdx, sfStartIdx + eofIdx + 1)
 
-    val coverageDataProps = fileSpecificCovDatLines.groupBy { line ->
-      line.substringBefore(":")
-    }.mapValues { (_, lines) ->
-      lines.map { line ->
-        line.substringAfter(":").split(",")
-      }
-    }
+    val coverageDataProps =
+      fileSpecificCovDatLines
+        .groupBy { line ->
+          line.substringBefore(":")
+        }.mapValues { (_, lines) ->
+          lines.map { line ->
+            line.substringAfter(":").split(",")
+          }
+        }
 
     val filePath = coverageDataProps["SF"]?.firstOrNull()?.get(0)
     val linesFound = coverageDataProps["LF"]?.singleOrNull()?.single()?.toInt() ?: 0
     val linesHit = coverageDataProps["LH"]?.singleOrNull()?.single()?.toInt() ?: 0
 
-    val coveredLines = coverageDataProps["DA"]?.map { (lineNumStr, hitCountStr) ->
-      CoveredLine.newBuilder().apply {
-        this.lineNumber = lineNumStr.toInt()
-        this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
-      }.build()
-    }.orEmpty()
+    val coveredLines =
+      coverageDataProps["DA"]
+        ?.map { (lineNumStr, hitCountStr) ->
+          CoveredLine
+            .newBuilder()
+            .apply {
+              this.lineNumber = lineNumStr.toInt()
+              this.coverage = if (hitCountStr.toInt() > 0) Coverage.FULL else Coverage.NONE
+            }.build()
+        }.orEmpty()
 
     val file = File(repoRoot, filePath)
     val fileSha1Hash = calculateSha1(file.absolutePath)
 
-    val bazelTestTargetName = BazelTestTarget.newBuilder()
-      .setTestTargetName(bazelTestTarget)
-      .build()
+    val bazelTestTargetName =
+      BazelTestTarget
+        .newBuilder()
+        .setTestTargetName(bazelTestTarget)
+        .build()
 
-    val coverageDetails = CoverageDetails.newBuilder()
-      .addBazelTestTargets(bazelTestTargetName)
-      .setFilePath(filePath)
-      .setFileSha1Hash(fileSha1Hash)
-      .addAllCoveredLine(coveredLines)
-      .setLinesFound(linesFound)
-      .setLinesHit(linesHit)
-      .build()
+    val coverageDetails =
+      CoverageDetails
+        .newBuilder()
+        .addBazelTestTargets(bazelTestTargetName)
+        .setFilePath(filePath)
+        .setFileSha1Hash(fileSha1Hash)
+        .addAllCoveredLine(coveredLines)
+        .setLinesFound(linesFound)
+        .setLinesHit(linesHit)
+        .build()
 
-    return CoverageReport.newBuilder()
+    return CoverageReport
+      .newBuilder()
       .setDetails(coverageDetails)
       .build()
   }
@@ -122,23 +134,27 @@ class CoverageRunner(
 
 private fun generateFailedCoverageReport(
   bazelTestTarget: String,
-  failureMessage: String
+  failureMessage: String,
 ): CoverageReport {
-  val coverageFailure = CoverageFailure.newBuilder()
-    .setBazelTestTarget(bazelTestTarget)
-    .setFailureMessage(failureMessage)
-    .build()
+  val coverageFailure =
+    CoverageFailure
+      .newBuilder()
+      .setBazelTestTarget(bazelTestTarget)
+      .setFailureMessage(failureMessage)
+      .build()
 
-  return CoverageReport.newBuilder()
+  return CoverageReport
+    .newBuilder()
     .setFailure(coverageFailure)
     .build()
 }
 
 private fun extractTargetName(bazelTestTarget: String): String {
-  val targetName = bazelTestTarget
-    .substringAfterLast("/")
-    .substringAfterLast(":")
-    .trim()
+  val targetName =
+    bazelTestTarget
+      .substringAfterLast("/")
+      .substringAfterLast(":")
+      .trim()
   return targetName.removeSuffix("LocalTest").removeSuffix("Test")
 }
 

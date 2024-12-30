@@ -33,7 +33,6 @@ class SplashActivity :
   DeprecationNoticeActionListener,
   BetaNoticeClosedListener,
   GeneralAvailabilityUpgradeNoticeClosedListener {
-
   private lateinit var activityComponent: ActivityComponent
 
   @Inject
@@ -50,12 +49,16 @@ class SplashActivity :
 
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
-    return builderInjector.getFragmentComponentBuilderProvider().get()
-      .setFragment(fragment).build()
+    return builderInjector
+      .getFragmentComponentBuilderProvider()
+      .get()
+      .setFragment(fragment)
+      .build()
   }
 
-  override fun onCloseAppButtonClicked() = splashActivityPresenter
-    .handleOnDeprecationNoticeCloseAppButtonClicked()
+  override fun onCloseAppButtonClicked() =
+    splashActivityPresenter
+      .handleOnDeprecationNoticeCloseAppButtonClicked()
 
   override fun onBetaNoticeOkayButtonClicked(permanentlyDismiss: Boolean) =
     splashActivityPresenter.handleOnBetaNoticeOkayButtonClicked(permanentlyDismiss)

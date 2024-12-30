@@ -18,17 +18,21 @@ class PromotedStoryListViewModel(
   private val activity: AppCompatActivity,
   val promotedStoryList: List<PromotedStoryViewModel>,
   private val promotedActivityList: PromotedActivityList,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : HomeItemViewModel() {
   private val routeToRecentlyPlayedListener = activity as RouteToRecentlyPlayedListener
-  private val promotedStoryListLimit = activity.resources.getInteger(
-    R.integer.promoted_story_list_limit
-  )
+  private val promotedStoryListLimit =
+    activity.resources.getInteger(
+      R.integer.promoted_story_list_limit,
+    )
+
   /** Returns the padding placed at the end of the promoted stories list based on the number of promoted stories. */
   val endPadding =
-    if (promotedStoryList.size > 1)
+    if (promotedStoryList.size > 1) {
       activity.resources.getDimensionPixelSize(R.dimen.home_padding_end)
-    else activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
+    } else {
+      activity.resources.getDimensionPixelSize(R.dimen.home_padding_start)
+    }
 
   /** Determines and returns the header for the promoted stories. */
   fun getHeader(): String {
@@ -37,8 +41,9 @@ class PromotedStoryListViewModel(
         suggestedStoryList.isNotEmpty() -> {
           if (recentlyPlayedStoryList.isEmpty() && olderPlayedStoryList.isEmpty()) {
             resourceHandler.getStringInLocale(R.string.recommended_stories)
-          } else
+          } else {
             resourceHandler.getStringInLocale(R.string.stories_for_you)
+          }
         }
         recentlyPlayedStoryList.isNotEmpty() -> {
           resourceHandler.getStringInLocale(R.string.recently_played_stories)
@@ -99,9 +104,7 @@ class PromotedStoryListViewModel(
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
-  override fun equals(other: Any?): Boolean {
-    return other is PromotedStoryListViewModel && other.promotedStoryList == this.promotedStoryList
-  }
+  override fun equals(other: Any?): Boolean = other is PromotedStoryListViewModel && other.promotedStoryList == this.promotedStoryList
 
   override fun hashCode() = Objects.hash(promotedStoryList)
 }

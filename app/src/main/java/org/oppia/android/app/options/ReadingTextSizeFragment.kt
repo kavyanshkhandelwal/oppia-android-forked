@@ -18,19 +18,25 @@ private const val FRAGMENT_ARGUMENTS_KEY = "ReadingTextSizeFragment.arguments"
 private const val FRAGMENT_SAVED_STATE_KEY = "ReadingTextSizeFragment.saved_state"
 
 /** The fragment to change the text size of the reading content in the app. */
-class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListener {
+class ReadingTextSizeFragment :
+  InjectableFragment(),
+  TextSizeRadioButtonListener {
   @Inject
   lateinit var readingTextSizeFragmentPresenter: ReadingTextSizeFragmentPresenter
 
   companion object {
     fun newInstance(readingTextSize: ReadingTextSize): ReadingTextSizeFragment {
-      val protoArguments = ReadingTextSizeFragmentArguments.newBuilder().apply {
-        this.readingTextSize = readingTextSize
-      }.build()
+      val protoArguments =
+        ReadingTextSizeFragmentArguments
+          .newBuilder()
+          .apply {
+            this.readingTextSize = readingTextSize
+          }.build()
       return ReadingTextSizeFragment().apply {
-        arguments = Bundle().apply {
-          putProto(FRAGMENT_ARGUMENTS_KEY, protoArguments)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(FRAGMENT_ARGUMENTS_KEY, protoArguments)
+          }
       }
     }
   }
@@ -43,7 +49,7 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val readingTextSize =
       savedInstanceState?.retrieveStateBundle()?.selectedReadingTextSize
@@ -53,9 +59,12 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val stateBundle = ReadingTextSizeFragmentStateBundle.newBuilder().apply {
-      selectedReadingTextSize = readingTextSizeFragmentPresenter.getTextSizeSelected()
-    }.build()
+    val stateBundle =
+      ReadingTextSizeFragmentStateBundle
+        .newBuilder()
+        .apply {
+          selectedReadingTextSize = readingTextSizeFragmentPresenter.getTextSizeSelected()
+        }.build()
     outState.putProto(FRAGMENT_SAVED_STATE_KEY, stateBundle)
   }
 
@@ -64,15 +73,14 @@ class ReadingTextSizeFragment : InjectableFragment(), TextSizeRadioButtonListene
   }
 
   /** Returns the [ReadingTextSizeFragmentArguments] stored in the fragment's arguments. */
-  fun retrieveFragmentArguments(): ReadingTextSizeFragmentArguments {
-    return checkNotNull(arguments) {
+  fun retrieveFragmentArguments(): ReadingTextSizeFragmentArguments =
+    checkNotNull(arguments) {
       "Expected arguments to be passed to ReadingTextSizeFragment"
     }.getProto(FRAGMENT_ARGUMENTS_KEY, ReadingTextSizeFragmentArguments.getDefaultInstance())
-  }
 
-  private fun Bundle.retrieveStateBundle(): ReadingTextSizeFragmentStateBundle {
-    return getProto(
-      FRAGMENT_SAVED_STATE_KEY, ReadingTextSizeFragmentStateBundle.getDefaultInstance()
+  private fun Bundle.retrieveStateBundle(): ReadingTextSizeFragmentStateBundle =
+    getProto(
+      FRAGMENT_SAVED_STATE_KEY,
+      ReadingTextSizeFragmentStateBundle.getDefaultInstance(),
     )
-  }
 }

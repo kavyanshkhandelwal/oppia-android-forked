@@ -22,7 +22,7 @@ import org.oppia.android.util.math.toDouble
  */
 class FractionSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: Fraction
+  private val actual: Fraction,
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Returns a [BooleanSubject] to test [Fraction.getIsNegative]. This method never fails since the

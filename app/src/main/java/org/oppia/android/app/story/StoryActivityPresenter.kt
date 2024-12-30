@@ -7,27 +7,32 @@ import javax.inject.Inject
 
 /** The presenter for [StoryActivity]. */
 @ActivityScope
-class StoryActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  fun handleOnCreate(
-    internalProfileId: Int,
-    classroomId: String,
-    topicId: String,
-    storyId: String
+class StoryActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
   ) {
-    activity.setContentView(R.layout.story_activity)
-    if (getStoryFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.story_fragment_placeholder,
-        StoryFragment.newInstance(internalProfileId, classroomId, topicId, storyId)
-      ).commitNow()
+    fun handleOnCreate(
+      internalProfileId: Int,
+      classroomId: String,
+      topicId: String,
+      storyId: String,
+    ) {
+      activity.setContentView(R.layout.story_activity)
+      if (getStoryFragment() == null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.story_fragment_placeholder,
+            StoryFragment.newInstance(internalProfileId, classroomId, topicId, storyId),
+          ).commitNow()
+      }
     }
-  }
 
-  private fun getStoryFragment(): StoryFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(
-        R.id.story_fragment_placeholder
-      ) as StoryFragment?
+    private fun getStoryFragment(): StoryFragment? =
+      activity
+        .supportFragmentManager
+        .findFragmentById(
+          R.id.story_fragment_placeholder,
+        ) as StoryFragment?
   }
-}

@@ -17,22 +17,21 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
-@Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.SingleInputMatcher<SetOfTranslatableHtmlContentIds> {
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<SetOfTranslatableHtmlContentIds> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: SetOfTranslatableHtmlContentIds,
+      input: SetOfTranslatableHtmlContentIds,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.getContentIdSet().intersect(input.getContentIdSet()).isEmpty()
   }
-
-  override fun matches(
-    answer: SetOfTranslatableHtmlContentIds,
-    input: SetOfTranslatableHtmlContentIds,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.getContentIdSet().intersect(input.getContentIdSet()).isEmpty()
-}

@@ -99,7 +99,7 @@ import javax.inject.Singleton
     CpuPerformanceSnapshotterModule::class,
     PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
     AuthenticationModule::class,
-  ]
+  ],
 )
 interface AlphaApplicationComponent : ApplicationComponent {
   /**

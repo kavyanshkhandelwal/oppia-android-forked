@@ -13,9 +13,10 @@ import com.google.protobuf.MessageLite
  * This means that two [Iterable]s are only equal if they have the same number of elements, and that
  * all of their items are equal per this [Comparator], including duplicates.
  */
-fun <U> Comparator<U>.compareIterables(first: Iterable<U>, second: Iterable<U>): Int {
-  return compareIterablesInternal(first, second, reverseItemSort = false)
-}
+fun <U> Comparator<U>.compareIterables(
+  first: Iterable<U>,
+  second: Iterable<U>,
+): Int = compareIterablesInternal(first, second, reverseItemSort = false)
 
 /**
  * Compares two [Iterable]s based on an item [Comparator] and returns the result, in much the same
@@ -26,7 +27,10 @@ fun <U> Comparator<U>.compareIterables(first: Iterable<U>, second: Iterable<U>):
  * internal sorting and the comparison needs to be reversed in order for the reversal to be
  * correct).
  */
-fun <U> Comparator<U>.compareIterablesReversed(first: Iterable<U>, second: Iterable<U>): Int {
+fun <U> Comparator<U>.compareIterablesReversed(
+  first: Iterable<U>,
+  second: Iterable<U>,
+): Int {
   // Note that first & second are reversed here.
   return compareIterablesInternal(second, first, reverseItemSort = true)
 }
@@ -34,7 +38,7 @@ fun <U> Comparator<U>.compareIterablesReversed(first: Iterable<U>, second: Itera
 private fun <U> Comparator<U>.compareIterablesInternal(
   first: Iterable<U>,
   second: Iterable<U>,
-  reverseItemSort: Boolean
+  reverseItemSort: Boolean,
 ): Int {
   // Reference: https://stackoverflow.com/a/30107086.
   val itemComparator = if (reverseItemSort) reversed() else this
@@ -62,7 +66,10 @@ private fun <U> Comparator<U>.compareIterablesInternal(
  * [Comparator] isn't used). This short-circuiting behavior can be useful when comparing recursively
  * infinite proto structures to avoid stack overflows..
  */
-fun <T : MessageLite> Comparator<T>.compareProtos(left: T, right: T): Int {
+fun <T : MessageLite> Comparator<T>.compareProtos(
+  left: T,
+  right: T,
+): Int {
   val defaultValue = left.defaultInstanceForType
   val leftIsDefault = left == defaultValue
   val rightIsDefault = right == defaultValue

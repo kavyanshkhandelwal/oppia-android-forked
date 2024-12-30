@@ -11,35 +11,39 @@ import org.oppia.android.util.extensions.containsPlaceholderRegex
 import javax.inject.Inject
 
 /** View model in [FAQListFragment]. */
-class FAQListViewModel @Inject constructor(
-  val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
-) : ObservableViewModel() {
-  val faqItemList: List<FAQItemViewModel> by lazy {
-    computeFaqViewModelList()
-  }
-
-  private fun computeFaqViewModelList(): List<FAQItemViewModel> {
-    val questions = retrieveQuestions()
-    val faqs = questions.zip(retrieveAnswers()).mapIndexed { index, (question, answer) ->
-      FAQContentViewModel(activity, question, answer, showDivider = index != questions.lastIndex)
+class FAQListViewModel
+  @Inject
+  constructor(
+    val activity: AppCompatActivity,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) : ObservableViewModel() {
+    val faqItemList: List<FAQItemViewModel> by lazy {
+      computeFaqViewModelList()
     }
-    return listOf(FAQHeaderViewModel()) + faqs
-  }
 
-  private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
-    val appName = resourceHandler.getStringInLocale(R.string.app_name)
-
-    return questionsOrAnswers.map {
-      if (it.containsPlaceholderRegex())
-        resourceHandler.formatInLocaleWithWrapping(it, appName)
-      else it
+    private fun computeFaqViewModelList(): List<FAQItemViewModel> {
+      val questions = retrieveQuestions()
+      val faqs =
+        questions.zip(retrieveAnswers()).mapIndexed { index, (question, answer) ->
+          FAQContentViewModel(activity, question, answer, showDivider = index != questions.lastIndex)
+        }
+      return listOf(FAQHeaderViewModel()) + faqs
     }
+
+    private fun retrieveQuestionsOrAnswers(questionsOrAnswers: List<String>): List<String> {
+      val appName = resourceHandler.getStringInLocale(R.string.app_name)
+
+      return questionsOrAnswers.map {
+        if (it.containsPlaceholderRegex()) {
+          resourceHandler.formatInLocaleWithWrapping(it, appName)
+        } else {
+          it
+        }
+      }
+    }
+
+    private fun retrieveQuestions(): List<String> =
+      retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_questions))
+
+    private fun retrieveAnswers(): List<String> = retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_answers))
   }
-
-  private fun retrieveQuestions(): List<String> =
-    retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_questions))
-
-  private fun retrieveAnswers(): List<String> =
-    retrieveQuestionsOrAnswers(resourceHandler.getStringArrayInLocale(R.array.faq_answers))
-}

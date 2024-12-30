@@ -14,5 +14,8 @@ interface ParameterizedRunnerOverrideMethods {
   fun testName(method: FrameworkMethod?): String
 
   /** See [org.junit.runners.BlockJUnit4ClassRunner.methodInvoker]. */
-  fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement
+  fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Statement
 }

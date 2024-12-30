@@ -34,10 +34,11 @@ class EventTypeToHumanReadableNameConverterTest {
   @Inject lateinit var converter: EventTypeToHumanReadableNameConverter
 
   private companion object {
-    private val FAILURE_TYPES = setOf(
-      ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
-      ActivityContextCase.ACTIVITYCONTEXT_NOT_SET
-    )
+    private val FAILURE_TYPES =
+      setOf(
+        ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG,
+        ActivityContextCase.ACTIVITYCONTEXT_NOT_SET,
+      )
   }
 
   @Before
@@ -105,7 +106,8 @@ class EventTypeToHumanReadableNameConverterTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEventTypeToHumanReadableNameConverterTest_TestApplicationComponent.builder()
+      DaggerEventTypeToHumanReadableNameConverterTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

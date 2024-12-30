@@ -13,31 +13,31 @@ import javax.inject.Inject
  * [EventLogItemViewModel] which in turn display the event log.
  */
 @FragmentScope
-class ViewEventLogsViewModel @Inject constructor(
-  debugAnalyticsEventLogger: DebugAnalyticsEventLogger,
-  debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val resourceHandler: AppLanguageResourceHandler
-) : ObservableViewModel() {
-  // Retrieves events from cache that are meant to be uploaded to Firebase Firestore.
-  private val firestoreEvents = debugFirestoreEventLogger.getEventList()
+class ViewEventLogsViewModel
+  @Inject
+  constructor(
+    debugAnalyticsEventLogger: DebugAnalyticsEventLogger,
+    debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl,
+    private val machineLocale: OppiaLocale.MachineLocale,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) : ObservableViewModel() {
+    // Retrieves events from cache that are meant to be uploaded to Firebase Firestore.
+    private val firestoreEvents = debugFirestoreEventLogger.getEventList()
 
-  // Retrieves events from cache that are meant to be uploaded to Firebase Analytics.
-  private val analyticsEvents = debugAnalyticsEventLogger.getEventList()
+    // Retrieves events from cache that are meant to be uploaded to Firebase Analytics.
+    private val analyticsEvents = debugAnalyticsEventLogger.getEventList()
 
-  /**
-   * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]
-   * to display event logs.
-   */
-  val eventLogsList: List<EventLogItemViewModel> by lazy {
-    processEventLogsList()
+    /**
+     * List of [EventLogItemViewModel] used to populate recyclerview of [ViewEventLogsFragment]
+     * to display event logs.
+     */
+    val eventLogsList: List<EventLogItemViewModel> by lazy {
+      processEventLogsList()
+    }
+
+    private fun processEventLogsList(): List<EventLogItemViewModel> =
+      (analyticsEvents + firestoreEvents)
+        .map {
+          EventLogItemViewModel(it, machineLocale, resourceHandler)
+        }.sortedByDescending { it.eventLog.timestamp }
   }
-
-  private fun processEventLogsList(): List<EventLogItemViewModel> {
-    return (analyticsEvents + firestoreEvents)
-      .map {
-        EventLogItemViewModel(it, machineLocale, resourceHandler)
-      }
-      .sortedByDescending { it.eventLog.timestamp }
-  }
-}

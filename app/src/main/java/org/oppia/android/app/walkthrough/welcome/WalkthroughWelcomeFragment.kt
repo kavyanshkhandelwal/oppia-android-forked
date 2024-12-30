@@ -22,8 +22,6 @@ class WalkthroughWelcomeFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return walkthroughWelcomeFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = walkthroughWelcomeFragmentPresenter.handleCreateView(inflater, container)
 }

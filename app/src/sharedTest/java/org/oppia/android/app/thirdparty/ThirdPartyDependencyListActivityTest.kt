@@ -92,7 +92,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ThirdPartyDependencyListActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ThirdPartyDependencyListActivityTest {
   @get:Rule
@@ -105,8 +105,10 @@ class ThirdPartyDependencyListActivityTest {
   val activityTestRule: ActivityTestRule<ThirdPartyDependencyListActivity> =
     ActivityTestRule(
       ThirdPartyDependencyListActivity::class.java,
-      /* initialTouchMode= */ true,
-      /* launchActivity= */ false
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
     )
 
   @Inject
@@ -119,8 +121,9 @@ class ThirdPartyDependencyListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createThirdPartyDependencyListActivityIntent()
-      .extractCurrentAppScreenName()
+    val currentScreenName =
+      createThirdPartyDependencyListActivityIntent()
+        .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)
   }
@@ -133,7 +136,7 @@ class ThirdPartyDependencyListActivityTest {
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(
-      context.getString(R.string.third_party_dependency_list_activity_title)
+      context.getString(R.string.third_party_dependency_list_activity_title),
     )
   }
 
@@ -141,11 +144,10 @@ class ThirdPartyDependencyListActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createThirdPartyDependencyListActivityIntent(): Intent {
-    return ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
-      ApplicationProvider.getApplicationContext()
+  private fun createThirdPartyDependencyListActivityIntent(): Intent =
+    ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
+      ApplicationProvider.getApplicationContext(),
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -176,12 +178,10 @@ class ThirdPartyDependencyListActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -190,9 +190,13 @@ class ThirdPartyDependencyListActivityTest {
     fun inject(thirdPartyDependencyListActivityTest: ThirdPartyDependencyListActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerThirdPartyDependencyListActivityTest_TestApplicationComponent.builder()
+      DaggerThirdPartyDependencyListActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -202,9 +206,12 @@ class ThirdPartyDependencyListActivityTest {
       component.inject(thirdPartyDependencyListActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

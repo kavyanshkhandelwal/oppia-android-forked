@@ -117,8 +117,8 @@ class ViewBindingAdaptersTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        ViewBindingAdaptersTestActivity::class.java
-      )
+        ViewBindingAdaptersTestActivity::class.java,
+      ),
     )
 
   @Before
@@ -135,68 +135,78 @@ class ViewBindingAdaptersTest {
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
+    val imageViewDropDown =
+      activityRule.scenario.runWithActivity {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        setRotationAnimation(
+          imageViewDropDown,
+          // isClockwise=
+          false,
+          // angle=
+          180f,
+        )
+        return@runWithActivity imageViewDropDown
+      }
     assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
+    val imageViewDropDown =
+      activityRule.scenario.runWithActivity {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        setRotationAnimation(
+          imageViewDropDown,
+          // isClockwise=
+          true,
+          // angle=
+          180f,
+        )
+        return@runWithActivity imageViewDropDown
+      }
     assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(0f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
+    val imageViewDropDown =
+      activityRule.scenario.runWithActivity {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setRotationAnimation(
+          imageViewDropDown,
+          // isClockwise=
+          true,
+          // angle=
+          180f,
+        )
+        return@runWithActivity imageViewDropDown
+      }
     assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
-    }
+    val imageViewDropDown =
+      activityRule.scenario.runWithActivity {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setRotationAnimation(
+          imageViewDropDown,
+          // isClockwise=
+          false,
+          // angle=
+          180f,
+        )
+        return@runWithActivity imageViewDropDown
+      }
     assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(crossinline action: (A) -> V): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
     val fakeMock: Consumer<V> = mock(Consumer::class.java) as Consumer<V>
@@ -211,6 +221,7 @@ class ViewBindingAdaptersTest {
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** Create a TestApplicationComponent. */
   @Singleton
   @Component(
     modules = [
@@ -239,10 +250,9 @@ class ViewBindingAdaptersTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
     /** Build the TestApplicationComponent. */
     @Component.Builder
@@ -258,9 +268,13 @@ class ViewBindingAdaptersTest {
    * Class to override a dependency throughout the test application, instead of overriding the
    * dependencies in every test class, we can just do it once by extending the Application class.
    */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerViewBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerViewBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -270,9 +284,12 @@ class ViewBindingAdaptersTest {
       component.inject(viewBindingAdapters)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

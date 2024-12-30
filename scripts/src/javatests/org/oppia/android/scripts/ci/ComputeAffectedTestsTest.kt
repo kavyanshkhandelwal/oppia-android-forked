@@ -69,7 +69,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf()) }
+    val exception = assertThrows<SecurityException> { main(arrayOf()) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -79,7 +79,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf("first")) }
+    val exception = assertThrows<SecurityException> { main(arrayOf("first")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -89,7 +89,7 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second")) }
+    val exception = assertThrows<SecurityException> { main(arrayOf("first", "second")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -99,9 +99,10 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_threeArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() {
-      main(arrayOf("first", "second", "third"))
-    }
+    val exception =
+      assertThrows<SecurityException> {
+        main(arrayOf("first", "second", "third"))
+      }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -111,36 +112,41 @@ class ComputeAffectedTestsTest {
 
   @Test
   fun testUtility_directoryRootDoesNotExist_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=false"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=false"))
+      }
 
     assertThat(exception).hasMessageThat().contains("Expected 'fake' to be a directory")
   }
 
   @Test
   fun testUtility_invalid_lastArgument_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_testss=false"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_testss=false"))
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected last argument to start with 'compute_all_tests='")
   }
 
   @Test
   fun testUtility_invalid_lastArgumentValue_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=blah"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_tests=blah"))
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected last argument to have 'true' or 'false' passed to it, not: 'blah'")
   }
 
   @Test
   fun testUtility_emptyDirectory_throwsException() {
-    val exception = assertThrows<IllegalStateException>() { runScript(currentHeadHash = "ad") }
+    val exception = assertThrows<IllegalStateException> { runScript(currentHeadHash = "ad") }
 
     assertThat(exception).hasMessageThat().contains("run from the workspace's root directory")
   }
@@ -168,7 +174,9 @@ class ComputeAffectedTestsTest {
     // Since the develop branch is checked out, all test targets should be returned.
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList).containsExactly(
-      "//app:FirstTest", "//app:SecondTest", "//app:ThirdTest"
+      "//app:FirstTest",
+      "//app:SecondTest",
+      "//app:ThirdTest",
     )
   }
 
@@ -196,7 +204,9 @@ class ComputeAffectedTestsTest {
     // a command argument.
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList).containsExactly(
-      "//app:FirstTest", "//app:SecondTest", "//app:ThirdTest"
+      "//app:FirstTest",
+      "//app:SecondTest",
+      "//app:ThirdTest",
     )
   }
 
@@ -256,7 +266,7 @@ class ComputeAffectedTestsTest {
     // The new test should still be reported since it was changed (even though it wasn't staged).
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList).containsExactly(
-      "//data:NewUntrackedTest"
+      "//data:NewUntrackedTest",
     )
   }
 
@@ -360,11 +370,11 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player",
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app",
     )
     createBasicTests("ThirdTest", subpackage = "instrumentation")
 
@@ -372,10 +382,10 @@ class ComputeAffectedTestsTest {
 
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList).doesNotContain(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest",
     )
     assertThat(reportedTargets.first().affectedTestTargetsList).contains(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest",
     )
   }
 
@@ -384,11 +394,11 @@ class ComputeAffectedTestsTest {
     initializeEmptyGitRepository()
     createBasicTests(
       "InstrumentationTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.player",
     )
     createBasicTests(
       "RobolectricTest",
-      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app"
+      subpackage = "instrumentation.src.javatests.org.oppia.android.instrumentation.app",
     )
     createBasicTests("ThirdTest", subpackage = "instrumentation")
 
@@ -396,10 +406,10 @@ class ComputeAffectedTestsTest {
 
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList).doesNotContain(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest"
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/player:InstrumentationTest",
     )
     assertThat(reportedTargets.first().affectedTestTargetsList).contains(
-      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest"
+      "//instrumentation/src/javatests/org/oppia/android/instrumentation/app:RobolectricTest",
     )
   }
 
@@ -516,8 +526,10 @@ class ComputeAffectedTestsTest {
     assertThat(targetMap["domain"]?.affectedTestTargetsList).containsExactly("//domain:DomainTest")
     assertThat(targetMap["generic"]?.affectedTestTargetsList)
       .containsExactly(
-        "//data:DataTest", "//instrumentation:InstrumentationTest", "//testing:TestingTest",
-        "//utility:UtilityTest"
+        "//data:DataTest",
+        "//instrumentation:InstrumentationTest",
+        "//testing:TestingTest",
+        "//utility:UtilityTest",
       )
     assertThat(targetMap["scripts"]?.affectedTestTargetsList)
       .containsExactly("//scripts:ScriptsTest")
@@ -529,11 +541,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("AppTest1", "AppTest2", "AppTest3", subpackage = "app")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // App module tests partition eagerly, so there should be 3 groups. Also, the code below
     // verifies duplicates by ensuring no shards are empty and there are no duplicate tests. Note
@@ -552,11 +565,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("DataTest1", "DataTest2", "DataTest3", subpackage = "data")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // Data tests are partitioned such that they are combined into one partition.
     assertThat(reportedTargets).hasSize(1)
@@ -570,11 +584,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("DomainTest1", "DomainTest2", "DomainTest3", subpackage = "domain")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // Domain tests are partitioned such that they are combined into one partition.
     assertThat(reportedTargets).hasSize(1)
@@ -587,22 +602,26 @@ class ComputeAffectedTestsTest {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
     createBasicTests(
-      "InstrumentationTest1", "InstrumentationTest2", "InstrumentationTest3",
-      subpackage = "instrumentation"
+      "InstrumentationTest1",
+      "InstrumentationTest2",
+      "InstrumentationTest3",
+      subpackage = "instrumentation",
     )
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // Instrumentation tests are partitioned such that they are combined into one partition.
     assertThat(reportedTargets).hasSize(1)
     assertThat(reportedTargets.first().affectedTestTargetsList)
       .containsExactly(
-        "//instrumentation:InstrumentationTest1", "//instrumentation:InstrumentationTest2",
-        "//instrumentation:InstrumentationTest3"
+        "//instrumentation:InstrumentationTest1",
+        "//instrumentation:InstrumentationTest2",
+        "//instrumentation:InstrumentationTest3",
       )
   }
 
@@ -612,11 +631,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("ScriptsTest1", "ScriptsTest2", "ScriptsTest3", subpackage = "scripts")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // See app module test above for specifics. Scripts tests are medium partitioned which means 3
     // tests will be split into two partitions.
@@ -634,11 +654,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("TestingTest1", "TestingTest2", "TestingTest3", subpackage = "testing")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // Testing tests are partitioned such that they are combined into one partition.
     assertThat(reportedTargets).hasSize(1)
@@ -652,11 +673,12 @@ class ComputeAffectedTestsTest {
     switchToFeatureBranch()
     createBasicTests("UtilityTest1", "UtilityTest2", "UtilityTest3", subpackage = "utility")
 
-    val reportedTargets = runScriptWithShardLimits(
-      maxTestCountPerLargeShard = 3,
-      maxTestCountPerMediumShard = 2,
-      maxTestCountPerSmallShard = 1
-    )
+    val reportedTargets =
+      runScriptWithShardLimits(
+        maxTestCountPerLargeShard = 3,
+        maxTestCountPerMediumShard = 2,
+        maxTestCountPerSmallShard = 1,
+      )
 
     // Utility tests are partitioned such that they are combined into one partition.
     assertThat(reportedTargets).hasSize(1)
@@ -715,7 +737,7 @@ class ComputeAffectedTestsTest {
 
   private fun runScriptWithTextOutput(
     currentHeadHash: String = computeMergeBase("develop"),
-    computeAllTargets: Boolean = false
+    computeAllTargets: Boolean = false,
   ): List<String> {
     val outputLog = tempFolder.newFile("output.log")
     main(
@@ -723,8 +745,8 @@ class ComputeAffectedTestsTest {
         tempFolder.root.absolutePath,
         outputLog.absolutePath,
         currentHeadHash,
-        "compute_all_tests=$computeAllTargets"
-      )
+        "compute_all_tests=$computeAllTargets",
+      ),
     )
     return outputLog.readLines()
   }
@@ -736,16 +758,14 @@ class ComputeAffectedTestsTest {
    */
   private fun runScript(
     currentHeadHash: String = computeMergeBase("develop"),
-    computeAllTargets: Boolean = false
-  ): List<AffectedTestsBucket> {
-    return parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllTargets))
-  }
+    computeAllTargets: Boolean = false,
+  ): List<AffectedTestsBucket> = parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllTargets))
 
   private fun runScriptWithShardLimits(
     baseBranch: String = "develop",
     maxTestCountPerLargeShard: Int,
     maxTestCountPerMediumShard: Int,
-    maxTestCountPerSmallShard: Int
+    maxTestCountPerSmallShard: Int,
   ): List<AffectedTestsBucket> {
     val outputLog = tempFolder.newFile("output.log")
     val currentHeadHash = computeMergeBase(baseBranch)
@@ -757,22 +777,21 @@ class ComputeAffectedTestsTest {
       maxTestCountPerLargeShard = maxTestCountPerLargeShard,
       maxTestCountPerMediumShard = maxTestCountPerMediumShard,
       maxTestCountPerSmallShard = maxTestCountPerSmallShard,
-      commandExecutor = commandExecutor
+      commandExecutor = commandExecutor,
     ).compute(
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
       baseCommit = currentHeadHash,
-      computeAllTestsSetting = false
+      computeAllTestsSetting = false,
     )
 
     return parseOutputLogLines(outputLog.readLines())
   }
 
-  private fun parseOutputLogLines(outputLogLines: List<String>): List<AffectedTestsBucket> {
-    return outputLogLines.map {
+  private fun parseOutputLogLines(outputLogLines: List<String>): List<AffectedTestsBucket> =
+    outputLogLines.map {
       AffectedTestsBucket.getDefaultInstance().mergeFromCompressedBase64(it.split(";")[1])
     }
-  }
 
   private fun createEmptyWorkspace() {
     testBazelWorkspace.initEmptyWorkspace()
@@ -804,29 +823,29 @@ class ComputeAffectedTestsTest {
     vararg testNames: String,
     subpackage: String?,
     withGeneratedDependencies: Boolean = false,
-    withExtraDependency: String? = null
-  ): List<File> {
-    return testNames.flatMap { testName ->
+    withExtraDependency: String? = null,
+  ): List<File> =
+    testNames.flatMap { testName ->
       testBazelWorkspace.createTest(
         testName,
         withGeneratedDependencies,
         withExtraDependency,
-        subpackage
+        subpackage,
       )
     }
-  }
 
   private fun createAndCommitBasicAppTests(
     vararg testNames: String,
     withGeneratedDependencies: Boolean = false,
-    withExtraDependency: String? = null
+    withExtraDependency: String? = null,
   ) {
-    val changedFiles = createBasicTests(
-      *testNames,
-      withGeneratedDependencies = withGeneratedDependencies,
-      withExtraDependency = withExtraDependency,
-      subpackage = "app"
-    )
+    val changedFiles =
+      createBasicTests(
+        *testNames,
+        withGeneratedDependencies = withGeneratedDependencies,
+        withExtraDependency = withExtraDependency,
+        subpackage = "app",
+      )
     testGitRepository.stageFilesForCommit(changedFiles.toSet())
     testGitRepository.commit(message = "Introduce basic tests.")
   }
@@ -871,7 +890,11 @@ class ComputeAffectedTestsTest {
     testGitRepository.commit(message = "Remove test $testName")
   }
 
-  private fun moveTest(oldTestName: String, newTestName: String, newSubpackage: String) {
+  private fun moveTest(
+    oldTestName: String,
+    newTestName: String,
+    newSubpackage: String,
+  ) {
     // Actually changing the BUILD file for a move is tricky, so just regenerate it, instead, and
     // mark the file as moved.
     val oldTestFile = testBazelWorkspace.retrieveTestFile(oldTestName)
@@ -899,9 +922,10 @@ class ComputeAffectedTestsTest {
   private fun computeMergeBase(referenceBranch: String): String =
     GitClient(tempFolder.root, referenceBranch, commandExecutor).branchMergeBase
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

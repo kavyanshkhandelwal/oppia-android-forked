@@ -7,7 +7,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** Subtopic view model for the recycler view in [TopicPracticeFragment]. */
 class TopicPracticeSubtopicViewModel(
   ephemeralSubtopic: EphemeralSubtopic,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : TopicPracticeItemViewModel() {
   /** The subtopic being displayed. */
   val subtopic: Subtopic = ephemeralSubtopic.subtopic

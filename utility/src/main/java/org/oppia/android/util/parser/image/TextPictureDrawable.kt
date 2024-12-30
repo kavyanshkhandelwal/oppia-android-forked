@@ -14,7 +14,7 @@ import org.oppia.android.util.parser.svg.SvgPictureDrawable
  */
 class TextPictureDrawable constructor(
   context: Context,
-  scalableVectorGraphic: ScalableVectorGraphic
+  scalableVectorGraphic: ScalableVectorGraphic,
 ) : SvgPictureDrawable(context, scalableVectorGraphic) {
   /**
    * Initializes this drawable with a text-based [Picture]. See

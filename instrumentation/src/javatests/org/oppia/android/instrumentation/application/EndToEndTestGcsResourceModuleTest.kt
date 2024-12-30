@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestGcsResourceModuleTest.TestApplication::class)
 class EndToEndTestGcsResourceModuleTest {
-
   @field:[Inject DefaultResourceBucketName]
   lateinit var defaultResourceBucketName: String
 
@@ -46,7 +45,8 @@ class EndToEndTestGcsResourceModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -54,23 +54,21 @@ class EndToEndTestGcsResourceModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestGcsResourceModule::class
-    ]
+      TestModule::class, EndToEndTestGcsResourceModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -79,7 +77,8 @@ class EndToEndTestGcsResourceModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEndToEndTestGcsResourceModuleTest_TestApplicationComponent.builder()
+      DaggerEndToEndTestGcsResourceModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -14,6 +14,6 @@ interface OnItemDragListener {
   fun onItemDragged(
     indexFrom: Int,
     indexTo: Int,
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
   )
 }

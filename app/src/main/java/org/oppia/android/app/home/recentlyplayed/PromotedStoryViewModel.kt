@@ -19,30 +19,37 @@ class PromotedStoryViewModel(
   private val position: Int,
   private val resourceHandler: AppLanguageResourceHandler,
   val showClassroomLabel: Boolean,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : RecentlyPlayedItemViewModel() {
   /** Sets the story title of the recently played story. */
   val storyTitle by lazy {
     translationController.extractString(
-      promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
+      promotedStory.storyTitle,
+      promotedStory.storyWrittenTranslationContext,
     )
   }
+
   /** Sets the topic of the recently played story. */
   val topicTitle by lazy {
     translationController.extractString(
-      promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
+      promotedStory.topicTitle,
+      promotedStory.topicWrittenTranslationContext,
     )
   }
+
   /** Sets the next chapter title of the recently played story. */
   val nextChapterTitle by lazy {
     translationController.extractString(
-      promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
+      promotedStory.nextChapterTitle,
+      promotedStory.nextChapterWrittenTranslationContext,
     )
   }
+
   /** Sets the classroom of the recently played story. */
   val classroomTitle by lazy {
     translationController.extractString(
-      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
+      promotedStory.classroomTitle,
+      promotedStory.classroomWrittenTranslationContext,
     )
   }
 
@@ -50,7 +57,9 @@ class PromotedStoryViewModel(
    * Starts [ResumeLessonActivity] if a saved exploration is selected or [ExplorationActivity] if an
    * un-started recommended story is selected.
    */
-  fun clickOnPromotedStoryTile(@Suppress("UNUSED_PARAMETER") v: View) {
+  fun clickOnPromotedStoryTile(
+    @Suppress("UNUSED_PARAMETER") v: View,
+  ) {
     promotedStoryClickListener.promotedStoryClicked(promotedStory)
   }
 
@@ -81,64 +90,68 @@ class PromotedStoryViewModel(
    *  |       |_____|     |_____|     |_____|     |_____|       |
    *  |                                                         |
    */
-  fun computeStartMargin(): Int {
-    return when (spanCount) {
-      2 -> when (position % spanCount) {
-        0 -> outerMargin
-        else -> innerMargin
-      }
-      3 -> when (position % spanCount) {
-        0 -> outerMargin
-        1 -> innerMargin
-        2 -> 0
-        else -> 0
-      }
-      4 -> when (position % spanCount) {
-        0 -> outerMargin
-        1 -> innerMargin
-        2 -> innerMargin / 2
-        3 -> 0
-        else -> 0
-      }
+  fun computeStartMargin(): Int =
+    when (spanCount) {
+      2 ->
+        when (position % spanCount) {
+          0 -> outerMargin
+          else -> innerMargin
+        }
+      3 ->
+        when (position % spanCount) {
+          0 -> outerMargin
+          1 -> innerMargin
+          2 -> 0
+          else -> 0
+        }
+      4 ->
+        when (position % spanCount) {
+          0 -> outerMargin
+          1 -> innerMargin
+          2 -> innerMargin / 2
+          3 -> 0
+          else -> 0
+        }
       else -> 0
     }
-  }
 
   /**
    * Determines the end margin for an individual TopicSummary relative to the grid columns laid out on the
    * HomeActivity. The end margins are calculated to stagger inside each fixed column but centered on the
    * activity's layout (see [computeStartMargin]).
    */
-  fun computeEndMargin(): Int {
-    return when (spanCount) {
-      2 -> when (position % spanCount) {
-        0 -> innerMargin
-        else -> outerMargin
-      }
-      3 -> when (position % spanCount) {
-        0 -> 0
-        1 -> innerMargin
-        2 -> outerMargin
-        else -> 0
-      }
-      4 -> when (position % spanCount) {
-        0 -> 0
-        1 -> innerMargin / 2
-        2 -> innerMargin
-        3 -> outerMargin
-        else -> 0
-      }
+  fun computeEndMargin(): Int =
+    when (spanCount) {
+      2 ->
+        when (position % spanCount) {
+          0 -> innerMargin
+          else -> outerMargin
+        }
+      3 ->
+        when (position % spanCount) {
+          0 -> 0
+          1 -> innerMargin
+          2 -> outerMargin
+          else -> 0
+        }
+      4 ->
+        when (position % spanCount) {
+          0 -> 0
+          1 -> innerMargin / 2
+          2 -> innerMargin
+          3 -> outerMargin
+          else -> 0
+        }
       else -> 0
     }
-  }
 
   /**
    * Creates the content description of the story thumbnail by interpolating the thumbnail
    * description string resource and the next chapter title.
    */
-  fun computeLessonThumbnailContentDescription(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.lesson_thumbnail_content_description, nextChapterTitle
+  fun computeLessonThumbnailContentDescription(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.lesson_thumbnail_content_description,
+      nextChapterTitle,
     )
-  }
 }

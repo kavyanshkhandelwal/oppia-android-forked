@@ -51,13 +51,13 @@ class HomeViewModel(
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
 ) : ObservableViewModel() {
-
   private val profileId: ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  private val promotedStoryListLimit = activity.resources.getInteger(
-    R.integer.promoted_story_list_limit
-  )
+  private val promotedStoryListLimit =
+    activity.resources.getInteger(
+      R.integer.promoted_story_list_limit,
+    )
 
 /**
    * A Boolean property indicating the visibility state of a progress bar.
@@ -84,24 +84,25 @@ class HomeViewModel(
     // This will block until all data providers return initial results (which may be default
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
-    profileDataProvider.combineWith(
-      promotedActivityListSummaryDataProvider,
-      PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
-    ) { profile, promotedActivityList ->
-      if (profile.numberOfLogins > 1) {
-        listOfNotNull(
-          computeWelcomeViewModel(profile),
-          computePromotedActivityListViewModel(promotedActivityList)
-        )
-      } else {
-        listOfNotNull(computeWelcomeViewModel(profile))
+    profileDataProvider
+      .combineWith(
+        promotedActivityListSummaryDataProvider,
+        PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID,
+      ) { profile, promotedActivityList ->
+        if (profile.numberOfLogins > 1) {
+          listOfNotNull(
+            computeWelcomeViewModel(profile),
+            computePromotedActivityListViewModel(promotedActivityList),
+          )
+        } else {
+          listOfNotNull(computeWelcomeViewModel(profile))
+        }
+      }.combineWith(
+        topicListSummaryDataProvider,
+        HOME_FRAGMENT_COMBINED_PROVIDER_ID,
+      ) { homeItemViewModelList, topicList ->
+        homeItemViewModelList + computeAllTopicsItemsViewModelList(topicList)
       }
-    }.combineWith(
-      topicListSummaryDataProvider,
-      HOME_FRAGMENT_COMBINED_PROVIDER_ID
-    ) { homeItemViewModelList, topicList ->
-      homeItemViewModelList + computeAllTopicsItemsViewModelList(topicList)
-    }
   }
 
   /**
@@ -116,7 +117,7 @@ class HomeViewModel(
           oppiaLogger.e(
             "HomeFragment",
             "No home fragment available -- failed to retrieve fragment data.",
-            itemListResult.error
+            itemListResult.error,
           )
           listOf()
         }
@@ -133,11 +134,12 @@ class HomeViewModel(
    * Returns a [HomeItemViewModel] corresponding to the welcome message (see [WelcomeViewModel]), or null if
    * the specified profile has insufficient information to show the welcome message.
    */
-  private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
-    return if (profile.name.isNotEmpty()) {
+  private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? =
+    if (profile.name.isNotEmpty()) {
       WelcomeViewModel(profile.name, resourceHandler, dateTimeUtil)
-    } else null
-  }
+    } else {
+      null
+    }
 
   /**
    * Returns a [HomeItemViewModel] corresponding to the promoted stories(Recommended, Recently-played and
@@ -145,32 +147,36 @@ class HomeViewModel(
    * to be displayed for this learner or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
-  private fun computePromotedActivityListViewModel(
-    promotedActivityList: PromotedActivityList
-  ): HomeItemViewModel? {
+  private fun computePromotedActivityListViewModel(promotedActivityList: PromotedActivityList): HomeItemViewModel? {
     when (promotedActivityList.recommendationTypeCase) {
       PromotedActivityList.RecommendationTypeCase.PROMOTED_STORY_LIST -> {
-        val storyViewModelList = computePromotedStoryViewModelList(
-          promotedActivityList.promotedStoryList
-        )
+        val storyViewModelList =
+          computePromotedStoryViewModelList(
+            promotedActivityList.promotedStoryList,
+          )
         return if (storyViewModelList.isNotEmpty()) {
           return PromotedStoryListViewModel(
             activity,
             storyViewModelList,
             promotedActivityList,
-            resourceHandler
+            resourceHandler,
           )
-        } else null
+        } else {
+          null
+        }
       }
       PromotedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
-        val comingSoonTopicsList = computeComingSoonTopicViewModelList(
-          promotedActivityList.comingSoonTopicList
-        )
+        val comingSoonTopicsList =
+          computeComingSoonTopicViewModelList(
+            promotedActivityList.comingSoonTopicList,
+          )
         return if (comingSoonTopicsList.isNotEmpty()) {
           return ComingSoonTopicListViewModel(
-            comingSoonTopicsList
+            comingSoonTopicsList,
           )
-        } else null
+        } else {
+          null
+        }
       }
       else -> return null
     }
@@ -181,32 +187,32 @@ class HomeViewModel(
    * for this profile (see [PromotedStoryViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
-  private fun computePromotedStoryViewModelList(
-    promotedStoryList: PromotedStoryList
-  ): List<PromotedStoryViewModel> {
+  private fun computePromotedStoryViewModelList(promotedStoryList: PromotedStoryList): List<PromotedStoryViewModel> {
     with(promotedStoryList) {
-      val storyList = when {
-        suggestedStoryList.isNotEmpty() -> {
-          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
-            recentlyPlayedStoryList +
-              olderPlayedStoryList +
+      val storyList =
+        when {
+          suggestedStoryList.isNotEmpty() -> {
+            if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
+              recentlyPlayedStoryList +
+                olderPlayedStoryList +
+                suggestedStoryList
+            } else {
               suggestedStoryList
-          } else {
-            suggestedStoryList
+            }
+          }
+          recentlyPlayedStoryList.isNotEmpty() -> {
+            recentlyPlayedStoryList
+          }
+          else -> {
+            olderPlayedStoryList
           }
         }
-        recentlyPlayedStoryList.isNotEmpty() -> {
-          recentlyPlayedStoryList
-        }
-        else -> {
-          olderPlayedStoryList
-        }
-      }
 
       // Check if at least one story in topic is completed. Prioritize recommended story over
       // completed story topic.
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
-      return sortedStoryList.take(promotedStoryListLimit)
+      return sortedStoryList
+        .take(promotedStoryListLimit)
         .mapIndexed { index, promotedStory ->
           PromotedStoryViewModel(
             activity,
@@ -215,7 +221,7 @@ class HomeViewModel(
             storyEntityType,
             promotedStory,
             translationController,
-            index
+            index,
           )
         }
     }
@@ -226,19 +232,16 @@ class HomeViewModel(
    * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
-  private fun computeComingSoonTopicViewModelList(
-    comingSoonTopicList: ComingSoonTopicList
-  ): List<ComingSoonTopicsViewModel> {
-    return comingSoonTopicList.upcomingTopicList.map { topicSummary ->
+  private fun computeComingSoonTopicViewModelList(comingSoonTopicList: ComingSoonTopicList): List<ComingSoonTopicsViewModel> =
+    comingSoonTopicList.upcomingTopicList.map { topicSummary ->
       ComingSoonTopicsViewModel(
         activity,
         topicSummary,
         topicEntityType,
         comingSoonTopicList,
-        translationController
+        translationController,
       )
     }
-  }
 
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to all the lesson topics available and to be
@@ -246,22 +249,23 @@ class HomeViewModel(
    * [AllTopicsViewModel]). Returns an empty list if there are no topics to display to the learner (caused by
    * either error or pending data providers).
    */
-  private fun computeAllTopicsItemsViewModelList(
-    topicList: TopicList
-  ): List<HomeItemViewModel> {
-    val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, ephemeralSummary ->
-      TopicSummaryViewModel(
-        activity,
-        ephemeralSummary,
-        topicEntityType,
-        fragment as TopicSummaryClickListener,
-        position = topicIndex,
-        resourceHandler,
-        translationController
-      )
-    }
+  private fun computeAllTopicsItemsViewModelList(topicList: TopicList): List<HomeItemViewModel> {
+    val allTopicsList =
+      topicList.topicSummaryList.mapIndexed { topicIndex, ephemeralSummary ->
+        TopicSummaryViewModel(
+          activity,
+          ephemeralSummary,
+          topicEntityType,
+          fragment as TopicSummaryClickListener,
+          position = topicIndex,
+          resourceHandler,
+          translationController,
+        )
+      }
     return if (allTopicsList.isNotEmpty()) {
       listOf(AllTopicsViewModel) + allTopicsList
-    } else emptyList()
+    } else {
+      emptyList()
+    }
   }
 }

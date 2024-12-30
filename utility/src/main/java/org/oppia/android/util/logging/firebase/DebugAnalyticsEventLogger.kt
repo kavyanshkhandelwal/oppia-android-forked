@@ -13,17 +13,19 @@ import javax.inject.Singleton
  * events for later retrieval (e.g. via [getEventList]).
  */
 @Singleton
-class DebugAnalyticsEventLogger @Inject constructor(
-  factory: FirebaseAnalyticsEventLogger.Factory
-) : AnalyticsEventLogger {
-  private val realEventLogger by lazy { factory.create() }
-  private val eventList = CopyOnWriteArrayList<EventLog>()
+class DebugAnalyticsEventLogger
+  @Inject
+  constructor(
+    factory: FirebaseAnalyticsEventLogger.Factory,
+  ) : AnalyticsEventLogger {
+    private val realEventLogger by lazy { factory.create() }
+    private val eventList = CopyOnWriteArrayList<EventLog>()
 
-  override fun logEvent(eventLog: EventLog) {
-    eventList.add(eventLog)
-    realEventLogger.logEvent(eventLog)
+    override fun logEvent(eventLog: EventLog) {
+      eventList.add(eventLog)
+      realEventLogger.logEvent(eventLog)
+    }
+
+    /** Returns the list of all [EventLog]s logged since the app opened. */
+    fun getEventList(): List<EventLog> = eventList
   }
-
-  /** Returns the list of all [EventLog]s logged since the app opened. */
-  fun getEventList(): List<EventLog> = eventList
-}

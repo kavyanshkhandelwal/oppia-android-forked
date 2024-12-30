@@ -43,7 +43,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class PlatformParameterServiceTest {
-
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService
 
@@ -71,9 +70,10 @@ class PlatformParameterServiceTest {
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_verifySuccessfulResponse() {
-    val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
-      .execute()
+    val response =
+      mockPlatformParameterService
+        .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
+        .execute()
     assertThat(response.isSuccessful).isTrue()
 
     val responseBody = response.body()
@@ -82,33 +82,37 @@ class PlatformParameterServiceTest {
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForStringParam() {
-    val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
-      .execute()
+    val response =
+      mockPlatformParameterService
+        .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
+        .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_STRING_PARAM_NAME, TEST_STRING_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForIntegerParam() {
-    val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
-      .execute()
+    val response =
+      mockPlatformParameterService
+        .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
+        .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_INTEGER_PARAM_NAME, TEST_INTEGER_PARAM_SERVER_VALUE)
   }
 
   @Test
   fun testPlatformParameterService_getPlatformParameterUsingMockService_checkForBooleanParam() {
-    val response = mockPlatformParameterService
-      .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
-      .execute()
+    val response =
+      mockPlatformParameterService
+        .getPlatformParametersByVersion(version = appVersionForCorrectResponse)
+        .execute()
     val responseBody = response.body()!!
     assertThat(responseBody).containsEntry(TEST_BOOLEAN_PARAM_NAME, TEST_BOOLEAN_PARAM_SERVER_VALUE)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPlatformParameterServiceTest_TestApplicationComponent.builder()
+    DaggerPlatformParameterServiceTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -122,11 +126,13 @@ class PlatformParameterServiceTest {
     // the full network request properly executes. MockRetrofit and MockWebServer perform the same
     // request mocking in different ways and we want to verify the full request is executed here.
     // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    val retrofit = Retrofit.Builder()
-      .baseUrl(mockWebServer.url("/"))
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+    val retrofit =
+      Retrofit
+        .Builder()
+        .baseUrl(mockWebServer.url("/"))
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
 
     return retrofit.create(PlatformParameterService::class.java)
   }
@@ -140,9 +146,7 @@ class PlatformParameterServiceTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton
@@ -159,13 +163,14 @@ class PlatformParameterServiceTest {
     modules = [
       TestModule::class, NetworkModule::class, TestDispatcherModule::class,
       RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

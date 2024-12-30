@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 /** Test activity used for testing font scale. */
 class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var configUtilActivityPresenter: TestFontScaleConfigurationUtilActivityPresenter
 
@@ -21,12 +20,14 @@ class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatA
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     @Suppress("DEPRECATION") // TODO(#5405): Ensure the correct type is being retrieved.
-    val readingTextSize = checkNotNull(
-      intent.getProtoExtra(
-        TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY,
-        TestFontScaleConfigurationUtilActivityParams.getDefaultInstance()
-      ).readingTextSize
-    ) { "Expected $FONT_SCALE_EXTRA_KEY to be in intent extras." }
+    val readingTextSize =
+      checkNotNull(
+        intent
+          .getProtoExtra(
+            TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY,
+            TestFontScaleConfigurationUtilActivityParams.getDefaultInstance(),
+          ).readingTextSize,
+      ) { "Expected $FONT_SCALE_EXTRA_KEY to be in intent extras." }
     configUtilActivityPresenter.handleOnCreate(readingTextSize)
   }
 
@@ -38,9 +39,15 @@ class TestFontScaleConfigurationUtilActivity : InjectableAutoLocalizedAppCompatA
     private const val FONT_SCALE_EXTRA_KEY = "TestFontScaleConfigurationUtilActivity.font_scale"
 
     /** Returns a new [TestFontScaleConfigurationUtilActivity] for context and reading text size. */
-    fun createFontScaleTestActivity(context: Context, readingTextSize: ReadingTextSize): Intent {
-      val args = TestFontScaleConfigurationUtilActivityParams.newBuilder()
-        .setReadingTextSize(readingTextSize).build()
+    fun createFontScaleTestActivity(
+      context: Context,
+      readingTextSize: ReadingTextSize,
+    ): Intent {
+      val args =
+        TestFontScaleConfigurationUtilActivityParams
+          .newBuilder()
+          .setReadingTextSize(readingTextSize)
+          .build()
       val intent = Intent(context, TestFontScaleConfigurationUtilActivity::class.java)
       intent.putProtoExtra(TEST_FONT_SCALE_CONFIGURATION_UTIL_ACTIVITY_PARAMS_KEY, args)
       return intent

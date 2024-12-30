@@ -16,7 +16,7 @@ import java.io.File
  */
 class TestGitRepository(
   private val temporaryRootFolder: TemporaryFolder,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutor: CommandExecutor,
 ) {
   private val rootDirectory by lazy { temporaryRootFolder.root }
   private val gitDirectory: File get() = File(rootDirectory, ".git")
@@ -32,7 +32,10 @@ class TestGitRepository(
   }
 
   /** Sets the user's [email] and [name] using git config. */
-  fun setUser(email: String, name: String) {
+  fun setUser(
+    email: String,
+    name: String,
+  ) {
     verifyInGitRepository()
     verifyUserIsNotSet()
     executeSuccessfulGitCommand("config", "--local", "user.email", email)
@@ -77,12 +80,15 @@ class TestGitRepository(
    *
    * This does not perform a commit. See [commit] for actually committing the change.
    */
-  fun moveFileForCommit(oldFile: File, newFile: File) {
+  fun moveFileForCommit(
+    oldFile: File,
+    newFile: File,
+  ) {
     verifyInGitRepository()
     executeSuccessfulGitCommand(
       "mv",
       oldFile.toRelativeString(rootDirectory),
-      newFile.toRelativeString(rootDirectory)
+      newFile.toRelativeString(rootDirectory),
     )
   }
 
@@ -92,7 +98,10 @@ class TestGitRepository(
    * @param message the message to include as the context for the commit
    * @param allowEmpty whether to allow empty commits (i.e. committing with no staged files)
    */
-  fun commit(message: String, allowEmpty: Boolean = false) {
+  fun commit(
+    message: String,
+    allowEmpty: Boolean = false,
+  ) {
     verifyInGitRepository()
     verifyUserIsSet()
     val arguments = mutableListOf("commit", "-m", message)
@@ -106,14 +115,11 @@ class TestGitRepository(
     return executeGitCommand("status").joinOutput()
   }
 
-  private fun executeGitCommand(vararg arguments: String): CommandResult =
-    commandExecutor.executeCommand(rootDirectory, "git", *arguments)
+  private fun executeGitCommand(vararg arguments: String): CommandResult = commandExecutor.executeCommand(rootDirectory, "git", *arguments)
 
-  private fun maybeExecuteGitCommand(vararg arguments: String): CommandResult? =
-    executeGitCommand(*arguments).takeIf { it.exitCode == 0 }
+  private fun maybeExecuteGitCommand(vararg arguments: String): CommandResult? = executeGitCommand(*arguments).takeIf { it.exitCode == 0 }
 
-  private fun executeSuccessfulGitCommand(vararg arguments: String) =
-    verifySuccessfulCommand(executeGitCommand(*arguments))
+  private fun executeSuccessfulGitCommand(vararg arguments: String) = verifySuccessfulCommand(executeGitCommand(*arguments))
 
   private fun verifySuccessfulCommand(result: CommandResult) {
     assertWithMessage("Output: ${result.joinOutput()}")
@@ -139,11 +145,17 @@ class TestGitRepository(
     failUnless(userName != null) { "User name has not yet been set." }
   }
 
-  private fun verifyIsNotSet(name: String, value: String?) {
+  private fun verifyIsNotSet(
+    name: String,
+    value: String?,
+  ) {
     failUnless(value == null) { "$name has already been set: $value." }
   }
 
-  private fun failUnless(condition: Boolean, lazyMessage: () -> String) {
+  private fun failUnless(
+    condition: Boolean,
+    lazyMessage: () -> String,
+  ) {
     if (!condition) throw AssertionError(lazyMessage())
   }
 

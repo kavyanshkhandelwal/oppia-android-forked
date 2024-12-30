@@ -24,8 +24,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
@@ -133,13 +133,16 @@ class AudioLanguageFragmentTest {
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -247,19 +250,19 @@ class AudioLanguageFragmentTest {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
       onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
+        matches(withText("In Oppia, you can listen to lessons!")),
       )
       onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+        matches(withText(context.getString(R.string.audio_language_fragment_subtitle))),
       )
       onView(withId(R.id.audio_language_dropdown_list)).check(
-        matches(withText(context.getString(R.string.english_localized_language_name)))
+        matches(withText(context.getString(R.string.english_localized_language_name))),
       )
       onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
       onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -271,19 +274,19 @@ class AudioLanguageFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
+        matches(withText("In Oppia, you can listen to lessons!")),
       )
       onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+        matches(withText(context.getString(R.string.audio_language_fragment_subtitle))),
       )
       onView(withId(R.id.audio_language_dropdown_list)).check(
-        matches(withText(context.getString(R.string.english_localized_language_name)))
+        matches(withText(context.getString(R.string.english_localized_language_name))),
       )
       onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
       onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -292,7 +295,7 @@ class AudioLanguageFragmentTest {
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -306,7 +309,7 @@ class AudioLanguageFragmentTest {
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -323,7 +326,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -340,7 +343,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -357,7 +360,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -374,7 +377,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -392,7 +395,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -406,7 +409,7 @@ class AudioLanguageFragmentTest {
         testCoroutineDispatchers.runCurrent()
 
         onView(withId(R.id.audio_language_dropdown_list)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          matches(withText(R.string.nigerian_pidgin_localized_language_name)),
         )
 
         onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -422,7 +425,7 @@ class AudioLanguageFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -431,10 +434,10 @@ class AudioLanguageFragmentTest {
 
         onData(
           CoreMatchers.allOf(
-            `is`(instanceOf(String::class.java)), `is`("Naijá")
-          )
-        )
-          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+            `is`(instanceOf(String::class.java)),
+            `is`("Naijá"),
+          ),
+        ).inRoot(withDecorView(not(`is`(activity.window.decorView))))
           .perform(click())
 
         onView(isRoot()).perform(orientationLandscape())
@@ -442,7 +445,7 @@ class AudioLanguageFragmentTest {
 
         // Verifies that the selected language is still set successfully after configuration change.
         onView(withId(R.id.audio_language_dropdown_list)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          matches(withText(R.string.nigerian_pidgin_localized_language_name)),
         )
 
         onView(withId(R.id.onboarding_navigation_continue)).perform(click())
@@ -457,13 +460,14 @@ class AudioLanguageFragmentTest {
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
         val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
 
         assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
@@ -475,22 +479,24 @@ class AudioLanguageFragmentTest {
   fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
+      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       var language: AudioLanguage? = null
 
       scenario.onActivity { activity ->
-        var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        var fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
         language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
       }
 
       scenario.recreate()
 
       scenario.onActivity { activity ->
-        val newfragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+        val newfragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
         val restoredAudioLanguage =
           newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
 
@@ -499,13 +505,10 @@ class AudioLanguageFragmentTest {
     }
   }
 
-  private fun launchActivityWithLanguage(
-    audioLanguage: AudioLanguage
-  ): ActivityScenario<AppLanguageActivity> {
-    return launch<AppLanguageActivity>(createDefaultAudioActivityIntent(audioLanguage)).also {
+  private fun launchActivityWithLanguage(audioLanguage: AudioLanguage): ActivityScenario<AppLanguageActivity> =
+    launch<AppLanguageActivity>(createDefaultAudioActivityIntent(audioLanguage)).also {
       testCoroutineDispatchers.runCurrent()
     }
-  }
 
   private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
     AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
@@ -528,8 +531,8 @@ class AudioLanguageFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.audio_language_recycler_view,
         position = index,
-        targetViewId = R.id.language_radio_button
-      )
+        targetViewId = R.id.language_radio_button,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -546,20 +549,23 @@ class AudioLanguageFragmentTest {
     verifyLanguageIsSelected(index = NIGERIAN_PIDGIN_BUTTON_INDEX, expectedLanguageName = "Naijá")
   }
 
-  private fun verifyLanguageIsSelected(index: Int, expectedLanguageName: String) {
+  private fun verifyLanguageIsSelected(
+    index: Int,
+    expectedLanguageName: String,
+  ) {
     onView(
       atPositionOnView(
         R.id.audio_language_recycler_view,
         index,
-        R.id.language_radio_button
-      )
+        R.id.language_radio_button,
+      ),
     ).check(matches(isChecked()))
     onView(
       atPositionOnView(
         R.id.audio_language_recycler_view,
         index,
-        R.id.language_text_view
-      )
+        R.id.language_text_view,
+      ),
     ).check(matches(withText(expectedLanguageName)))
   }
 
@@ -603,8 +609,8 @@ class AudioLanguageFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -613,9 +619,13 @@ class AudioLanguageFragmentTest {
     fun inject(audioLanguageFragmentTest: AudioLanguageFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAudioLanguageFragmentTest_TestApplicationComponent.builder()
+      DaggerAudioLanguageFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -624,9 +634,12 @@ class AudioLanguageFragmentTest {
       component.inject(audioLanguageFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

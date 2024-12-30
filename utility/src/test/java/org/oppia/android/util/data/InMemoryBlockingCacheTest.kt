@@ -53,7 +53,7 @@ class InMemoryBlockingCacheTest {
 
   private val blockingFunctionDispatcher by lazy {
     testCoroutineDispatcherFactory.createDispatcher(
-      Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+      Executors.newSingleThreadExecutor().asCoroutineDispatcher(),
     )
   }
 
@@ -208,8 +208,9 @@ class InMemoryBlockingCacheTest {
     val deferredRead = cache.readIfPresentAsync()
 
     val exception =
-      assertThrows<IllegalStateException>() { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat()
+      assertThrows<IllegalStateException> { awaitCompletion(deferredRead) }
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected to read the cache only after it's been created")
   }
 
@@ -303,8 +304,9 @@ class InMemoryBlockingCacheTest {
 
     // The operation should fail since the method expects the cache to be initialized.
     val exception =
-      assertThrows<IllegalStateException>() { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat()
+      assertThrows<IllegalStateException> { awaitCompletion(deferredUpdate) }
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected to update the cache only after it's been created")
   }
 
@@ -423,8 +425,9 @@ class InMemoryBlockingCacheTest {
 
     // Deleting the cache should result in readIfPresent()'s expectations to fail.
     val exception =
-      assertThrows<IllegalStateException>() { awaitCompletion(deferredRead) }
-    assertThat(exception).hasMessageThat()
+      assertThrows<IllegalStateException> { awaitCompletion(deferredRead) }
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected to read the cache only after it's been created")
   }
 
@@ -457,8 +460,9 @@ class InMemoryBlockingCacheTest {
 
     // The operation should fail since the method expects the cache to be initialized.
     val exception =
-      assertThrows<IllegalStateException>() { awaitCompletion(deferredUpdate) }
-    assertThat(exception).hasMessageThat()
+      assertThrows<IllegalStateException> { awaitCompletion(deferredUpdate) }
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected to update the cache only after it's been created")
   }
 
@@ -660,7 +664,7 @@ class InMemoryBlockingCacheTest {
    * called at the end of the test since the cache guarantees sequential execution.
    */
   private fun <T> doNotAwaitCompletion(
-    @Suppress("UNUSED_PARAMETER") deferred: Deferred<T>
+    @Suppress("UNUSED_PARAMETER") deferred: Deferred<T>,
   ) {
   }
 
@@ -675,7 +679,8 @@ class InMemoryBlockingCacheTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerInMemoryBlockingCacheTest_TestApplicationComponent.builder()
+    DaggerInMemoryBlockingCacheTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -686,9 +691,7 @@ class InMemoryBlockingCacheTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -697,14 +700,15 @@ class InMemoryBlockingCacheTest {
     modules = [
       TestModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

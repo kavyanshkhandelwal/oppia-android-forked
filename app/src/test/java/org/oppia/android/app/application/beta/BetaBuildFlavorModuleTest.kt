@@ -47,9 +47,7 @@ class BetaBuildFlavorModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -69,7 +67,8 @@ class BetaBuildFlavorModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerBetaBuildFlavorModuleTest_TestApplicationComponent.builder()
+      DaggerBetaBuildFlavorModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

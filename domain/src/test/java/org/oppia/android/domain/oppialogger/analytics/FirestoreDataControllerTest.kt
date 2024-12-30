@@ -110,10 +110,10 @@ class FirestoreDataControllerTest {
       createOptionalSurveyResponseContext(
         surveyId = TEST_SURVEY_ID,
         profileId = null,
-        answer = TEST_ANSWER
+        answer = TEST_ANSWER,
       ),
       profileId = null,
-      TEST_TIMESTAMP
+      TEST_TIMESTAMP,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -133,7 +133,7 @@ class FirestoreDataControllerTest {
   @Test
   fun testController_logEvent_withNoNetwork_exceedLimit_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(
-      NetworkConnectionUtil.ProdConnectionStatus.NONE
+      NetworkConnectionUtil.ProdConnectionStatus.NONE,
     )
     logFourEvents()
 
@@ -147,7 +147,7 @@ class FirestoreDataControllerTest {
   @Test
   fun testController_logEvents_exceedLimit_withNoNetwork_checkCorrectEventIsEvicted() {
     networkConnectionUtil.setCurrentConnectionStatus(
-      NetworkConnectionUtil.ProdConnectionStatus.NONE
+      NetworkConnectionUtil.ProdConnectionStatus.NONE,
     )
     logFourEvents()
 
@@ -217,9 +217,9 @@ class FirestoreDataControllerTest {
       createAbandonSurveyContext(
         TEST_SURVEY_ID,
         profileId,
-        SurveyQuestionName.MARKET_FIT
+        SurveyQuestionName.MARKET_FIT,
       ),
-      profileId = profileId
+      profileId = profileId,
     )
 
     runSynchronously { dataController.uploadData() }
@@ -268,18 +268,18 @@ class FirestoreDataControllerTest {
   private fun createAbandonSurveyContext(
     surveyId: String,
     profileId: ProfileId,
-    questionName: SurveyQuestionName
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
+    questionName: SurveyQuestionName,
+  ): EventLog.Context =
+    EventLog.Context
+      .newBuilder()
       .setAbandonSurvey(
-        EventLog.AbandonSurveyContext.newBuilder()
+        EventLog.AbandonSurveyContext
+          .newBuilder()
           .setQuestionName(questionName)
           .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
-          )
-      )
-      .build()
-  }
+            createSurveyResponseContext(surveyId, profileId),
+          ),
+      ).build()
 
   private fun runSynchronously(operation: suspend () -> Unit) =
     CoroutineScope(backgroundDispatcher).async { operation() }.waitForSuccessfulResult()
@@ -291,74 +291,81 @@ class FirestoreDataControllerTest {
 
   private fun logTwoEventsOffline() {
     networkConnectionUtil.setCurrentConnectionStatus(
-      NetworkConnectionUtil.ProdConnectionStatus.NONE
+      NetworkConnectionUtil.ProdConnectionStatus.NONE,
     )
     logTwoEvents()
     networkConnectionUtil.setCurrentConnectionStatus(
-      NetworkConnectionUtil.ProdConnectionStatus.LOCAL
+      NetworkConnectionUtil.ProdConnectionStatus.LOCAL,
     )
   }
 
   private fun logTwoCachedEventsDirectlyOnDisk() {
-    persistentCacheStoryFactory.create(
-      "firestore_data", OppiaEventLogs.getDefaultInstance()
-    ).storeDataAsync {
-      OppiaEventLogs.newBuilder().apply {
-        addEventLogsToUpload(
-          createEventLog(
-            context = createOptionalSurveyResponseContext(
-              surveyId = TEST_SURVEY_ID,
-              profileId = profileId,
-              answer = TEST_ANSWER
+    persistentCacheStoryFactory
+      .create(
+        "firestore_data",
+        OppiaEventLogs.getDefaultInstance(),
+      ).storeDataAsync {
+        OppiaEventLogs
+          .newBuilder()
+          .apply {
+            addEventLogsToUpload(
+              createEventLog(
+                context =
+                  createOptionalSurveyResponseContext(
+                    surveyId = TEST_SURVEY_ID,
+                    profileId = profileId,
+                    answer = TEST_ANSWER,
+                  ),
+              ),
             )
-          )
-        )
-        addEventLogsToUpload(
-          createEventLog(
-            context = createOptionalSurveyResponseContext(
-              surveyId = TEST_SURVEY_ID,
-              profileId = profileId,
-              answer = TEST_ANSWER
+            addEventLogsToUpload(
+              createEventLog(
+                context =
+                  createOptionalSurveyResponseContext(
+                    surveyId = TEST_SURVEY_ID,
+                    profileId = profileId,
+                    answer = TEST_ANSWER,
+                  ),
+              ),
             )
-          )
-        )
-      }.build()
-    }.waitForSuccessfulResult()
+          }.build()
+      }.waitForSuccessfulResult()
   }
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult() {
-    return when (val result = waitForResult()) {
+  private fun <T> Deferred<T>.waitForSuccessfulResult() =
+    when (val result = waitForResult()) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
-  }
 
   private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      CoroutineScope(backgroundDispatcher)
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
+  private fun <T> StateFlow<T>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun createEventLog(
     context: EventLog.Context,
     priority: EventLog.Priority = EventLog.Priority.ESSENTIAL,
-    timestamp: Long = oppiaClock.getCurrentTimeMs()
-  ) = EventLog.newBuilder().apply {
-    this.timestamp = timestamp
-    this.priority = priority
-    this.context = context
-  }.build()
+    timestamp: Long = oppiaClock.getCurrentTimeMs(),
+  ) = EventLog
+    .newBuilder()
+    .apply {
+      this.timestamp = timestamp
+      this.priority = priority
+      this.context = context
+    }.build()
 
   private fun logFourEvents() {
     logOptionalSurveyResponseEvent(timestamp = 1556094120000)
@@ -372,10 +379,10 @@ class FirestoreDataControllerTest {
       createOptionalSurveyResponseContext(
         surveyId = TEST_SURVEY_ID,
         profileId = profileId,
-        answer = TEST_ANSWER
+        answer = TEST_ANSWER,
       ),
       profileId,
-      timestamp
+      timestamp,
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -383,28 +390,28 @@ class FirestoreDataControllerTest {
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
     profileId: ProfileId?,
-    answer: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
+    answer: String,
+  ): EventLog.Context =
+    EventLog.Context
+      .newBuilder()
       .setOptionalResponse(
-        EventLog.OptionalSurveyResponseContext.newBuilder()
+        EventLog.OptionalSurveyResponseContext
+          .newBuilder()
           .setFeedbackAnswer(answer)
           .setSurveyDetails(
-            createSurveyResponseContext(surveyId, profileId)
-          )
-      )
-      .build()
-  }
+            createSurveyResponseContext(surveyId, profileId),
+          ),
+      ).build()
 
   private fun createSurveyResponseContext(
     surveyId: String,
-    profileId: ProfileId?
-  ): EventLog.SurveyResponseContext {
-    return EventLog.SurveyResponseContext.newBuilder()
+    profileId: ProfileId?,
+  ): EventLog.SurveyResponseContext =
+    EventLog.SurveyResponseContext
+      .newBuilder()
       .setProfileId(profileId?.internalId.toString())
       .setSurveyId(surveyId)
       .build()
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -421,9 +428,7 @@ class FirestoreDataControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -457,22 +462,26 @@ class FirestoreDataControllerTest {
       PlatformParameterSingletonModule::class, SyncStatusModule::class,
       ApplicationLifecycleModule::class, PlatformParameterModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(dataControllerTest: FirestoreDataControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFirestoreDataControllerTest_TestApplicationComponent.builder()
+      DaggerFirestoreDataControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

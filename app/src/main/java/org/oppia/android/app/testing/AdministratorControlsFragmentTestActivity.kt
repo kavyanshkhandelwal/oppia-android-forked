@@ -52,7 +52,10 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun loadAppVersion() {}
 
-  override fun loadProfileEdit(profileId: Int, profileName: String) {}
+  override fun loadProfileEdit(
+    profileId: Int,
+    profileName: String,
+  ) {}
 
   override fun showLogoutDialog() {}
 
@@ -60,7 +63,7 @@ class AdministratorControlsFragmentTestActivity :
     /** Returns an [Intent] to start this activity. */
     fun createAdministratorControlsFragmentTestActivityIntent(
       context: Context,
-      profileId: Int?
+      profileId: Int?,
     ): Intent {
       val profileIdBuilder = profileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AdministratorControlsFragmentTestActivity::class.java)

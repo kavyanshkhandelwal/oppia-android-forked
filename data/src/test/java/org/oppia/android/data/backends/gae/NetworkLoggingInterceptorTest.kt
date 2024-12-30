@@ -56,8 +56,10 @@ class NetworkLoggingInterceptorTest {
 
   @Inject
   lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -77,7 +79,12 @@ class NetworkLoggingInterceptorTest {
 
     mockWebServerUrl = mockWebServer.url(testUrl)
 
-    request = Request.Builder().url(mockWebServerUrl).addHeader(testApiKey, testApiKeyValue).build()
+    request =
+      Request
+        .Builder()
+        .url(mockWebServerUrl)
+        .addHeader(testApiKey, testApiKeyValue)
+        .build()
   }
 
   @After
@@ -90,9 +97,10 @@ class NetworkLoggingInterceptorTest {
     mockWebServer.enqueue(MockResponse().setBody(testResponseBody))
 
     // Collect requests.
-    val firstRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
-      networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
-    }
+    val firstRequestsDeferred =
+      CoroutineScope(backgroundTestDispatcher).async {
+        networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
+      }
     testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     client.newCall(request).execute()
     testCoroutineDispatchers.advanceUntilIdle()
@@ -110,12 +118,14 @@ class NetworkLoggingInterceptorTest {
     val mockResponse = MockResponse().setResponseCode(pageNotFound).setBody(testResponseBody)
 
     // Collect requests & failures.
-    val firstRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
-      networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
-    }
-    val firstFailingRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
-      networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
-    }
+    val firstRequestsDeferred =
+      CoroutineScope(backgroundTestDispatcher).async {
+        networkLoggingInterceptor.logNetworkCallFlow.take(1).toList()
+      }
+    val firstFailingRequestsDeferred =
+      CoroutineScope(backgroundTestDispatcher).async {
+        networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
+      }
     mockWebServer.enqueue(mockResponse)
     testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     client.newCall(request).execute()
@@ -140,9 +150,10 @@ class NetworkLoggingInterceptorTest {
     mockWebServer.shutdown()
 
     // Collect failures.
-    val firstFailingRequestsDeferred = CoroutineScope(backgroundTestDispatcher).async {
-      networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
-    }
+    val firstFailingRequestsDeferred =
+      CoroutineScope(backgroundTestDispatcher).async {
+        networkLoggingInterceptor.logFailedNetworkCallFlow.take(1).toList()
+      }
     testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     try {
       client.newCall(request).execute()
@@ -167,19 +178,23 @@ class NetworkLoggingInterceptorTest {
 
   private fun setUpRetrofit() {
     mockWebServer = MockWebServer()
-    client = OkHttpClient.Builder()
-      .addInterceptor(networkLoggingInterceptor)
-      .build()
+    client =
+      OkHttpClient
+        .Builder()
+        .addInterceptor(networkLoggingInterceptor)
+        .build()
 
     // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
     // the full network request properly executes. MockRetrofit and MockWebServer perform the same
     // request mocking in different ways and we want to verify the full request is executed here.
     // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    retrofit = Retrofit.Builder()
-      .baseUrl(mockWebServer.url(testUrl))
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+    retrofit =
+      Retrofit
+        .Builder()
+        .baseUrl(mockWebServer.url(testUrl))
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -187,9 +202,7 @@ class NetworkLoggingInterceptorTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -197,8 +210,8 @@ class NetworkLoggingInterceptorTest {
   @Component(
     modules = [
       RobolectricModule::class, TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class
-    ]
+      TestDispatcherModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -212,9 +225,12 @@ class NetworkLoggingInterceptorTest {
     fun inject(networkLoggingInterceptorTest: NetworkLoggingInterceptorTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNetworkLoggingInterceptorTest_TestApplicationComponent.builder()
+      DaggerNetworkLoggingInterceptorTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

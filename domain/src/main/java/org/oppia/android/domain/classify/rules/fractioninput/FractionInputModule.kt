@@ -15,7 +15,7 @@ class FractionInputModule {
   @StringKey("HasDenominatorEqualTo")
   @FractionInputRules
   internal fun provideFractionInputHasDenominatorEqualToRuleClassifier(
-    classifierProvider: FractionInputHasDenominatorEqualToRuleClassifierProvider
+    classifierProvider: FractionInputHasDenominatorEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,7 +23,7 @@ class FractionInputModule {
   @StringKey("HasFractionalPartExactlyEqualTo")
   @FractionInputRules
   internal fun provideFractionInputHasFractionalPartExactlyEqualToRuleClassifier(
-    classifierProvider: FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider
+    classifierProvider: FractionInputHasFractionalPartExactlyEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,7 +31,7 @@ class FractionInputModule {
   @StringKey("HasIntegerPartEqualTo")
   @FractionInputRules
   internal fun provideFractionInputHasIntegerPartEqualToRuleClassifier(
-    classifierProvider: FractionInputHasIntegerPartEqualToRuleClassifierProvider
+    classifierProvider: FractionInputHasIntegerPartEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -39,7 +39,7 @@ class FractionInputModule {
   @StringKey("HasNoFractionalPart")
   @FractionInputRules
   internal fun provideFractionInputHasNoFractionalPartRuleClassifier(
-    classifierProvider: FractionInputHasNoFractionalPartRuleClassifierProvider
+    classifierProvider: FractionInputHasNoFractionalPartRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -47,7 +47,7 @@ class FractionInputModule {
   @StringKey("HasNumeratorEqualTo")
   @FractionInputRules
   internal fun provideFractionInputHasNumeratorEqualToRuleClassifier(
-    classifierProvider: FractionInputHasNumeratorEqualToRuleClassifierProvider
+    classifierProvider: FractionInputHasNumeratorEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -55,7 +55,7 @@ class FractionInputModule {
   @StringKey("IsEquivalentToAndInSimplestForm")
   @FractionInputRules
   internal fun provideFractionInputIsEquivalentToAndInSimplestFormRuleClassifier(
-    classifierProvider: FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
+    classifierProvider: FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -63,7 +63,7 @@ class FractionInputModule {
   @StringKey("IsEquivalentTo")
   @FractionInputRules
   internal fun provideFractionInputIsEquivalentToRuleClassifier(
-    classifierProvider: FractionInputIsEquivalentToRuleClassifierProvider
+    classifierProvider: FractionInputIsEquivalentToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -71,7 +71,7 @@ class FractionInputModule {
   @StringKey("IsExactlyEqualTo")
   @FractionInputRules
   internal fun provideFractionInputIsExactlyEqualToRuleClassifier(
-    classifierProvider: FractionInputIsExactlyEqualToRuleClassifierProvider
+    classifierProvider: FractionInputIsExactlyEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -79,7 +79,7 @@ class FractionInputModule {
   @StringKey("IsGreaterThan")
   @FractionInputRules
   internal fun provideFractionInputIsGreaterThanRuleClassifier(
-    classifierProvider: FractionInputIsGreaterThanRuleClassifierProvider
+    classifierProvider: FractionInputIsGreaterThanRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -87,6 +87,6 @@ class FractionInputModule {
   @StringKey("IsLessThan")
   @FractionInputRules
   internal fun provideFractionInputIsLessThanRuleClassifier(
-    classifierProvider: FractionInputIsLessThanRuleClassifierProvider
+    classifierProvider: FractionInputIsLessThanRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

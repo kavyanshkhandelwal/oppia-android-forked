@@ -27,9 +27,10 @@ class StringLanguageTranslationCheckTest {
     private val ARABIC_STRINGS_EXTRAS = mapOf("arabic_only_string" to "خيارات")
 
     private val BRAZILIAN_PORTUGUESE_STRINGS_SHARED = mapOf("shared_string" to "Meus Downloads")
-    private val BRAZILIAN_PORTUGUESE_STRINGS_EXTRAS = mapOf(
-      "brazilian_portuguese_only_string" to "Reprodutor de Exploração"
-    )
+    private val BRAZILIAN_PORTUGUESE_STRINGS_EXTRAS =
+      mapOf(
+        "brazilian_portuguese_only_string" to "Reprodutor de Exploração",
+      )
 
     private val ENGLISH_STRINGS_SHARED = mapOf("shared_string" to "Exploration Player")
     private val ENGLISH_STRINGS_EXTRAS = mapOf("english_only_string" to "Help")
@@ -65,7 +66,7 @@ class StringLanguageTranslationCheckTest {
 
   @Test
   fun testScript_missingPath_throwsException() {
-    val exception = assertThrows<IllegalArgumentException>() { runScript(/* With no path. */) }
+    val exception = assertThrows<IllegalArgumentException> { runScript(/* With no path. */) }
 
     assertThat(exception)
       .hasMessageThat()
@@ -74,9 +75,10 @@ class StringLanguageTranslationCheckTest {
 
   @Test
   fun testScript_validPath_noStringFiles_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runScript(tempFolder.root.absolutePath)
+      }
 
     assertThat(exception).hasMessageThat().contains("Missing translation strings for language(s)")
   }
@@ -111,7 +113,7 @@ class StringLanguageTranslationCheckTest {
       Missing translations:
       ARABIC (1/1):
       - shared_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -132,7 +134,7 @@ class StringLanguageTranslationCheckTest {
       Missing translations:
       BRAZILIAN_PORTUGUESE (1/1):
       - shared_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -153,7 +155,7 @@ class StringLanguageTranslationCheckTest {
       Missing translations:
       SWAHILI (1/1):
       - shared_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -174,7 +176,7 @@ class StringLanguageTranslationCheckTest {
       Missing translations:
       NIGERIAN_PIDGIN (1/1):
       - shared_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -208,7 +210,7 @@ class StringLanguageTranslationCheckTest {
       NIGERIAN_PIDGIN (2/8):
       - shared_string
       - english_only_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -216,12 +218,12 @@ class StringLanguageTranslationCheckTest {
   fun testScript_presentTranslations_missingMultiple_someShared_outputsMissingXlationsWithCount() {
     populateArabicTranslations(ARABIC_STRINGS_SHARED + ARABIC_STRINGS_EXTRAS)
     populateBrazilianPortugueseTranslations(
-      BRAZILIAN_PORTUGUESE_STRINGS_SHARED + BRAZILIAN_PORTUGUESE_STRINGS_EXTRAS
+      BRAZILIAN_PORTUGUESE_STRINGS_SHARED + BRAZILIAN_PORTUGUESE_STRINGS_EXTRAS,
     )
     populateEnglishTranslations(ENGLISH_STRINGS_SHARED + ENGLISH_STRINGS_EXTRAS)
     populateSwahiliTranslations(SWAHILI_STRINGS_SHARED + SWAHILI_STRINGS_EXTRAS)
     populateNigerianPidginTranslations(
-      NIGERIAN_PIDGIN_STRINGS_SHARED + NIGERIAN_PIDGIN_STRINGS_EXTRAS
+      NIGERIAN_PIDGIN_STRINGS_SHARED + NIGERIAN_PIDGIN_STRINGS_EXTRAS,
     )
 
     runScript(tempFolder.root.absolutePath)
@@ -242,7 +244,7 @@ class StringLanguageTranslationCheckTest {
       
       NIGERIAN_PIDGIN (1/4):
       - english_only_string
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -285,20 +287,25 @@ class StringLanguageTranslationCheckTest {
   private fun populateTranslations(
     resourceDir: File,
     valuesDirName: String,
-    translations: Map<String, String>
+    translations: Map<String, String>,
   ) {
     val document = documentBuilderFactory.newDocumentBuilder().newDocument()
     val resourcesRoot = document.createElement("resources").also { document.appendChild(it) }
-    translations.map { (name, value) ->
-      document.createElement("string").also {
-        it.setAttribute("name", name)
-        it.textContent = value
-      }
-    }.forEach(resourcesRoot::appendChild)
+    translations
+      .map { (name, value) ->
+        document.createElement("string").also {
+          it.setAttribute("name", name)
+          it.textContent = value
+        }
+      }.forEach(resourcesRoot::appendChild)
     writeTranslationsFile(resourceDir, valuesDirName, document.toSource())
   }
 
-  private fun writeTranslationsFile(resourceDir: File, valuesDirName: String, contents: String) {
+  private fun writeTranslationsFile(
+    resourceDir: File,
+    valuesDirName: String,
+    contents: String,
+  ) {
     val valuesDir = File(resourceDir, valuesDirName).also { check(it.mkdir()) }
     File(valuesDir, "strings.xml").writeText(contents)
   }
@@ -306,9 +313,10 @@ class StringLanguageTranslationCheckTest {
   private fun Document.toSource(): String {
     // Reference: https://stackoverflow.com/a/5456836.
     val transformer = transformerFactory.newTransformer()
-    return StringWriter().apply {
-      transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
-    }.toString()
+    return StringWriter()
+      .apply {
+        transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
+      }.toString()
   }
 
   private fun ByteArrayOutputStream.asString() = toString(Charsets.UTF_8.name())

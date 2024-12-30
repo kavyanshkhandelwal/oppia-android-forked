@@ -27,15 +27,18 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     val profileId = intent.extractCurrentUserProfileId()
     audioLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
-      profileId
+      profileId,
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AudioLanguageActivityStateBundle.newBuilder().apply {
-      audioLanguage = audioLanguageActivityPresenter.getLanguageSelected()
-    }.build()
+    val state =
+      AudioLanguageActivityStateBundle
+        .newBuilder()
+        .apply {
+          audioLanguage = audioLanguageActivityPresenter.getLanguageSelected()
+        }.build()
     outState.putProto(ACTIVITY_SAVED_STATE_KEY, state)
   }
 
@@ -48,27 +51,29 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
     fun createAudioLanguageActivityIntent(
       context: Context,
-      audioLanguage: AudioLanguage
-    ): Intent {
-      return Intent(context, AudioLanguageActivity::class.java).apply {
-        val arguments = AudioLanguageActivityParams.newBuilder().apply {
-          this.audioLanguage = audioLanguage
-        }.build()
+      audioLanguage: AudioLanguage,
+    ): Intent =
+      Intent(context, AudioLanguageActivity::class.java).apply {
+        val arguments =
+          AudioLanguageActivityParams
+            .newBuilder()
+            .apply {
+              this.audioLanguage = audioLanguage
+            }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
         decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
       }
-    }
 
-    private fun Intent.retrieveLanguageFromParams(): AudioLanguage {
-      return getProtoExtra(
-        ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
+    private fun Intent.retrieveLanguageFromParams(): AudioLanguage =
+      getProtoExtra(
+        ACTIVITY_PARAMS_KEY,
+        AudioLanguageActivityParams.getDefaultInstance(),
       ).audioLanguage
-    }
 
-    private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {
-      return getProto(
-        ACTIVITY_SAVED_STATE_KEY, AudioLanguageActivityStateBundle.getDefaultInstance()
+    private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage =
+      getProto(
+        ACTIVITY_SAVED_STATE_KEY,
+        AudioLanguageActivityStateBundle.getDefaultInstance(),
       ).audioLanguage
-    }
   }
 }

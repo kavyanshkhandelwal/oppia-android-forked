@@ -13,28 +13,22 @@ import javax.inject.Singleton
 class LogReportingModule {
   @Provides
   @Singleton
-  fun provideCrashLogger(): ExceptionLogger =
-    FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+  fun provideCrashLogger(): ExceptionLogger = FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
 
   @Provides
   @Singleton
-  fun provideFirebaseAnalyticsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory):
-    AnalyticsEventLogger = factory.create()
+  fun provideFirebaseAnalyticsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory): AnalyticsEventLogger = factory.create()
 
   @Provides
   @Singleton
-  fun providePerformanceMetricsEventLogger(
-    factory: FirebaseAnalyticsEventLogger.Factory
-  ): PerformanceMetricsEventLogger =
+  fun providePerformanceMetricsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory): PerformanceMetricsEventLogger =
     factory.createPerformanceMetricEventLogger()
 
   @Provides
   @Singleton
-  fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl):
-    FirestoreEventLogger = factory
+  fun provideFirestoreLogger(factory: FirestoreEventLoggerProdImpl): FirestoreEventLogger = factory
 
   @Provides
   @Singleton
-  fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl):
-    FirestoreInstanceWrapper = wrapperImpl
+  fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FirestoreInstanceWrapperImpl): FirestoreInstanceWrapper = wrapperImpl
 }

@@ -15,6 +15,7 @@ import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import javax.inject.Inject
 
 // TODO(#3830): Migrate all test activities over to using this test activity & make this closed.
+
 /**
  * General-purpose test activity for app layer tests.
  *
@@ -26,6 +27,7 @@ import javax.inject.Inject
  */
 open class TestActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject lateinit var appLanguageResourceHandler: AppLanguageResourceHandler
+
   @Inject lateinit var dateTimeUtil: DateTimeUtil
 
   @Inject
@@ -36,8 +38,11 @@ open class TestActivity : InjectableAutoLocalizedAppCompatActivity() {
     ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
 
   @Inject lateinit var appLanguageWatcherMixin: AppLanguageWatcherMixin
+
   @Inject lateinit var mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+
   @Inject lateinit var activityRouter: ActivityRouter
+
   @Inject lateinit var activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
 
   override fun attachBaseContext(newBase: Context?) {

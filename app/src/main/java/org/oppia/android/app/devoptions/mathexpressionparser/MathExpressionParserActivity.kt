@@ -28,10 +28,9 @@ class MathExpressionParserActivity : InjectableAutoLocalizedAppCompatActivity() 
 
   companion object {
     /** Returns [Intent] for [MathExpressionParserActivity]. */
-    fun createIntent(context: Context): Intent {
-      return Intent(context, MathExpressionParserActivity::class.java).apply {
+    fun createIntent(context: Context): Intent =
+      Intent(context, MathExpressionParserActivity::class.java).apply {
         decorateWithScreenName(MATH_EXPRESSION_PARSER_ACTIVITY)
       }
-    }
   }
 }

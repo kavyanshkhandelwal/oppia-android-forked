@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 /** Fragment for displaying [OngoingTopicListActivity]. */
 class OngoingTopicListFragment : InjectableFragment() {
-
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val ONGOING_TOPIC_LIST_FRAGMENT_TAG = "TAG_ONGOING_TOPIC_LIST_FRAGMENT"
@@ -41,7 +40,7 @@ class OngoingTopicListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to OngoingTopicListFragment" }
@@ -49,7 +48,7 @@ class OngoingTopicListFragment : InjectableFragment() {
     return ongoingTopicListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      internalProfileId,
     )
   }
 }

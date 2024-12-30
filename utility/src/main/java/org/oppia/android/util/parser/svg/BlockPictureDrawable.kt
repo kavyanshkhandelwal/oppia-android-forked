@@ -9,7 +9,7 @@ import android.content.Context
  */
 class BlockPictureDrawable constructor(
   context: Context,
-  scalableVectorGraphic: ScalableVectorGraphic
+  scalableVectorGraphic: ScalableVectorGraphic,
 ) : SvgPictureDrawable(context, scalableVectorGraphic) {
   init {
     // Initialize this drawable for block rendering.

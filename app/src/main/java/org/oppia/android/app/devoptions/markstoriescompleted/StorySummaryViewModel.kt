@@ -10,7 +10,7 @@ class StorySummaryViewModel(
   ephemeralStorySummary: EphemeralStorySummary,
   val isCompleted: Boolean,
   val topicId: String,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : ObservableViewModel() {
   /** The summary of the story being displayed. */
   val storySummary = ephemeralStorySummary.storySummary
@@ -18,7 +18,8 @@ class StorySummaryViewModel(
   /** The localized title of the story being displayed. */
   val storyTitle by lazy {
     translationController.extractString(
-      storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
+      storySummary.storyTitle,
+      ephemeralStorySummary.writtenTranslationContext,
     )
   }
 }

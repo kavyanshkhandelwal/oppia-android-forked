@@ -78,17 +78,21 @@ class PersistentCacheStoreTest {
     private val TEST_INT_MESSAGE_V1 = createTestMessage(intValue = TEST_INT_V1)
     private val TEST_INT_MESSAGE_V2 = createTestMessage(intValue = TEST_INT_V2)
 
-    private fun TestMessage.addString(strValue: String) = toBuilder().apply {
-      this.strValue = strValue
-    }.build()
+    private fun TestMessage.addString(strValue: String) =
+      toBuilder()
+        .apply {
+          this.strValue = strValue
+        }.build()
 
     private fun createTestMessage(
       intValue: Int = DEFAULT_TEST_MESSAGE.intValue,
-      strValue: String = DEFAULT_TEST_MESSAGE.strValue
-    ) = TestMessage.newBuilder().apply {
-      this.intValue = intValue
-      this.strValue = strValue
-    }.build()
+      strValue: String = DEFAULT_TEST_MESSAGE.strValue,
+    ) = TestMessage
+      .newBuilder()
+      .apply {
+        this.intValue = intValue
+        this.strValue = strValue
+      }.build()
   }
 
   @Rule
@@ -96,13 +100,20 @@ class PersistentCacheStoreTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var cacheFactory: PersistentCacheStore.Factory
+
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+
   @Mock lateinit var mockSubscriptionCallback: SubscriptionCallback
+
   @Inject lateinit var testCoroutineDispatcherFactory: TestCoroutineDispatcher.Factory
 
   private val backgroundDispatcherScope by lazy { CoroutineScope(backgroundDispatcher) }
@@ -491,7 +502,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -508,7 +520,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -626,7 +639,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -643,7 +657,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -769,7 +784,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -788,7 +804,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -922,7 +939,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -941,7 +959,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -1073,7 +1092,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -1092,7 +1112,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -1222,7 +1243,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     primeDeferred.waitForSuccessfulResult()
 
@@ -1241,7 +1263,8 @@ class PersistentCacheStoreTest {
 
     val primeDeferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        UPDATE_IF_NEW_CACHE, DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        UPDATE_IF_NEW_CACHE,
+        DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.addString(TEST_STR_V1) }
     primeDeferred.waitForSuccessfulResult()
 
@@ -1359,7 +1382,8 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val primeOp =
       cacheStore2.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     testCoroutineDispatchers.advanceUntilIdle()
     val storeOp2 = cacheStore2.storeDataAsync(updateInMemoryCache = false) { TEST_INT_MESSAGE_V2 }
@@ -1386,7 +1410,8 @@ class PersistentCacheStoreTest {
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     val primeOp =
       cacheStore2.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     testCoroutineDispatchers.advanceUntilIdle()
     val storeOp2 = cacheStore2.storeDataAsync { TEST_INT_MESSAGE_V2 }
@@ -1412,7 +1437,7 @@ class PersistentCacheStoreTest {
     val primeOp =
       cacheStore.primeInMemoryAndDiskCacheAsync(
         updateMode = UPDATE_IF_NEW_CACHE,
-        publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+        publishMode = DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
       )
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -1430,7 +1455,8 @@ class PersistentCacheStoreTest {
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // The on-disk and in-memory values should change.
@@ -1448,7 +1474,8 @@ class PersistentCacheStoreTest {
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // The on-disk value should be the same, and the in-memory value should become the on-disk
@@ -1463,13 +1490,16 @@ class PersistentCacheStoreTest {
   @Test
   fun testPrimeInMemoryAndOnDisk_existingCache_unchanged_onDisk_inMem_onlyReadsFileAndRetsOldVal() {
     writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
-    val cacheStore = cacheFactory.create(
-      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
-    )
+    val cacheStore =
+      cacheFactory.create(
+        CACHE_NAME_1,
+        TestMessage.newBuilder().apply { strValue = "different initial" }.build(),
+      )
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // Priming should ignore both the on-disk and in-memory values of the cache store since only the
@@ -1483,16 +1513,20 @@ class PersistentCacheStoreTest {
 
   @Test
   fun testPrimeInMemoryAndOnDisk_existingCache_changed_notOnDisk_inMem_writesFileAndRetsOldVal() {
-    val cacheStore = cacheFactory.create(
-      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
-    )
-    cacheStore.storeDataAsync {
-      it.toBuilder().apply { strValue = "different update" }.build()
-    }.waitForSuccessfulResult()
+    val cacheStore =
+      cacheFactory.create(
+        CACHE_NAME_1,
+        TestMessage.newBuilder().apply { strValue = "different initial" }.build(),
+      )
+    cacheStore
+      .storeDataAsync {
+        it.toBuilder().apply { strValue = "different update" }.build()
+      }.waitForSuccessfulResult()
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // Priming shouldn't really change much since the recent change to the cache store takes
@@ -1507,16 +1541,20 @@ class PersistentCacheStoreTest {
   @Test
   fun testPrimeInMemoryAndOnDisk_existingCache_changed_onDisk_inMem_onlyReadsFileAndRetsOldVal() {
     writeFileCache(CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "initial" }.build())
-    val cacheStore = cacheFactory.create(
-      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
-    )
-    cacheStore.storeDataAsync {
-      it.toBuilder().apply { strValue = "different update" }.build()
-    }.waitForSuccessfulResult()
+    val cacheStore =
+      cacheFactory.create(
+        CACHE_NAME_1,
+        TestMessage.newBuilder().apply { strValue = "different initial" }.build(),
+      )
+    cacheStore
+      .storeDataAsync {
+        it.toBuilder().apply { strValue = "different update" }.build()
+      }.waitForSuccessfulResult()
 
     val deferred =
       cacheStore.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // Priming shouldn't really change much since the recent change to the cache store takes
@@ -1531,15 +1569,18 @@ class PersistentCacheStoreTest {
   @Test
   fun testPrimeInMemoryAndOnDisk_existingCache_corruptedOnDisk_updatesFileAndRetsNewVal() {
     corruptFileCache(CACHE_NAME_1)
-    val cacheStore1 = cacheFactory.create(
-      CACHE_NAME_1, TestMessage.newBuilder().apply { strValue = "different initial" }.build()
-    )
+    val cacheStore1 =
+      cacheFactory.create(
+        CACHE_NAME_1,
+        TestMessage.newBuilder().apply { strValue = "different initial" }.build(),
+      )
     val cacheStore2 = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
     monitorFactory.ensureDataProviderExecutes(cacheStore1)
 
     val deferred =
       cacheStore1.primeInMemoryAndDiskCacheAsync(
-        updateMode = UPDATE_IF_NEW_CACHE, publishMode = PUBLISH_TO_IN_MEMORY_CACHE
+        updateMode = UPDATE_IF_NEW_CACHE,
+        publishMode = PUBLISH_TO_IN_MEMORY_CACHE,
       ) { it.toBuilder().apply { strValue += " first transform" }.build() }
 
     // The corrupted cache will trigger an in-memory only state that will lead to the cache being
@@ -1559,10 +1600,12 @@ class PersistentCacheStoreTest {
   fun testLoadFileCacheFromDisk_multipleTimesInTandem_onlyLoadsOnce() {
     writeFileCache(
       CACHE_NAME_1,
-      TestMessage.newBuilder().apply {
-        addStrValues("one")
-        addStrValues("two")
-      }.build()
+      TestMessage
+        .newBuilder()
+        .apply {
+          addStrValues("one")
+          addStrValues("two")
+        }.build(),
     )
     val cacheStore = cacheFactory.create(CACHE_NAME_1, TestMessage.getDefaultInstance())
 
@@ -1584,7 +1627,8 @@ class PersistentCacheStoreTest {
 
   private fun <T : MessageLite> subscribeToCacheStoreChanges(cacheStore: PersistentCacheStore<T>) {
     asyncDataSubscriptionManager.subscribe(
-      cacheStore.getId(), mockSubscriptionCallback.toAsyncChange()
+      cacheStore.getId(),
+      mockSubscriptionCallback.toAsyncChange(),
     )
   }
 
@@ -1597,7 +1641,7 @@ class PersistentCacheStoreTest {
   private fun <T : MessageLite> verifyCacheStoreHasInMemoryValue(
     cacheName: String,
     cacheStore: PersistentCacheStore<T>,
-    value: T
+    value: T,
   ) {
     // Delete the cache before reading from the store to verify that the read value is actually
     // in-memory and not being read from disk.
@@ -1605,7 +1649,10 @@ class PersistentCacheStoreTest {
     assertThat(monitorFactory.waitForNextSuccessfulResult(cacheStore)).isEqualTo(value)
   }
 
-  private fun <T : MessageLite> verifyDiskCacheHasValue(cacheName: String, value: T) {
+  private fun <T : MessageLite> verifyDiskCacheHasValue(
+    cacheName: String,
+    value: T,
+  ) {
     assertThat(readFileCache<TestMessage>(cacheName)).isEqualTo(value)
   }
 
@@ -1630,7 +1677,10 @@ class PersistentCacheStoreTest {
     getCacheFile(cacheName).writeBytes(byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
   }
 
-  private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
+  private fun <T : MessageLite> writeFileCache(
+    cacheName: String,
+    value: T,
+  ) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
   }
 
@@ -1652,24 +1702,23 @@ class PersistentCacheStoreTest {
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      backgroundDispatcherScope.async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      backgroundDispatcherScope
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<AsyncResult<T>>.flattenDeferredResult(): T {
-    return when (val asyncResult = value) {
+  private fun <T> StateFlow<AsyncResult<T>>.flattenDeferredResult(): T =
+    when (val asyncResult = value) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> asyncResult.value
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", asyncResult.error)
     }
-  }
 
-  private fun <T> StateFlow<AsyncResult<T>>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.flattenDeferredResult()
+  private fun <T> StateFlow<AsyncResult<T>>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.flattenDeferredResult()
 
   private fun TestCoroutineDispatcher.runCurrentCoordinated() {
     // This logic is based on TestCoroutineDispatchersRobolectricImpl.runCurrent. It's necessary
@@ -1690,9 +1739,7 @@ class PersistentCacheStoreTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1702,8 +1749,8 @@ class PersistentCacheStoreTest {
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestModule::class,
-      TestLogReportingModule::class
-    ]
+      TestLogReportingModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -1717,9 +1764,12 @@ class PersistentCacheStoreTest {
     fun inject(persistentCacheStoreTest: PersistentCacheStoreTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPersistentCacheStoreTest_TestApplicationComponent.builder()
+      DaggerPersistentCacheStoreTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

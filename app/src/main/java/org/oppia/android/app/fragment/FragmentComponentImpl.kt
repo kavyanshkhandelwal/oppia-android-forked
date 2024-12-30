@@ -101,11 +101,13 @@ import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
 @Subcomponent(
   modules = [
     FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class, ViewComponentBuilderModule::class
-  ]
+    ViewBindingShimModule::class, ViewComponentBuilderModule::class,
+  ],
 )
 @FragmentScope
-interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjector {
+interface FragmentComponentImpl :
+  FragmentComponent,
+  ViewComponentBuilderInjector {
   /** Implementation of [FragmentComponent.Builder]. */
   @Subcomponent.Builder
   interface Builder : FragmentComponent.Builder {
@@ -116,92 +118,174 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   }
 
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
+
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
+
   fun inject(appLanguageFragment: AppLanguageFragment)
+
   fun inject(appVersionFragment: AppVersionFragment)
+
   fun inject(audioFragment: AudioFragment)
+
   fun inject(audioLanguageFragment: AudioLanguageFragment)
-  fun inject(
-    automaticAppDeprecationNoticeDialogFragment:
-      AutomaticAppDeprecationNoticeDialogFragment
-  )
+
+  fun inject(automaticAppDeprecationNoticeDialogFragment: AutomaticAppDeprecationNoticeDialogFragment)
+
   fun inject(betaNoticeDialogFragment: BetaNoticeDialogFragment)
+
   fun inject(cellularAudioDialogFragment: CellularAudioDialogFragment)
+
   fun inject(completedStoryListFragment: CompletedStoryListFragment)
+
   fun inject(conceptCardFragment: ConceptCardFragment)
+
   fun inject(profileDeleteSuccessDialogFragment: ProfileDeleteSuccessDialogFragment)
+
   fun inject(developerOptionsFragment: DeveloperOptionsFragment)
+
   fun inject(downloadsTabFragment: DownloadsTabFragment)
+
   fun inject(dragDropTestFragment: DragDropTestFragment)
+
   fun inject(exitProfileDialogFragment: ExitProfileDialogFragment)
+
   fun inject(explorationFragment: ExplorationFragment)
+
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
+
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
+
   fun inject(faqListFragment: FAQListFragment)
+
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
+
   fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
+
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
+
   fun inject(helpFragment: HelpFragment)
+
   fun inject(hintsAndSolutionDialogFragment: HintsAndSolutionDialogFragment)
+
   fun inject(hintsAndSolutionExplorationManagerFragment: HintsAndSolutionExplorationManagerFragment)
+
   fun inject(hintsAndSolutionQuestionManagerFragment: HintsAndSolutionQuestionManagerFragment)
+
   fun inject(homeFragment: HomeFragment)
+
   fun inject(imageRegionSelectionTestFragment: ImageRegionSelectionTestFragment)
+
   fun inject(languageDialogFragment: LanguageDialogFragment)
+
   fun inject(licenseListFragment: LicenseListFragment)
+
   fun inject(licenseTextViewerFragment: LicenseTextViewerFragment)
+
   fun inject(logoutDialogFragment: LogoutDialogFragment)
+
   fun inject(markChapterCompletedFragment: MarkChaptersCompletedFragment)
+
   fun inject(markStoriesCompletedFragment: MarkStoriesCompletedFragment)
+
   fun inject(markTopicsCompletedFragment: MarkTopicsCompletedFragment)
+
   fun inject(mathExpressionParserFragment: MathExpressionParserFragment)
+
   fun inject(myDownloadsFragment: MyDownloadsFragment)
+
   fun inject(navigationDrawerFragment: NavigationDrawerFragment)
+
   fun inject(onboardingFragment: OnboardingFragment)
+
   fun inject(ongoingTopicListFragment: OngoingTopicListFragment)
+
   fun inject(optionalAppDeprecationNoticeDialogFragment: OptionalAppDeprecationNoticeDialogFragment)
+
   fun inject(optionFragment: OptionsFragment)
+
   fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
+
   fun inject(policiesFragment: PoliciesFragment)
+
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
+
   fun inject(profileChooserFragment: ProfileChooserFragment)
+
   fun inject(profileEditDeletionDialogFragment: ProfileEditDeletionDialogFragment)
+
   fun inject(profileEditFragment: ProfileEditFragment)
+
   fun inject(profileListFragment: ProfileListFragment)
+
   fun inject(profileRenameFragment: ProfileRenameFragment)
+
   fun inject(profilePictureEditDialogFragment: ProfilePictureEditDialogFragment)
+
   fun inject(profileProgressFragment: ProfileProgressFragment)
+
   fun inject(profileResetPinFragment: ProfileResetPinFragment)
+
   fun inject(progressDatabaseFullDialogFragment: ProgressDatabaseFullDialogFragment)
+
   fun inject(questionPlayerFragment: QuestionPlayerFragment)
+
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
+
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
+
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
+
   fun inject(resumeLessonFragment: ResumeLessonFragment)
+
   fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
+
   fun inject(revisionCardFragment: RevisionCardFragment)
+
   fun inject(spotlightFragment: SpotlightFragment)
+
   fun inject(stateFragment: StateFragment)
+
   fun inject(stopExplorationDialogFragment: StopExplorationDialogFragment)
+
   fun inject(storyFragment: StoryFragment)
+
   fun inject(thirdPartyDependencyListFragment: ThirdPartyDependencyListFragment)
+
   fun inject(topicFragment: TopicFragment)
+
   fun inject(topicInfoFragment: TopicInfoFragment)
+
   fun inject(topicLessonsFragment: TopicLessonsFragment)
+
   fun inject(topicPracticeFragment: TopicPracticeFragment)
+
   fun inject(topicReviewFragment: TopicRevisionFragment)
+
   fun inject(unsavedExplorationDialogFragment: UnsavedExplorationDialogFragment)
+
   fun inject(updatesTabFragment: UpdatesTabFragment)
+
   fun inject(viewEventLogsFragment: ViewEventLogsFragment)
+
   fun inject(walkthroughFinalFragment: WalkthroughFinalFragment)
+
   fun inject(walkthroughTopicListFragment: WalkthroughTopicListFragment)
+
   fun inject(walkthroughWelcomeFragment: WalkthroughWelcomeFragment)
+
   fun inject(surveyFragment: SurveyFragment)
+
   fun inject(exitSurveyConfirmationDialogFragment: ExitSurveyConfirmationDialogFragment)
+
   fun inject(surveyWelcomeDialogFragment: SurveyWelcomeDialogFragment)
+
   fun inject(surveyOutroDialogFragment: SurveyOutroDialogFragment)
+
   fun inject(classroomListFragment: ClassroomListFragment)
+
   fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
+
   fun inject(createProfileFragment: CreateProfileFragment)
+
   fun inject(introFragment: IntroFragment)
 }

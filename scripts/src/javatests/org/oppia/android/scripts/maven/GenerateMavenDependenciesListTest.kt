@@ -63,26 +63,28 @@ class GenerateMavenDependenciesListTest {
     val coordsList = listOf(DEP_WITH_SCRAPABLE_LICENSE, DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -94,7 +96,7 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasVerifiedLinkNotSet(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
-      licenseName = "The Apache License, Version 2.0"
+      licenseName = "The Apache License, Version 2.0",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -106,62 +108,80 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasVerifiedLinkNotSet(
       license = licenseForDependency2,
       originalLink = "https://developer.android.com/studio/terms.html",
-      licenseName = "Android Software Development Kit License"
+      licenseName = "Android Software Development Kit License",
     )
   }
 
   @Test
   fun testLicenseLinkNotVerified_forAtleastOneLicense_scriptFailsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
 
@@ -173,26 +193,28 @@ class GenerateMavenDependenciesListTest {
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -204,7 +226,7 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasVerifiedLinkNotSet(
       license = licenseForDependency,
       originalLink = "https://developer.android.com/studio/terms.html",
-      licenseName = "Android Software Development Kit License"
+      licenseName = "Android Software Development Kit License",
     )
   }
 
@@ -216,26 +238,28 @@ class GenerateMavenDependenciesListTest {
     val coordsList = listOf(DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -249,12 +273,12 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasVerifiedLinkNotSet(
       license = license1ForDependency,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
-      licenseName = "Simplified BSD License"
+      licenseName = "Simplified BSD License",
     )
     verifyLicenseHasVerifiedLinkNotSet(
       license = license2ForDependency,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
-      licenseName = "The Apache License, Version 2.0"
+      licenseName = "The Apache License, Version 2.0",
     )
   }
 
@@ -263,47 +287,57 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "Fabric Software and Services Agreement"
-      this.originalLink = "https://fabric.io/terms"
-      this.isOriginalLinkInvalid = true
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_INVALID_LINKS
-            this.artifactVersion = IO_FABRIC_VERSION
-            this.addLicense(license1)
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Fabric Software and Services Agreement"
+          this.originalLink = "https://fabric.io/terms"
+          this.isOriginalLinkInvalid = true
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_INVALID_LINKS
+                  this.artifactVersion = IO_FABRIC_VERSION
+                  this.addLicense(license1)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val coordsList = listOf(DEP_WITH_INVALID_LINKS)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -315,7 +349,7 @@ class GenerateMavenDependenciesListTest {
     verifyLicenseHasOriginalLinkInvalid(
       license = licenseForDependency,
       originalLink = "https://fabric.io/terms",
-      licenseName = "Fabric Software and Services Agreement"
+      licenseName = "Fabric Software and Services Agreement",
     )
   }
 
@@ -327,26 +361,28 @@ class GenerateMavenDependenciesListTest {
     val coordsList = listOf(DEP_WITH_NO_LICENSE)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -361,36 +397,55 @@ class GenerateMavenDependenciesListTest {
   fun testDependenciesHaveMultipleLicense_completeLicenseDetails_scriptPasses_writesTextProto() {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val coordsList =
@@ -400,21 +455,22 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
         "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+      ),
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -427,7 +483,7 @@ class GenerateMavenDependenciesListTest {
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -441,13 +497,13 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
   }
 
@@ -456,36 +512,55 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "Android Software Development Kit License"
-      this.originalLink = "https://developer.android.com/studio/terms.html"
-      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
-        url = "https://developer.android.com/studio/terms.html"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Android Software Development Kit License"
+          this.originalLink = "https://developer.android.com/studio/terms.html"
+          this.directLinkOnly =
+            DirectLinkOnly
+              .newBuilder()
+              .apply {
+                url = "https://developer.android.com/studio/terms.html"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE
-            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_NO_LICENSE
-            this.artifactVersion = PROTO_LITE_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_DIRECT_LINK_ONLY_LICENSE
+                  this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_NO_LICENSE
+                  this.artifactVersion = PROTO_LITE_VERSION
+                  this.addLicense(license2)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
     val coordsList = listOf(DEP_WITH_DIRECT_LINK_ONLY_LICENSE, DEP_WITH_NO_LICENSE)
@@ -494,22 +569,23 @@ class GenerateMavenDependenciesListTest {
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
         "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+      ),
     )
 
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
@@ -522,7 +598,7 @@ class GenerateMavenDependenciesListTest {
       license = licenseForDependency1,
       originalLink = "https://developer.android.com/studio/terms.html",
       licenseName = "Android Software Development Kit License",
-      verifiedLink = "https://developer.android.com/studio/terms.html"
+      verifiedLink = "https://developer.android.com/studio/terms.html",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -535,7 +611,7 @@ class GenerateMavenDependenciesListTest {
       license = licenseForDependency2,
       originalLink = "",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
   }
 
@@ -543,66 +619,89 @@ class GenerateMavenDependenciesListTest {
   fun testLicensesIncomplete_noUpdatesProvided_scriptFails() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val incompleteApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val incompleteApacheLicenseWithSameOriginalLink = License.newBuilder().apply {
-      this.licenseName = "The Apache Software License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeBsdLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val incompleteApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val incompleteApacheLicenseWithSameOriginalLink =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache Software License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeBsdLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(incompleteApacheLicense)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(incompleteApacheLicense, completeBsdLicense))
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-            this.artifactVersion = MOSHI_VERSION
-            this.addLicense(incompleteApacheLicenseWithSameOriginalLink)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(incompleteApacheLicense)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(incompleteApacheLicense, completeBsdLicense))
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+                  this.artifactVersion = MOSHI_VERSION
+                  this.addLicense(incompleteApacheLicenseWithSameOriginalLink)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+        DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
 
@@ -611,81 +710,105 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val incompleteApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val completeGlideLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val incompleteApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val completeGlideLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(completeApacheLicense)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(completeApacheLicense)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+      )
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
         "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+      ),
     )
 
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
-      artifactVersion = DATA_BINDING_VERSION
+      artifactVersion = DATA_BINDING_VERSION,
     )
     val licenseForDependency1 = dependency1.licenseList[0]
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -698,14 +821,14 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val license2ForDependency2 = dependency2.licenseList[1]
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
   }
 
@@ -714,92 +837,122 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val incompleteApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val incompleteApacheLicenseWithSameLink = License.newBuilder().apply {
-      this.licenseName = "The Apache Software License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeGlideLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val incompleteApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val incompleteApacheLicenseWithSameLink =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache Software License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeGlideLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(completeApacheLicense)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-            this.artifactVersion = MOSHI_VERSION
-            this.addLicense(incompleteApacheLicenseWithSameLink)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(completeApacheLicense)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+                  this.artifactVersion = MOSHI_VERSION
+                  this.addLicense(incompleteApacheLicenseWithSameLink)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+        DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
-      artifactVersion = DATA_BINDING_VERSION
+      artifactVersion = DATA_BINDING_VERSION,
     )
     val licenseForDependency1 = dependency1.licenseList[0]
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -812,14 +965,14 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val license2ForDependency2 = dependency2.licenseList[1]
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
     val dependency3 = outputMavenDependencyList.mavenDependencyList[2]
     assertIsDependency(
@@ -840,92 +993,122 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val incompleteApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val incompleteApacheLicenseWithDifferentName = License.newBuilder().apply {
-      this.licenseName = "The Apache Software License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val completeGlideLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val incompleteApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val incompleteApacheLicenseWithDifferentName =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache Software License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val completeGlideLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(completeApacheLicense)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-            this.artifactVersion = MOSHI_VERSION
-            this.addLicense(incompleteApacheLicenseWithDifferentName)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(completeApacheLicense)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(incompleteApacheLicense, completeGlideLicense))
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+                  this.artifactVersion = MOSHI_VERSION
+                  this.addLicense(incompleteApacheLicenseWithDifferentName)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+        DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
-      artifactVersion = DATA_BINDING_VERSION
+      artifactVersion = DATA_BINDING_VERSION,
     )
     val licenseForDependency1 = dependency1.licenseList[0]
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -938,14 +1121,14 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val license2ForDependency2 = dependency2.licenseList[1]
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
     val dependency3 = outputMavenDependencyList.mavenDependencyList[2]
     assertIsDependency(
@@ -967,79 +1150,101 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val completeApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val completeGlideLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val completeApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val completeGlideLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(completeApacheLicense)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(completeApacheLicense, completeGlideLicense))
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_LICENSE
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(completeApacheLicense)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(completeApacheLicense, completeGlideLicense))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+        DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      GenerateMavenDependenciesList(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "scripts/assets/maven_dependencies.textproto",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        GenerateMavenDependenciesList(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "scripts/assets/maven_dependencies.textproto",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
-      artifactVersion = DATA_BINDING_VERSION
+      artifactVersion = DATA_BINDING_VERSION,
     )
     val licenseForDependency1 = dependency1.licenseList[0]
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -1052,14 +1257,14 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val license2ForDependency2 = dependency2.licenseList[1]
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
     val dependency3 = outputMavenDependencyList.mavenDependencyList[2]
     assertIsDependency(
@@ -1081,85 +1286,112 @@ class GenerateMavenDependenciesListTest {
     val textProtoFile = tempFolder.newFile("scripts/assets/maven_dependencies.textproto")
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
 
-    val completeApacheLicense = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val completeApacheLicenseWithDifferentName = License.newBuilder().apply {
-      this.licenseName = "The Apache Software License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val completeGlideLicense = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val completeApacheLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val completeApacheLicenseWithDifferentName =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache Software License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val completeGlideLicense =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(completeApacheLicense, completeGlideLicense))
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-            this.artifactVersion = MOSHI_VERSION
-            this.addLicense(completeApacheLicenseWithDifferentName)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(completeApacheLicense, completeGlideLicense))
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
+                  this.artifactVersion = MOSHI_VERSION
+                  this.addLicense(completeApacheLicenseWithDifferentName)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DEP_WITH_SCRAPABLE_LICENSE,
-      DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
-      DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME
-    )
+    val coordsList =
+      listOf(
+        DEP_WITH_SCRAPABLE_LICENSE,
+        DEP_WITH_SCRAPABLE_AND_EXTRACTED_COPY_LICENSES,
+        DEP_WITH_SAME_SCRAPABLE_LICENSE_BUT_DIFFERENT_NAME,
+      )
     setUpBazelEnvironment(coordsList)
 
     GenerateMavenDependenciesList(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
         "scripts/assets/maven_dependencies.textproto",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+      ),
     )
 
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
 
-    val outputMavenDependencyList = parseTextProto(
-      textProtoFile,
-      MavenDependencyList.getDefaultInstance()
-    )
+    val outputMavenDependencyList =
+      parseTextProto(
+        textProtoFile,
+        MavenDependencyList.getDefaultInstance(),
+      )
 
     val dependency1 = outputMavenDependencyList.mavenDependencyList[0]
     assertIsDependency(
       dependency = dependency1,
       artifactName = DEP_WITH_SCRAPABLE_LICENSE,
-      artifactVersion = DATA_BINDING_VERSION
+      artifactVersion = DATA_BINDING_VERSION,
     )
     val licenseForDependency1 = dependency1.licenseList[0]
     verifyLicenseHasScrapableVerifiedLink(
       license = licenseForDependency1,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val dependency2 = outputMavenDependencyList.mavenDependencyList[1]
     assertIsDependency(
@@ -1172,14 +1404,14 @@ class GenerateMavenDependenciesListTest {
       license = license1ForDependency2,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
     val license2ForDependency2 = dependency2.licenseList[1]
     verifyLicenseHasExtractedCopyVerifiedLink(
       license = license2ForDependency2,
       originalLink = "https://www.opensource.org/licenses/bsd-license",
       licenseName = "Simplified BSD License",
-      verifiedLink = "https://local-copy/bsd-license"
+      verifiedLink = "https://local-copy/bsd-license",
     )
     val dependency3 = outputMavenDependencyList.mavenDependencyList[2]
     assertIsDependency(
@@ -1192,7 +1424,7 @@ class GenerateMavenDependenciesListTest {
       license = licenseForDependency3,
       originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
       licenseName = "The Apache Software License, Version 2.0",
-      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      verifiedLink = "https://www.apache.org/licenses/LICENSE-2.0.txt",
     )
   }
 
@@ -1204,7 +1436,7 @@ class GenerateMavenDependenciesListTest {
   ) {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(
-      License.VerifiedLinkCase.SCRAPABLE_LINK
+      License.VerifiedLinkCase.SCRAPABLE_LINK,
     )
     assertThat(license.scrapableLink.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
@@ -1219,7 +1451,7 @@ class GenerateMavenDependenciesListTest {
   ) {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(
-      License.VerifiedLinkCase.EXTRACTED_COPY_LINK
+      License.VerifiedLinkCase.EXTRACTED_COPY_LINK,
     )
     assertThat(license.extractedCopyLink.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
@@ -1234,7 +1466,7 @@ class GenerateMavenDependenciesListTest {
   ) {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(
-      License.VerifiedLinkCase.DIRECT_LINK_ONLY
+      License.VerifiedLinkCase.DIRECT_LINK_ONLY,
     )
     assertThat(license.directLinkOnly.url).isEqualTo(verifiedLink)
     assertThat(license.originalLink).isEqualTo(originalLink)
@@ -1244,7 +1476,7 @@ class GenerateMavenDependenciesListTest {
   private fun verifyLicenseHasVerifiedLinkNotSet(
     license: License,
     originalLink: String,
-    licenseName: String
+    licenseName: String,
   ) {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
@@ -1255,7 +1487,7 @@ class GenerateMavenDependenciesListTest {
   private fun verifyLicenseHasOriginalLinkInvalid(
     license: License,
     originalLink: String,
-    licenseName: String
+    licenseName: String,
   ) {
     assertThat(license.licenseName).isEqualTo(licenseName)
     assertThat(license.verifiedLinkCase).isEqualTo(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET)
@@ -1274,7 +1506,7 @@ class GenerateMavenDependenciesListTest {
 
   private fun parseTextProto(
     textProtoFile: File,
-    proto: MavenDependencyList
+    proto: MavenDependencyList,
   ): MavenDependencyList {
     val builder = proto.newBuilderForType()
     TextFormat.merge(textProtoFile.readText(), builder)
@@ -1285,9 +1517,10 @@ class GenerateMavenDependenciesListTest {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      "//third_party:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
-    }
+    val thirdPartyPrefixCoordList =
+      coordsList.map { coordinate ->
+        "//third_party:${omitVersionAndReplaceColonsHyphensPeriods(coordinate)}"
+      }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList)
   }
@@ -1297,14 +1530,17 @@ class GenerateMavenDependenciesListTest {
     thirdPartyBuild.appendText(
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
     for (export in exportsList) {
       createThirdPartyAndroidLibrary(thirdPartyBuild, export)
     }
   }
 
-  private fun createThirdPartyAndroidLibrary(thirdPartyBuild: File, artifactName: String) {
+  private fun createThirdPartyAndroidLibrary(
+    thirdPartyBuild: File,
+    artifactName: String,
+  ) {
     thirdPartyBuild.appendText(
       """
       android_library(
@@ -1312,7 +1548,7 @@ class GenerateMavenDependenciesListTest {
           visibility = ["//visibility:public"],
           exports = [artifact("$artifactName")],
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
@@ -1321,9 +1557,7 @@ class GenerateMavenDependenciesListTest {
     return artifactName.substring(0, lastColonIndex).replace('.', '_').replace(':', '_')
   }
 
-  private fun createThirdPartyAndroidBinary(
-    dependenciesList: List<String>
-  ) {
+  private fun createThirdPartyAndroidBinary(dependenciesList: List<String>) {
     tempFolder.newFile("AndroidManifest.xml")
     val build = tempFolder.newFile("BUILD.bazel")
     build.appendText("depsList = [\n")
@@ -1338,7 +1572,7 @@ class GenerateMavenDependenciesListTest {
           manifest = "AndroidManifest.xml",
           deps = depsList
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
@@ -1380,19 +1614,20 @@ class GenerateMavenDependenciesListTest {
           ]
         }
       }
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 
   /** Returns a mock for the [MavenArtifactPropertyFetcher]. */
-  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher {
-    return mock {
+  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher =
+    mock {
       on { scrapeText(eq(DATA_BINDING_POM_URL)) }
         .doReturn(
           """
@@ -1404,7 +1639,7 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(GLIDE_ANNOTATIONS_POM_URL)) }
         .doReturn(
@@ -1422,7 +1657,7 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(FIREBASE_ANALYTICS_POM_URL)) }
         .doReturn(
@@ -1435,7 +1670,7 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(MOSHI_POM_URL)) }
         .doReturn(
@@ -1448,7 +1683,7 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(IO_FABRIC_POM_URL)) }
         .doReturn(
@@ -1461,14 +1696,14 @@ class GenerateMavenDependenciesListTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(PROTO_LITE_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <project>Random Project</project>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { isValidArtifactFileUrl(eq(DATA_BINDING_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(PROTO_LITE_ARTIFACT_URL)) }.thenReturn(true)
@@ -1477,7 +1712,6 @@ class GenerateMavenDependenciesListTest {
       on { isValidArtifactFileUrl(eq(FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(MOSHI_ARTIFACT_URL)) }.thenReturn(true)
     }
-  }
 
   private companion object {
     private const val DEP_WITH_SCRAPABLE_LICENSE = "androidx.databinding:databinding-adapters:3.4.2"

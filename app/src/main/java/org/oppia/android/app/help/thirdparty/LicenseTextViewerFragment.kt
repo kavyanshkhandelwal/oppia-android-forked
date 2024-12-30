@@ -23,15 +23,22 @@ class LicenseTextViewerFragment : InjectableFragment() {
       "LicenseTextViewerFragment.arguments"
 
     /** Returns an instance of [LicenseTextViewerFragment]. */
-    fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
-      val args = LicenseTextViewerFragmentArguments.newBuilder().apply {
-        this.dependencyIndex = dependencyIndex
-        this.licenseIndex = licenseIndex
-      }.build()
+    fun newInstance(
+      dependencyIndex: Int,
+      licenseIndex: Int,
+    ): LicenseTextViewerFragment {
+      val args =
+        LicenseTextViewerFragmentArguments
+          .newBuilder()
+          .apply {
+            this.dependencyIndex = dependencyIndex
+            this.licenseIndex = licenseIndex
+          }.build()
       return LicenseTextViewerFragment().apply {
-        val bundle = Bundle().apply {
-          putProto(LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        val bundle =
+          Bundle().apply {
+            putProto(LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY, args)
+          }
         arguments = bundle
       }
     }
@@ -45,21 +52,22 @@ class LicenseTextViewerFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to LicenseTextViewerFragment" }
-    val args = arguments.getProto(
-      LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY,
-      LicenseTextViewerFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY,
+        LicenseTextViewerFragmentArguments.getDefaultInstance(),
+      )
     val dependencyIndex = args.dependencyIndex
     val licenseIndex = args.licenseIndex
     return licenseTextViewerFragmentPresenter.handleCreateView(
       inflater,
       container,
       dependencyIndex,
-      licenseIndex
+      licenseIndex,
     )
   }
 }

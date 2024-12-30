@@ -38,25 +38,26 @@ class Aapt2ClientTest {
   fun testDumpResources_forNonExistentApk_throwsException() {
     val aapt2Client = createAapt2Client()
 
-    val exception = assertThrows<IllegalStateException>() {
-      aapt2Client.dumpResources("fake_file.apk")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        aapt2Client.dumpResources("fake_file.apk")
+      }
 
     assertThat(exception).hasMessageThat().contains("No such file or directory")
   }
 
-  private fun createAapt2Client(): Aapt2Client {
-    return Aapt2Client(
+  private fun createAapt2Client(): Aapt2Client =
+    Aapt2Client(
       tempFolder.root.absolutePath,
       sdkProperties.buildToolsVersion,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     )
-  }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

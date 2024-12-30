@@ -22,88 +22,87 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
-
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_5_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 5,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_3_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 3,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = true,
       numerator = 1,
-      denominator = 3
+      denominator = 3,
     )
   private val FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = true,
       numerator = 5,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = true,
       numerator = 3,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_123_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 123,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_1_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 1,
       numerator = 2,
-      denominator = 3
+      denominator = 3,
     )
   private val MIXED_NUMBER_VALUE_TEST_0_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 0,
       numerator = 2,
-      denominator = 3
+      denominator = 3,
     )
   private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 123,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 1,
       numerator = 2,
-      denominator = 3
+      denominator = 3,
     )
   private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 0,
       numerator = 2,
-      denominator = 3
+      denominator = 3,
     )
   private val STRING_VALUE_TEST_LOWERCASE =
     InteractionObjectTestBuilder.createString(
-      value = "test"
+      value = "test",
     )
   private val WHOLE_NUMBER_VALUE_TEST_0 = InteractionObjectTestBuilder.createSignedInt(value = 0)
   private val WHOLE_NUMBER_VALUE_TEST_1 = InteractionObjectTestBuilder.createSignedInt(value = 1)
@@ -131,11 +130,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1Over2_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_1_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_1_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -144,11 +144,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer5Over2_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_5_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_5_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -157,11 +158,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer5Over2_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_5_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_5_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -170,11 +172,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer3Over2_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_3_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_3_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -183,11 +186,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer3Over2_input3_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_3_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_3_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -196,11 +200,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1Over2_input1_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_1_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_1_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -209,11 +214,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer123_1Over2_input123_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -222,11 +228,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer0_2Over3_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_0_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_0_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -235,11 +242,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1_2Over3_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -248,11 +256,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1_2Over3_input3_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -261,11 +270,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative123_1Over2_input123_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_123)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -274,11 +284,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative0_2Over3_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_0_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -287,11 +298,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative1Over2_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_NEGATIVE_1_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -300,11 +312,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative5Over2_input0_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -313,11 +326,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative5Over2_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_NEGATIVE_5_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -326,11 +340,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative3Over2_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -339,11 +354,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative3Over2_input3_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = FRACTION_VALUE_TEST_NEGATIVE_3_OVER_2,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -352,11 +368,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative1_2Over3_input1_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_1)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     // Sign matters for integer part comparison.
     assertThat(matches).isFalse()
@@ -366,11 +383,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative1_2Over3_inputNegative1_hasIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_MINUS_1)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -379,11 +397,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative1_2Over3_input2_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_2)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -392,11 +411,12 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswerNegative1_2Over3_input3_hasNotIntegerPartEqual() {
     val inputs = mapOf("x" to WHOLE_NUMBER_VALUE_TEST_3)
 
-    val matches = inputHasIntegerPartEqualToRuleClassifier.matches(
-      answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputHasIntegerPartEqualToRuleClassifier.matches(
+        answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_1_2_OVER_3,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -405,14 +425,15 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1Over2_inputMissing_throwsException() {
     val inputs = mapOf("y" to WHOLE_NUMBER_VALUE_TEST_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputHasIntegerPartEqualToRuleClassifier
-        .matches(
-          answer = FRACTION_VALUE_TEST_1_OVER_2,
-          inputs = inputs,
-          classificationContext = ClassificationContext()
-        )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputHasIntegerPartEqualToRuleClassifier
+          .matches(
+            answer = FRACTION_VALUE_TEST_1_OVER_2,
+            inputs = inputs,
+            classificationContext = ClassificationContext(),
+          )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -423,14 +444,15 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   fun testAnswer1Over2_inputString_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputHasIntegerPartEqualToRuleClassifier
-        .matches(
-          answer = FRACTION_VALUE_TEST_1_OVER_2,
-          inputs = inputs,
-          classificationContext = ClassificationContext()
-        )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputHasIntegerPartEqualToRuleClassifier
+          .matches(
+            answer = FRACTION_VALUE_TEST_1_OVER_2,
+            inputs = inputs,
+            classificationContext = ClassificationContext(),
+          )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -440,7 +462,9 @@ class FractionInputHasIntegerPartEqualToRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputHasIntegerPartEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

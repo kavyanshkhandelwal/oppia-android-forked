@@ -13,16 +13,15 @@ class LicenseItemViewModel(
   val licenseName: String,
   val licenseIndex: Int,
   val dependencyIndex: Int,
-  val isMultipane: Boolean
+  val isMultipane: Boolean,
 ) : ObservableViewModel() {
-
   /** Starts [LicenseTextViewerActivity] upon clicking on an item of the license list. */
   fun clickOnLicenseItem() {
     if (isMultipane) {
       val loadLicenseTextViewerFragmentListener = activity as LoadLicenseTextViewerFragmentListener
       loadLicenseTextViewerFragmentListener.loadLicenseTextViewerFragment(
         dependencyIndex,
-        licenseIndex
+        licenseIndex,
       )
     } else {
       val routeToLicenseTextListener = activity as RouteToLicenseTextListener

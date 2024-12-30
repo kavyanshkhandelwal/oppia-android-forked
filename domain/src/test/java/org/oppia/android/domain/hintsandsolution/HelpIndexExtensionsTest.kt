@@ -16,7 +16,6 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class HelpIndexExtensionsTest {
-
   private companion object {
     private val HINT_0 = createHint(text = "First hint")
     private val HINT_1 = createHint(text = "Second hint")
@@ -39,9 +38,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex0_index0_hintListSize3_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_3)
 
@@ -51,9 +53,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex1_index0_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_3)
 
@@ -63,9 +68,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex1_index1_hintListSize3_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_3)
 
@@ -75,9 +83,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex2_index0_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 2
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 2
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_3)
 
@@ -87,9 +98,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex2_index1_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 2
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 2
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_3)
 
@@ -99,9 +113,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_availableHintIndex2_index2_hintListSize3_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 2
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 2
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 2, HINT_LIST_OF_SIZE_3)
 
@@ -111,9 +128,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_lastRevealedHintIndex0_index0_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_3)
 
@@ -123,9 +143,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_lastRevealedHintIndex0_index1_hintListSize3_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_3)
 
@@ -135,9 +158,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_lastRevealedHintIndex1_index0_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_3)
 
@@ -147,9 +173,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_lastRevealedHintIndex1_index1_hintListSize3_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_3)
 
@@ -159,9 +188,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_showSolution_index0_hintListSize2_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_2)
 
@@ -171,9 +203,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_showSolution_index1_hintListSize2_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_2)
 
@@ -183,9 +218,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_showSolution_index0_hintListSize0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, hintList = listOf())
 
@@ -195,9 +233,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_everythingRevealed_index0_hintListSize2_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, HINT_LIST_OF_SIZE_2)
 
@@ -207,9 +248,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_everythingRevealed_index1_hintListSize2_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 1, HINT_LIST_OF_SIZE_2)
 
@@ -219,9 +263,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsHintRevealed_everythingRevealed_index0_hintListSize0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintIsRevealed = helpIndex.isHintRevealed(hintIndex = 0, hintList = listOf())
 
@@ -249,9 +296,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex0_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -260,9 +310,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex0_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -272,9 +325,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex0_twoHintsList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -285,9 +341,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex1_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -296,9 +355,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex1_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -308,9 +370,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex1_twoHintsList_returnsTwoItemList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -321,9 +386,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_availableHintIndex1_threeHintsList_returnsTwoItemList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
 
@@ -335,9 +403,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex0_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -346,9 +417,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex0_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -358,9 +432,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex0_twoHintsList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -371,9 +448,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex1_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -382,9 +462,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex1_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -394,9 +477,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex1_twoHintsList_returnsTwoItemList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -407,9 +493,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_lastRevealedHintIndex1_threeHintsList_returnsTwoItemList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
 
@@ -421,9 +510,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_showSolution_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -433,9 +525,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_showSolution_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -446,9 +541,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_showSolution_twoHintsList_returnsTwoHintsList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -460,9 +558,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_showSolution_threeHintsList_returnsThreeHintsList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
 
@@ -475,9 +576,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_everythingRevealed_emptyList_returnsEmptyList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = listOf())
 
@@ -487,9 +591,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_everythingRevealed_singletonList_returnsSingletonList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_1)
 
@@ -500,9 +607,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_everythingRevealed_twoHintsList_returnsTwoHintsList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_2)
 
@@ -514,9 +624,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testDropLastUnavailable_everythingRevealed_threeHintsList_returnsThreeHintsList() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val hintList = helpIndex.dropLastUnavailable(hintList = HINT_LIST_OF_SIZE_3)
 
@@ -539,9 +652,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_availableHint0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -551,9 +667,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_availableHint1_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -563,9 +682,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_viewedHint0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -575,9 +697,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_viewedHint1_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -587,9 +712,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_showSolution_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -599,9 +727,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionAvailable_everythingIsRevealed_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val solutionIsAvailable = helpIndex.isSolutionAvailable()
 
@@ -621,9 +752,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_availableHint0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -633,9 +767,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_availableHint1_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      nextAvailableHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -645,9 +782,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_viewedHint0_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 0
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -658,9 +798,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_viewedHint1_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      latestRevealedHintIndex = 1
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -671,9 +814,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_showSolution_returnsFalse() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      showSolution = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -683,9 +829,12 @@ class HelpIndexExtensionsTest {
 
   @Test
   fun testIsSolutionRevealed_everythingIsRevealed_returnsTrue() {
-    val helpIndex = HelpIndex.newBuilder().apply {
-      everythingRevealed = true
-    }.build()
+    val helpIndex =
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build()
 
     val solutionIsRevealed = helpIndex.isSolutionRevealed()
 
@@ -694,10 +843,14 @@ class HelpIndexExtensionsTest {
   }
 }
 
-private fun createHint(text: String): Hint {
-  return Hint.newBuilder().apply {
-    hintContent = SubtitledHtml.newBuilder().apply {
-      html = text
+private fun createHint(text: String): Hint =
+  Hint
+    .newBuilder()
+    .apply {
+      hintContent =
+        SubtitledHtml
+          .newBuilder()
+          .apply {
+            html = text
+          }.build()
     }.build()
-  }.build()
-}

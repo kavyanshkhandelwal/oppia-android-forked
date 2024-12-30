@@ -23,26 +23,30 @@ class PromotedStoryViewModel(
   val entityType: String,
   val promotedStory: PromotedStory,
   translationController: TranslationController,
-  val index: Int
+  val index: Int,
 ) : ObservableViewModel() {
   val storyTitle by lazy {
     translationController.extractString(
-      promotedStory.storyTitle, promotedStory.storyWrittenTranslationContext
+      promotedStory.storyTitle,
+      promotedStory.storyWrittenTranslationContext,
     )
   }
   val topicTitle by lazy {
     translationController.extractString(
-      promotedStory.topicTitle, promotedStory.topicWrittenTranslationContext
+      promotedStory.topicTitle,
+      promotedStory.topicWrittenTranslationContext,
     )
   }
   val nextChapterTitle by lazy {
     translationController.extractString(
-      promotedStory.nextChapterTitle, promotedStory.nextChapterWrittenTranslationContext
+      promotedStory.nextChapterTitle,
+      promotedStory.nextChapterWrittenTranslationContext,
     )
   }
   val classroomTitle by lazy {
     translationController.extractString(
-      promotedStory.classroomTitle, promotedStory.classroomWrittenTranslationContext
+      promotedStory.classroomTitle,
+      promotedStory.classroomWrittenTranslationContext,
     )
   }
 
@@ -66,25 +70,25 @@ class PromotedStoryViewModel(
       ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       promotedStory.classroomId,
       promotedStory.topicId,
-      promotedStory.storyId
+      promotedStory.storyId,
     )
   }
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
-  override fun equals(other: Any?): Boolean {
-    return other is PromotedStoryViewModel &&
+  override fun equals(other: Any?): Boolean =
+    other is PromotedStoryViewModel &&
       other.internalProfileId == this.internalProfileId &&
       other.totalStoryCount == this.totalStoryCount &&
       other.entityType == this.entityType &&
       other.promotedStory == this.promotedStory
-  }
 
-  override fun hashCode() = Objects.hash(
-    internalProfileId,
-    totalStoryCount,
-    entityType,
-    promotedStory
-  )
+  override fun hashCode() =
+    Objects.hash(
+      internalProfileId,
+      totalStoryCount,
+      entityType,
+      promotedStory,
+    )
 }

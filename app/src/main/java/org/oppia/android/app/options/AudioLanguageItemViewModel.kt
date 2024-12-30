@@ -20,7 +20,7 @@ class AudioLanguageItemViewModel(
   val language: AudioLanguage,
   val languageDisplayName: String,
   private val currentSelectedLanguage: LiveData<AudioLanguage>,
-  val audioLanguageRadioButtonListener: AudioLanguageRadioButtonListener
+  val audioLanguageRadioButtonListener: AudioLanguageRadioButtonListener,
 ) : ObservableViewModel() {
   /**
    * Indicates whether the language corresponding to this view model is _currently_ selected in the

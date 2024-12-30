@@ -31,10 +31,9 @@ private const val ARBITRARY_UID = 0
 @Config(
   manifest = Config.NONE,
   sdk = [Build.VERSION_CODES.P],
-  shadows = [OppiaShadowTrafficStats::class]
+  shadows = [OppiaShadowTrafficStats::class],
 )
 class OppiaShadowTrafficStatsTest {
-
   @Inject
   lateinit var context: Context
 
@@ -74,7 +73,8 @@ class OppiaShadowTrafficStatsTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaShadowTrafficStatsTest_TestApplicationComponent.builder()
+    DaggerOppiaShadowTrafficStatsTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -85,17 +85,15 @@ class OppiaShadowTrafficStatsTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class
-    ]
+      TestModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

@@ -107,20 +107,25 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MarkChaptersCompletedActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MarkChaptersCompletedActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkChaptersCompletedActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      MarkChaptersCompletedActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val internalProfileId = 0
@@ -161,10 +166,10 @@ class MarkChaptersCompletedActivityTest {
   @Test
   fun testMarkChaptersCompletedActivity_markChaptersCompletedFragmentIsDisplayed() {
     launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
+      createMarkChaptersCompletedActivityIntent(internalProfileId),
     ).use {
       onView(withId(R.id.mark_chapters_completed_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -172,11 +177,11 @@ class MarkChaptersCompletedActivityTest {
   @Test
   fun testMarkChaptersCompletedActivity_configChange_markChaptersCompletedFragmentIsDisplayed() {
     launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId)
+      createMarkChaptersCompletedActivityIntent(internalProfileId),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_chapters_completed_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -184,7 +189,7 @@ class MarkChaptersCompletedActivityTest {
   @Test
   fun testActivity_showConfirmationTrueInIntent_selectChapters_markCompleted_confirmationShown() {
     launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = true)
+      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = true),
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -202,7 +207,7 @@ class MarkChaptersCompletedActivityTest {
   @Test
   fun testActivity_showConfirmationFalseInIntent_selectChapters_markCompleted_confNotShown() {
     launch<MarkChaptersCompletedActivity>(
-      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = false)
+      createMarkChaptersCompletedActivityIntent(internalProfileId, showConfirmationNotice = false),
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -219,12 +224,13 @@ class MarkChaptersCompletedActivityTest {
 
   private fun createMarkChaptersCompletedActivityIntent(
     internalProfileId: Int,
-    showConfirmationNotice: Boolean = false
-  ): Intent {
-    return MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-      context, internalProfileId, showConfirmationNotice
+    showConfirmationNotice: Boolean = false,
+  ): Intent =
+    MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
+      context,
+      internalProfileId,
+      showConfirmationNotice,
     )
-  }
 
   private fun clickOnRecyclerViewItemAtPosition(itemPosition: Int) {
     scrollToPosition(position = itemPosition)
@@ -232,14 +238,14 @@ class MarkChaptersCompletedActivityTest {
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
-      )
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+      ),
     ).perform(click())
   }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.mark_chapters_completed_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(position)
+      scrollToPosition<ViewHolder>(position),
     )
   }
 
@@ -272,8 +278,8 @@ class MarkChaptersCompletedActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -284,9 +290,13 @@ class MarkChaptersCompletedActivityTest {
     fun inject(markChaptersCompletedActivityTest: MarkChaptersCompletedActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkChaptersCompletedActivityTest_TestApplicationComponent.builder()
+      DaggerMarkChaptersCompletedActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -295,9 +305,12 @@ class MarkChaptersCompletedActivityTest {
       component.inject(markChaptersCompletedActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

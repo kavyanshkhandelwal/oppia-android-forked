@@ -24,9 +24,10 @@ class ExplorationManagerFragment : InjectableFragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val profileId = checkNotNull(arguments) {
-      "Expected arguments to be provided for fragment."
-    }.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+    val profileId =
+      checkNotNull(arguments) {
+        "Expected arguments to be provided for fragment."
+      }.getProto(PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
     explorationManagerFragmentPresenter.handleCreate(profileId)
   }
 
@@ -37,12 +38,12 @@ class ExplorationManagerFragment : InjectableFragment() {
      * Returns a new instance of [ExplorationManagerFragment] corresponding to the specified
      * [profileId].
      */
-    fun createNewInstance(profileId: ProfileId): ExplorationManagerFragment {
-      return ExplorationManagerFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
-        }
+    fun createNewInstance(profileId: ProfileId): ExplorationManagerFragment =
+      ExplorationManagerFragment().apply {
+        arguments =
+          Bundle().apply {
+            putProto(PROFILE_ID_ARGUMENT_KEY, profileId)
+          }
       }
-    }
   }
 }

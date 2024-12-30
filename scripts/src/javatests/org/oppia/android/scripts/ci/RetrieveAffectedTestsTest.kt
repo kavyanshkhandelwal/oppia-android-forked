@@ -43,7 +43,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript() }
+    val exception = assertThrows<SecurityException> { runScript() }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -53,7 +53,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1") }
+    val exception = assertThrows<SecurityException> { runScript("arg1") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -63,7 +63,7 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2") }
+    val exception = assertThrows<SecurityException> { runScript("arg1", "arg2") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -73,19 +73,22 @@ class RetrieveAffectedTestsTest {
 
   @Test
   fun testUtility_invalidBase64_throwsException() {
-    assertThrows<IllegalArgumentException>() { runScript("badbase64", "file1", "file2") }
+    assertThrows<IllegalArgumentException> { runScript("badbase64", "file1", "file2") }
   }
 
   @Test
   fun testUtility_validBase64_oneTest_writesCacheNameFile() {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      AffectedTestsBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addAffectedTestTargets("//example/to/a/test:DemonstrationTest")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        AffectedTestsBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addAffectedTestTargets("//example/to/a/test:DemonstrationTest")
+          }.build(),
+      )
 
     runScript(base64String, cacheNameFilePath, testTargetFilePath)
 
@@ -96,17 +99,20 @@ class RetrieveAffectedTestsTest {
   fun testUtility_validBase64_oneTest_writesTestTargetFileWithCorrectTarget() {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      AffectedTestsBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addAffectedTestTargets("//example/to/a/test:DemonstrationTest")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        AffectedTestsBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addAffectedTestTargets("//example/to/a/test:DemonstrationTest")
+          }.build(),
+      )
 
     runScript(base64String, cacheNameFilePath, testTargetFilePath)
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
-      "//example/to/a/test:DemonstrationTest"
+      "//example/to/a/test:DemonstrationTest",
     )
   }
 
@@ -114,18 +120,21 @@ class RetrieveAffectedTestsTest {
   fun testUtility_validBase64_multipleTests_writesTestTargetFileWithCorrectTargets() {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      AffectedTestsBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addAffectedTestTargets("//example/to/a/test:FirstDemonstrationTest")
-        addAffectedTestTargets("//example/to/b/test:SecondDemonstrationTest")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        AffectedTestsBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addAffectedTestTargets("//example/to/a/test:FirstDemonstrationTest")
+            addAffectedTestTargets("//example/to/b/test:SecondDemonstrationTest")
+          }.build(),
+      )
 
     runScript(base64String, cacheNameFilePath, testTargetFilePath)
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
-      "//example/to/a/test:FirstDemonstrationTest //example/to/b/test:SecondDemonstrationTest"
+      "//example/to/a/test:FirstDemonstrationTest //example/to/b/test:SecondDemonstrationTest",
     )
   }
 
@@ -133,13 +142,11 @@ class RetrieveAffectedTestsTest {
     main(args.toList().toTypedArray())
   }
 
-  private fun computeBase64String(affectedTestsBucket: AffectedTestsBucket): String =
-    affectedTestsBucket.toCompressedBase64()
+  private fun computeBase64String(affectedTestsBucket: AffectedTestsBucket): String = affectedTestsBucket.toCompressedBase64()
 
   /**
    * Returns the absolute file path of a new file that can be written under this [TemporaryFolder]
    * (but does not create the file).
    */
-  private fun TemporaryFolder.getNewTempFilePath(name: String) =
-    File(tempFolder.root, name).absolutePath
+  private fun TemporaryFolder.getNewTempFilePath(name: String) = File(tempFolder.root, name).absolutePath
 }

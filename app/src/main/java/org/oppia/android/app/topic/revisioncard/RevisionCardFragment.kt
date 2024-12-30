@@ -16,7 +16,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
-/* Fragment that displays revision card */
+// Fragment that displays revision card
 class RevisionCardFragment : InjectableDialogFragment() {
   companion object {
     /** Arguments key for RevisionCardFragment. */
@@ -31,22 +31,25 @@ class RevisionCardFragment : InjectableDialogFragment() {
       subtopicId: Int,
       profileId: ProfileId,
       subtopicListSize: Int,
-      readingTextSize: ReadingTextSize
-    ):
-      RevisionCardFragment {
-        val args = RevisionCardFragmentArguments.newBuilder().apply {
-          this.topicId = topicId
-          this.subtopicId = subtopicId
-          this.subtopicListSize = subtopicListSize
-          this.readingTextSize = readingTextSize
-        }.build()
-        return RevisionCardFragment().apply {
-          arguments = Bundle().apply {
+      readingTextSize: ReadingTextSize,
+    ): RevisionCardFragment {
+      val args =
+        RevisionCardFragmentArguments
+          .newBuilder()
+          .apply {
+            this.topicId = topicId
+            this.subtopicId = subtopicId
+            this.subtopicListSize = subtopicListSize
+            this.readingTextSize = readingTextSize
+          }.build()
+      return RevisionCardFragment().apply {
+        arguments =
+          Bundle().apply {
             putProto(REVISION_CARD_FRAGMENT_ARGUMENTS_KEY, args)
             decorateWithUserProfileId(profileId)
           }
-        }
       }
+    }
   }
 
   @Inject
@@ -61,16 +64,18 @@ class RevisionCardFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to StoryFragment"
-    }
-    val args = arguments.getProto(
-      REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
-      RevisionCardFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to StoryFragment"
+      }
+    val args =
+      arguments.getProto(
+        REVISION_CARD_FRAGMENT_ARGUMENTS_KEY,
+        RevisionCardFragmentArguments.getDefaultInstance(),
+      )
 
     val topicId =
       checkNotNull(args?.topicId) {
@@ -80,7 +85,12 @@ class RevisionCardFragment : InjectableDialogFragment() {
     val profileId = arguments.extractCurrentUserProfileId()
     val subtopicListSize = args?.subtopicListSize ?: -1
     return revisionCardFragmentPresenter.handleCreateView(
-      inflater, container, topicId, subtopicId, profileId, subtopicListSize
+      inflater,
+      container,
+      topicId,
+      subtopicId,
+      profileId,
+      subtopicListSize,
     )
   }
 

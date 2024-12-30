@@ -75,6 +75,6 @@ interface SyncStatusManager {
      * Indicates an unresolvable error was encountered during analytics upload, and the logs may be
      * attempted to be re-uploaded at a later time.
      */
-    UPLOAD_ERROR
+    UPLOAD_ERROR,
   }
 }

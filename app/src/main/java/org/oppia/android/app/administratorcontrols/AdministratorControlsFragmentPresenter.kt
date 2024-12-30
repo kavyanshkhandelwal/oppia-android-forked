@@ -29,56 +29,58 @@ import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsFragment]. */
 @FragmentScope
-class AdministratorControlsFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) {
-  private lateinit var binding: AdministratorControlsFragmentBinding
-  private lateinit var linearLayoutManager: LinearLayoutManager
-  private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
-
+class AdministratorControlsFragmentPresenter
   @Inject
-  lateinit var administratorControlsViewModel: AdministratorControlsViewModel
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: AdministratorControlsFragmentBinding
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private var internalProfileId: Int = -1
+    private lateinit var profileId: ProfileId
 
-  /** Initializes and creates the views for the [AdministratorControlsFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    isMultipane: Boolean
-  ): View? {
-    binding =
-      AdministratorControlsFragmentBinding
-        .inflate(
-          inflater,
-          container,
-          /* attachToRoot= */ false
-        )
+    @Inject
+    lateinit var administratorControlsViewModel: AdministratorControlsViewModel
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    administratorControlsViewModel.setProfileId(profileId)
+    /** Initializes and creates the views for the [AdministratorControlsFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      isMultipane: Boolean,
+    ): View? {
+      binding =
+        AdministratorControlsFragmentBinding
+          .inflate(
+            inflater,
+            container,
+            // attachToRoot=
+            false,
+          )
 
-    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+      internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      administratorControlsViewModel.setProfileId(profileId)
 
-    binding.administratorControlsList.apply {
-      layoutManager = linearLayoutManager
-      adapter = createRecyclerViewAdapter(isMultipane)
+      linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+
+      binding.administratorControlsList.apply {
+        layoutManager = linearLayoutManager
+        adapter = createRecyclerViewAdapter(isMultipane)
+      }
+
+      binding.apply {
+        this.viewModel = administratorControlsViewModel
+        this.lifecycleOwner = fragment
+      }
+
+      return binding.root
     }
 
-    binding.apply {
-      this.viewModel = administratorControlsViewModel
-      this.lifecycleOwner = fragment
-    }
-
-    return binding.root
-  }
-
-  /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
-  private fun createRecyclerViewAdapter(isMultipane: Boolean):
-    BindableAdapter<AdministratorControlsItemViewModel> {
-      return multiTypeBuilderFactory
+    /** Returns the recycler view adapter for the controls panel in  administrator controls fragment. */
+    private fun createRecyclerViewAdapter(isMultipane: Boolean): BindableAdapter<AdministratorControlsItemViewModel> =
+      multiTypeBuilderFactory
         .create<AdministratorControlsItemViewModel, ViewType> { viewModel ->
           viewModel.isMultipane.set(isMultipane)
           when (viewModel) {
@@ -108,105 +110,96 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
             }
             else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
           }
-        }
-        .registerViewDataBinder(
+        }.registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_GENERAL,
           inflateDataBinding = AdministratorControlsGeneralViewBinding::inflate,
           setViewModel = AdministratorControlsGeneralViewBinding::setViewModel,
-          transformViewModel = { it as AdministratorControlsGeneralViewModel }
-        )
-        .registerViewDataBinder(
+          transformViewModel = { it as AdministratorControlsGeneralViewModel },
+        ).registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_PROFILE,
           inflateDataBinding = AdministratorControlsProfileViewBinding::inflate,
           setViewModel = this::bindProfileList,
-          transformViewModel = { it as AdministratorControlsProfileViewModel }
-        )
-        .registerViewDataBinder(
+          transformViewModel = { it as AdministratorControlsProfileViewModel },
+        ).registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_LEARNER_ANALYTICS,
           inflateDataBinding = AdministratorControlsLearnerAnalyticsViewBinding::inflate,
           setViewModel = this::bindLearnerAnalytics,
-          transformViewModel = { it as AdministratorControlsProfileAndDeviceIdViewModel }
-        )
-        .registerViewDataBinder(
+          transformViewModel = { it as AdministratorControlsProfileAndDeviceIdViewModel },
+        ).registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_DOWNLOAD_PERMISSIONS,
           inflateDataBinding = AdministratorControlsDownloadPermissionsViewBinding::inflate,
           setViewModel = AdministratorControlsDownloadPermissionsViewBinding::setViewModel,
-          transformViewModel = { it as AdministratorControlsDownloadPermissionsViewModel }
-        )
-        .registerViewDataBinder(
+          transformViewModel = { it as AdministratorControlsDownloadPermissionsViewModel },
+        ).registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_APP_INFORMATION,
           inflateDataBinding = AdministratorControlsAppInformationViewBinding::inflate,
           setViewModel = this::bindAppVersion,
-          transformViewModel = { it as AdministratorControlsAppInformationViewModel }
-        )
-        .registerViewDataBinder(
+          transformViewModel = { it as AdministratorControlsAppInformationViewModel },
+        ).registerViewDataBinder(
           viewType = ViewType.VIEW_TYPE_ACCOUNT_ACTIONS,
           inflateDataBinding = AdministratorControlsAccountActionsViewBinding::inflate,
           setViewModel = AdministratorControlsAccountActionsViewBinding::setViewModel,
-          transformViewModel = { it as AdministratorControlsAccountActionsViewModel }
-        )
-        .build()
+          transformViewModel = { it as AdministratorControlsAccountActionsViewModel },
+        ).build()
+
+    /** Binds the profile list to the view. */
+    private fun bindProfileList(
+      binding: AdministratorControlsProfileViewBinding,
+      model: AdministratorControlsProfileViewModel,
+    ) {
+      binding.commonViewModel = administratorControlsViewModel
+      binding.viewModel = model
     }
 
-  /** Binds the profile list to the view. */
-  private fun bindProfileList(
-    binding: AdministratorControlsProfileViewBinding,
-    model: AdministratorControlsProfileViewModel
-  ) {
-    binding.commonViewModel = administratorControlsViewModel
-    binding.viewModel = model
-  }
+    /** Binds the app version to the view. */
+    private fun bindAppVersion(
+      binding: AdministratorControlsAppInformationViewBinding,
+      model: AdministratorControlsAppInformationViewModel,
+    ) {
+      binding.commonViewModel = administratorControlsViewModel
+      binding.viewModel = model
+    }
 
-  /** Binds the app version to the view. */
-  private fun bindAppVersion(
-    binding: AdministratorControlsAppInformationViewBinding,
-    model: AdministratorControlsAppInformationViewModel
-  ) {
-    binding.commonViewModel = administratorControlsViewModel
-    binding.viewModel = model
-  }
+    private fun bindLearnerAnalytics(
+      binding: AdministratorControlsLearnerAnalyticsViewBinding,
+      model: AdministratorControlsProfileAndDeviceIdViewModel,
+    ) {
+      binding.commonViewModel = administratorControlsViewModel
+      binding.viewModel = model
+    }
 
-  private fun bindLearnerAnalytics(
-    binding: AdministratorControlsLearnerAnalyticsViewBinding,
-    model: AdministratorControlsProfileAndDeviceIdViewModel
-  ) {
-    binding.commonViewModel = administratorControlsViewModel
-    binding.viewModel = model
-  }
+    /** Sets the selected fragment Argument as the selected fragment in the view model. */
+    fun setSelectedFragment(selectedFragment: String) {
+      administratorControlsViewModel.selectedFragmentIndex.set(
+        getSelectedFragmentIndex(selectedFragment),
+      )
+    }
 
-  /** Sets the selected fragment Argument as the selected fragment in the view model. */
-  fun setSelectedFragment(selectedFragment: String) {
-    administratorControlsViewModel.selectedFragmentIndex.set(
-      getSelectedFragmentIndex(selectedFragment)
-    )
-  }
+    private fun getSelectedFragmentIndex(selectedFragment: String): Int =
+      when (selectedFragment) {
+        PROFILE_LIST_FRAGMENT -> 1
+        PROFILE_AND_DEVICE_ID_FRAGMENT -> 2
+        APP_VERSION_FRAGMENT -> 4
+        else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
+      }
 
-  private fun getSelectedFragmentIndex(selectedFragment: String): Int {
-    return when (selectedFragment) {
-      PROFILE_LIST_FRAGMENT -> 1
-      PROFILE_AND_DEVICE_ID_FRAGMENT -> 2
-      APP_VERSION_FRAGMENT -> 4
-      else -> throw InvalidParameterException("Not a valid fragment in getSelectedFragmentIndex.")
+    private enum class ViewType {
+      /** Represents [View] for the general section. */
+      VIEW_TYPE_GENERAL,
+
+      /** Represents [View] for the profile section. */
+      VIEW_TYPE_PROFILE,
+
+      /** Represents [View] for the download permissions section. */
+      VIEW_TYPE_DOWNLOAD_PERMISSIONS,
+
+      /** Represents [View] for the app information section. */
+      VIEW_TYPE_APP_INFORMATION,
+
+      /** Represents [View] for the account actions section. */
+      VIEW_TYPE_ACCOUNT_ACTIONS,
+
+      /** Represents [View] for the learner analytics section. */
+      VIEW_TYPE_LEARNER_ANALYTICS,
     }
   }
-
-  private enum class ViewType {
-    /** Represents [View] for the general section. */
-    VIEW_TYPE_GENERAL,
-
-    /** Represents [View] for the profile section. */
-    VIEW_TYPE_PROFILE,
-
-    /** Represents [View] for the download permissions section. */
-    VIEW_TYPE_DOWNLOAD_PERMISSIONS,
-
-    /** Represents [View] for the app information section. */
-    VIEW_TYPE_APP_INFORMATION,
-
-    /** Represents [View] for the account actions section. */
-    VIEW_TYPE_ACCOUNT_ACTIONS,
-
-    /** Represents [View] for the learner analytics section. */
-    VIEW_TYPE_LEARNER_ANALYTICS
-  }
-}

@@ -33,162 +33,176 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
-class AudioLanguageFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
-  private val profileManagementController: ProfileManagementController,
-  private val translationController: TranslationController,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  private val oppiaLogger: OppiaLogger
-) {
-  private lateinit var binding: AudioLanguageSelectionFragmentBinding
-  private lateinit var selectedLanguage: OppiaLanguage
-  private lateinit var supportedLanguages: List<OppiaLanguage>
+class AudioLanguageFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
+    private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
+    private val profileManagementController: ProfileManagementController,
+    private val translationController: TranslationController,
+    @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+    private val oppiaLogger: OppiaLogger,
+  ) {
+    private lateinit var binding: AudioLanguageSelectionFragmentBinding
+    private lateinit var selectedLanguage: OppiaLanguage
+    private lateinit var supportedLanguages: List<OppiaLanguage>
 
-  /**
-   * Returns a newly inflated view to render the fragment with an evaluated audio language as the
-   * initial selected language, based on current locale.
-   */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId,
-    outState: Bundle?
-  ): View {
-    // Hide toolbar as it's not needed in this layout. The toolbar is created by a shared activity
-    // and is required in OptionsFragment.
-    activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
+    /**
+     * Returns a newly inflated view to render the fragment with an evaluated audio language as the
+     * initial selected language, based on current locale.
+     */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileId: ProfileId,
+      outState: Bundle?,
+    ): View {
+      // Hide toolbar as it's not needed in this layout. The toolbar is created by a shared activity
+      // and is required in OptionsFragment.
+      activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
 
-    binding = AudioLanguageSelectionFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+      binding =
+        AudioLanguageSelectionFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    val savedSelectedLanguage = outState?.getProto(
-      FRAGMENT_SAVED_STATE_KEY,
-      AudioLanguageFragmentStateBundle.getDefaultInstance()
-    )?.selectedLanguage
+      val savedSelectedLanguage =
+        outState
+          ?.getProto(
+            FRAGMENT_SAVED_STATE_KEY,
+            AudioLanguageFragmentStateBundle.getDefaultInstance(),
+          )?.selectedLanguage
 
-    binding.apply {
-      lifecycleOwner = fragment
-      viewModel = audioLanguageSelectionViewModel
+      binding.apply {
+        lifecycleOwner = fragment
+        viewModel = audioLanguageSelectionViewModel
+      }
+
+      audioLanguageSelectionViewModel.updateProfileId(profileId)
+
+      savedSelectedLanguage?.let {
+        if (it != OppiaLanguage.LANGUAGE_UNSPECIFIED) {
+          setSelectedLanguage(it)
+        } else {
+          observePreselectedLanguage()
+        }
+      } ?: observePreselectedLanguage()
+
+      binding.audioLanguageText.text =
+        appLanguageResourceHandler.getStringInLocaleWithWrapping(
+          R.string.audio_language_fragment_text,
+          appLanguageResourceHandler.getStringInLocale(R.string.app_name),
+        )
+
+      binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
+
+      audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
+        fragment,
+        { languages ->
+          supportedLanguages = languages
+          val adapter =
+            ArrayAdapter(
+              fragment.requireContext(),
+              R.layout.onboarding_language_dropdown_item,
+              R.id.onboarding_language_text_view,
+              languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) },
+            )
+          binding.audioLanguageDropdownList.setAdapter(adapter)
+        },
+      )
+
+      binding.audioLanguageDropdownList.apply {
+        setRawInputType(EditorInfo.TYPE_NULL)
+
+        onItemClickListener =
+          AdapterView.OnItemClickListener { _, _, position, _ ->
+            val selectedItem = adapter.getItem(position) as? String
+            selectedItem?.let {
+              selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
+                appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
+              }[it] ?: OppiaLanguage.ENGLISH
+            }
+          }
+      }
+
+      binding.onboardingNavigationContinue.setOnClickListener {
+        updateSelectedAudioLanguage(selectedLanguage, profileId).also {
+          logInToProfile(profileId)
+        }
+      }
+
+      return binding.root
     }
 
-    audioLanguageSelectionViewModel.updateProfileId(profileId)
+    private fun observePreselectedLanguage() {
+      audioLanguageSelectionViewModel.languagePreselectionLiveData.observe(
+        fragment,
+        { selectedLanguage -> setSelectedLanguage(selectedLanguage) },
+      )
+    }
 
-    savedSelectedLanguage?.let {
-      if (it != OppiaLanguage.LANGUAGE_UNSPECIFIED) {
-        setSelectedLanguage(it)
-      } else {
-        observePreselectedLanguage()
-      }
-    } ?: observePreselectedLanguage()
+    private fun setSelectedLanguage(selectedLanguage: OppiaLanguage) {
+      this.selectedLanguage = selectedLanguage
+      audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
+    }
 
-    binding.audioLanguageText.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
-      R.string.audio_language_fragment_text,
-      appLanguageResourceHandler.getStringInLocale(R.string.app_name)
-    )
-
-    binding.onboardingNavigationBack.setOnClickListener { activity.finish() }
-
-    audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
-      fragment,
-      { languages ->
-        supportedLanguages = languages
-        val adapter = ArrayAdapter(
-          fragment.requireContext(),
-          R.layout.onboarding_language_dropdown_item,
-          R.id.onboarding_language_text_view,
-          languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-        )
-        binding.audioLanguageDropdownList.setAdapter(adapter)
-      }
-    )
-
-    binding.audioLanguageDropdownList.apply {
-      setRawInputType(EditorInfo.TYPE_NULL)
-
-      onItemClickListener =
-        AdapterView.OnItemClickListener { _, _, position, _ ->
-          val selectedItem = adapter.getItem(position) as? String
-          selectedItem?.let {
-            selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
-              appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
-            }[it] ?: OppiaLanguage.ENGLISH
+    private fun updateSelectedAudioLanguage(
+      selectedLanguage: OppiaLanguage,
+      profileId: ProfileId,
+    ) {
+      val audioLanguageSelection =
+        AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
+      translationController
+        .updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
+        .toLiveData()
+        .observe(fragment) {
+          when (it) {
+            is AsyncResult.Failure ->
+              oppiaLogger.e(
+                "AudioLanguageFragment",
+                "Failed to set the selected language.",
+                it.error,
+              )
+            else -> {} // Do nothing.
           }
         }
     }
 
-    binding.onboardingNavigationContinue.setOnClickListener {
-      updateSelectedAudioLanguage(selectedLanguage, profileId).also {
-        logInToProfile(profileId)
-      }
+    private fun logInToProfile(profileId: ProfileId) {
+      profileManagementController.loginToProfile(profileId).toLiveData().observe(
+        fragment,
+        { result ->
+          if (result is AsyncResult.Success) {
+            navigateToHomeScreen(profileId)
+          }
+        },
+      )
     }
 
-    return binding.root
-  }
-
-  private fun observePreselectedLanguage() {
-    audioLanguageSelectionViewModel.languagePreselectionLiveData.observe(
-      fragment,
-      { selectedLanguage -> setSelectedLanguage(selectedLanguage) }
-    )
-  }
-
-  private fun setSelectedLanguage(selectedLanguage: OppiaLanguage) {
-    this.selectedLanguage = selectedLanguage
-    audioLanguageSelectionViewModel.selectedAudioLanguage.set(selectedLanguage)
-  }
-
-  private fun updateSelectedAudioLanguage(selectedLanguage: OppiaLanguage, profileId: ProfileId) {
-    val audioLanguageSelection =
-      AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
-      .toLiveData().observe(fragment) {
-        when (it) {
-          is AsyncResult.Failure ->
-            oppiaLogger.e(
-              "AudioLanguageFragment",
-              "Failed to set the selected language.",
-              it.error
-            )
-          else -> {} // Do nothing.
+    private fun navigateToHomeScreen(profileId: ProfileId) {
+      val intent =
+        if (enableMultipleClassrooms.value) {
+          ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
+        } else {
+          HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
         }
-      }
-  }
-
-  private fun logInToProfile(profileId: ProfileId) {
-    profileManagementController.loginToProfile(profileId).toLiveData().observe(
-      fragment,
-      { result ->
-        if (result is AsyncResult.Success) {
-          navigateToHomeScreen(profileId)
-        }
-      }
-    )
-  }
-
-  private fun navigateToHomeScreen(profileId: ProfileId) {
-    val intent = if (enableMultipleClassrooms.value) {
-      ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
-    } else {
-      HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
+      fragment.startActivity(intent)
+      // Finish this activity as well as all activities immediately below it in the current
+      // task so that the user cannot navigate back to the onboarding flow by pressing the
+      // back button once onboarding is complete.
+      fragment.activity?.finishAffinity()
     }
-    fragment.startActivity(intent)
-    // Finish this activity as well as all activities immediately below it in the current
-    // task so that the user cannot navigate back to the onboarding flow by pressing the
-    // back button once onboarding is complete.
-    fragment.activity?.finishAffinity()
-  }
 
-  /** Save the current dropdown selection to be retrieved on configuration change. */
-  fun handleSavedState(outState: Bundle) {
-    outState.putProto(
-      FRAGMENT_SAVED_STATE_KEY,
-      AudioLanguageFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    )
+    /** Save the current dropdown selection to be retrieved on configuration change. */
+    fun handleSavedState(outState: Bundle) {
+      outState.putProto(
+        FRAGMENT_SAVED_STATE_KEY,
+        AudioLanguageFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build(),
+      )
+    }
   }
-}

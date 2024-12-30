@@ -115,7 +115,8 @@ class ContentLocaleImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerContentLocaleImplTest_TestApplicationComponent.builder()
+    DaggerContentLocaleImplTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -126,17 +127,15 @@ class ContentLocaleImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class
-    ]
+      TestModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -151,24 +150,42 @@ class ContentLocaleImplTest {
   }
 
   private companion object {
-    private val LOCALE_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.HINGLISH
-        fallbackMacroLanguage = OppiaLanguage.ENGLISH
-        minAndroidSdkVersion = 1
-        contentStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          macaronicId = LanguageSupportDefinition.MacaronicLanguageId.newBuilder().apply {
-            combinedLanguageCode = "hi-en"
-          }.build()
+    private val LOCALE_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.HINGLISH
+                fallbackMacroLanguage = OppiaLanguage.ENGLISH
+                minAndroidSdkVersion = 1
+                contentStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      macaronicId =
+                        LanguageSupportDefinition.MacaronicLanguageId
+                          .newBuilder()
+                          .apply {
+                            combinedLanguageCode = "hi-en"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.INDIA
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "IN"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.INDIA
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "IN"
-        }.build()
-      }.build()
-    }.build()
   }
 }

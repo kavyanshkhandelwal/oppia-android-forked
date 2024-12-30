@@ -48,14 +48,19 @@ class FilterPerLanguageResourcesTest {
   private val COLOR_RESOURCE_0_EN_PT = ColorResource(mapOf("" to "0xDEF", "pt-BR" to "0xABC"))
   private val RESOURCE_TABLE_EN_PT_SW_PCM =
     createResourceTable(
-      STR_RESOURCE_0_EN, STR_RESOURCE_1_EN_PT, STR_RESOURCE_2_EN_SW_PCM, COLOR_RESOURCE_0_EN_PT
+      STR_RESOURCE_0_EN,
+      STR_RESOURCE_1_EN_PT,
+      STR_RESOURCE_2_EN_SW_PCM,
+      COLOR_RESOURCE_0_EN_PT,
     )
 
   private val ENGLISH =
     createLanguageSupportDefinition(language = OppiaLanguage.ENGLISH, languageCode = "en")
   private val BRAZILIAN_PORTUGUESE =
     createLanguageSupportDefinition(
-      language = OppiaLanguage.BRAZILIAN_PORTUGUESE, languageCode = "pt", regionCode = "br"
+      language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
+      languageCode = "pt",
+      regionCode = "br",
     )
   private val SWAHILI =
     createLanguageSupportDefinition(language = OppiaLanguage.SWAHILI, languageCode = "sw")
@@ -86,25 +91,28 @@ class FilterPerLanguageResourcesTest {
 
   @Test
   fun testUtility_noArgs_failsWithUsageString() {
-    val error = assertThrows<IllegalArgumentException>() { runScript() }
+    val error = assertThrows<IllegalArgumentException> { runScript() }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_oneArg_failsWithUsageString() {
-    val error = assertThrows<IllegalArgumentException>() { runScript("first_file.zip") }
+    val error = assertThrows<IllegalArgumentException> { runScript("first_file.zip") }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
 
   @Test
   fun testUtility_threeArgs_failsWithUsageString() {
-    val error = assertThrows<IllegalArgumentException>() {
-      runScript(
-        tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"), "extra_param"
-      )
-    }
+    val error =
+      assertThrows<IllegalArgumentException> {
+        runScript(
+          tempFolder.getFilePath("input.zip"),
+          tempFolder.getFilePath("output.zip"),
+          "extra_param",
+        )
+      }
 
     assertThat(error).hasMessageThat().contains(USAGE_STRING)
   }
@@ -114,9 +122,10 @@ class FilterPerLanguageResourcesTest {
     // Create an empty zip file.
     ZipOutputStream(File(tempFolder.root, "input.zip").outputStream()).close()
 
-    val error = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
+      }
 
     assertThat(error).hasMessageThat().contains("Expected resources.pb in input zip file")
   }
@@ -129,9 +138,10 @@ class FilterPerLanguageResourcesTest {
       ResourceTable.getDefaultInstance().writeTo(outputStream)
     }
 
-    val error = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
+      }
 
     assertThat(error)
       .hasMessageThat()
@@ -144,12 +154,13 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = createResourceTable(packageName = "some.other.app"),
-      supportedLanguages = SUPPORTED_LANGUAGES_EN
+      supportedLanguages = SUPPORTED_LANGUAGES_EN,
     )
 
-    val error = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
+      }
 
     assertThat(error).hasMessageThat().contains("Expected Oppia package, not: some.other.app.")
   }
@@ -160,7 +171,7 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN
+      supportedLanguages = SUPPORTED_LANGUAGES_EN,
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
@@ -176,7 +187,7 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT
+      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT,
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
@@ -192,7 +203,7 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT_SW_PCM
+      supportedLanguages = SUPPORTED_LANGUAGES_EN_PT_SW_PCM,
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
@@ -208,7 +219,7 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN_AR
+      supportedLanguages = SUPPORTED_LANGUAGES_EN_AR,
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
@@ -224,7 +235,7 @@ class FilterPerLanguageResourcesTest {
     createZipWith(
       fileName = "input.zip",
       resourceTable = RESOURCE_TABLE_EN_PT_SW_PCM,
-      supportedLanguages = SUPPORTED_LANGUAGES_EN
+      supportedLanguages = SUPPORTED_LANGUAGES_EN,
     )
 
     runScript(tempFolder.getFilePath("input.zip"), tempFolder.getFilePath("output.zip"))
@@ -233,82 +244,105 @@ class FilterPerLanguageResourcesTest {
     assertThat(outputLine)
       .isEqualTo(
         "4 resources are being removed that are tied to unsupported languages: [pcm, pt-BR, sw]" +
-          " (size reduction: 99 bytes)."
+          " (size reduction: 99 bytes).",
       )
   }
 
   private fun createLanguageSupportDefinition(
     language: OppiaLanguage,
     languageCode: String,
-    regionCode: String = ""
-  ): LanguageSupportDefinition {
-    return LanguageSupportDefinition.newBuilder().apply {
-      this.language = language
-      appStringId = LanguageId.newBuilder().apply {
-        androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
-          this.languageCode = languageCode
-          this.regionCode = regionCode
-        }.build()
+    regionCode: String = "",
+  ): LanguageSupportDefinition =
+    LanguageSupportDefinition
+      .newBuilder()
+      .apply {
+        this.language = language
+        appStringId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              androidResourcesLanguageId =
+                AndroidLanguageId
+                  .newBuilder()
+                  .apply {
+                    this.languageCode = languageCode
+                    this.regionCode = regionCode
+                  }.build()
+            }.build()
       }.build()
-    }.build()
-  }
 
-  private fun createSupportedLanguages(
-    vararg languageDefinitions: LanguageSupportDefinition
-  ): SupportedLanguages {
-    return SupportedLanguages.newBuilder().apply {
-      addAllLanguageDefinitions(languageDefinitions.toList())
-    }.build()
-  }
+  private fun createSupportedLanguages(vararg languageDefinitions: LanguageSupportDefinition): SupportedLanguages =
+    SupportedLanguages
+      .newBuilder()
+      .apply {
+        addAllLanguageDefinitions(languageDefinitions.toList())
+      }.build()
 
   private fun createResourceTable(
     vararg resources: Resource,
-    packageName: String = "org.oppia.android"
-  ): ResourceTable {
-    return ResourceTable.newBuilder().apply {
-      addPackage(
-        Package.newBuilder().apply {
-          this.packageName = packageName
-          addAllType(resources.map { it.toType() })
-        }
-      )
-    }.build()
-  }
+    packageName: String = "org.oppia.android",
+  ): ResourceTable =
+    ResourceTable
+      .newBuilder()
+      .apply {
+        addPackage(
+          Package.newBuilder().apply {
+            this.packageName = packageName
+            addAllType(resources.map { it.toType() })
+          },
+        )
+      }.build()
 
-  private fun Resource.toType(): Type {
-    return Type.newBuilder().apply {
-      name = when (this@toType) {
-        is ColorResource -> "color"
-        is StringResource -> "string"
-      }
+  private fun Resource.toType(): Type =
+    Type
+      .newBuilder()
+      .apply {
+        name =
+          when (this@toType) {
+            is ColorResource -> "color"
+            is StringResource -> "string"
+          }
 
-      addEntry(
-        Entry.newBuilder().apply {
-          addAllConfigValue(
-            configurations.map { (languageCode, strValue) ->
-              ConfigValue.newBuilder().apply {
-                config = Configuration.newBuilder().apply {
-                  locale = languageCode
-                }.build()
-                value = Value.newBuilder().apply {
-                  item = Item.newBuilder().apply {
-                    str = Resources.String.newBuilder().apply {
-                      value = strValue
-                    }.build()
+        addEntry(
+          Entry.newBuilder().apply {
+            addAllConfigValue(
+              configurations.map { (languageCode, strValue) ->
+                ConfigValue
+                  .newBuilder()
+                  .apply {
+                    config =
+                      Configuration
+                        .newBuilder()
+                        .apply {
+                          locale = languageCode
+                        }.build()
+                    value =
+                      Value
+                        .newBuilder()
+                        .apply {
+                          item =
+                            Item
+                              .newBuilder()
+                              .apply {
+                                str =
+                                  Resources.String
+                                    .newBuilder()
+                                    .apply {
+                                      value = strValue
+                                    }.build()
+                              }.build()
+                        }.build()
                   }.build()
-                }.build()
-              }.build()
-            }
-          )
-        }
-      )
-    }.build()
-  }
+              },
+            )
+          },
+        )
+      }.build()
 
   private fun createZipWith(
     fileName: String,
     resourceTable: ResourceTable,
-    supportedLanguages: SupportedLanguages
+    supportedLanguages: SupportedLanguages,
   ) {
     val destZipFile = tempFolder.newFile(fileName)
     ZipOutputStream(destZipFile.outputStream()).use { outputStream ->
@@ -321,31 +355,40 @@ class FilterPerLanguageResourcesTest {
   }
 
   private fun readSupportedResourceLanguagesFromZip(fileName: String): Set<String> {
-    val resourceTable = ZipFile(File(tempFolder.root, fileName)).use { zipFile ->
-      zipFile.getInputStream(zipFile.getEntry("resources.pb")).use { inputStream ->
-        ResourceTable.parseFrom(inputStream)
+    val resourceTable =
+      ZipFile(File(tempFolder.root, fileName)).use { zipFile ->
+        zipFile.getInputStream(zipFile.getEntry("resources.pb")).use { inputStream ->
+          ResourceTable.parseFrom(inputStream)
+        }
       }
-    }
-    return resourceTable.packageList.flatMap { it.typeList }
+    return resourceTable.packageList
+      .flatMap { it.typeList }
       .flatMap { it.entryList }
       .flatMap { it.configValueList }
       .map { it.config.locale }
       .toSet()
   }
 
-  private fun TemporaryFolder.getFilePath(fileName: String): String =
-    File(root, fileName).absoluteFile.normalize().path
+  private fun TemporaryFolder.getFilePath(fileName: String): String = File(root, fileName).absoluteFile.normalize().path
 
   private fun readStandardOutputLines(): List<String> =
-    outContent.toByteArray().inputStream().bufferedReader().readLines()
+    outContent
+      .toByteArray()
+      .inputStream()
+      .bufferedReader()
+      .readLines()
 
   private fun runScript(vararg args: String) = main(*args)
 
   private sealed class Resource {
     abstract val configurations: Map<String, String>
 
-    data class ColorResource(override val configurations: Map<String, String>) : Resource()
+    data class ColorResource(
+      override val configurations: Map<String, String>,
+    ) : Resource()
 
-    data class StringResource(override val configurations: Map<String, String>) : Resource()
+    data class StringResource(
+      override val configurations: Map<String, String>,
+    ) : Resource()
   }
 }

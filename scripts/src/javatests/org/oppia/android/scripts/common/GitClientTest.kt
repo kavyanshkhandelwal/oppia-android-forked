@@ -44,7 +44,7 @@ class GitClientTest {
   fun testCurrentCommit_forNonRepository_throwsException() {
     val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() { gitClient.currentCommit }
+    val exception = assertThrows<IllegalStateException> { gitClient.currentCommit }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
     assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
@@ -80,7 +80,7 @@ class GitClientTest {
   fun testCurrentBranch_forNonRepository_throwsException() {
     val gitClient = GitClient(tempFolder.root, "develop", commandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() { gitClient.currentBranch }
+    val exception = assertThrows<IllegalStateException> { gitClient.currentBranch }
 
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
     assertThat(exception).hasMessageThat().ignoringCase().contains("not a git repository")
@@ -248,8 +248,11 @@ class GitClientTest {
     val changedFiles = gitClient.changedFiles
 
     assertThat(changedFiles).containsExactly(
-      "develop_branch_file_changed_not_staged", "develop_branch_file_removed",
-      "new_feature_file_committed", "new_untracked_file", "new_staged_file"
+      "develop_branch_file_changed_not_staged",
+      "develop_branch_file_removed",
+      "new_feature_file_committed",
+      "new_untracked_file",
+      "new_staged_file",
     )
   }
 
@@ -301,17 +304,21 @@ class GitClientTest {
 
   private fun getMostRecentCommitOnCurrentBranch(): String {
     // See https://stackoverflow.com/a/949391 for a reference to validate that this is correct.
-    return commandExecutor.executeCommand(
-      tempFolder.root, "git", "rev-parse", "HEAD"
-    ).output.single()
+    return commandExecutor
+      .executeCommand(
+        tempFolder.root,
+        "git",
+        "rev-parse",
+        "HEAD",
+      ).output
+      .single()
   }
 
-  private fun createNewFile(name: String): File {
-    return tempFolder.newFile(name).let { file ->
+  private fun createNewFile(name: String): File =
+    tempFolder.newFile(name).let { file ->
       file.writeText("with data")
       file
     }
-  }
 
   private fun stageNewFile(name: String) {
     testGitRepository.stageFileForCommit(createNewFile(name))
@@ -322,7 +329,10 @@ class GitClientTest {
     testGitRepository.commit(message = "Add file $name.")
   }
 
-  private fun moveFile(oldFile: File, newFile: File) {
+  private fun moveFile(
+    oldFile: File,
+    newFile: File,
+  ) {
     testGitRepository.moveFileForCommit(oldFile, newFile)
     testGitRepository.commit(message = "Move from $oldFile to $newFile")
   }

@@ -8,7 +8,5 @@ import org.oppia.android.domain.onboarding.ExpirationMetaDataRetriever
 @Module
 interface ExpirationMetaDataRetrieverTestModule {
   @Binds
-  fun bindExpirationMetadataRetriever(
-    impl: FakeExpirationMetaDataRetriever
-  ): ExpirationMetaDataRetriever
+  fun bindExpirationMetadataRetriever(impl: FakeExpirationMetaDataRetriever): ExpirationMetaDataRetriever
 }

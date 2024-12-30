@@ -53,7 +53,7 @@ fun main(vararg args: String) {
       ComputeAabDifferences.AabProfile(
         buildFlavor = flavor,
         oldAabFilePath = aabNoChangesPath,
-        newAabFilePath = aabWithChangesPath
+        newAabFilePath = aabWithChangesPath,
       )
     }
 
@@ -61,10 +61,11 @@ fun main(vararg args: String) {
 
   val workingDirectoryPath = "."
   val sdkProperties = AndroidBuildSdkProperties()
-  val buildStats = ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val computer = ComputeAabDifferences(workingDirectoryPath, sdkProperties, scriptBgDispatcher)
-    return@use computer.computeBuildStats(*profiles.toTypedArray())
-  }
+  val buildStats =
+    ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+      val computer = ComputeAabDifferences(workingDirectoryPath, sdkProperties, scriptBgDispatcher)
+      return@use computer.computeBuildStats(*profiles.toTypedArray())
+    }
   PrintStream(outputSummaryFilePath).use { stream ->
     buildStats.writeSummariesTo(stream, longSummary = false)
   }
@@ -77,7 +78,7 @@ fun main(vararg args: String) {
 class ComputeAabDifferences(
   workingDirectoryPath: String,
   sdkProperties: AndroidBuildSdkProperties,
-  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
 ) {
   private val bundleToolClient by lazy {
     BundleToolClient(workingDirectoryPath, scriptBgDispatcher)
@@ -92,15 +93,19 @@ class ComputeAabDifferences(
    * represented in the returned stats.
    */
   fun computeBuildStats(vararg aabProfiles: AabProfile): BuildStats {
-    val aabStats = aabProfiles.associate { profile ->
-      profile.buildFlavor to computeAabStats(profile.oldAabFilePath, profile.newAabFilePath)
-    }
+    val aabStats =
+      aabProfiles.associate { profile ->
+        profile.buildFlavor to computeAabStats(profile.oldAabFilePath, profile.newAabFilePath)
+      }
     return BuildStats(aabStats)
   }
 
-  private fun computeAabStats(aabWithoutChangesPath: String, aabWithChangesPath: String): AabStats {
+  private fun computeAabStats(
+    aabWithoutChangesPath: String,
+    aabWithChangesPath: String,
+  ): AabStats {
     println(
-      "Computing AAB stats for AABs: $aabWithoutChangesPath (old) and $aabWithChangesPath (new)..."
+      "Computing AAB stats for AABs: $aabWithoutChangesPath (old) and $aabWithChangesPath (new)...",
     )
     val parentDestDir = Files.createTempDirectory("apk_diff_stats_").toFile()
     println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
@@ -114,27 +119,36 @@ class ComputeAabDifferences(
       computeApksList(aabWithoutChangesPath, destWithoutChanges)
     val (mainApkWithChanges, splitApksWithChanges) =
       computeApksList(aabWithChangesPath, destWithChanges)
-    val splitApkStats = combineMaps(
-      splitApksWithoutChanges, splitApksWithChanges
-    ) { fileWithoutChangesPath, fileWithChangesPath ->
-      computeConfigurationStats(fileWithoutChangesPath, fileWithChangesPath)
-    }
+    val splitApkStats =
+      combineMaps(
+        splitApksWithoutChanges,
+        splitApksWithChanges,
+      ) { fileWithoutChangesPath, fileWithChangesPath ->
+        computeConfigurationStats(fileWithoutChangesPath, fileWithChangesPath)
+      }
     val configurationsList =
       DiffList(splitApksWithoutChanges.keys.toList(), splitApksWithChanges.keys.toList())
 
     return AabStats(
-      universalApkStats = computeConfigurationStats(
-        universalApkWithoutChanges, universalApkWithChanges
-      ),
-      mainSplitApkStats = computeConfigurationStats(
-        mainApkWithoutChanges, mainApkWithChanges
-      ),
+      universalApkStats =
+        computeConfigurationStats(
+          universalApkWithoutChanges,
+          universalApkWithChanges,
+        ),
+      mainSplitApkStats =
+        computeConfigurationStats(
+          mainApkWithoutChanges,
+          mainApkWithChanges,
+        ),
       splitApkStats = splitApkStats,
-      configurationsList = configurationsList
+      configurationsList = configurationsList,
     )
   }
 
-  private fun computeUniversalApk(inputAabPath: String, destDir: String): String {
+  private fun computeUniversalApk(
+    inputAabPath: String,
+    destDir: String,
+  ): String {
     println("Generating universal APK for: $inputAabPath")
     val universalApkPath = File(destDir, "universal.apk").absolutePath
     val universalApk = bundleToolClient.buildUniversalApk(inputAabPath, universalApkPath)
@@ -143,14 +157,15 @@ class ComputeAabDifferences(
 
   private fun computeApksList(
     inputAabPath: String,
-    destDir: String
+    destDir: String,
   ): Pair<String, Map<String, String>> {
     println("Generating APK list for: $inputAabPath")
     val apksListPath = File(destDir, "list.apks").absolutePath
     val apkFiles = bundleToolClient.buildApks(inputAabPath, apksListPath, destDir)
     val mainApkFilePath = apkFiles.first { "master" in it.name }.absolutePath
     val apkFilePathMap =
-      apkFiles.filter { "master" !in it.name }
+      apkFiles
+        .filter { "master" !in it.name }
         .associate { file ->
           file.name.substringAfter("base-").substringBefore('.') to file.absolutePath
         }
@@ -159,109 +174,134 @@ class ComputeAabDifferences(
 
   private fun computeConfigurationStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): ApkConfigurationStats {
     println("Comparing APKs: $apkWithoutChangesPath and $apkWithChangesPath")
-    val fullComparison = if (apkWithoutChangesPath != null && apkWithChangesPath != null) {
-      apkAnalyzerClient.compare(apkWithoutChangesPath, apkWithChangesPath)
-    } else null
+    val fullComparison =
+      if (apkWithoutChangesPath != null && apkWithChangesPath != null) {
+        apkAnalyzerClient.compare(apkWithoutChangesPath, apkWithChangesPath)
+      } else {
+        null
+      }
     return ApkConfigurationStats(
       fileSizeStats = computeFileSizeStats(apkWithoutChangesPath, apkWithChangesPath),
       dexStats = computeDexStats(apkWithoutChangesPath, apkWithChangesPath),
       manifestStats = computeManifestStats(apkWithoutChangesPath, apkWithChangesPath),
       resourceStats = computeResourceStats(apkWithoutChangesPath, apkWithChangesPath),
       assetStats = computeAssetStats(apkWithoutChangesPath, apkWithChangesPath),
-      completeFileDiff = fullComparison
+      completeFileDiff = fullComparison,
     )
   }
 
   private fun computeFileSizeStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): FileSizeStats {
     println("Computing file size for: $apkWithoutChangesPath and $apkWithChangesPath")
-    val (fileSizeWithoutChanges, downloadSizeWithoutChanges) = if (apkWithoutChangesPath != null) {
-      apkAnalyzerClient.computeFileSize(apkWithoutChangesPath) to
-        apkAnalyzerClient.computeDownloadSize(apkWithoutChangesPath)
-    } else 0L to 0L
+    val (fileSizeWithoutChanges, downloadSizeWithoutChanges) =
+      if (apkWithoutChangesPath != null) {
+        apkAnalyzerClient.computeFileSize(apkWithoutChangesPath) to
+          apkAnalyzerClient.computeDownloadSize(apkWithoutChangesPath)
+      } else {
+        0L to 0L
+      }
 
     println("Computing estimated download size for: $apkWithoutChangesPath and $apkWithChangesPath")
-    val (fileSizeWithChanges, downloadSizeWithChanges) = if (apkWithChangesPath != null) {
-      apkAnalyzerClient.computeFileSize(apkWithChangesPath) to
-        apkAnalyzerClient.computeDownloadSize(apkWithChangesPath)
-    } else 0L to 0L
+    val (fileSizeWithChanges, downloadSizeWithChanges) =
+      if (apkWithChangesPath != null) {
+        apkAnalyzerClient.computeFileSize(apkWithChangesPath) to
+          apkAnalyzerClient.computeDownloadSize(apkWithChangesPath)
+      } else {
+        0L to 0L
+      }
 
     return FileSizeStats(
       fileSize = DiffLong(oldValue = fileSizeWithoutChanges, newValue = fileSizeWithChanges),
-      downloadSize = DiffLong(
-        oldValue = downloadSizeWithoutChanges, newValue = downloadSizeWithChanges
-      )
+      downloadSize =
+        DiffLong(
+          oldValue = downloadSizeWithoutChanges,
+          newValue = downloadSizeWithChanges,
+        ),
     )
   }
 
   private fun computeDexStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): DexStats {
     println("Computing dex method counts for: $apkWithoutChangesPath and $apkWithChangesPath")
-    val methodCountWithoutChanges = apkWithoutChangesPath?.let { apkPath ->
-      apkAnalyzerClient.computeDexReferencesList(apkPath).values.sum().toLong()
-    } ?: 0L
-    val methodCountWithChanges = apkWithChangesPath?.let { apkPath ->
-      apkAnalyzerClient.computeDexReferencesList(apkPath).values.sum().toLong()
-    } ?: 0L
+    val methodCountWithoutChanges =
+      apkWithoutChangesPath?.let { apkPath ->
+        apkAnalyzerClient
+          .computeDexReferencesList(apkPath)
+          .values
+          .sum()
+          .toLong()
+      } ?: 0L
+    val methodCountWithChanges =
+      apkWithChangesPath?.let { apkPath ->
+        apkAnalyzerClient
+          .computeDexReferencesList(apkPath)
+          .values
+          .sum()
+          .toLong()
+      } ?: 0L
     return DexStats(
-      DiffLong(oldValue = methodCountWithoutChanges, newValue = methodCountWithChanges)
+      DiffLong(oldValue = methodCountWithoutChanges, newValue = methodCountWithChanges),
     )
   }
 
   private fun computeManifestStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): ManifestStats {
     println("Computing feature and permissions for: $apkWithoutChangesPath and $apkWithChangesPath")
-    val (featuresWithoutChanges, permissionsWithoutChanges) = apkWithoutChangesPath?.let { path ->
-      val features = apkAnalyzerClient.computeFeatures(path)
-      val rawPermissions = aapt2Client.dumpPermissions(path)
-      return@let features to extractPermissions(rawPermissions)
-    } ?: (listOf<String>() to listOf())
-    val (featuresWithChanges, permissionsWithChanges) = apkWithChangesPath?.let { path ->
-      val features = apkAnalyzerClient.computeFeatures(path)
-      val rawPermissions = aapt2Client.dumpPermissions(path)
-      return@let features to extractPermissions(rawPermissions)
-    } ?: (listOf<String>() to listOf())
+    val (featuresWithoutChanges, permissionsWithoutChanges) =
+      apkWithoutChangesPath?.let { path ->
+        val features = apkAnalyzerClient.computeFeatures(path)
+        val rawPermissions = aapt2Client.dumpPermissions(path)
+        return@let features to extractPermissions(rawPermissions)
+      } ?: (listOf<String>() to listOf())
+    val (featuresWithChanges, permissionsWithChanges) =
+      apkWithChangesPath?.let { path ->
+        val features = apkAnalyzerClient.computeFeatures(path)
+        val rawPermissions = aapt2Client.dumpPermissions(path)
+        return@let features to extractPermissions(rawPermissions)
+      } ?: (listOf<String>() to listOf())
 
     return ManifestStats(
       features = DiffList(featuresWithoutChanges, featuresWithChanges),
-      permissions = DiffList(permissionsWithoutChanges, permissionsWithChanges)
+      permissions = DiffList(permissionsWithoutChanges, permissionsWithChanges),
     )
   }
 
   private fun computeResourceStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): ResourceStats {
     println("Computing resource maps for: $apkWithoutChangesPath and $apkWithChangesPath")
-    val resourcesWithoutChanges = apkWithoutChangesPath?.let { apkPath ->
-      extractResources(aapt2Client.dumpResources(apkPath))
-    } ?: mapOf()
-    val resourcesWithChanges = apkWithChangesPath?.let { apkPath ->
-      extractResources(aapt2Client.dumpResources(apkPath))
-    } ?: mapOf()
+    val resourcesWithoutChanges =
+      apkWithoutChangesPath?.let { apkPath ->
+        extractResources(aapt2Client.dumpResources(apkPath))
+      } ?: mapOf()
+    val resourcesWithChanges =
+      apkWithChangesPath?.let { apkPath ->
+        extractResources(aapt2Client.dumpResources(apkPath))
+      } ?: mapOf()
     return ResourceStats(combineResourceMaps(resourcesWithoutChanges, resourcesWithChanges))
   }
 
   private fun computeAssetStats(
     apkWithoutChangesPath: String?,
-    apkWithChangesPath: String?
+    apkWithChangesPath: String?,
   ): AssetStats {
     // Only consider top-level files in the assets/ folder.
     println("Computing asset stats for: $apkWithoutChangesPath and $apkWithChangesPath")
     return AssetStats(
       DiffList(
         apkWithoutChangesPath?.let(::File)?.extractAssetFileNamesFromApk() ?: listOf(),
-        apkWithChangesPath?.let(::File)?.extractAssetFileNamesFromApk() ?: listOf()
-      )
+        apkWithChangesPath?.let(::File)?.extractAssetFileNamesFromApk() ?: listOf(),
+      ),
     )
   }
 
@@ -277,7 +317,7 @@ class ComputeAabDifferences(
   data class AabProfile(
     val buildFlavor: String,
     val oldAabFilePath: String,
-    val newAabFilePath: String
+    val newAabFilePath: String,
   )
 
   /**
@@ -286,16 +326,21 @@ class ComputeAabDifferences(
    * @property aabStats a map from build flavor to [AabStats] corresponding to a list of
    *     [AabProfile]s from and for which build stats were computed
    */
-  data class BuildStats(val aabStats: Map<String, AabStats>) {
+  data class BuildStats(
+    val aabStats: Map<String, AabStats>,
+  ) {
     /**
      * Writes the build stats summary to [stream] with a configurable length using [longSummary].
      */
-    fun writeSummariesTo(stream: PrintStream, longSummary: Boolean) {
+    fun writeSummariesTo(
+      stream: PrintStream,
+      longSummary: Boolean,
+    ) {
       stream.println("# APK & AAB differences analysis")
       if (!longSummary) {
         stream.println(
           "Note that this is a summarized snapshot. See the CI artifacts for detailed" +
-            " differences."
+            " differences.",
         )
       }
       val itemLimit = if (!longSummary) 5 else Int.MAX_VALUE
@@ -322,7 +367,7 @@ class ComputeAabDifferences(
     val universalApkStats: ApkConfigurationStats,
     val mainSplitApkStats: ApkConfigurationStats,
     val splitApkStats: Map<String, ApkConfigurationStats>,
-    val configurationsList: DiffList<String>
+    val configurationsList: DiffList<String>,
   ) {
     /**
      * Writes the stats summary between two AABs to [stream].
@@ -336,11 +381,12 @@ class ComputeAabDifferences(
       stream: PrintStream,
       buildFlavor: String,
       itemLimit: Int,
-      longSummary: Boolean
+      longSummary: Boolean,
     ) {
-      val buildFlavorTitle = buildFlavor.replaceFirstChar {
-        if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
-      }
+      val buildFlavorTitle =
+        buildFlavor.replaceFirstChar {
+          if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+        }
       stream.println("## $buildFlavorTitle")
       stream.println()
 
@@ -392,7 +438,7 @@ class ComputeAabDifferences(
     val manifestStats: ManifestStats,
     val resourceStats: ResourceStats,
     val assetStats: AssetStats,
-    val completeFileDiff: List<String>?
+    val completeFileDiff: List<String>?,
   ) {
     /**
      * Writes the stats summary between two APKs to [stream].
@@ -405,7 +451,7 @@ class ComputeAabDifferences(
       stream: PrintStream,
       itemize: Boolean,
       longSummary: Boolean,
-      itemLimit: Int
+      itemLimit: Int,
     ) {
       fileSizeStats.writeTo(stream, itemize)
       if (itemize) stream.println()
@@ -430,7 +476,9 @@ class ComputeAabDifferences(
         stream.println("*Detailed file differences:*")
         if (completeFileDiff != null) {
           completeFileDiff.forEach(stream::println)
-        } else stream.println("APK doesn't exist.")
+        } else {
+          stream.println("APK doesn't exist.")
+        }
         stream.println()
       }
     }
@@ -444,13 +492,19 @@ class ComputeAabDifferences(
    *     that the download size for an AAB is likely the base APK download size + the matching
    *     configuration split APK download size (though this is again an estimate and may vary).
    */
-  data class FileSizeStats(val fileSize: DiffLong, val downloadSize: DiffLong) {
+  data class FileSizeStats(
+    val fileSize: DiffLong,
+    val downloadSize: DiffLong,
+  ) {
     /**
      * Writes the file stats summary between two APKs to [stream].
      *
      * @param itemize whether to expand lists of items
      */
-    fun writeTo(stream: PrintStream, itemize: Boolean) {
+    fun writeTo(
+      stream: PrintStream,
+      itemize: Boolean,
+    ) {
       fileSize.writeBytesTo(stream, "APK file size")
       if (itemize) {
         stream.println()
@@ -466,13 +520,18 @@ class ComputeAabDifferences(
    *     correspond to declared methods in Kotlin that are being compiled and included in the APK's
    *     dex files.
    */
-  data class DexStats(val methodCount: DiffLong) {
+  data class DexStats(
+    val methodCount: DiffLong,
+  ) {
     /**
      * Writes the dex stats summary between two APKs to [stream].
      *
      * @param itemize whether to expand lists of items
      */
-    fun writeTo(stream: PrintStream, itemize: Boolean) {
+    fun writeTo(
+      stream: PrintStream,
+      itemize: Boolean,
+    ) {
       if (itemize || methodCount.hasDifference()) {
         methodCount.writeCountTo(stream, "Method count")
       }
@@ -490,7 +549,7 @@ class ComputeAabDifferences(
    */
   data class ManifestStats(
     val features: DiffList<String>,
-    val permissions: DiffList<String>
+    val permissions: DiffList<String>,
   ) {
     /**
      * Writes the manifest stats summary between two APKs to [stream].
@@ -498,7 +557,11 @@ class ComputeAabDifferences(
      * @param itemLimit the max number of items to include in expanded lists
      * @param itemize whether to expand lists of items
      */
-    fun writeTo(stream: PrintStream, itemize: Boolean, itemLimit: Int) {
+    fun writeTo(
+      stream: PrintStream,
+      itemize: Boolean,
+      itemLimit: Int,
+    ) {
       if (itemize || features.hasDifference()) {
         features.writeTo(stream, "Features", itemize, itemLimit)
         if (itemize) {
@@ -521,7 +584,7 @@ class ComputeAabDifferences(
    *     APK will have an empty list within its [DiffList].
    */
   data class ResourceStats(
-    val resources: Map<String, DiffList<String>>
+    val resources: Map<String, DiffList<String>>,
   ) {
     /**
      * Writes the resource stats summary between two APKs to [stream].
@@ -530,24 +593,31 @@ class ComputeAabDifferences(
      * @param itemize whether to expand lists of items
      * @return whether anything was printed
      */
-    fun writeTo(stream: PrintStream, itemize: Boolean, itemLimit: Int): Boolean {
+    fun writeTo(
+      stream: PrintStream,
+      itemize: Boolean,
+      itemLimit: Int,
+    ): Boolean {
       val totalOldCount = resources.values.sumOf { it.oldCount }
       val totalNewCount = resources.values.sumOf { it.newCount }
       val totalDifference = totalNewCount - totalOldCount
       if (itemize || totalDifference != 0) {
         stream.println(
           "Resources: $totalOldCount (old), $totalNewCount (new)," +
-            " **${totalDifference.absoluteValue}** (${totalDifference.convertToDiffString()})"
+            " **${totalDifference.absoluteValue}** (${totalDifference.convertToDiffString()})",
         )
         resources.forEach { (typeName, resourcesList) ->
           if (itemize || resourcesList.hasDifference()) {
             stream.print("- ")
             resourcesList.writeTo(
               stream,
-              linePrefix = typeName.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
-              },
-              itemize, itemLimit, listIndentation = 2
+              linePrefix =
+                typeName.replaceFirstChar {
+                  if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString()
+                },
+              itemize,
+              itemLimit,
+              listIndentation = 2,
             )
           }
         }
@@ -563,14 +633,20 @@ class ComputeAabDifferences(
    *
    * @property assets the difference list between the assets from both APKs
    */
-  data class AssetStats(val assets: DiffList<String>) {
+  data class AssetStats(
+    val assets: DiffList<String>,
+  ) {
     /**
      * Writes the asset stats summary between two APKs to [stream].
      *
      * @param itemLimit the max number of items to include in expanded lists
      * @param itemize whether to expand lists of items
      */
-    fun writeTo(stream: PrintStream, itemize: Boolean, itemLimit: Int) {
+    fun writeTo(
+      stream: PrintStream,
+      itemize: Boolean,
+      itemLimit: Int,
+    ) {
       if (itemize || assets.hasDifference()) {
         assets.writeTo(stream, "Lesson assets", itemize, itemLimit)
       }
@@ -583,7 +659,10 @@ class ComputeAabDifferences(
    * @property oldValue the [Long] value corresponding to the build without changes
    * @property newValue the [Long] value corresponding to the build with changes
    */
-  data class DiffLong(val oldValue: Long, val newValue: Long) {
+  data class DiffLong(
+    val oldValue: Long,
+    val newValue: Long,
+  ) {
     /** The difference between the two values. */
     val difference: Long by lazy { newValue - oldValue }
 
@@ -607,7 +686,7 @@ class ComputeAabDifferences(
    */
   class DiffList<T>(
     private val oldList: List<T>,
-    private val newList: List<T>
+    private val newList: List<T>,
   ) : AbstractList<DiffList.DiffEntry<T>>() {
     private val oldSet by lazy { oldList.toSet() }
     private val newSet by lazy { newList.toSet() }
@@ -635,11 +714,14 @@ class ComputeAabDifferences(
       return combined.map { consideredValue ->
         val inOldList = consideredValue in oldSet
         val inNewList = consideredValue in newSet
-        val diffType = if (!inOldList && inNewList) {
-          DiffType.NEW_ENTRY
-        } else if (inOldList && !inNewList) {
-          DiffType.REMOVED_ENTRY
-        } else DiffType.SAME_ENTRY
+        val diffType =
+          if (!inOldList && inNewList) {
+            DiffType.NEW_ENTRY
+          } else if (inOldList && !inNewList) {
+            DiffType.REMOVED_ENTRY
+          } else {
+            DiffType.SAME_ENTRY
+          }
         return@map DiffEntry(diffType, consideredValue)
       }
     }
@@ -649,7 +731,9 @@ class ComputeAabDifferences(
      *
      * @property humanReadableName the human-readable name corresponding to this type
      */
-    enum class DiffType(val humanReadableName: String) {
+    enum class DiffType(
+      val humanReadableName: String,
+    ) {
       /** Represents two entries that are present in both lists. */
       SAME_ENTRY("same"),
 
@@ -657,7 +741,7 @@ class ComputeAabDifferences(
       NEW_ENTRY("added"),
 
       /** Represents an entry only present in the old list. */
-      REMOVED_ENTRY("removed")
+      REMOVED_ENTRY("removed"),
     }
 
     /**
@@ -666,41 +750,42 @@ class ComputeAabDifferences(
      * @property type the [DiffType] corresponding to this value
      * @property value the value that's present in one or both lists (depending on [type])
      */
-    data class DiffEntry<T>(val type: DiffType, val value: T)
+    data class DiffEntry<T>(
+      val type: DiffType,
+      val value: T,
+    )
   }
 
   private companion object {
-    private fun File.newDirectory(name: String): File {
-      return File(this, name).also { it.mkdir() }
-    }
+    private fun File.newDirectory(name: String): File = File(this, name).also { it.mkdir() }
 
     private fun <K : Any?, IV : Any, OV : Any> combineMaps(
       oldMap: Map<K, IV>,
       newMap: Map<K, IV>,
-      combineValue: (IV?, IV?) -> OV
+      combineValue: (IV?, IV?) -> OV,
     ): Map<K, OV> {
       val allKeys = oldMap.keys + newMap.keys
-      return allKeys.map { key ->
-        return@map key to combineValue(oldMap[key], newMap[key])
-      }.toMap()
+      return allKeys
+        .map { key ->
+          return@map key to combineValue(oldMap[key], newMap[key])
+        }.toMap()
     }
 
-    private fun extractPermissions(permissionDump: List<String>): List<String> {
-      return permissionDump.filter { line ->
-        "name=" in line
-      }.map { line ->
-        line.substringAfter("name='").substringBefore('\'')
-      }
-    }
+    private fun extractPermissions(permissionDump: List<String>): List<String> =
+      permissionDump
+        .filter { line ->
+          "name=" in line
+        }.map { line ->
+          line.substringAfter("name='").substringBefore('\'')
+        }
 
     private fun combineResourceMaps(
       oldResourceMap: Map<String, List<String>>,
-      newResourceMap: Map<String, List<String>>
-    ): Map<String, DiffList<String>> {
-      return combineMaps(oldResourceMap, newResourceMap) { oldResources, newResources ->
+      newResourceMap: Map<String, List<String>>,
+    ): Map<String, DiffList<String>> =
+      combineMaps(oldResourceMap, newResourceMap) { oldResources, newResources ->
         DiffList(oldResources ?: listOf(), newResources ?: listOf())
       }
-    }
 
     private fun extractResources(resourceDump: List<String>): Map<String, List<String>> {
       val resourceMap = mutableMapOf<String, List<String>>()
@@ -726,25 +811,28 @@ class ComputeAabDifferences(
       return resourceMap
     }
 
-    private fun File.extractAssetFileNamesFromApk(): List<String> {
-      return ZipFile(this).use { zipFile ->
-        zipFile.entries().asSequence().filter { entry ->
-          "assets/" in entry.name && "/" !in entry.name.substringAfter("assets/")
-        }.map { it.name.substringAfter("assets/") }.toList()
+    private fun File.extractAssetFileNamesFromApk(): List<String> =
+      ZipFile(this).use { zipFile ->
+        zipFile
+          .entries()
+          .asSequence()
+          .filter { entry ->
+            "assets/" in entry.name && "/" !in entry.name.substringAfter("assets/")
+          }.map { it.name.substringAfter("assets/") }
+          .toList()
       }
-    }
 
     private fun DiffList<String>.writeTo(
       stream: PrintStream,
       linePrefix: String,
       itemize: Boolean,
       itemLimit: Int,
-      listIndentation: Int = 0
+      listIndentation: Int = 0,
     ) {
       val indent = " ".repeat(listIndentation)
       stream.print(
         "$linePrefix: $oldCount (old), $newCount (new)," +
-          " **${countDifference.absoluteValue}** (${countDifference.convertToDiffString()})"
+          " **${countDifference.absoluteValue}** (${countDifference.convertToDiffString()})",
       )
       if (itemize && hasDifference()) {
         stream.println(":")
@@ -756,20 +844,28 @@ class ComputeAabDifferences(
           val remaining = newOldAssets.size - itemLimit
           stream.println("$indent- And $remaining other${if (remaining > 1) "s" else ""}")
         }
-      } else stream.println()
+      } else {
+        stream.println()
+      }
     }
 
-    private fun DiffLong.writeCountTo(stream: PrintStream, linePrefix: String) {
+    private fun DiffLong.writeCountTo(
+      stream: PrintStream,
+      linePrefix: String,
+    ) {
       stream.println(
         "$linePrefix: $oldValue (old), $newValue (new)," +
-          " **${difference.absoluteValue}** (${difference.convertToDiffString()})"
+          " **${difference.absoluteValue}** (${difference.convertToDiffString()})",
       )
     }
 
-    private fun DiffLong.writeBytesTo(stream: PrintStream, linePrefix: String) {
+    private fun DiffLong.writeBytesTo(
+      stream: PrintStream,
+      linePrefix: String,
+    ) {
       stream.println(
         "$linePrefix: ${oldValue.formatAsBytes()} (old), ${newValue.formatAsBytes()} (new)," +
-          " **${difference.formatAsBytes()}** (${difference.convertToDiffString()})"
+          " **${difference.formatAsBytes()}** (${difference.convertToDiffString()})",
       )
     }
 
@@ -783,16 +879,18 @@ class ComputeAabDifferences(
       }
     }
 
-    private fun Int.convertToDiffString() = when {
-      this > 0 -> "Added"
-      this < 0 -> "Removed"
-      else -> "No change"
-    }
+    private fun Int.convertToDiffString() =
+      when {
+        this > 0 -> "Added"
+        this < 0 -> "Removed"
+        else -> "No change"
+      }
 
-    private fun Long.convertToDiffString() = when {
-      this > 0 -> "Added"
-      this < 0 -> "Removed"
-      else -> "No change"
-    }
+    private fun Long.convertToDiffString() =
+      when {
+        this > 0 -> "Added"
+        this < 0 -> "Removed"
+        else -> "No change"
+      }
   }
 }

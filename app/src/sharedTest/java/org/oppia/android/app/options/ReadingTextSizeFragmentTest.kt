@@ -121,7 +121,7 @@ private const val EXTRA_LARGE_TEXT_SIZE_INDEX = 3
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ReadingTextSizeFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ReadingTextSizeFragmentTest {
   @get:Rule
@@ -169,16 +169,20 @@ class ReadingTextSizeFragmentTest {
   fun testTextSize_checkTextSizeOfAllFourItems_textSizeMatchedCorrectly() {
     launch<ReadingTextSizeActivity>(createReadingTextSizeActivityIntent()).use {
       matchTextSizeOfTextSizeRecyclerViewItem(
-        SMALL_TEXT_SIZE_INDEX, defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE
+        SMALL_TEXT_SIZE_INDEX,
+        defaultTextSizeInFloat * SMALL_TEXT_SIZE_SCALE,
       )
       matchTextSizeOfTextSizeRecyclerViewItem(
-        MEDIUM_TEXT_SIZE_INDEX, defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE
+        MEDIUM_TEXT_SIZE_INDEX,
+        defaultTextSizeInFloat * MEDIUM_TEXT_SIZE_SCALE,
       )
       matchTextSizeOfTextSizeRecyclerViewItem(
-        LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE
+        LARGE_TEXT_SIZE_INDEX,
+        defaultTextSizeInFloat * LARGE_TEXT_SIZE_SCALE,
       )
       matchTextSizeOfTextSizeRecyclerViewItem(
-        EXTRA_LARGE_TEXT_SIZE_INDEX, defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE
+        EXTRA_LARGE_TEXT_SIZE_INDEX,
+        defaultTextSizeInFloat * EXTRA_LARGE_TEXT_SIZE_SCALE,
       )
     }
   }
@@ -201,10 +205,13 @@ class ReadingTextSizeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val readingTextSizeFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
-        val receivedReadingTextSize = readingTextSizeFragment.retrieveFragmentArguments()
-          .readingTextSize
+        val readingTextSizeFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        val receivedReadingTextSize =
+          readingTextSizeFragment
+            .retrieveFragmentArguments()
+            .readingTextSize
 
         assertThat(receivedReadingTextSize).isEqualTo(SMALL_TEXT_SIZE)
       }
@@ -217,8 +224,9 @@ class ReadingTextSizeFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
-        val readingTextSizeFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        val readingTextSizeFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
         readingTextSizeFragment.readingTextSizeFragmentPresenter
           .onTextSizeSelected(MEDIUM_TEXT_SIZE)
       }
@@ -226,8 +234,9 @@ class ReadingTextSizeFragmentTest {
       scenario.recreate()
 
       scenario.onActivity { activity ->
-        val newReadingTextSizeFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
+        val newReadingTextSizeFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.reading_text_size_container) as ReadingTextSizeFragment
         val restoredTopicIdList =
           newReadingTextSizeFragment.readingTextSizeFragmentPresenter.getTextSizeSelected()
 
@@ -236,33 +245,29 @@ class ReadingTextSizeFragmentTest {
     }
   }
 
-  private fun createReadingTextSizeActivityIntent() =
-    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE)
+  private fun createReadingTextSizeActivityIntent() = ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, SMALL_TEXT_SIZE)
 
   private fun createOptionActivityIntent(
     internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
+    isFromNavigationDrawer: Boolean,
   ): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
       profileId,
-      isFromNavigationDrawer
+      isFromNavigationDrawer,
     )
   }
 
   /** Matcher for comparing the textSize of content inside a TextView to the expected size. */
-  private fun matchTextViewTextSize(expectedSize: Float): TypeSafeMatcher<View> {
-    return object : TypeSafeMatcher<View>() {
+  private fun matchTextViewTextSize(expectedSize: Float): TypeSafeMatcher<View> =
+    object : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description?) {
         description?.appendText("TextView with text size: $expectedSize")
       }
 
-      override fun matchesSafely(item: View): Boolean {
-        return item is TextView && item.textSize == expectedSize
-      }
+      override fun matchesSafely(item: View): Boolean = item is TextView && item.textSize == expectedSize
     }
-  }
 
   /** Check the selected item inside TextSizeRecyclerView. */
   private fun verifyItemIsCheckedInTextSizeRecyclerView(index: Int) {
@@ -270,24 +275,27 @@ class ReadingTextSizeFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
         position = index,
-        targetViewId = R.id.text_size_radio_button
-      )
+        targetViewId = R.id.text_size_radio_button,
+      ),
     ).check(
-      matches(isChecked())
+      matches(isChecked()),
     )
     testCoroutineDispatchers.runCurrent()
   }
 
   /** Check the textSize of item inside TextSizeRecyclerView. */
-  private fun matchTextSizeOfTextSizeRecyclerViewItem(index: Int, size: Float) {
+  private fun matchTextSizeOfTextSizeRecyclerViewItem(
+    index: Int,
+    size: Float,
+  ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
         position = index,
-        targetViewId = R.id.text_size_text_view
-      )
+        targetViewId = R.id.text_size_text_view,
+      ),
     ).check(
-      matches(matchTextViewTextSize(size))
+      matches(matchTextViewTextSize(size)),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -298,10 +306,10 @@ class ReadingTextSizeFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.text_size_recycler_view,
         position = index,
-        targetViewId = R.id.text_size_radio_button
-      )
+        targetViewId = R.id.text_size_radio_button,
+      ),
     ).perform(
-      click()
+      click(),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -316,10 +324,10 @@ class ReadingTextSizeFragmentTest {
       atPositionOnView(
         R.id.options_recyclerview,
         0,
-        R.id.reading_text_size_text_view
-      )
+        R.id.reading_text_size_text_view,
+      ),
     ).check(
-      matches(withText(label))
+      matches(withText(label)),
     )
   }
 
@@ -355,8 +363,8 @@ class ReadingTextSizeFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -367,9 +375,13 @@ class ReadingTextSizeFragmentTest {
     fun inject(readingTextSizeFragmentTest: ReadingTextSizeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerReadingTextSizeFragmentTest_TestApplicationComponent.builder()
+      DaggerReadingTextSizeFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -378,9 +390,12 @@ class ReadingTextSizeFragmentTest {
       component.inject(readingTextSizeFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

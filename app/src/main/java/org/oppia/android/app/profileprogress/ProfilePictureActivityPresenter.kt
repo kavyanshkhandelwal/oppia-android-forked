@@ -22,79 +22,83 @@ import javax.inject.Inject
 
 /** The presenter for [ProfilePictureActivity]. */
 @ActivityScope
-class ProfilePictureActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger
-) {
-  private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
-  private lateinit var profileId: ProfileId
+class ProfilePictureActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val profileManagementController: ProfileManagementController,
+    private val oppiaLogger: OppiaLogger,
+  ) {
+    private lateinit var profilePictureActivityViewModel: ProfilePictureActivityViewModel
+    private lateinit var profileId: ProfileId
 
-  fun handleOnCreate(internalProfileId: Int) {
-    StatusBarColor.statusBarColorUpdate(
-      R.color.component_color_shared_profile_status_bar_color, activity, false
-    )
-    val binding = DataBindingUtil
-      .setContentView<ProfilePictureActivityBinding>(
+    fun handleOnCreate(internalProfileId: Int) {
+      StatusBarColor.statusBarColorUpdate(
+        R.color.component_color_shared_profile_status_bar_color,
         activity,
-        R.layout.profile_picture_activity
+        false,
       )
-    profilePictureActivityViewModel = ProfilePictureActivityViewModel()
+      val binding =
+        DataBindingUtil
+          .setContentView<ProfilePictureActivityBinding>(
+            activity,
+            R.layout.profile_picture_activity,
+          )
+      profilePictureActivityViewModel = ProfilePictureActivityViewModel()
 
-    binding.apply {
-      viewModel = profilePictureActivityViewModel
-      lifecycleOwner = activity
-    }
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
-    subscribeToProfileLiveData()
-    setUpToolbar()
-  }
-
-  private fun setUpToolbar() {
-    val toolbar = activity.findViewById<View>(
-      R.id.profile_picture_activity_toolbar
-    ) as Toolbar
-    activity.setSupportActionBar(toolbar)
-    toolbar.setNavigationOnClickListener {
-      activity.finish()
-    }
-  }
-
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
-  }
-
-  private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
-    )
-  }
-
-  private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(
-      activity,
-      Observer<Profile> { result ->
-        setProfileAvatar(result.avatar)
+      binding.apply {
+        viewModel = profilePictureActivityViewModel
+        lifecycleOwner = activity
       }
-    )
-  }
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    return when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("ProfilePictureActivity", "Failed to retrieve profile", profileResult.error)
-        Profile.getDefaultInstance()
+      subscribeToProfileLiveData()
+      setUpToolbar()
+    }
+
+    private fun setUpToolbar() {
+      val toolbar =
+        activity.findViewById<View>(
+          R.id.profile_picture_activity_toolbar,
+        ) as Toolbar
+      activity.setSupportActionBar(toolbar)
+      toolbar.setNavigationOnClickListener {
+        activity.finish()
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
     }
-  }
 
-  private fun setProfileAvatar(avatar: ProfileAvatar) {
-    if (::profilePictureActivityViewModel.isInitialized) {
-      profilePictureActivityViewModel.profileAvatar.set(avatar)
+    private val profileLiveData: LiveData<Profile> by lazy {
+      getProfileData()
+    }
+
+    private fun getProfileData(): LiveData<Profile> =
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processGetProfileResult,
+      )
+
+    private fun subscribeToProfileLiveData() {
+      profileLiveData.observe(
+        activity,
+        Observer<Profile> { result ->
+          setProfileAvatar(result.avatar)
+        },
+      )
+    }
+
+    private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile =
+      when (profileResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e("ProfilePictureActivity", "Failed to retrieve profile", profileResult.error)
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> Profile.getDefaultInstance()
+        is AsyncResult.Success -> profileResult.value
+      }
+
+    private fun setProfileAvatar(avatar: ProfileAvatar) {
+      if (::profilePictureActivityViewModel.isInitialized) {
+        profilePictureActivityViewModel.profileAvatar.set(avatar)
+      }
     }
   }
-}

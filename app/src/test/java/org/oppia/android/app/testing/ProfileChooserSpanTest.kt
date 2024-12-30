@@ -345,27 +345,20 @@ class ProfileChooserSpanTest {
     }
   }
 
-  private fun getProfileRecyclerViewGridLayoutManager(
-    activity: ProfileChooserFragmentTestActivity
-  ): GridLayoutManager {
-    return getProfileRecyclerView(activity).layoutManager as GridLayoutManager
-  }
+  private fun getProfileRecyclerViewGridLayoutManager(activity: ProfileChooserFragmentTestActivity): GridLayoutManager =
+    getProfileRecyclerView(activity).layoutManager as GridLayoutManager
 
-  private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView {
-    return getProfileChooserFragment(activity).view?.findViewWithTag<View>(
-      TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW
+  private fun getProfileRecyclerView(activity: ProfileChooserFragmentTestActivity): RecyclerView =
+    getProfileChooserFragment(activity).view?.findViewWithTag<View>(
+      TAG_PROFILE_CHOOSER_FRAGMENT_RECYCLER_VIEW,
     )!! as RecyclerView
-  }
 
-  private fun getProfileChooserFragment(
-    activity: ProfileChooserFragmentTestActivity
-  ): ProfileChooserFragment {
-    return activity
+  private fun getProfileChooserFragment(activity: ProfileChooserFragmentTestActivity): ProfileChooserFragment =
+    activity
       .supportFragmentManager
       .findFragmentByTag(
-        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
+        ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT,
       ) as ProfileChooserFragment
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -396,8 +389,8 @@ class ProfileChooserSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -408,9 +401,13 @@ class ProfileChooserSpanTest {
     fun inject(profileChooserSpanTest: ProfileChooserSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserSpanTest_TestApplicationComponent.builder()
+      DaggerProfileChooserSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -419,9 +416,12 @@ class ProfileChooserSpanTest {
       component.inject(profileChooserSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

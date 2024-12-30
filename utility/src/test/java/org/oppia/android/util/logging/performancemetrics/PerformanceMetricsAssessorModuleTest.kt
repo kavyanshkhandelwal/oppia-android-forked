@@ -36,7 +36,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsAssessorModuleTest.TestApplication::class)
 class PerformanceMetricsAssessorModuleTest {
-
   @Inject
   lateinit var performanceMetricsAssessor: PerformanceMetricsAssessor
 
@@ -63,17 +62,15 @@ class PerformanceMetricsAssessorModuleTest {
 
   @Module
   interface TestLogReportingModule {
-
     @Binds
     fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
 
     @Binds
-    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
-      AnalyticsEventLogger
+    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger
 
     @Binds
     fun bindFakePerformanceMetricsEventLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger,
     ): PerformanceMetricsEventLogger
   }
 
@@ -84,23 +81,27 @@ class PerformanceMetricsAssessorModuleTest {
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
-      LocaleProdModule::class
-    ]
+      LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: PerformanceMetricsAssessorModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsAssessorModuleTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsAssessorModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

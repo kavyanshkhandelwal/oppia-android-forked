@@ -17,113 +17,120 @@ import javax.inject.Inject
 private const val INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS = 8000L
 
 /** A custom [AppCompatButton] used to show continue button animations. */
-class ContinueButtonView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = R.style.StateButtonActive
-) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
+class ContinueButtonView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.style.StateButtonActive,
+  ) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
+    @Inject
+    lateinit var fragment: Fragment
 
-  @Inject
-  lateinit var fragment: Fragment
-  @Inject
-  lateinit var oppiaClock: OppiaClock
-  @Inject
-  lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
+    @Inject
+    lateinit var oppiaClock: OppiaClock
 
-  private var shouldAnimateContinueButtonLateinit: Boolean? = null
-  private val shouldAnimateContinueButton: Boolean
-    get() = checkNotNull(shouldAnimateContinueButtonLateinit) {
-      "Expected shouldAnimateContinueButtonLateinit to be initialized by this point."
+    @Inject
+    lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
+
+    @Inject
+    lateinit var oppiaLogger: OppiaLogger
+
+    private var shouldAnimateContinueButtonLateinit: Boolean? = null
+    private val shouldAnimateContinueButton: Boolean
+      get() =
+        checkNotNull(shouldAnimateContinueButtonLateinit) {
+          "Expected shouldAnimateContinueButtonLateinit to be initialized by this point."
+        }
+
+    private var continueButtonAnimationTimestampMsLateinit: Long? = null
+    private val continueButtonAnimationTimestampMs: Long
+      get() =
+        checkNotNull(continueButtonAnimationTimestampMsLateinit) {
+          "Expected continueButtonAnimationTimestampMsLateinit to be initialized by this point."
+        }
+
+    private val hasAnimationTimerFinished: Boolean
+      get() = continueButtonAnimationTimestampMs < oppiaClock.getCurrentTimeMs()
+
+    private var animationStartTimer: LiveData<Any>? = null
+    private var currentAnimationReuseCount = 0
+
+    override fun onAttachedToWindow() {
+      super.onAttachedToWindow()
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+      maybeInitializeAnimation()
     }
 
-  private var continueButtonAnimationTimestampMsLateinit: Long? = null
-  private val continueButtonAnimationTimestampMs: Long
-    get() = checkNotNull(continueButtonAnimationTimestampMsLateinit) {
-      "Expected continueButtonAnimationTimestampMsLateinit to be initialized by this point."
+    override fun onDetachedFromWindow() {
+      super.onDetachedFromWindow()
+
+      // Make sure state can't leak across rebinding boundaries (since this view may be reused).
+      cancelOngoingTimer()
     }
 
-  private val hasAnimationTimerFinished: Boolean
-    get() = continueButtonAnimationTimestampMs < oppiaClock.getCurrentTimeMs()
+    /** Sets whether the view should animate to catch a user's attention. */
+    fun setShouldAnimateContinueButton(shouldAnimateContinueButton: Boolean) {
+      shouldAnimateContinueButtonLateinit = shouldAnimateContinueButton
+      maybeInitializeAnimation()
+    }
 
-  private var animationStartTimer: LiveData<Any>? = null
-  private var currentAnimationReuseCount = 0
+    /**
+     * Sets when, in clock time, the animation controlled by [setShouldAnimateContinueButton] should
+     * play.
+     */
+    fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
+      continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
+      maybeInitializeAnimation()
+    }
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    val viewComponentFactory =
-      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
-    maybeInitializeAnimation()
-  }
-
-  override fun onDetachedFromWindow() {
-    super.onDetachedFromWindow()
-
-    // Make sure state can't leak across rebinding boundaries (since this view may be reused).
-    cancelOngoingTimer()
-  }
-
-  /** Sets whether the view should animate to catch a user's attention. */
-  fun setShouldAnimateContinueButton(shouldAnimateContinueButton: Boolean) {
-    shouldAnimateContinueButtonLateinit = shouldAnimateContinueButton
-    maybeInitializeAnimation()
-  }
-
-  /**
-   * Sets when, in clock time, the animation controlled by [setShouldAnimateContinueButton] should
-   * play.
-   */
-  fun setContinueButtonAnimationTimestampMs(continueButtonAnimationTimestampMs: Long) {
-    continueButtonAnimationTimestampMsLateinit = continueButtonAnimationTimestampMs
-    maybeInitializeAnimation()
-  }
-
-  private fun maybeInitializeAnimation() {
-    if (::oppiaClock.isInitialized &&
-      shouldAnimateContinueButtonLateinit != null &&
-      continueButtonAnimationTimestampMsLateinit != null
-    ) {
-      when {
-        !shouldAnimateContinueButton -> clearAnimation()
-        hasAnimationTimerFinished -> startAnimating()
-        else -> {
-          val timeLeftToAnimate = continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
-          startAnimatingWithDelay(delayMs = timeLeftToAnimate)
+    private fun maybeInitializeAnimation() {
+      if (::oppiaClock.isInitialized &&
+        shouldAnimateContinueButtonLateinit != null &&
+        continueButtonAnimationTimestampMsLateinit != null
+      ) {
+        when {
+          !shouldAnimateContinueButton -> clearAnimation()
+          hasAnimationTimerFinished -> startAnimating()
+          else -> {
+            val timeLeftToAnimate = continueButtonAnimationTimestampMs - oppiaClock.getCurrentTimeMs()
+            startAnimatingWithDelay(delayMs = timeLeftToAnimate)
+          }
         }
       }
     }
-  }
 
-  private fun startAnimatingWithDelay(delayMs: Long) {
-    cancelOngoingTimer()
-    val sequenceNumber = currentAnimationReuseCount
-    lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment) {
-      // Only play the animation if it's still valid to do so (since the view may have been recycled
-      // for a new context that may not want the animation to play).
-      if (sequenceNumber == currentAnimationReuseCount) {
-        startAnimating()
+    private fun startAnimatingWithDelay(delayMs: Long) {
+      cancelOngoingTimer()
+      val sequenceNumber = currentAnimationReuseCount
+      lifecycleSafeTimerFactory.createTimer(delayMs).observe(fragment) {
+        // Only play the animation if it's still valid to do so (since the view may have been recycled
+        // for a new context that may not want the animation to play).
+        if (sequenceNumber == currentAnimationReuseCount) {
+          startAnimating()
+        }
       }
     }
-  }
 
-  private fun cancelOngoingTimer() {
-    currentAnimationReuseCount++
-    animationStartTimer?.let {
-      it.removeObservers(fragment)
-      animationStartTimer = null
+    private fun cancelOngoingTimer() {
+      currentAnimationReuseCount++
+      animationStartTimer?.let {
+        it.removeObservers(fragment)
+        animationStartTimer = null
+      }
+    }
+
+    private fun startAnimating() {
+      val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
+      startAnimation(animation)
+      // Repeat the animation after a fixed interval.
+      lifecycleSafeTimerFactory
+        .createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
+        .observe(fragment) {
+          startAnimating()
+        }
     }
   }
-
-  private fun startAnimating() {
-    val animation = AnimationUtils.loadAnimation(context, R.anim.wobble_button_animation)
-    startAnimation(animation)
-    // Repeat the animation after a fixed interval.
-    lifecycleSafeTimerFactory.createTimer(INTERVAL_BETWEEN_CONTINUE_BUTTON_ANIM_MS)
-      .observe(fragment) {
-        startAnimating()
-      }
-  }
-}

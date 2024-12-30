@@ -117,8 +117,8 @@ class HomeSpanTest {
         .check(
           hasGridItemCount(
             spanCount = 2,
-            position = 0
-          )
+            position = 0,
+          ),
         )
     }
   }
@@ -131,8 +131,8 @@ class HomeSpanTest {
         .check(
           hasGridItemCount(
             spanCount = 3,
-            position = 0
-          )
+            position = 0,
+          ),
         )
     }
   }
@@ -145,8 +145,8 @@ class HomeSpanTest {
         .check(
           hasGridItemCount(
             spanCount = 3,
-            position = 0
-          )
+            position = 0,
+          ),
         )
     }
   }
@@ -159,8 +159,8 @@ class HomeSpanTest {
         .check(
           hasGridItemCount(
             spanCount = 4,
-            position = 0
-          )
+            position = 0,
+          ),
         )
     }
   }
@@ -199,8 +199,8 @@ class HomeSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -211,9 +211,13 @@ class HomeSpanTest {
     fun inject(homeSpanTest: HomeSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHomeSpanTest_TestApplicationComponent.builder()
+      DaggerHomeSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -222,9 +226,12 @@ class HomeSpanTest {
       component.inject(homeSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

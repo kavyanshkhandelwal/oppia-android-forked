@@ -112,7 +112,7 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = PoliciesActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class PoliciesActivityTest {
   @get:Rule
@@ -149,10 +149,12 @@ class PoliciesActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = PoliciesActivity.createPoliciesActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      PolicyPage.PRIVACY_POLICY
-    ).extractCurrentAppScreenName()
+    val screenName =
+      PoliciesActivity
+        .createPoliciesActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          PolicyPage.PRIVACY_POLICY,
+        ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.POLICIES_ACTIVITY)
   }
@@ -162,8 +164,8 @@ class PoliciesActivityTest {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
+        PolicyPage.PRIVACY_POLICY,
+      ),
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
@@ -180,8 +182,8 @@ class PoliciesActivityTest {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use { scenario ->
       scenario.onActivity {
         onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
@@ -201,8 +203,8 @@ class PoliciesActivityTest {
         hasExtras(
           hasEntry(
             equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
-            equalTo(policiesArguments)
-          )
+            equalTo(policiesArguments),
+          ),
         )
       }
     }
@@ -213,8 +215,8 @@ class PoliciesActivityTest {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
@@ -231,8 +233,8 @@ class PoliciesActivityTest {
     launch<PoliciesActivity>(
       PoliciesActivity.createPoliciesActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        PolicyPage.POLICY_PAGE_UNSPECIFIED
-      )
+        PolicyPage.POLICY_PAGE_UNSPECIFIED,
+      ),
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.policies_activity_toolbar)
@@ -280,8 +282,8 @@ class PoliciesActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -292,9 +294,13 @@ class PoliciesActivityTest {
     fun inject(policiesActivityTest: PoliciesActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPoliciesActivityTest_TestApplicationComponent.builder()
+      DaggerPoliciesActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -303,9 +309,12 @@ class PoliciesActivityTest {
       component.inject(policiesActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

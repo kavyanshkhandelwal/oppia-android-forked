@@ -39,9 +39,8 @@ class RevisionCardViewModel private constructor(
   val subtopicId: Int,
   val profileId: ProfileId,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  val subtopicListSize: Int
+  val subtopicListSize: Int,
 ) : ObservableViewModel() {
-
   private val routeToReviewListener = activity as RouteToRevisionCardListener
 
   /** Called when the previous navigation card is clicked. */
@@ -50,7 +49,7 @@ class RevisionCardViewModel private constructor(
       profileId,
       topicId,
       subtopicId - 1,
-      subtopicListSize
+      subtopicListSize,
     )
   }
 
@@ -60,7 +59,7 @@ class RevisionCardViewModel private constructor(
       profileId,
       topicId,
       subtopicId + 1,
-      subtopicListSize
+      subtopicListSize,
     )
   }
 
@@ -73,9 +72,7 @@ class RevisionCardViewModel private constructor(
     getTopicResultLiveData()
   }
 
-  private fun getTopicResultLiveData(): LiveData<AsyncResult<EphemeralTopic>> {
-    return topicController.getTopic(profileId, topicId).toLiveData()
-  }
+  private fun getTopicResultLiveData(): LiveData<AsyncResult<EphemeralTopic>> = topicController.getTopic(profileId, topicId).toLiveData()
 
   /**
    * The [LiveData] that will correspond to the next revision card that may be navigated to (as a
@@ -94,34 +91,32 @@ class RevisionCardViewModel private constructor(
   }
 
   /** Returns the localised title of the subtopic. */
-  fun computeTitleText(subtopic: EphemeralSubtopic?): String {
-    return subtopic?.let {
+  fun computeTitleText(subtopic: EphemeralSubtopic?): String =
+    subtopic?.let {
       translationController.extractString(
         subtopic.subtopic.title,
-        subtopic.writtenTranslationContext
+        subtopic.writtenTranslationContext,
       )
     } ?: ""
-  }
 
   /** Returns the content description of the subtopic. */
-  fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String {
-    return when (subtopicLiveData) {
-      previousSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.previous_subtopic_talkback_text,
-        computeTitleText(previousSubtopicLiveData.value)
-      )
-      nextSubtopicLiveData -> appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.next_subtopic_talkback_text,
-        computeTitleText(nextSubtopicLiveData.value)
-      )
+  fun computeContentDescriptionText(subtopicLiveData: LiveData<EphemeralSubtopic>): String =
+    when (subtopicLiveData) {
+      previousSubtopicLiveData ->
+        appLanguageResourceHandler.getStringInLocaleWithWrapping(
+          R.string.previous_subtopic_talkback_text,
+          computeTitleText(previousSubtopicLiveData.value),
+        )
+      nextSubtopicLiveData ->
+        appLanguageResourceHandler.getStringInLocaleWithWrapping(
+          R.string.next_subtopic_talkback_text,
+          computeTitleText(nextSubtopicLiveData.value),
+        )
       else -> ""
     }
-  }
 
-  private fun processPreviousSubtopicData(
-    topicLiveData: AsyncResult<EphemeralTopic>
-  ): EphemeralSubtopic {
-    return when (topicLiveData) {
+  private fun processPreviousSubtopicData(topicLiveData: AsyncResult<EphemeralTopic>): EphemeralSubtopic =
+    when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
         topic.subtopicsList.find {
@@ -130,12 +125,9 @@ class RevisionCardViewModel private constructor(
       }
       else -> EphemeralSubtopic.getDefaultInstance()
     }
-  }
 
-  private fun processNextSubtopicData(
-    topicLiveData: AsyncResult<EphemeralTopic>
-  ): EphemeralSubtopic {
-    return when (topicLiveData) {
+  private fun processNextSubtopicData(topicLiveData: AsyncResult<EphemeralTopic>): EphemeralSubtopic =
+    when (topicLiveData) {
       is AsyncResult.Success -> {
         val topic = topicLiveData.value
         topic.subtopicsList.find {
@@ -144,59 +136,57 @@ class RevisionCardViewModel private constructor(
       }
       else -> EphemeralSubtopic.getDefaultInstance()
     }
-  }
 
   private val revisionCardResultLiveData: LiveData<AsyncResult<EphemeralRevisionCard>> by lazy {
     topicController.getRevisionCard(profileId, topicId, subtopicId).toLiveData()
   }
 
-  private fun processRevisionCardLiveData(): LiveData<EphemeralRevisionCard> {
-    return Transformations.map(revisionCardResultLiveData, ::processRevisionCard)
-  }
+  private fun processRevisionCardLiveData(): LiveData<EphemeralRevisionCard> =
+    Transformations.map(revisionCardResultLiveData, ::processRevisionCard)
 
-  private fun processRevisionCard(
-    revisionCardResult: AsyncResult<EphemeralRevisionCard>
-  ): EphemeralRevisionCard {
-    return when (revisionCardResult) {
+  private fun processRevisionCard(revisionCardResult: AsyncResult<EphemeralRevisionCard>): EphemeralRevisionCard =
+    when (revisionCardResult) {
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "RevisionCardFragment", "Failed to retrieve Revision Card", revisionCardResult.error
+          "RevisionCardFragment",
+          "Failed to retrieve Revision Card",
+          revisionCardResult.error,
         )
         EphemeralRevisionCard.getDefaultInstance()
       }
       is AsyncResult.Pending -> EphemeralRevisionCard.getDefaultInstance()
       is AsyncResult.Success -> revisionCardResult.value
     }
-  }
 
   /** Factory to create new [RevisionCardViewModel]s. */
-  class Factory @Inject constructor(
-    private val activity: AppCompatActivity,
-    private val topicController: TopicController,
-    private val oppiaLogger: OppiaLogger,
-    @TopicHtmlParserEntityType private val entityType: String,
-    private val appLanguageResourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController
-  ) {
-    /** Returns a new [RevisionCardViewModel]. */
-    fun create(
-      topicId: String,
-      subtopicId: Int,
-      profileId: ProfileId,
-      subtopicListSize: Int
-    ): RevisionCardViewModel {
-      return RevisionCardViewModel(
-        activity,
-        topicController,
-        oppiaLogger,
-        entityType,
-        translationController,
-        topicId,
-        subtopicId,
-        profileId,
-        appLanguageResourceHandler,
-        subtopicListSize
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val activity: AppCompatActivity,
+      private val topicController: TopicController,
+      private val oppiaLogger: OppiaLogger,
+      @TopicHtmlParserEntityType private val entityType: String,
+      private val appLanguageResourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController,
+    ) {
+      /** Returns a new [RevisionCardViewModel]. */
+      fun create(
+        topicId: String,
+        subtopicId: Int,
+        profileId: ProfileId,
+        subtopicListSize: Int,
+      ): RevisionCardViewModel =
+        RevisionCardViewModel(
+          activity,
+          topicController,
+          oppiaLogger,
+          entityType,
+          translationController,
+          topicId,
+          subtopicId,
+          profileId,
+          appLanguageResourceHandler,
+          subtopicListSize,
+        )
     }
-  }
 }

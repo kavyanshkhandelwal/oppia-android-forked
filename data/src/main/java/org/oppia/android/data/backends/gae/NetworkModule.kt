@@ -27,41 +27,42 @@ class NetworkModule {
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     networkLoggingInterceptor: NetworkLoggingInterceptor,
-    @BaseUrl baseUrl: String
+    @BaseUrl baseUrl: String,
   ): Optional<Retrofit> {
     // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .addInterceptor(networkLoggingInterceptor)
-        .build()
+      val client =
+        OkHttpClient
+          .Builder()
+          .addInterceptor(jsonPrefixNetworkInterceptor)
+          .addInterceptor(remoteAuthNetworkInterceptor)
+          .addInterceptor(networkLoggingInterceptor)
+          .build()
 
       Optional.of(
-        Retrofit.Builder()
+        Retrofit
+          .Builder()
           .baseUrl(baseUrl)
           .addConverterFactory(MoshiConverterFactory.create())
           .client(client)
-          .build()
+          .build(),
       )
-    } else Optional.absent()
+    } else {
+      Optional.absent()
+    }
   }
 
   @Provides
   @Singleton
   fun provideFeedbackReportingService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<FeedbackReportingService> {
-    return retrofit.map { it.create(FeedbackReportingService::class.java) }
-  }
+    @OppiaRetrofit retrofit: Optional<Retrofit>,
+  ): Optional<FeedbackReportingService> = retrofit.map { it.create(FeedbackReportingService::class.java) }
 
   @Provides
   @Singleton
   fun providePlatformParameterService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<PlatformParameterService> {
-    return retrofit.map { it.create(PlatformParameterService::class.java) }
-  }
+    @OppiaRetrofit retrofit: Optional<Retrofit>,
+  ): Optional<PlatformParameterService> = retrofit.map { it.create(PlatformParameterService::class.java) }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
   // replaced with a secret key in production.

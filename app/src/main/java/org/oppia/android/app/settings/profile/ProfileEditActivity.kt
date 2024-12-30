@@ -19,7 +19,6 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
   lateinit var profileEditActivityPresenter: ProfileEditActivityPresenter
 
   companion object {
-
     /** Params key for ProfileEditActivity. */
     const val PROFILE_EDIT_ACTIVITY_PARAMS_KEY = "ProfileEditActivity.params"
 
@@ -27,12 +26,15 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createProfileEditActivity(
       context: Context,
       profileId: Int,
-      isMultipane: Boolean = false
+      isMultipane: Boolean = false,
     ): Intent {
-      val args = ProfileEditActivityParams.newBuilder().apply {
-        this.internalProfileId = profileId
-        this.isMultipane = isMultipane
-      }.build()
+      val args =
+        ProfileEditActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileId
+            this.isMultipane = isMultipane
+          }.build()
       return Intent(context, ProfileEditActivity::class.java).apply {
         putProtoExtra(PROFILE_EDIT_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PROFILE_EDIT_ACTIVITY)
@@ -51,15 +53,16 @@ class ProfileEditActivity : InjectableAutoLocalizedAppCompatActivity() {
         override fun handleOnBackPressed() {
           this@ProfileEditActivity.handleBackPress()
         }
-      }
+      },
     )
   }
 
   private fun handleBackPress() {
-    val args = intent.getProtoExtra(
-      PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
-      ProfileEditActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
+        ProfileEditActivityParams.getDefaultInstance(),
+      )
     val isMultipane = args?.isMultipane ?: false
     if (isMultipane) {
       finish()

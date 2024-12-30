@@ -23,126 +23,130 @@ import javax.inject.Inject
 private const val RESUME_LESSON_TAG = "ResumeLesson"
 
 /** The presenter for [ResumeLessonActivity]. */
-class ResumeLessonActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
-  private val oppiaLogger: OppiaLogger
-) {
-  private lateinit var profileId: ProfileId
-  private lateinit var classroomId: String
-  private lateinit var topicId: String
-  private lateinit var storyId: String
-  private lateinit var explorationId: String
-  private lateinit var parentScreen: ExplorationActivityParams.ParentScreen
-  private lateinit var explorationCheckpoint: ExplorationCheckpoint
-
-  /** Handles onCreate() method of the [ResumeLessonActivity]. */
-  fun handleOnCreate(
-    profileId: ProfileId,
-    classroomId: String,
-    topicId: String,
-    storyId: String,
-    explorationId: String,
-    parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+class ResumeLessonActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val profileManagementController: ProfileManagementController,
+    private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+    private val oppiaLogger: OppiaLogger,
   ) {
-    val binding = DataBindingUtil.setContentView<ResumeLessonActivityBinding>(
-      activity,
-      R.layout.resume_lesson_activity
-    )
-    this.profileId = profileId
-    this.classroomId = classroomId
-    this.topicId = topicId
-    this.storyId = storyId
-    this.explorationId = explorationId
-    this.explorationCheckpoint = explorationCheckpoint
-    this.parentScreen = parentScreen
-    val resumeLessonToolbar = binding.resumeLessonActivityToolbar
-    activity.setSupportActionBar(resumeLessonToolbar)
+    private lateinit var profileId: ProfileId
+    private lateinit var classroomId: String
+    private lateinit var topicId: String
+    private lateinit var storyId: String
+    private lateinit var explorationId: String
+    private lateinit var parentScreen: ExplorationActivityParams.ParentScreen
+    private lateinit var explorationCheckpoint: ExplorationCheckpoint
 
-    retrieveReadingTextSize().observe(
-      activity as ResumeLessonActivity,
-      { result ->
-        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+    /** Handles onCreate() method of the [ResumeLessonActivity]. */
+    fun handleOnCreate(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String,
+      explorationId: String,
+      parentScreen: ExplorationActivityParams.ParentScreen,
+      explorationCheckpoint: ExplorationCheckpoint,
+    ) {
+      val binding =
+        DataBindingUtil.setContentView<ResumeLessonActivityBinding>(
+          activity,
+          R.layout.resume_lesson_activity,
+        )
+      this.profileId = profileId
+      this.classroomId = classroomId
+      this.topicId = topicId
+      this.storyId = storyId
+      this.explorationId = explorationId
+      this.explorationCheckpoint = explorationCheckpoint
+      this.parentScreen = parentScreen
+      val resumeLessonToolbar = binding.resumeLessonActivityToolbar
+      activity.setSupportActionBar(resumeLessonToolbar)
+
+      retrieveReadingTextSize().observe(
+        activity as ResumeLessonActivity,
+        { result ->
+          (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+        },
+      )
+
+      resumeLessonToolbar.setNavigationOnClickListener {
+        fontScaleConfigurationUtil.adjustFontScale(
+          context = activity,
+          ReadingTextSize.MEDIUM_TEXT_SIZE,
+        )
+        activity.onBackPressedDispatcher.onBackPressed()
       }
-    )
+    }
 
-    resumeLessonToolbar.setNavigationOnClickListener {
+    /** Loads [ResumeLessonFragment]. */
+    fun loadResumeLessonFragment(readingTextSize: ReadingTextSize) {
+      if (getResumeLessonFragment() != null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .remove(getResumeLessonFragment() as Fragment)
+          .commitNow()
+      }
+
+      val resumeLessonFragment =
+        ResumeLessonFragment.newInstance(
+          profileId,
+          classroomId,
+          topicId,
+          storyId,
+          explorationId,
+          parentScreen,
+          explorationCheckpoint,
+          readingTextSize,
+        )
+      activity.supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.resume_lesson_fragment_placeholder,
+          resumeLessonFragment,
+          RESUME_LESSON_TAG,
+        ).commitNow()
+    }
+
+    private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> =
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processReadingTextSizeResult,
+      )
+
+    private fun processReadingTextSizeResult(profileResult: AsyncResult<Profile>): ReadingTextSize =
+      when (profileResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ResumeLessonActivity",
+            "Failed to retrieve profile",
+            profileResult.error,
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> {
+          oppiaLogger.d(
+            "ResumeLessonActivity",
+            "Result is pending",
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Success -> profileResult.value
+      }.readingTextSize
+
+    private fun getResumeLessonFragment(): ResumeLessonFragment? =
+      activity
+        .supportFragmentManager
+        .findFragmentById(
+          R.id.resume_lesson_fragment_placeholder,
+        ) as ResumeLessonFragment?
+
+    /** Set reading text size normal. */
+    fun setReadingTextSizeNormal() {
       fontScaleConfigurationUtil.adjustFontScale(
         context = activity,
-        ReadingTextSize.MEDIUM_TEXT_SIZE
+        ReadingTextSize.MEDIUM_TEXT_SIZE,
       )
-      activity.onBackPressedDispatcher.onBackPressed()
     }
   }
-
-  /** Loads [ResumeLessonFragment]. */
-  fun loadResumeLessonFragment(readingTextSize: ReadingTextSize) {
-    if (getResumeLessonFragment() != null)
-      activity.supportFragmentManager.beginTransaction()
-        .remove(getResumeLessonFragment() as Fragment).commitNow()
-
-    val resumeLessonFragment = ResumeLessonFragment.newInstance(
-      profileId,
-      classroomId,
-      topicId,
-      storyId,
-      explorationId,
-      parentScreen,
-      explorationCheckpoint,
-      readingTextSize
-    )
-    activity.supportFragmentManager.beginTransaction().add(
-      R.id.resume_lesson_fragment_placeholder,
-      resumeLessonFragment,
-      RESUME_LESSON_TAG
-    ).commitNow()
-  }
-
-  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processReadingTextSizeResult
-    )
-  }
-
-  private fun processReadingTextSizeResult(
-    profileResult: AsyncResult<Profile>
-  ): ReadingTextSize {
-    return when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ResumeLessonActivity",
-          "Failed to retrieve profile",
-          profileResult.error
-        )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> {
-        oppiaLogger.d(
-          "ResumeLessonActivity",
-          "Result is pending"
-        )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Success -> profileResult.value
-    }.readingTextSize
-  }
-
-  private fun getResumeLessonFragment(): ResumeLessonFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(
-        R.id.resume_lesson_fragment_placeholder
-      ) as ResumeLessonFragment?
-  }
-
-  /** Set reading text size normal. */
-  fun setReadingTextSizeNormal() {
-    fontScaleConfigurationUtil.adjustFontScale(
-      context = activity,
-      ReadingTextSize.MEDIUM_TEXT_SIZE
-    )
-  }
-}

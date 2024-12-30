@@ -29,8 +29,9 @@ class FractionInteractionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  userAnswerState: UserAnswerState
-) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION), InteractionAnswerHandler {
+  userAnswerState: UserAnswerState,
+) : StateItemViewModel(ViewType.FRACTION_INPUT_INTERACTION),
+  InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = userAnswerState.textInputAnswer
   private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
@@ -43,10 +44,13 @@ class FractionInteractionViewModel private constructor(
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        override fun onPropertyChanged(
+          sender: Observable,
+          propertyId: Int,
+        ) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            true // Allow submit on empty answer.
+            true, // Allow submit on empty answer.
           )
         }
       }
@@ -54,22 +58,30 @@ class FractionInteractionViewModel private constructor(
     isAnswerAvailable.addOnPropertyChangedCallback(callback)
     // Force-update the UI to reflect the state of the errorMessage and isAnswerAvailable property:
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
-      /* pendingAnswerError= */null,
-      /* inputAnswerAvailable= */true
+      // pendingAnswerError=
+      null,
+      // inputAnswerAvailable=
+      true,
     )
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    if (answerText.isNotEmpty()) {
-      val answerTextString = answerText.toString()
-      answer = InteractionObject.newBuilder().apply {
-        fraction = fractionParser.parseFractionFromString(answerTextString)
+  override fun getPendingAnswer(): UserAnswer =
+    UserAnswer
+      .newBuilder()
+      .apply {
+        if (answerText.isNotEmpty()) {
+          val answerTextString = answerText.toString()
+          answer =
+            InteractionObject
+              .newBuilder()
+              .apply {
+                fraction = fractionParser.parseFractionFromString(answerTextString)
+              }.build()
+          plainAnswer = answerTextString
+          this.writtenTranslationContext = this@FractionInteractionViewModel.writtenTranslationContext
+        }
       }.build()
-      plainAnswer = answerTextString
-      this.writtenTranslationContext = this@FractionInteractionViewModel.writtenTranslationContext
-    }
-  }.build()
 
   /** It checks the pending error for the current fraction input, and correspondingly updates the error string based on the specified error category. */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
@@ -78,18 +90,20 @@ class FractionInteractionViewModel private constructor(
       AnswerErrorCategory.REAL_TIME -> {
         if (answerText.isNotEmpty()) {
           pendingAnswerError =
-            FractionParsingUiError.createFromParsingError(
-              fractionParser.getRealTimeAnswerError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
+            FractionParsingUiError
+              .createFromParsingError(
+                fractionParser.getRealTimeAnswerError(answerText.toString()),
+              ).getErrorMessageFromStringRes(resourceHandler)
         } else {
           pendingAnswerError = null
         }
       }
       AnswerErrorCategory.SUBMIT_TIME -> {
         pendingAnswerError =
-          FractionParsingUiError.createFromParsingError(
-            fractionParser.getSubmitTimeError(answerText.toString())
-          ).getErrorMessageFromStringRes(resourceHandler)
+          FractionParsingUiError
+            .createFromParsingError(
+              fractionParser.getSubmitTimeError(answerText.toString()),
+            ).getErrorMessageFromStringRes(resourceHandler)
       }
       else -> {}
     }
@@ -97,12 +111,22 @@ class FractionInteractionViewModel private constructor(
     return pendingAnswerError
   }
 
-  fun getAnswerTextWatcher(): TextWatcher {
-    return object : TextWatcher {
-      override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+  fun getAnswerTextWatcher(): TextWatcher =
+    object : TextWatcher {
+      override fun beforeTextChanged(
+        s: CharSequence,
+        start: Int,
+        count: Int,
+        after: Int,
+      ) {
       }
 
-      override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
+      override fun onTextChanged(
+        answer: CharSequence,
+        start: Int,
+        before: Int,
+        count: Int,
+      ) {
         answerText = answer.toString().trim()
         val isAnswerTextAvailable = answerText.isNotEmpty()
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
@@ -114,14 +138,14 @@ class FractionInteractionViewModel private constructor(
       override fun afterTextChanged(s: Editable) {
       }
     }
-  }
 
-  override fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.newBuilder().apply {
-      this.textInputAnswer = answerText.toString()
-      this.answerErrorCategory = answerErrorCetegory
-    }.build()
-  }
+  override fun getUserAnswerState(): UserAnswerState =
+    UserAnswerState
+      .newBuilder()
+      .apply {
+        this.textInputAnswer = answerText.toString()
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
@@ -149,32 +173,33 @@ class FractionInteractionViewModel private constructor(
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController
-  ) : InteractionItemFactory {
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return FractionInteractionViewModel(
-        interaction,
-        hasConversationView,
-        isSplitView,
-        answerErrorReceiver,
-        writtenTranslationContext,
-        resourceHandler,
-        translationController,
-        userAnswerState
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        FractionInteractionViewModel(
+          interaction,
+          hasConversationView,
+          isSplitView,
+          answerErrorReceiver,
+          writtenTranslationContext,
+          resourceHandler,
+          translationController,
+          userAnswerState,
+        )
     }
-  }
 }

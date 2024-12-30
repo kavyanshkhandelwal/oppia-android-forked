@@ -92,7 +92,6 @@ class ApplicationLifecycleModuleTest {
 
   @Module
   class TestLoggingIdentifierModule {
-
     companion object {
       const val applicationIdSeed = 1L
     }
@@ -112,23 +111,27 @@ class ApplicationLifecycleModuleTest {
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
-      AssetModule::class
-    ]
+      AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(applicationLifecycleObserverImplTest: ApplicationLifecycleModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerApplicationLifecycleModuleTest_TestApplicationComponent.builder()
+      DaggerApplicationLifecycleModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -25,17 +25,21 @@ import kotlinx.coroutines.delay as delayInScope // Needed to avoid conflict with
  */
 @OptIn(InternalCoroutinesApi::class)
 class TestCoroutineDispatcherEspressoImpl private constructor(
-  private val realCoroutineDispatcher: CoroutineDispatcher
-) : TestCoroutineDispatcher(), Delay {
-
+  private val realCoroutineDispatcher: CoroutineDispatcher,
+) : TestCoroutineDispatcher(),
+  Delay {
   private val realCoroutineScope by lazy { CoroutineScope(realCoroutineDispatcher) }
   private val executingTaskCount = AtomicInteger(0)
   private val totalTaskCount = AtomicInteger(0)
+
   /** Map of task ID (based on [totalTaskCount]) to the time in millis when that task will run. */
   private val taskCompletionTimes = ConcurrentHashMap<Int, Long>()
   private var taskIdleListener: TaskIdleListener? = null
 
-  override fun dispatch(context: CoroutineContext, block: Runnable) {
+  override fun dispatch(
+    context: CoroutineContext,
+    block: Runnable,
+  ) {
     val taskId = totalTaskCount.incrementAndGet()
     taskCompletionTimes[taskId] = System.currentTimeMillis()
 
@@ -56,7 +60,7 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   override fun scheduleResumeAfterDelay(
     timeMillis: Long,
-    continuation: CancellableContinuation<Unit>
+    continuation: CancellableContinuation<Unit>,
   ) {
     val taskId = totalTaskCount.incrementAndGet()
     taskCompletionTimes[taskId] = System.currentTimeMillis() + timeMillis
@@ -68,9 +72,10 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     // should be assumed to be 'running' since the dispatcher is executing tasks in real-time.
     executingTaskCount.incrementAndGet()
     notifyIfRunning()
-    val delayResult = realCoroutineScope.async {
-      delayInScope(timeMillis)
-    }
+    val delayResult =
+      realCoroutineScope.async {
+        delayInScope(timeMillis)
+      }
     delayResult.invokeOnCompletion {
       try {
         continuation.block()
@@ -82,7 +87,10 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
     }
   }
 
-  override fun runCurrent(timeout: Long, timeoutUnit: TimeUnit) {
+  override fun runCurrent(
+    timeout: Long,
+    timeoutUnit: TimeUnit,
+  ) {
     // Nothing to do; the queue is always continuously running.
   }
 
@@ -119,9 +127,10 @@ class TestCoroutineDispatcherEspressoImpl private constructor(
    * Injectable implementation of [TestCoroutineDispatcher.Factory] for
    * [TestCoroutineDispatcherEspressoImpl].
    */
-  class FactoryImpl @Inject constructor() : Factory {
-    override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher {
-      return TestCoroutineDispatcherEspressoImpl(realDispatcher)
+  class FactoryImpl
+    @Inject
+    constructor() : Factory {
+      override fun createDispatcher(realDispatcher: CoroutineDispatcher): TestCoroutineDispatcher =
+        TestCoroutineDispatcherEspressoImpl(realDispatcher)
     }
-  }
 }

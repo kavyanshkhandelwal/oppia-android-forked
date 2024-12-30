@@ -14,9 +14,7 @@ class KonfettiViewMatcher {
      * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
      *          confetti
      */
-    fun hasActiveConfetti(): TypeSafeMatcher<View> {
-      return ActiveConfettiMatcher()
-    }
+    fun hasActiveConfetti(): TypeSafeMatcher<View> = ActiveConfettiMatcher()
 
     /**
      * Checks that the view being checked is a [KonfettiView] with the expected number of
@@ -25,9 +23,7 @@ class KonfettiViewMatcher {
      * @returns a [TypeSafeMatcher] that checks if the given view is a [KonfettiView] that isActive with
      *          confetti
      */
-    fun hasExpectedNumberOfActiveSystems(numSystems: Int): TypeSafeMatcher<View> {
-      return HasActiveSystemsCount(numSystems)
-    }
+    fun hasExpectedNumberOfActiveSystems(numSystems: Int): TypeSafeMatcher<View> = HasActiveSystemsCount(numSystems)
 
     /** A custom [TypeSafeMatcher] class to check that the associated view is a [KonfettiView] and isActive(). */
     private class ActiveConfettiMatcher : TypeSafeMatcher<View>() {
@@ -35,9 +31,7 @@ class KonfettiViewMatcher {
         description.appendText("KonfettiView with active confetti animation")
       }
 
-      override fun matchesSafely(view: View): Boolean {
-        return view is KonfettiView && view.isActive()
-      }
+      override fun matchesSafely(view: View): Boolean = view is KonfettiView && view.isActive()
     }
 
     /**
@@ -45,17 +39,15 @@ class KonfettiViewMatcher {
      * currently creating new confetti particles.
      */
     private class HasActiveSystemsCount(
-      private val expectedNumSystems: Int
+      private val expectedNumSystems: Int,
     ) : TypeSafeMatcher<View>() {
       override fun describeTo(description: Description) {
         description.appendText(
-          "KonfettiView with $expectedNumSystems active particle systems"
+          "KonfettiView with $expectedNumSystems active particle systems",
         )
       }
 
-      override fun matchesSafely(view: View): Boolean {
-        return view is KonfettiView && view.getActiveSystems().size == expectedNumSystems
-      }
+      override fun matchesSafely(view: View): Boolean = view is KonfettiView && view.getActiveSystems().size == expectedNumSystems
     }
   }
 }

@@ -35,8 +35,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.viewpager2.widget.ViewPager2
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.hamcrest.core.IsInstanceOf.instanceOf
@@ -131,7 +131,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = OnboardingFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class OnboardingFragmentTest {
   @get:Rule
@@ -166,8 +166,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
@@ -179,8 +179,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_0_description)))
     }
   }
@@ -192,26 +192,26 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(1.0F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_1),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_2),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_3),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
     }
   }
@@ -240,8 +240,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
@@ -255,8 +255,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
@@ -270,8 +270,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_1_description)))
     }
   }
@@ -284,26 +284,26 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_1),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(1.0F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_2),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_3),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
     }
   }
@@ -330,8 +330,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
@@ -355,8 +355,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
@@ -370,8 +370,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_2_title)))
     }
   }
@@ -385,8 +385,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_2_description)))
     }
   }
@@ -399,26 +399,26 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.onboarding_dot_0),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_1),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_2),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(1.0F)))
       onView(
         allOf(
           withId(R.id.onboarding_dot_3),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withAlpha(0.3F)))
     }
   }
@@ -445,8 +445,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
@@ -469,8 +469,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
@@ -484,8 +484,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_description)))
     }
   }
@@ -533,8 +533,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
@@ -547,8 +547,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(getOnboardingSlide0Title())))
     }
   }
@@ -563,8 +563,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_1_title)))
     }
   }
@@ -580,8 +580,8 @@ class OnboardingFragmentTest {
       onView(
         allOf(
           withId(R.id.slide_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.onboarding_slide_3_title)))
     }
   }
@@ -593,9 +593,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
           withContentDescription(
-            R.string.next_arrow
-          )
-        )
+            R.string.next_arrow,
+          ),
+        ),
       )
     }
   }
@@ -608,9 +608,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_fragment_next_image_view)).check(
         matches(
           withContentDescription(
-            R.string.next_arrow
-          )
-        )
+            R.string.next_arrow,
+          ),
+        ),
       )
     }
   }
@@ -624,9 +624,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
-          )
-        )
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4),
+          ),
+        ),
       )
     }
   }
@@ -641,9 +641,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4)
-          )
-        )
+            context.getString(R.string.onboarding_slide_dots_content_description, 2, 4),
+          ),
+        ),
       )
     }
   }
@@ -657,9 +657,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
-          )
-        )
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4),
+          ),
+        ),
       )
     }
   }
@@ -674,9 +674,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.slide_dots_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4)
-          )
-        )
+            context.getString(R.string.onboarding_slide_dots_content_description, 3, 4),
+          ),
+        ),
       )
     }
   }
@@ -689,12 +689,12 @@ class OnboardingFragmentTest {
       onView(withId(R.id.skip_text_view)).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).perform(
-        scrollTo()
+        scrollTo(),
       )
       onView(withId(R.id.slide_terms_of_service_and_privacy_policy_links_text_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -715,9 +715,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_app_language_image)).check(
         matches(
           withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
+            R.string.onboarding_otter_content_description,
+          ),
+        ),
       )
     }
   }
@@ -739,9 +739,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_app_language_image)).check(
         matches(
           withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
+            R.string.onboarding_otter_content_description,
+          ),
+        ),
       )
     }
   }
@@ -764,9 +764,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_app_language_image)).check(
         matches(
           withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
+            R.string.onboarding_otter_content_description,
+          ),
+        ),
       )
     }
   }
@@ -789,9 +789,9 @@ class OnboardingFragmentTest {
       onView(withId(R.id.onboarding_app_language_image)).check(
         matches(
           withContentDescription(
-            R.string.onboarding_otter_content_description
-          )
-        )
+            R.string.onboarding_otter_content_description,
+          ),
+        ),
       )
     }
   }
@@ -811,7 +811,7 @@ class OnboardingFragmentTest {
         .isEqualTo(OppiaLanguage.ENGLISH)
 
       onView(withId(R.id.onboarding_language_dropdown)).check(
-        matches(withText(R.string.english_localized_language_name))
+        matches(withText(R.string.english_localized_language_name)),
       )
     }
   }
@@ -832,7 +832,7 @@ class OnboardingFragmentTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_arabicIsPreselected() {
@@ -848,7 +848,7 @@ class OnboardingFragmentTest {
         .isEqualTo(OppiaLanguage.ARABIC)
 
       onView(withId(R.id.onboarding_language_dropdown)).check(
-        matches(withText(R.string.arabic_localized_language_name))
+        matches(withText(R.string.arabic_localized_language_name)),
       )
     }
   }
@@ -857,7 +857,7 @@ class OnboardingFragmentTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_layoutIsRtl() {
@@ -877,7 +877,7 @@ class OnboardingFragmentTest {
     oppiaLanguageEnumId = OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE,
     appStringIetfTag = "pt-BR",
     appStringAndroidLanguageId = "pt",
-    appStringAndroidRegionId = "BR"
+    appStringAndroidRegionId = "BR",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_portugueseIsPreselected() {
@@ -893,7 +893,7 @@ class OnboardingFragmentTest {
         .isEqualTo(OppiaLanguage.BRAZILIAN_PORTUGUESE)
 
       onView(withId(R.id.onboarding_language_dropdown)).check(
-        matches(withText(R.string.portuguese_localized_language_name))
+        matches(withText(R.string.portuguese_localized_language_name)),
       )
     }
   }
@@ -903,7 +903,7 @@ class OnboardingFragmentTest {
     oppiaLanguageEnumId = OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE,
     appStringIetfTag = "pt-BR",
     appStringAndroidLanguageId = "pt",
-    appStringAndroidRegionId = "BR"
+    appStringAndroidRegionId = "BR",
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_layoutIsLtr() {
@@ -923,7 +923,7 @@ class OnboardingFragmentTest {
     oppiaLanguageEnumId = OppiaLanguage.NIGERIAN_PIDGIN_VALUE,
     appStringIetfTag = "pcm",
     appStringAndroidLanguageId = "pcm",
-    appStringAndroidRegionId = "NG"
+    appStringAndroidRegionId = "NG",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_naijaIsPreselected() {
@@ -939,7 +939,7 @@ class OnboardingFragmentTest {
         .isEqualTo(OppiaLanguage.NIGERIAN_PIDGIN)
 
       onView(withId(R.id.onboarding_language_dropdown)).check(
-        matches(withText(R.string.nigerian_pidgin_localized_language_name))
+        matches(withText(R.string.nigerian_pidgin_localized_language_name)),
       )
     }
   }
@@ -949,7 +949,7 @@ class OnboardingFragmentTest {
     oppiaLanguageEnumId = OppiaLanguage.NIGERIAN_PIDGIN_VALUE,
     appStringIetfTag = "pcm",
     appStringAndroidLanguageId = "pcm",
-    appStringAndroidRegionId = "NG"
+    appStringAndroidRegionId = "NG",
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_layoutIsLtr() {
@@ -969,7 +969,7 @@ class OnboardingFragmentTest {
     oppiaLanguageEnumId = OppiaLanguage.LANGUAGE_UNSPECIFIED_VALUE,
     appStringIetfTag = "fr",
     appStringAndroidLanguageId = "fr-CA",
-    appStringAndroidRegionId = "CA"
+    appStringAndroidRegionId = "CA",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testOnboardingFragment_onboardingV2Enabled_unsupportedLocale_englishIsPreselected() {
@@ -985,7 +985,7 @@ class OnboardingFragmentTest {
         .isEqualTo(OppiaLanguage.LANGUAGE_UNSPECIFIED)
 
       onView(withId(R.id.onboarding_language_dropdown)).check(
-        matches(withText(R.string.english_localized_language_name))
+        matches(withText(R.string.english_localized_language_name)),
       )
     }
   }
@@ -1020,7 +1020,7 @@ class OnboardingFragmentTest {
         testCoroutineDispatchers.runCurrent()
 
         onView(withId(R.id.onboarding_language_dropdown)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          matches(withText(R.string.nigerian_pidgin_localized_language_name)),
         )
 
         onView(withId(R.id.onboarding_language_lets_go_button)).perform(click())
@@ -1078,14 +1078,15 @@ class OnboardingFragmentTest {
         testCoroutineDispatchers.runCurrent()
 
         onView(withId(R.id.onboarding_language_dropdown)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          matches(withText(R.string.nigerian_pidgin_localized_language_name)),
         )
       }
     }
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -1105,29 +1106,25 @@ class OnboardingFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
   }
 
-  private fun getResources(): Resources =
-    ApplicationProvider.getApplicationContext<Context>().resources
+  private fun getResources(): Resources = ApplicationProvider.getApplicationContext<Context>().resources
 
   private fun getAppName(): String = getResources().getString(R.string.app_name)
 
-  private fun getOnboardingSlide0Title(): String =
-    getResources().getString(R.string.onboarding_slide_0_title, getAppName())
+  private fun getOnboardingSlide0Title(): String = getResources().getString(R.string.onboarding_slide_0_title, getAppName())
 
-  private fun scrollToPosition(position: Int): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "Scroll ViewPager2 to position: $position"
-      }
+  private fun scrollToPosition(position: Int): ViewAction =
+    object : ViewAction {
+      override fun getDescription(): String = "Scroll ViewPager2 to position: $position"
 
-      override fun getConstraints(): Matcher<View> {
-        return isAssignableFrom(ViewPager2::class.java)
-      }
+      override fun getConstraints(): Matcher<View> = isAssignableFrom(ViewPager2::class.java)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         (view as ViewPager2).setCurrentItem(position, /* smoothScroll= */ false)
       }
     }
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -1158,8 +1155,8 @@ class OnboardingFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1170,9 +1167,13 @@ class OnboardingFragmentTest {
     fun inject(onboardingFragmentTest: OnboardingFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingFragmentTest_TestApplicationComponent.builder()
+      DaggerOnboardingFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1181,9 +1182,12 @@ class OnboardingFragmentTest {
       component.inject(onboardingFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

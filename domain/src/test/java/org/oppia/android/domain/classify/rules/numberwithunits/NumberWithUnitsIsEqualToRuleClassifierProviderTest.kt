@@ -22,19 +22,25 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
-
   private val WHOLE_NUMBER_VALUE_9 =
     InteractionObjectTestBuilder.createWholeNumber(
-      isNegative = false, value = 9
+      isNegative = false,
+      value = 9,
     )
   private val FRACTION_VALUE_TEST_2_OVER_5 =
-    InteractionObjectTestBuilder.createFraction(
-      isNegative = false, numerator = 2, denominator = 5
-    ).fraction
+    InteractionObjectTestBuilder
+      .createFraction(
+        isNegative = false,
+        numerator = 2,
+        denominator = 5,
+      ).fraction
   private val FRACTION_VALUE_TEST_1_OVER_4 =
-    InteractionObjectTestBuilder.createFraction(
-      isNegative = false, numerator = 1, denominator = 4
-    ).fraction
+    InteractionObjectTestBuilder
+      .createFraction(
+        isNegative = false,
+        numerator = 1,
+        denominator = 4,
+      ).fraction
   private val DOUBLE_VALUE_TEST_DIFFERENT_TYPE =
     InteractionObjectTestBuilder.createReal(value = 6.9)
   private val DOUBLE_VALUE_TEST =
@@ -48,40 +54,40 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       FRACTION_VALUE_TEST_2_OVER_5,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_5
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5,
+      ),
     )
   private val INPUT_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_2_OVER_5,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_5
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5,
+      ),
     )
   private val TEST_DIFFERENT_NUMBERS_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_4,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_3
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+      ),
     )
   private val TEST_REAL_INPUT_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
       DOUBLE_VALUE_TEST,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_5
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_5,
+      ),
     )
   private val TEST_REAL_ANSWER_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
       DOUBLE_VALUE_TEST,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_5,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_3
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_3,
+      ),
     )
 
   @Inject
@@ -105,7 +111,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -119,7 +125,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = TEST_REAL_INPUT_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -133,7 +139,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = INPUT_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -147,7 +153,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -161,7 +167,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -175,7 +181,7 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
       unitsIsEqualsRuleClassifier.matches(
         answer = TEST_REAL_ANSWER_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -185,24 +191,25 @@ class NumberWithUnitsIsEqualToRuleClassifierProviderTest {
   fun testWholeNumberInputValue_withRealAnswerNumWithUnits_throwsException() {
     val inputs = mapOf("f" to WHOLE_NUMBER_VALUE_9)
 
-    val exception = assertThrows<IllegalStateException>() {
-
-      unitsIsEqualsRuleClassifier.matches(
-        answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        unitsIsEqualsRuleClassifier.matches(
+          answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected answer to be of type NUMBER_WITH_UNITS not REAL"
+        "Expected answer to be of type NUMBER_WITH_UNITS not REAL",
       )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumberWithUnitsIsEqualToRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerNumberWithUnitsIsEqualToRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

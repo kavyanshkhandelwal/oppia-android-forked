@@ -14,21 +14,22 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/MultipleChoiceInput/directives/multiple-choice-input-rules.service.ts#L21
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class MultipleChoiceInputEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Int> {
+class MultipleChoiceInputEqualsRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<Int> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: Int,
+      input: Int,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer == input
   }
-
-  override fun matches(
-    answer: Int,
-    input: Int,
-    classificationContext: ClassificationContext
-  ): Boolean = answer == input
-}

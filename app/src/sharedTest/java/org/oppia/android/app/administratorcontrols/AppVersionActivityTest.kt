@@ -112,7 +112,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AppVersionActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AppVersionActivityTest {
   @get:Rule
@@ -122,9 +122,12 @@ class AppVersionActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<AppVersionActivity> =
+    ActivityTestRule(
+      AppVersionActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -149,11 +152,10 @@ class AppVersionActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
   }
 
-  private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
+  private fun createAppVersionActivityIntent(): Intent =
+    AppVersionActivity.createAppVersionActivityIntent(
+      ApplicationProvider.getApplicationContext(),
     )
-  }
 
   @After
   fun tearDown() {
@@ -180,19 +182,19 @@ class AppVersionActivityTest {
         withText(
           String.format(
             context.resources.getString(R.string.app_version_name),
-            context.getVersionName()
-          )
-        )
+            context.getVersionName(),
+          ),
+        ),
       ).check(matches(isDisplayed()))
       onView(
         withText(
           String.format(
             context.resources.getString(R.string.app_last_update_date),
-            lastUpdateDate
-          )
-        )
+            lastUpdateDate,
+          ),
+        ),
       ).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -204,58 +206,57 @@ class AppVersionActivityTest {
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withId(
-          R.id.app_version_text_view
-        )
+          R.id.app_version_text_view,
+        ),
       ).check(
         matches(
           withText(
             String.format(
               context.resources.getString(R.string.app_version_name),
-              context.getVersionName()
-            )
-          )
-        )
+              context.getVersionName(),
+            ),
+          ),
+        ),
       )
       onView(
         withId(
-          R.id.app_last_update_date_text_view
-        )
+          R.id.app_last_update_date_text_view,
+        ),
       ).check(
         matches(
           withText(
             String.format(
               context.resources.getString(R.string.app_last_update_date),
-              lastUpdateDate
-            )
-          )
-        )
+              lastUpdateDate,
+            ),
+          ),
+        ),
       )
     }
   }
 
   @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
-    ActivityScenario.launch<AdministratorControlsActivity>(
-      launchAdministratorControlsActivityIntent(
-        internalProfileId = 0
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
+    ActivityScenario
+      .launch<AdministratorControlsActivity>(
+        launchAdministratorControlsActivityIntent(
+          internalProfileId = 0,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.administrator_controls_list)).perform(
+          scrollToPosition<RecyclerView.ViewHolder>(
+            3,
+          ),
         )
-      )
-      onView(withText(R.string.administrator_controls_app_version)).perform(click())
-      intended(hasComponent(AppVersionActivity::class.java.name))
-      onView(isRoot()).perform(pressBack())
-      onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
-    }
+        onView(withText(R.string.administrator_controls_app_version)).perform(click())
+        intended(hasComponent(AppVersionActivity::class.java.name))
+        onView(isRoot()).perform(pressBack())
+        onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
+      }
   }
 
-  private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
-    timestampMillis: Long
-  ): String {
+  private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(timestampMillis: Long): String {
     lateinit var dateTimeString: String
     onActivity { activity ->
       val resourceHandler = activity.activityComponent.getAppLanguageResourceHandler()
@@ -265,9 +266,10 @@ class AppVersionActivityTest {
   }
 
   private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+    val intent =
+      AppVersionActivity.createAppVersionActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+      )
     return ActivityScenario.launch(intent)
   }
 
@@ -275,7 +277,7 @@ class AppVersionActivityTest {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      profileId,
     )
   }
 
@@ -308,8 +310,8 @@ class AppVersionActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -320,9 +322,13 @@ class AppVersionActivityTest {
     fun inject(appVersionActivityTest: AppVersionActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppVersionActivityTest_TestApplicationComponent.builder()
+      DaggerAppVersionActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -331,9 +337,12 @@ class AppVersionActivityTest {
       component.inject(appVersionActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

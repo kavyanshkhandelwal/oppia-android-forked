@@ -14,23 +14,24 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumericInput/directives/numeric-input-rules.service.ts#L36
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class NumericInputIsInclusivelyBetweenRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.DoubleInputMatcher<Double> {
+class NumericInputIsInclusivelyBetweenRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.DoubleInputMatcher<Double> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createDoubleInputClassifier(
+        InteractionObject.ObjectTypeCase.REAL,
+        "a",
+        "b",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(
-      InteractionObject.ObjectTypeCase.REAL,
-      "a",
-      "b",
-      this
-    )
+    override fun matches(
+      answer: Double,
+      firstInput: Double,
+      secondInput: Double,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer in firstInput..secondInput
   }
-
-  override fun matches(
-    answer: Double,
-    firstInput: Double,
-    secondInput: Double,
-    classificationContext: ClassificationContext
-  ): Boolean = answer in firstInput..secondInput
-}

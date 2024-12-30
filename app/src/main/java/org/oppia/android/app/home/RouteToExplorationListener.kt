@@ -12,6 +12,6 @@ interface RouteToExplorationListener {
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   )
 }

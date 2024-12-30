@@ -12,15 +12,16 @@ class TextInputLayoutBindingAdaptersTestActivity : InjectableAutoLocalizedAppCom
     super.onCreate(savedInstanceState)
     setContentView(R.layout.text_input_layout_binding_adapters_test_activity)
 
-    supportFragmentManager.beginTransaction().add(
-      R.id.background,
-      TextInputLayoutBindingAdaptersTestFragment()
-    ).commitNow()
+    supportFragmentManager
+      .beginTransaction()
+      .add(
+        R.id.background,
+        TextInputLayoutBindingAdaptersTestFragment(),
+      ).commitNow()
   }
 
   companion object {
     /** Intent to open this activity. */
-    fun createIntent(context: Context): Intent =
-      Intent(context, TextInputLayoutBindingAdaptersTestActivity::class.java)
+    fun createIntent(context: Context): Intent = Intent(context, TextInputLayoutBindingAdaptersTestActivity::class.java)
   }
 }

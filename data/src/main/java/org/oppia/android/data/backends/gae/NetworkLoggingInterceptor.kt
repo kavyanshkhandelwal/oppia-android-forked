@@ -19,68 +19,74 @@ import javax.inject.Singleton
  * Interceptor on top of Retrofit to log network requests and responses.
  */
 @Singleton
-class NetworkLoggingInterceptor @Inject constructor(
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-) : Interceptor {
-  private val _logNetworkCallFlow = MutableSharedFlow<RetrofitCallContext>()
-  /**
-   * A flow that emits a [RetrofitCallContext] when a network call is made.
-   */
-  val logNetworkCallFlow: SharedFlow<RetrofitCallContext> = _logNetworkCallFlow
+class NetworkLoggingInterceptor
+  @Inject
+  constructor(
+    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+  ) : Interceptor {
+    private val _logNetworkCallFlow = MutableSharedFlow<RetrofitCallContext>()
 
-  private val _logFailedNetworkCallFlow = MutableSharedFlow<RetrofitCallFailedContext>()
+    /**
+     * A flow that emits a [RetrofitCallContext] when a network call is made.
+     */
+    val logNetworkCallFlow: SharedFlow<RetrofitCallContext> = _logNetworkCallFlow
 
-  /**
-   * A flow that emits a [RetrofitCallFailedContext] when a network call fails.
-   */
-  val logFailedNetworkCallFlow: SharedFlow<RetrofitCallFailedContext> = _logFailedNetworkCallFlow
+    private val _logFailedNetworkCallFlow = MutableSharedFlow<RetrofitCallFailedContext>()
 
-  @Throws(IOException::class)
-  override fun intercept(chain: Interceptor.Chain): Response {
-    val request = chain.request()
+    /**
+     * A flow that emits a [RetrofitCallFailedContext] when a network call fails.
+     */
+    val logFailedNetworkCallFlow: SharedFlow<RetrofitCallFailedContext> = _logFailedNetworkCallFlow
 
-    return try {
-      val response = chain.proceed(request)
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+      val request = chain.request()
 
-      val responseBody = response.body?.string()
+      return try {
+        val response = chain.proceed(request)
 
-      CoroutineScope(backgroundDispatcher).launch {
-        _logNetworkCallFlow.emit(
-          RetrofitCallContext.newBuilder()
-            .setRequestUrl(request.url.toString())
-            .setHeaders(request.headers.toString())
-            .setResponseStatusCode(response.code)
-            .setBody(responseBody ?: "")
-            .build()
-        )
-      }
+        val responseBody = response.body?.string()
 
-      if (!response.isSuccessful) {
         CoroutineScope(backgroundDispatcher).launch {
-          _logFailedNetworkCallFlow.emit(
-            RetrofitCallFailedContext.newBuilder()
+          _logNetworkCallFlow.emit(
+            RetrofitCallContext
+              .newBuilder()
               .setRequestUrl(request.url.toString())
               .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
-              .setErrorMessage(responseBody ?: "")
-              .build()
+              .setBody(responseBody ?: "")
+              .build(),
           )
         }
-      }
 
-      response
-    } catch (exception: Exception) {
-      CoroutineScope(backgroundDispatcher).launch {
-        _logFailedNetworkCallFlow.emit(
-          RetrofitCallFailedContext.newBuilder()
-            .setRequestUrl(request.url.toString())
-            .setHeaders(request.headers.toString())
-            .setResponseStatusCode(0)
-            .setErrorMessage(exception.toString())
-            .build()
-        )
+        if (!response.isSuccessful) {
+          CoroutineScope(backgroundDispatcher).launch {
+            _logFailedNetworkCallFlow.emit(
+              RetrofitCallFailedContext
+                .newBuilder()
+                .setRequestUrl(request.url.toString())
+                .setHeaders(request.headers.toString())
+                .setResponseStatusCode(response.code)
+                .setErrorMessage(responseBody ?: "")
+                .build(),
+            )
+          }
+        }
+
+        response
+      } catch (exception: Exception) {
+        CoroutineScope(backgroundDispatcher).launch {
+          _logFailedNetworkCallFlow.emit(
+            RetrofitCallFailedContext
+              .newBuilder()
+              .setRequestUrl(request.url.toString())
+              .setHeaders(request.headers.toString())
+              .setResponseStatusCode(0)
+              .setErrorMessage(exception.toString())
+              .build(),
+          )
+        }
+        chain.proceed(request)
       }
-      chain.proceed(request)
     }
   }
-}

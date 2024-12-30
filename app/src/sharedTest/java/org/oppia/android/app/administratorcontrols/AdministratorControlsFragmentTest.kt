@@ -117,10 +117,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AdministratorControlsFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AdministratorControlsFragmentTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -164,32 +163,32 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
-        targetView = R.id.general_text_view
+        targetView = R.id.general_text_view,
       )
       verifyTextOnListItemAtPosition(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 0,
         targetViewId = R.id.edit_account_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_account
+        stringIdToMatch = R.string.administrator_controls_edit_account,
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
-        targetView = R.id.profile_management_text_view
+        targetView = R.id.profile_management_text_view,
       )
       verifyTextOnListItemAtPosition(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 1,
         targetViewId = R.id.edit_profiles_text_view,
-        stringIdToMatch = R.string.administrator_controls_edit_profiles
+        stringIdToMatch = R.string.administrator_controls_edit_profiles,
       )
     }
   }
@@ -198,26 +197,26 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       verifyTextOnListItemAtPosition(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
         targetViewId = R.id.download_permissions_text_view,
-        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label,
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
-        targetView = R.id.topic_update_on_wifi_constraint_layout
+        targetView = R.id.topic_update_on_wifi_constraint_layout,
       )
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
-        targetView = R.id.auto_update_topic_constraint_layout
+        targetView = R.id.auto_update_topic_constraint_layout,
       )
     }
   }
@@ -227,20 +226,20 @@ class AdministratorControlsFragmentTest {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       verifyItemDisplayedOnListItemDoesNotExist(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
-        targetView = R.id.download_permissions_text_view
+        targetView = R.id.download_permissions_text_view,
       )
       verifyItemDisplayedOnListItemDoesNotExist(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 2,
-        targetView = R.id.auto_update_topic_constraint_layout
+        targetView = R.id.auto_update_topic_constraint_layout,
       )
     }
   }
@@ -249,32 +248,32 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 3, recyclerViewId = administratorControlsListRecyclerViewId)
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 3,
-        targetView = R.id.app_information_text_view
+        targetView = R.id.app_information_text_view,
       )
       verifyTextOnListItemAtPosition(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 3,
         targetViewId = R.id.app_version_text_view,
-        stringIdToMatch = R.string.administrator_controls_app_version
+        stringIdToMatch = R.string.administrator_controls_app_version,
       )
       verifyItemDisplayedOnListItem(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 4,
-        targetView = R.id.account_actions_text_view
+        targetView = R.id.account_actions_text_view,
       )
       verifyTextOnListItemAtPosition(
         recyclerViewId = administratorControlsListRecyclerViewId,
         itemPosition = 4,
         targetViewId = R.id.log_out_text_view,
-        stringIdToMatch = R.string.administrator_controls_log_out
+        stringIdToMatch = R.string.administrator_controls_log_out,
       )
     }
   }
@@ -283,8 +282,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_wifiSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       checkUpdateOnWifiSwitchNotChecked()
@@ -295,8 +294,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_autoUpdateSwitchIsUnchecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -308,8 +307,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -324,8 +323,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_orientationLand_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -342,8 +341,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -361,8 +360,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControls_clickWifiContainer_orientationLand_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -378,8 +377,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -396,8 +395,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAutoUpdateContainer_autoUpdateSwitchIsChecked() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -411,8 +410,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_nonDownloadPermissionProfile_wifiSwitchIsNonClickable() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -424,8 +423,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_autoUpdateSwitchIsNonClickable() {
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
-        profileId = internalProfileId
-      )
+        profileId = internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
@@ -438,8 +437,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.auto_update_topic_constraint_layout
-      )
+        targetViewId = R.id.auto_update_topic_constraint_layout,
+      ),
     ).perform(click())
   }
 
@@ -448,8 +447,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.topic_update_on_wifi_switch
-      )
+        targetViewId = R.id.topic_update_on_wifi_switch,
+      ),
     ).check(matches(not(isClickable())))
   }
 
@@ -458,8 +457,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.auto_update_topic_switch
-      )
+        targetViewId = R.id.auto_update_topic_switch,
+      ),
     ).check(matches(not(isClickable())))
   }
 
@@ -468,8 +467,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.topic_update_on_wifi_switch
-      )
+        targetViewId = R.id.topic_update_on_wifi_switch,
+      ),
     ).check(matches(not(isChecked())))
   }
 
@@ -478,8 +477,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.auto_update_topic_switch
-      )
+        targetViewId = R.id.auto_update_topic_switch,
+      ),
     ).perform(click())
   }
 
@@ -488,8 +487,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.auto_update_topic_switch
-      )
+        targetViewId = R.id.auto_update_topic_switch,
+      ),
     ).check(matches(isChecked()))
   }
 
@@ -498,8 +497,8 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.auto_update_topic_switch
-      )
+        targetViewId = R.id.auto_update_topic_switch,
+      ),
     ).check(matches(not(isChecked())))
   }
 
@@ -508,53 +507,55 @@ class AdministratorControlsFragmentTest {
       atPositionOnView(
         recyclerViewId = administratorControlsListRecyclerViewId,
         position = 2,
-        targetViewId = R.id.topic_update_on_wifi_switch
-      )
+        targetViewId = R.id.topic_update_on_wifi_switch,
+      ),
     ).check(matches(isChecked()))
   }
 
   private fun clickUpdateOnWifiSwitch() {
     onView(atAdminControlsItem(position = 2, R.id.topic_update_on_wifi_constraint_layout)).perform(
-      click()
+      click(),
     )
   }
 
-  private fun atAdminControlsItem(position: Int, viewId: Int): Matcher<View> {
-    return atPositionOnView(
+  private fun atAdminControlsItem(
+    position: Int,
+    viewId: Int,
+  ): Matcher<View> =
+    atPositionOnView(
       recyclerViewId = administratorControlsListRecyclerViewId,
       position,
-      viewId
+      viewId,
     )
-  }
 
-  private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent {
-    return AdministratorControlsFragmentTestActivity
+  private fun createAdministratorControlsFragmentTestActivityIntent(profileId: Int): Intent =
+    AdministratorControlsFragmentTestActivity
       .createAdministratorControlsFragmentTestActivityIntent(
         context = context,
-        profileId = profileId
+        profileId = profileId,
       )
-  }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
-  private fun nestedScrollTo(): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "View is not NestedScrollView"
-      }
+  private fun nestedScrollTo(): ViewAction =
+    object : ViewAction {
+      override fun getDescription(): String = "View is not NestedScrollView"
 
-      override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return Matchers.allOf(
-          ViewMatchers.isDescendantOfA(ViewMatchers.isAssignableFrom(NestedScrollView::class.java))
+      override fun getConstraints(): org.hamcrest.Matcher<View> =
+        Matchers.allOf(
+          ViewMatchers.isDescendantOfA(ViewMatchers.isAssignableFrom(NestedScrollView::class.java)),
         )
-      }
 
-      override fun perform(uiController: UiController, view: View) {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         try {
           val nestedScrollView =
             findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
         } catch (e: Exception) {
-          throw PerformException.Builder()
+          throw PerformException
+            .Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
             .withCause(e)
@@ -563,9 +564,11 @@ class AdministratorControlsFragmentTest {
         uiController.loopMainThreadUntilIdle()
       }
     }
-  }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+  private fun findFirstParentLayoutOfClass(
+    view: View,
+    parentClass: Class<out View>,
+  ): View {
     var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
@@ -581,13 +584,9 @@ class AdministratorControlsFragmentTest {
     return parent as View
   }
 
-  private fun findParent(view: View): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: View): ViewParent = view.getParent()
 
-  private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: ViewParent): ViewParent = view.getParent()
 
   @Singleton
   @Component(
@@ -617,8 +616,8 @@ class AdministratorControlsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -629,19 +628,25 @@ class AdministratorControlsFragmentTest {
     fun inject(administratorControlsFragmentTest: AdministratorControlsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAdministratorControlsFragmentTest_TestApplicationComponent.builder()
+      DaggerAdministratorControlsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(administratorControlsFragmentTest: AdministratorControlsFragmentTest) =
-      component.inject(administratorControlsFragmentTest)
+    fun inject(administratorControlsFragmentTest: AdministratorControlsFragmentTest) = component.inject(administratorControlsFragmentTest)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

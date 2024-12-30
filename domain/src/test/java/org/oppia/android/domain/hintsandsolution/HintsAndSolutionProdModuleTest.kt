@@ -58,8 +58,8 @@ class HintsAndSolutionProdModuleTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -73,9 +73,12 @@ class HintsAndSolutionProdModuleTest {
     fun inject(hintsAndSolutionModuleTest: HintsAndSolutionProdModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintsAndSolutionProdModuleTest_TestApplicationComponent.builder()
+      DaggerHintsAndSolutionProdModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

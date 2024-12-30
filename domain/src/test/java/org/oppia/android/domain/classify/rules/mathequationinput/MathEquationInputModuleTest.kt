@@ -33,7 +33,9 @@ import javax.inject.Singleton
 class MathEquationInputModuleTest {
   @field:[Inject MathEquationInputRules]
   lateinit var mathEquationInputClassifiers: Map<
-    String, @JvmSuppressWildcards RuleClassifier>
+    String,
+    @JvmSuppressWildcards RuleClassifier,
+  >
 
   @Before
   fun setUp() {
@@ -48,7 +50,7 @@ class MathEquationInputModuleTest {
   @Test
   fun testModule_hasNoDuplicateClassifiers() {
     assertThat(mathEquationInputClassifiers.values.toSet()).hasSize(
-      mathEquationInputClassifiers.size
+      mathEquationInputClassifiers.size,
     )
   }
 
@@ -70,7 +72,9 @@ class MathEquationInputModuleTest {
   private fun setUpTestApplicationComponent() {
     DaggerMathEquationInputModuleTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -78,9 +82,7 @@ class MathEquationInputModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -89,8 +91,8 @@ class MathEquationInputModuleTest {
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      MathEquationInputModule::class
-    ]
+      MathEquationInputModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

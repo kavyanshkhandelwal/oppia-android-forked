@@ -22,7 +22,7 @@ import org.oppia.android.util.parser.image.ImageTransformation
  */
 abstract class SvgPictureDrawable(
   private val context: Context,
-  private val scalableVectorGraphic: ScalableVectorGraphic
+  private val scalableVectorGraphic: ScalableVectorGraphic,
 ) : Drawable() {
   // TODO(#1523): Once Glide can be orchestrated, add tests for verifying this drawable's state.
   // TODO(#1815): Add screenshot tests to verify this drawable is rendered correctly.
@@ -100,13 +100,14 @@ abstract class SvgPictureDrawable(
    * when [textPaint] is null and text rendering when otherwise.
    */
   protected fun reinitialize(textPaint: TextPaint?) {
-    val newPicture = if (textPaint != null) {
-      intrinsicSize = scalableVectorGraphic.computeSizeSpecsForTextPicture(textPaint)
-      scalableVectorGraphic.renderToTextPicture(textPaint)
-    } else {
-      intrinsicSize = scalableVectorGraphic.computeSizeSpecs()
-      scalableVectorGraphic.renderToBlockPicture()
-    }
+    val newPicture =
+      if (textPaint != null) {
+        intrinsicSize = scalableVectorGraphic.computeSizeSpecsForTextPicture(textPaint)
+        scalableVectorGraphic.renderToTextPicture(textPaint)
+      } else {
+        intrinsicSize = scalableVectorGraphic.computeSizeSpecs()
+        scalableVectorGraphic.renderToBlockPicture()
+      }
 
     picture = newPicture
 
@@ -117,12 +118,13 @@ abstract class SvgPictureDrawable(
   }
 
   private fun recomputeBitmap() {
-    bitmap = picture?.let { picture ->
-      val renderedPictureBitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, ARGB_8888)
-      val canvas = Canvas(renderedPictureBitmap)
-      canvas.drawPicture(picture, /* dst= */ intrinsicSize.computeRenderingBounds())
-      return@let transformBitmap(renderedPictureBitmap)
-    }
+    bitmap =
+      picture?.let { picture ->
+        val renderedPictureBitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, ARGB_8888)
+        val canvas = Canvas(renderedPictureBitmap)
+        canvas.drawPicture(picture, /* dst= */ intrinsicSize.computeRenderingBounds())
+        return@let transformBitmap(renderedPictureBitmap)
+      }
   }
 
   private fun transformBitmap(bitmap: Bitmap): Bitmap {
@@ -133,24 +135,24 @@ abstract class SvgPictureDrawable(
     return transformedBitmap
   }
 
-  private fun transformBitmap(bitmap: Bitmap, imageTransformation: ImageTransformation): Bitmap {
-    return when (imageTransformation) {
+  private fun transformBitmap(
+    bitmap: Bitmap,
+    imageTransformation: ImageTransformation,
+  ): Bitmap =
+    when (imageTransformation) {
       ImageTransformation.BLUR -> bitmapBlurrer.blur(bitmap)
     }
-  }
 
   private companion object {
-    private fun ScalableVectorGraphic.SvgSizeSpecs.computeRenderingBounds(): Rect {
-      return Rect().apply {
+    private fun ScalableVectorGraphic.SvgSizeSpecs.computeRenderingBounds(): Rect =
+      Rect().apply {
         left = 0
         right = renderedWidth.toInt()
         top = 0
         bottom = renderedHeight.toInt()
       }
-    }
 
-    private fun ScalableVectorGraphic.shouldBeRenderedAsBitmap() =
-      hasTransformations() || isUsingAndroidSdkWithSvgRenderingIssues()
+    private fun ScalableVectorGraphic.shouldBeRenderedAsBitmap() = hasTransformations() || isUsingAndroidSdkWithSvgRenderingIssues()
 
     private fun ScalableVectorGraphic.hasTransformations() = transformations.isNotEmpty()
 

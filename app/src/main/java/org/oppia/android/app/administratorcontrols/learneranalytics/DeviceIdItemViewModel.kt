@@ -23,12 +23,13 @@ class DeviceIdItemViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val loggingIdentifierController: LoggingIdentifierController,
   private val oppiaLogger: OppiaLogger,
-  private val fragment: Fragment
+  private val fragment: Fragment,
 ) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.DEVICE_ID) {
   /** The device installation ID associated with analytics. */
   val deviceId: LiveData<String?> by lazy {
     Transformations.map(
-      loggingIdentifierController.getInstallationId().toLiveData(), this::processDeviceId
+      loggingIdentifierController.getInstallationId().toLiveData(),
+      this::processDeviceId,
     )
   }
 
@@ -38,61 +39,70 @@ class DeviceIdItemViewModel private constructor(
   }
 
   /** Returns a human-readable label to represent the specified [deviceId]. */
-  fun computeDeviceIdLabel(deviceId: String?): String {
-    return if (deviceId != null) {
+  fun computeDeviceIdLabel(deviceId: String?): String =
+    if (deviceId != null) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.learner_analytics_device_id_label, deviceId
+        R.string.learner_analytics_device_id_label,
+        deviceId,
       )
     } else {
       resourceHandler.getStringInLocale(R.string.learner_analytics_error_retrieving_device_id_error)
     }
-  }
 
   /** Copies the specified device ID (if non-null) to the user's clipboard. */
   fun copyDeviceId(deviceId: String?) {
     // Only copy the device ID if it's available.
     deviceId?.let {
       val appName = resourceHandler.getStringInLocale(R.string.app_name)
-      clipboardController.setCurrentClip(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.learner_analytics_device_id_clipboard_label_description, appName
-        ),
-        deviceId
-      ).toLiveData().observe(fragment) {
-        if (it !is AsyncResult.Success) {
-          oppiaLogger.w(
-            "ProfileLearnerIdItemViewModel",
-            "Encountered unexpected non-successful result when copying to clipboard: $it"
-          )
+      clipboardController
+        .setCurrentClip(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.learner_analytics_device_id_clipboard_label_description,
+            appName,
+          ),
+          deviceId,
+        ).toLiveData()
+        .observe(fragment) {
+          if (it !is AsyncResult.Success) {
+            oppiaLogger.w(
+              "ProfileLearnerIdItemViewModel",
+              "Encountered unexpected non-successful result when copying to clipboard: $it",
+            )
+          }
         }
-      }
     }
   }
 
   private fun processDeviceId(result: AsyncResult<String>) = (result as? AsyncResult.Success)?.value
 
-  private fun processCurrentClip(result: AsyncResult<CurrentClip>): String? {
-    return if (result is AsyncResult.Success) {
+  private fun processCurrentClip(result: AsyncResult<CurrentClip>): String? =
+    if (result is AsyncResult.Success) {
       when (val clip = result.value) {
         is CurrentClip.SetWithAppText -> clip.text
         CurrentClip.SetWithOtherContent, CurrentClip.Unknown -> null
       }
-    } else null
-  }
+    } else {
+      null
+    }
 
   /** Factory for creating new [DeviceIdItemViewModel]s. */
-  class Factory @Inject constructor(
-    private val clipboardController: ClipboardController,
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val loggingIdentifierController: LoggingIdentifierController,
-    private val oppiaLogger: OppiaLogger,
-    private val fragment: Fragment
-  ) {
-    /** Returns a new [DeviceIdItemViewModel]. */
-    fun create(): DeviceIdItemViewModel {
-      return DeviceIdItemViewModel(
-        clipboardController, resourceHandler, loggingIdentifierController, oppiaLogger, fragment
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val clipboardController: ClipboardController,
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val loggingIdentifierController: LoggingIdentifierController,
+      private val oppiaLogger: OppiaLogger,
+      private val fragment: Fragment,
+    ) {
+      /** Returns a new [DeviceIdItemViewModel]. */
+      fun create(): DeviceIdItemViewModel =
+        DeviceIdItemViewModel(
+          clipboardController,
+          resourceHandler,
+          loggingIdentifierController,
+          oppiaLogger,
+          fragment,
+        )
     }
-  }
 }

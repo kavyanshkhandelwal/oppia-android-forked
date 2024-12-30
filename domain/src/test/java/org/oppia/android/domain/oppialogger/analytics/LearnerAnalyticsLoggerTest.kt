@@ -92,21 +92,28 @@ class LearnerAnalyticsLoggerTest {
 
   @Inject
   lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+
   @Inject
   lateinit var explorationDataController: ExplorationDataController
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject
   lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Parameter
   lateinit var iid: String
+
   @Parameter
   lateinit var lid: String
+
   @Parameter
   lateinit var eid: String
+
   @Parameter
   lateinit var elid: String
 
@@ -1017,7 +1024,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasViewExistingSolutionContextThat() {
+    assertThat(eventLog).hasViewExistingSolutionContextThat {
       hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
       hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
       hasStoryIdThat().isEqualTo(TEST_STORY_ID)
@@ -1042,7 +1049,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
-      isCorrect = false
+      isCorrect = false,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1076,7 +1083,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
-      isCorrect = true
+      isCorrect = true,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1247,7 +1254,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
 
@@ -1268,7 +1277,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1314,7 +1325,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
 
@@ -1335,7 +1348,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1380,7 +1395,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1423,7 +1440,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1468,7 +1487,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1513,7 +1534,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1558,7 +1581,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1603,7 +1628,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1646,7 +1673,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1689,7 +1718,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1697,7 +1728,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
-      isCorrect = true
+      isCorrect = true,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1723,7 +1754,7 @@ class LearnerAnalyticsLoggerTest {
     stateLogger.logSubmitAnswer(
       interaction = Interaction.getDefaultInstance(),
       userAnswer = UserAnswer.getDefaultInstance(),
-      isCorrect = true
+      isCorrect = true,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1742,7 +1773,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1787,7 +1820,9 @@ class LearnerAnalyticsLoggerTest {
     val exploration5 = loadExploration(TEST_EXPLORATION_ID_5)
     val expLogger =
       learnerAnalyticsLogger.beginExploration(
-        exploration5, learnerId = learnerIdParameter, installationId = installIdParameter
+        exploration5,
+        learnerId = learnerIdParameter,
+        installationId = installIdParameter,
       )
     testCoroutineDispatchers.runCurrent()
     val stateLogger = expLogger.startCard(exploration5.getStateByName(exploration5.initStateName))
@@ -1860,7 +1895,8 @@ class LearnerAnalyticsLoggerTest {
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
     stateLogger.logSwitchInLessonLanguage(
-      fromLanguage = OppiaLanguage.ENGLISH, toLanguage = OppiaLanguage.SWAHILI
+      fromLanguage = OppiaLanguage.ENGLISH,
+      toLanguage = OppiaLanguage.SWAHILI,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1893,7 +1929,8 @@ class LearnerAnalyticsLoggerTest {
     val stateLogger = expLogger.startCard(exploration5.getStateByName(TEST_EXP_5_STATE_THREE_NAME))
 
     stateLogger.logSwitchInLessonLanguage(
-      fromLanguage = OppiaLanguage.SWAHILI, toLanguage = OppiaLanguage.ENGLISH
+      fromLanguage = OppiaLanguage.SWAHILI,
+      toLanguage = OppiaLanguage.ENGLISH,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -2048,11 +2085,11 @@ class LearnerAnalyticsLoggerTest {
     }
   }
 
-  private fun loadExploration(expId: String): Exploration {
-    return monitorFactory.waitForNextSuccessfulResult(
-      explorationDataController.getExplorationById(profileId, expId)
-    ).exploration
-  }
+  private fun loadExploration(expId: String): Exploration =
+    monitorFactory
+      .waitForNextSuccessfulResult(
+        explorationDataController.getExplorationById(profileId, expId),
+      ).exploration
 
   private fun Exploration.getStateByName(name: String) = statesMap.getValue(name)
 
@@ -2063,9 +2100,15 @@ class LearnerAnalyticsLoggerTest {
     learnerId: String? = TEST_LEARNER_ID,
     classroomId: String = TEST_CLASSROOM_ID,
     topicId: String = TEST_TOPIC_ID,
-    storyId: String = TEST_STORY_ID
+    storyId: String = TEST_STORY_ID,
   ) = beginExploration(
-    installationId, profileId, learnerId, exploration, classroomId, topicId, storyId
+    installationId,
+    profileId,
+    learnerId,
+    exploration,
+    classroomId,
+    topicId,
+    storyId,
   )
 
   private fun List<ShadowLog.LogItem>.getMostRecentWithTag(tag: String) = last { it.tag == tag }
@@ -2079,9 +2122,7 @@ class LearnerAnalyticsLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @ApplicationIdSeed
@@ -2104,23 +2145,27 @@ class LearnerAnalyticsLoggerTest {
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: LearnerAnalyticsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLearnerAnalyticsLoggerTest_TestApplicationComponent.builder()
+      DaggerLearnerAnalyticsLoggerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

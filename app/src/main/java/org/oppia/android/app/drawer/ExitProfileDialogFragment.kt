@@ -20,7 +20,6 @@ import org.oppia.android.util.extensions.putProto
 
 /** [DialogFragment] that gives option to either cancel or exit current profile. */
 class ExitProfileDialogFragment : InjectableDialogFragment() {
-
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
     const val EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO = "EXIT_PROFILE_DIALOG_ARGUMENT_PROTO"
@@ -30,9 +29,7 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
      *
      * @return [ExitProfileDialogFragment]: DialogFragment
      */
-    fun newInstance(
-      exitProfileDialogArguments: ExitProfileDialogArguments
-    ): ExitProfileDialogFragment {
+    fun newInstance(exitProfileDialogArguments: ExitProfileDialogArguments): ExitProfileDialogFragment {
       val exitProfileDialogFragment = ExitProfileDialogFragment()
       val args = Bundle()
       args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
@@ -52,39 +49,41 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
-    val exitProfileDialogArguments = args.getProto(
-      EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
-      ExitProfileDialogArguments.getDefaultInstance()
-    )
+    val exitProfileDialogArguments =
+      args.getProto(
+        EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
+        ExitProfileDialogArguments.getDefaultInstance(),
+      )
 
-    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
-      HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
-      HighlightItem.DEVELOPER_OPTIONS_ITEM,
-      HighlightItem.LAST_CHECKED_MENU_ITEM -> true
-      else -> false
-    }
+    val restoreLastCheckedItem =
+      when (exitProfileDialogArguments.highlightItem) {
+        HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+        HighlightItem.DEVELOPER_OPTIONS_ITEM,
+        HighlightItem.LAST_CHECKED_MENU_ITEM,
+        -> true
+        else -> false
+      }
 
     val soleLearnerProfile = exitProfileDialogArguments.profileType == ProfileType.SOLE_LEARNER
 
-    val alertDialog = AlertDialog
-      .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
-      .setMessage(R.string.home_activity_back_dialog_message)
-      .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
-        if (soleLearnerProfile) {
-          requireActivity().finish()
-        } else {
-          val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
-          if (!restoreLastCheckedItem) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    val alertDialog =
+      AlertDialog
+        .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaAlertDialogTheme))
+        .setMessage(R.string.home_activity_back_dialog_message)
+        .setNegativeButton(R.string.home_activity_back_dialog_cancel) { dialog, _ ->
+          dialog.dismiss()
+        }.setPositiveButton(R.string.home_activity_back_dialog_exit) { _, _ ->
+          if (soleLearnerProfile) {
+            requireActivity().finish()
+          } else {
+            val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
+            if (!restoreLastCheckedItem) {
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            requireActivity().startActivity(intent)
+            requireActivity().finish()
           }
-          requireActivity().startActivity(intent)
-          requireActivity().finish()
-        }
-      }
-      .create()
+        }.create()
     alertDialog.setCanceledOnTouchOutside(false)
     return alertDialog
   }
@@ -94,17 +93,20 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     val args =
       checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
 
-    val exitProfileDialogArguments = args.getProto(
-      EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
-      ExitProfileDialogArguments.getDefaultInstance()
-    )
+    val exitProfileDialogArguments =
+      args.getProto(
+        EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
+        ExitProfileDialogArguments.getDefaultInstance(),
+      )
 
-    val restoreLastCheckedItem = when (exitProfileDialogArguments.highlightItem) {
-      HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
-      HighlightItem.DEVELOPER_OPTIONS_ITEM,
-      HighlightItem.LAST_CHECKED_MENU_ITEM -> true
-      else -> false
-    }
+    val restoreLastCheckedItem =
+      when (exitProfileDialogArguments.highlightItem) {
+        HighlightItem.ADMINISTRATOR_CONTROLS_ITEM,
+        HighlightItem.DEVELOPER_OPTIONS_ITEM,
+        HighlightItem.LAST_CHECKED_MENU_ITEM,
+        -> true
+        else -> false
+      }
 
     if (restoreLastCheckedItem) {
       exitProfileDialogInterface =

@@ -22,11 +22,10 @@ class OnboardingActivity :
   lateinit var onboardingActivityPresenter: OnboardingActivityPresenter
 
   companion object {
-    fun createOnboardingActivity(context: Context): Intent {
-      return Intent(context, OnboardingActivity::class.java).apply {
+    fun createOnboardingActivity(context: Context): Intent =
+      Intent(context, OnboardingActivity::class.java).apply {
         decorateWithScreenName(ONBOARDING_ACTIVITY)
       }
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {

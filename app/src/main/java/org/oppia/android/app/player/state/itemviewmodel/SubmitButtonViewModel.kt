@@ -11,5 +11,5 @@ class SubmitButtonViewModel(
   val hasPreviousButton: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val submitNavigationButtonListener: SubmitNavigationButtonListener,
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
 ) : StateItemViewModel(ViewType.SUBMIT_ANSWER_BUTTON)

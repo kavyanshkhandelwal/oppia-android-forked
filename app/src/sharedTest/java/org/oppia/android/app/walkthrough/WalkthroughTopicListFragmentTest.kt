@@ -109,7 +109,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = WalkthroughTopicListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class WalkthroughTopicListFragmentTest {
   @get:Rule
@@ -120,8 +120,10 @@ class WalkthroughTopicListFragmentTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
@@ -138,12 +140,11 @@ class WalkthroughTopicListFragmentTest {
     Intents.release()
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
-    return WalkthroughActivity.createWalkthroughActivityIntent(
+  private fun createWalkthroughActivityIntent(profileId: Int): Intent =
+    WalkthroughActivity.createWalkthroughActivityIntent(
       context,
-      profileId
+      profileId,
     )
-  }
 
   @Test
   fun testWalkthroughTopicListFragment_topicHeader_whatDoYouWantToLearnIsDisplayed() {
@@ -155,12 +156,12 @@ class WalkthroughTopicListFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.walkthrough_topic_recycler_view,
           position = 0,
-          targetViewId = R.id.walkthrough_topic_header_text_view
-        )
+          targetViewId = R.id.walkthrough_topic_header_text_view,
+        ),
       ).check(
         matches(
-          withText(R.string.what_do_you_want_to_learn)
-        )
+          withText(R.string.what_do_you_want_to_learn),
+        ),
       )
     }
   }
@@ -173,20 +174,21 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 1
-        )
+          // position=
+          1,
+        ),
       )
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
           recyclerViewId = R.id.walkthrough_topic_recycler_view,
           position = 1,
-          targetViewId = R.id.walkthrough_topic_name_text_view
-        )
+          targetViewId = R.id.walkthrough_topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("First Test Topic"))
-        )
+          withText(containsString("First Test Topic")),
+        ),
       )
     }
   }
@@ -199,8 +201,9 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 1
-        )
+          // position=
+          1,
+        ),
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -208,12 +211,12 @@ class WalkthroughTopicListFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.walkthrough_topic_recycler_view,
           position = 1,
-          targetViewId = R.id.walkthrough_topic_name_text_view
-        )
+          targetViewId = R.id.walkthrough_topic_name_text_view,
+        ),
       ).check(
         matches(
-          withText(containsString("First Test Topic"))
-        )
+          withText(containsString("First Test Topic")),
+        ),
       )
     }
   }
@@ -230,21 +233,22 @@ class WalkthroughTopicListFragmentTest {
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
           scrollToPosition<RecyclerView.ViewHolder>(
-            /* position= */ 4
-          )
+            // position=
+            4,
+          ),
         )
         onView(
           atPositionOnView(
             recyclerViewId = R.id.walkthrough_topic_recycler_view,
             position = 4,
-            targetViewId = R.id.walkthrough_topic_thumbnail_image_view
-          )
+            targetViewId = R.id.walkthrough_topic_thumbnail_image_view,
+          ),
         ).check(
           matches(
             withDrawable(
-              R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-            )
-          )
+              R.drawable.lesson_thumbnail_graphic_duck_and_chicken,
+            ),
+          ),
         )
       }
     }
@@ -258,15 +262,16 @@ class WalkthroughTopicListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          /* position= */ 4
-        )
+          // position=
+          4,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.walkthrough_topic_recycler_view,
           position = 4,
-          targetViewId = R.id.walkthrough_topic_container
-        )
+          targetViewId = R.id.walkthrough_topic_container,
+        ),
       ).check(matches(withOpaqueBackground()))
     }
   }
@@ -279,8 +284,7 @@ class WalkthroughTopicListFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     @LoadImagesFromAssets
@@ -316,8 +320,8 @@ class WalkthroughTopicListFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -328,9 +332,13 @@ class WalkthroughTopicListFragmentTest {
     fun inject(walkthroughTopicListFragmentTest: WalkthroughTopicListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWalkthroughTopicListFragmentTest_TestApplicationComponent.builder()
+      DaggerWalkthroughTopicListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -339,9 +347,12 @@ class WalkthroughTopicListFragmentTest {
       component.inject(walkthroughTopicListFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

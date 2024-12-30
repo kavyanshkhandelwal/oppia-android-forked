@@ -43,9 +43,13 @@ import javax.inject.Singleton
 @Config(application = SyncStatusManagerImplTest.TestApplication::class)
 class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
   @Inject override lateinit var impl: SyncStatusManager
+
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
+
   @Inject override lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
+
   @Inject override lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject BackgroundDispatcher]
   override lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -67,9 +71,7 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -88,30 +90,26 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
 
   @Module
   class TestPlatformParameterModule {
-
     companion object {
       var forceLearnerAnalyticsStudy: Boolean = false
     }
 
     @Provides
     @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
 
     @Provides
     @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> =
+      PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
       )
-    }
 
     @Provides
     @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -121,23 +119,27 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
       TestModule::class, TestLogReportingModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, SyncStatusModule::class
-    ]
+      TestPlatformParameterModule::class, SyncStatusModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(syncStatusControllerTest: SyncStatusManagerImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSyncStatusManagerImplTest_TestApplicationComponent.builder()
+      DaggerSyncStatusManagerImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

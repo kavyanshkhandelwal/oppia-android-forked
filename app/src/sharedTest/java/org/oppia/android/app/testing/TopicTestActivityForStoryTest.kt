@@ -103,7 +103,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicTestActivityForStoryTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicTestActivityForStoryTest {
   @get:Rule
@@ -131,7 +131,8 @@ class TopicTestActivityForStoryTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -141,12 +142,13 @@ class TopicTestActivityForStoryTest {
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
-            TopicTab.getTabForPosition(
-              position = 1,
-              enableExtraTopicTabsUiValue.value
-            ).name
-          )
-        )
+            TopicTab
+              .getTabForPosition(
+                position = 1,
+                enableExtraTopicTabsUiValue.value,
+              ).name,
+          ),
+        ),
       )
     }
   }
@@ -157,14 +159,14 @@ class TopicTestActivityForStoryTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_summary_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.story_summary_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(containsString("First Story")))))
     }
   }
@@ -178,8 +180,8 @@ class TopicTestActivityForStoryTest {
         atPositionOnView(
           recyclerViewId = R.id.story_summary_recycler_view,
           position = 1,
-          targetViewId = R.id.chapter_recycler_view
-        )
+          targetViewId = R.id.chapter_recycler_view,
+        ),
       ).check(matches(isDisplayed()))
     }
   }
@@ -213,8 +215,8 @@ class TopicTestActivityForStoryTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -225,9 +227,13 @@ class TopicTestActivityForStoryTest {
     fun inject(topicTestActivityForStoryTest: TopicTestActivityForStoryTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicTestActivityForStoryTest_TestApplicationComponent.builder()
+      DaggerTopicTestActivityForStoryTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -236,9 +242,12 @@ class TopicTestActivityForStoryTest {
       component.inject(topicTestActivityForStoryTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

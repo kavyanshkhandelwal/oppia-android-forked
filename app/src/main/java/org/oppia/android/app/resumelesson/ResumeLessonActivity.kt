@@ -40,7 +40,7 @@ class ResumeLessonActivity :
       params.storyId,
       params.explorationId,
       params.parentScreen,
-      params.checkpoint
+      params.checkpoint,
     )
     onBackPressedDispatcher.addCallback(
       this,
@@ -49,7 +49,7 @@ class ResumeLessonActivity :
           resumeLessonActivityPresenter.setReadingTextSizeNormal()
           finish()
         }
-      }
+      },
     )
   }
 
@@ -69,30 +69,32 @@ class ResumeLessonActivity :
       storyId: String,
       explorationId: String,
       parentScreen: ExplorationActivityParams.ParentScreen,
-      checkpoint: ExplorationCheckpoint
+      checkpoint: ExplorationCheckpoint,
     ): Intent {
-      val params = ResumeLessonActivityParams.newBuilder().apply {
-        this.profileId = profileId
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-        this.parentScreen = parentScreen
-        this.checkpoint = checkpoint
-      }.build()
+      val params =
+        ResumeLessonActivityParams
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+            this.parentScreen = parentScreen
+            this.checkpoint = checkpoint
+          }.build()
       return createResumeLessonActivityIntent(context, params)
     }
 
     /** Returns a new [Intent] open an [ResumeLessonActivity] with the specified [params]. */
     fun createResumeLessonActivityIntent(
       context: Context,
-      params: ResumeLessonActivityParams
-    ): Intent {
-      return Intent(context, ResumeLessonActivity::class.java).apply {
+      params: ResumeLessonActivityParams,
+    ): Intent =
+      Intent(context, ResumeLessonActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(RESUME_LESSON_ACTIVITY)
       }
-    }
   }
 
   override fun routeToExploration(
@@ -102,7 +104,7 @@ class ResumeLessonActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     resumeLessonActivityPresenter.setReadingTextSizeNormal()
     startActivity(
@@ -114,8 +116,8 @@ class ResumeLessonActivity :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
     finish()
   }

@@ -54,7 +54,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript() }
+    val exception = assertThrows<SecurityException> { runScript() }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -64,7 +64,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1") }
+    val exception = assertThrows<SecurityException> { runScript("arg1") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -74,7 +74,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2") }
+    val exception = assertThrows<SecurityException> { runScript("arg1", "arg2") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -84,7 +84,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_threeArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2", "arg3") }
+    val exception = assertThrows<SecurityException> { runScript("arg1", "arg2", "arg3") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -94,7 +94,7 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_fourArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { runScript("arg1", "arg2", "arg3", "arg4") }
+    val exception = assertThrows<SecurityException> { runScript("arg1", "arg2", "arg3", "arg4") }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -104,19 +104,20 @@ class RetrieveChangedFilesTest {
 
   @Test
   fun testUtility_invalidBase64_throwsException() {
-    val exception = assertThrows<IllegalArgumentException>() {
-      runScript(
-        "${tempFolder.root}",
-        "badbase64",
-        "file1",
-        "file2",
-        "file3"
-      )
-    }
+    val exception =
+      assertThrows<IllegalArgumentException> {
+        runScript(
+          "${tempFolder.root}",
+          "badbase64",
+          "file1",
+          "file2",
+          "file3",
+        )
+      }
 
     // Indicates the Proto data is improperly formatted or corrupted.
     assertThat(exception).hasMessageThat().contains(
-      "Last unit does not have enough valid bits"
+      "Last unit does not have enough valid bits",
     )
   }
 
@@ -125,19 +126,22 @@ class RetrieveChangedFilesTest {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      ChangedFilesBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addChangedFiles("//example/to/a/file/Demonstration.kt")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        ChangedFilesBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addChangedFiles("//example/to/a/file/Demonstration.kt")
+          }.build(),
+      )
 
     runScript(
       tempFolder.root.absolutePath,
       base64String,
       cacheNameFilePath,
       changedFilePath,
-      testTargetFilePath
+      testTargetFilePath,
     )
 
     assertThat(File(cacheNameFilePath).readText().trim()).isEqualTo("example")
@@ -148,23 +152,26 @@ class RetrieveChangedFilesTest {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      ChangedFilesBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addChangedFiles("//example/to/a/file/Demonstration.kt")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        ChangedFilesBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addChangedFiles("//example/to/a/file/Demonstration.kt")
+          }.build(),
+      )
 
     runScript(
       tempFolder.root.absolutePath,
       base64String,
       cacheNameFilePath,
       changedFilePath,
-      testTargetFilePath
+      testTargetFilePath,
     )
 
     assertThat(File(changedFilePath).readText().trim()).isEqualTo(
-      "//example/to/a/file/Demonstration.kt"
+      "//example/to/a/file/Demonstration.kt",
     )
   }
 
@@ -173,24 +180,27 @@ class RetrieveChangedFilesTest {
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      ChangedFilesBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addChangedFiles("//example/to/a/file/FirstDemonstration.kt")
-        addChangedFiles("//example/to/a/file/SecondDemonstration.kt")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        ChangedFilesBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addChangedFiles("//example/to/a/file/FirstDemonstration.kt")
+            addChangedFiles("//example/to/a/file/SecondDemonstration.kt")
+          }.build(),
+      )
 
     runScript(
       tempFolder.root.absolutePath,
       base64String,
       cacheNameFilePath,
       changedFilePath,
-      testTargetFilePath
+      testTargetFilePath,
     )
 
     assertThat(File(changedFilePath).readText().trim()).isEqualTo(
-      "//example/to/a/file/FirstDemonstration.kt //example/to/a/file/SecondDemonstration.kt"
+      "//example/to/a/file/FirstDemonstration.kt //example/to/a/file/SecondDemonstration.kt",
     )
   }
 
@@ -203,29 +213,32 @@ class RetrieveChangedFilesTest {
       sourceContent = "class Source()",
       testContent = "class SourceTest()",
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      ChangedFilesBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addChangedFiles("coverage/main/java/com/example/Source.kt")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        ChangedFilesBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addChangedFiles("coverage/main/java/com/example/Source.kt")
+          }.build(),
+      )
 
     runScript(
       tempFolder.root.absolutePath,
       base64String,
       cacheNameFilePath,
       changedFilePath,
-      testTargetFilePath
+      testTargetFilePath,
     )
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
-      "//coverage/test/java/com/example:SourceTest"
+      "//coverage/test/java/com/example:SourceTest",
     )
   }
 
@@ -238,7 +251,7 @@ class RetrieveChangedFilesTest {
       sourceContent = "class Source1()",
       testContent = "class Source1Test()",
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
     testBazelWorkspace.addSourceAndTestFileWithContent(
       filename = "Source2",
@@ -246,30 +259,33 @@ class RetrieveChangedFilesTest {
       sourceContent = "class Source2()",
       testContent = "class Source2Test()",
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
     val cacheNameFilePath = tempFolder.getNewTempFilePath("cache_name")
     val changedFilePath = tempFolder.getNewTempFilePath("changed_file_list")
     val testTargetFilePath = tempFolder.getNewTempFilePath("test_target_list")
-    val base64String = computeBase64String(
-      ChangedFilesBucket.newBuilder().apply {
-        cacheBucketName = "example"
-        addChangedFiles("coverage/main/java/com/example/Source1.kt")
-        addChangedFiles("coverage/main/java/com/example/Source2.kt")
-      }.build()
-    )
+    val base64String =
+      computeBase64String(
+        ChangedFilesBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = "example"
+            addChangedFiles("coverage/main/java/com/example/Source1.kt")
+            addChangedFiles("coverage/main/java/com/example/Source2.kt")
+          }.build(),
+      )
 
     runScript(
       tempFolder.root.absolutePath,
       base64String,
       cacheNameFilePath,
       changedFilePath,
-      testTargetFilePath
+      testTargetFilePath,
     )
 
     assertThat(File(testTargetFilePath).readText().trim()).isEqualTo(
-      "//coverage/test/java/com/example:Source1Test //coverage/test/java/com/example:Source2Test"
+      "//coverage/test/java/com/example:Source1Test //coverage/test/java/com/example:Source2Test",
     )
   }
 
@@ -277,19 +293,18 @@ class RetrieveChangedFilesTest {
     main(args.toList().toTypedArray())
   }
 
-  private fun computeBase64String(changedFilesBucket: ChangedFilesBucket): String =
-    changedFilesBucket.toCompressedBase64()
+  private fun computeBase64String(changedFilesBucket: ChangedFilesBucket): String = changedFilesBucket.toCompressedBase64()
 
   /**
    * Returns the absolute file path of a new file that can be written under this [TemporaryFolder]
    * (but does not create the file).
    */
-  private fun TemporaryFolder.getNewTempFilePath(name: String) =
-    File(tempFolder.root, name).absolutePath
+  private fun TemporaryFolder.getNewTempFilePath(name: String) = File(tempFolder.root, name).absolutePath
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

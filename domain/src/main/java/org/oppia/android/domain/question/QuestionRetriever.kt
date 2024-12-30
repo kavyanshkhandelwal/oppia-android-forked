@@ -10,51 +10,56 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import javax.inject.Inject
 
 // TODO(#1580): Restrict access using Bazel visibilities.
-/** Retriever for [Question] objects from the filesystem. */
-class QuestionRetriever @Inject constructor(
-  private val jsonAssetRetriever: JsonAssetRetriever,
-  private val stateRetriever: StateRetriever,
-  @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean
-) {
-  /**
-   * Returns a list of [Question]s corresponding to the specified list of skills, loaded from the
-   * filesystem.
-   */
-  fun loadQuestions(skillIdsList: List<String>): List<Question> {
-    val questionsList = mutableListOf<Question>()
-    // TODO(#2976): Add support for loading questions locally once questions are available on web.
-    check(!loadLessonProtosFromAssets) { "No support yet for loading proto questions from assets" }
-    val questionJsonArray = jsonAssetRetriever.loadJsonFromAsset(
-      "questions.json"
-    )?.getJSONArray("question_dicts")!!
 
-    for (skillId in skillIdsList) {
-      for (i in 0 until questionJsonArray.length()) {
-        val questionJsonObject = questionJsonArray.getJSONObject(i)
-        val linkedSkillIdList = questionJsonObject.optJSONArray("linked_skill_ids")?.let { array ->
-          (0 until array.length()).map(array::getStringFromArray)
-        } ?: listOf()
-        if (skillId in linkedSkillIdList) {
-          questionsList.add(createQuestionFromJsonObject(questionJsonObject))
+/** Retriever for [Question] objects from the filesystem. */
+class QuestionRetriever
+  @Inject
+  constructor(
+    private val jsonAssetRetriever: JsonAssetRetriever,
+    private val stateRetriever: StateRetriever,
+    @LoadLessonProtosFromAssets private val loadLessonProtosFromAssets: Boolean,
+  ) {
+    /**
+     * Returns a list of [Question]s corresponding to the specified list of skills, loaded from the
+     * filesystem.
+     */
+    fun loadQuestions(skillIdsList: List<String>): List<Question> {
+      val questionsList = mutableListOf<Question>()
+      // TODO(#2976): Add support for loading questions locally once questions are available on web.
+      check(!loadLessonProtosFromAssets) { "No support yet for loading proto questions from assets" }
+      val questionJsonArray =
+        jsonAssetRetriever
+          .loadJsonFromAsset(
+            "questions.json",
+          )?.getJSONArray("question_dicts")!!
+
+      for (skillId in skillIdsList) {
+        for (i in 0 until questionJsonArray.length()) {
+          val questionJsonObject = questionJsonArray.getJSONObject(i)
+          val linkedSkillIdList =
+            questionJsonObject.optJSONArray("linked_skill_ids")?.let { array ->
+              (0 until array.length()).map(array::getStringFromArray)
+            } ?: listOf()
+          if (skillId in linkedSkillIdList) {
+            questionsList.add(createQuestionFromJsonObject(questionJsonObject))
+          }
         }
       }
+      return questionsList
     }
-    return questionsList
-  }
 
-  private fun createQuestionFromJsonObject(questionJson: JSONObject): Question {
-    return Question.newBuilder()
-      .setQuestionId(questionJson.getStringFromObject("id"))
-      .setQuestionState(
-        stateRetriever.createStateFromJson(
-          "question", questionJson.getJSONObject("question_state_data")
-        )
-      )
-      .addAllLinkedSkillIds(
-        jsonAssetRetriever.getStringsFromJSONArray(
-          questionJson.getJSONArray("linked_skill_ids")
-        )
-      )
-      .build()
+    private fun createQuestionFromJsonObject(questionJson: JSONObject): Question =
+      Question
+        .newBuilder()
+        .setQuestionId(questionJson.getStringFromObject("id"))
+        .setQuestionState(
+          stateRetriever.createStateFromJson(
+            "question",
+            questionJson.getJSONObject("question_state_data"),
+          ),
+        ).addAllLinkedSkillIds(
+          jsonAssetRetriever.getStringsFromJSONArray(
+            questionJson.getJSONArray("linked_skill_ids"),
+          ),
+        ).build()
   }
-}

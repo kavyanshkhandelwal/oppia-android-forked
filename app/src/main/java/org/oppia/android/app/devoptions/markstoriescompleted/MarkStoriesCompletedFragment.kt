@@ -21,7 +21,6 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   lateinit var markStoriesCompletedFragmentPresenter: MarkStoriesCompletedFragmentPresenter
 
   companion object {
-
     const val MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY = "MarkStoriesCompletedFragment.state"
 
     internal const val PROFILE_ID_ARGUMENT_KEY = "MarkStoriesCompletedFragment.profile_id"
@@ -30,9 +29,10 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): MarkStoriesCompletedFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return MarkStoriesCompletedFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -45,7 +45,7 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkStoriesCompletedFragment" }
@@ -55,27 +55,29 @@ class MarkStoriesCompletedFragment : InjectableFragment() {
 
     var selectedStoryIdList = ArrayList<String>()
     if (savedInstanceState != null) {
-
-      val stateArgs = savedInstanceState.getProto(
-        MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
-        MarkStoriesCompletedFragmentStateBundle.getDefaultInstance()
-      )
+      val stateArgs =
+        savedInstanceState.getProto(
+          MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY,
+          MarkStoriesCompletedFragmentStateBundle.getDefaultInstance(),
+        )
       selectedStoryIdList = stateArgs?.storyIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markStoriesCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
-      selectedStoryIdList
+      selectedStoryIdList,
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val args = MarkStoriesCompletedFragmentStateBundle.newBuilder().apply {
-      addAllStoryIds(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
-    }
-      .build()
+    val args =
+      MarkStoriesCompletedFragmentStateBundle
+        .newBuilder()
+        .apply {
+          addAllStoryIds(markStoriesCompletedFragmentPresenter.selectedStoryIdList)
+        }.build()
     outState.apply {
       putProto(MARK_STORIES_COMPLETED_FRAGMENT_STATE_KEY, args)
     }

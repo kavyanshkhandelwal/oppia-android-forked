@@ -48,6 +48,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Inject internal lateinit var provider: RuleClassifierProvider
 
   @Parameter lateinit var answer: String
+
   @Parameter lateinit var input: String
 
   private lateinit var classifier: RuleClassifier
@@ -194,17 +195,19 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Iteration("2*(2+6+3+4)==2*(2+6+3+4)", "answer=2*(2+6+3+4)", "input=2*(2+6+3+4)")
   @Iteration("2 × (2+6+3+4)==2*(2+6+3+4)", "answer=2 × (2+6+3+4)", "input=2*(2+6+3+4)")
   @Iteration(
-    "15 - (6 × 2) + 3==15 - (6 × 2) + 3", "answer=15 - (6 × 2) + 3", "input=15 - (6 × 2) + 3"
+    "15 - (6 × 2) + 3==15 - (6 × 2) + 3",
+    "answer=15 - (6 × 2) + 3",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
     "2 × (50 + 150 + 100 + 25) ==(50 + 150 + 100 + 25) × 2",
     "answer=2 × (50 + 150 + 100 + 25) ",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   @Iteration(
     "2 * (50 + 150 + 100 + 25) ==2 × (50 + 150 + 100 + 25)",
     "answer=2 * (50 + 150 + 100 + 25) ",
-    "input=2 × (50 + 150 + 100 + 25)"
+    "input=2 × (50 + 150 + 100 + 25)",
   )
   @Iteration("2+5==5+2", "answer=2+5", "input=5+2")
   @Iteration("5+2==5+2", "answer=5+2", "input=5+2")
@@ -217,31 +220,35 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Iteration(
     "1000 + 200 + 30 + 4 + 0.5 + 0.06==1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "200 + 30 + 4 + 0.5 + 0.06 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=200 + 30 + 4 + 0.5 + 0.06 + 1000",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "0.06 + 0.5 + 4 + 30 + 200 + 1000==1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=0.06 + 0.5 + 4 + 30 + 200 + 1000",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration("2 * 2 * 3 * 3==2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3", "input=2 * 2 * 3 * 3")
   @Iteration("(2+6+3+4)*2==2*(2+6+3+4)", "answer=(2+6+3+4)*2", "input=2*(2+6+3+4)")
   @Iteration("(2+6+3+4) × 2==2*(2+6+3+4)", "answer=(2+6+3+4) × 2", "input=2*(2+6+3+4)")
   @Iteration(
-    "3 - (6 * 2) + 15==15 - (6 × 2) + 3", "answer=3 - (6 * 2) + 15", "input=15 - (6 × 2) + 3"
+    "3 - (6 * 2) + 15==15 - (6 × 2) + 3",
+    "answer=3 - (6 * 2) + 15",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
-    "15 - (2 × 6) + 3==15 - (6 × 2) + 3", "answer=15 - (2 × 6) + 3", "input=15 - (6 × 2) + 3"
+    "15 - (2 × 6) + 3==15 - (6 × 2) + 3",
+    "answer=15 - (2 × 6) + 3",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
     "2* ( 25+50+100+150)==(50 + 150 + 100 + 25) × 2",
     "answer=2* ( 25+50+100+150)",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   fun testMatches_assortedExpressions_withMatchingCharacteristics_returnsTrue() {
     val answerExpression = createMathExpression(answer)
@@ -263,30 +270,32 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Iteration(
     "1234.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1234.56",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "123456/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=123456/100",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "61728/50!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=61728/50",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1234 + 56/10!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1234 + 56/10",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1230 + 4.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1230 + 4.56",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
-    "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3 * 1", "input=2 * 2 * 3 * 3"
+    "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3",
+    "answer=2 * 2 * 3 * 3 * 1",
+    "input=2 * 2 * 3 * 3",
   )
   @Iteration("2 * 2 * 9!=2 * 2 * 3 * 3", "answer=2 * 2 * 9", "input=2 * 2 * 3 * 3")
   @Iteration("4 * 3^2!=2 * 2 * 3 * 3", "answer=4 * 3^2", "input=2 * 2 * 3 * 3")
@@ -302,12 +311,12 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Iteration(
     "123456!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=123456",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1000 + 200 + 30!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1000 + 200 + 30",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration("3 *2 – (− 4)!=6 − (− 4)", "answer=3 *2 – (− 4)", "input=6 − (− 4)")
   @Iteration("6 − 4!=6 − (− 4)", "answer=6 − 4", "input=6 − (− 4)")
@@ -320,7 +329,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Iteration(
     "2 *(50 + 150) + 2*(100 + 25)!=(50 + 150 + 100 + 25) × 2",
     "answer=2 *(50 + 150) + 2*(100 + 25)",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   @Iteration("15 - 12 + 3!=15 - (6 × 2) + 3", "answer=15 - 12 + 3", "input=15 - (6 × 2) + 3")
   @Iteration("2*(6+3+4) + 4!=2*(2+6+3+4)", "answer=2*(6+3+4) + 4", "input=2*(2+6+3+4)")
@@ -338,23 +347,27 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
 
   private fun matchesClassifier(
     answerExpression: InteractionObject,
-    inputExpression: InteractionObject
-  ): Boolean {
-    return classifier.matches(
+    inputExpression: InteractionObject,
+  ): Boolean =
+    classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      classificationContext = ClassificationContext()
+      classificationContext = ClassificationContext(),
     )
-  }
 
-  private fun createMathExpression(rawExpression: String) = InteractionObject.newBuilder().apply {
-    mathExpression = rawExpression
-  }.build()
+  private fun createMathExpression(rawExpression: String) =
+    InteractionObject
+      .newBuilder()
+      .apply {
+        mathExpression = rawExpression
+      }.build()
 
   private fun setUpTestApplicationComponent() {
     DaggerTestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -362,9 +375,7 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -372,8 +383,8 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
   @Component(
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -384,8 +395,6 @@ class NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvide
       fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      test: NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
-    )
+    fun inject(test: NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest)
   }
 }

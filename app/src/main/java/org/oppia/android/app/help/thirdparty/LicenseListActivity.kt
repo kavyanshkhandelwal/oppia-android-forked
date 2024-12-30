@@ -13,18 +13,20 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** The activity that will show list of licenses corresponding to a third-party dependency. */
-class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToLicenseTextListener {
-
+class LicenseListActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
+  RouteToLicenseTextListener {
   @Inject
   lateinit var licenseListActivityPresenter: LicenseListActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      LICENSE_LIST_ACTIVITY_PARAMS_KEY,
-      LicenseListActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        LICENSE_LIST_ACTIVITY_PARAMS_KEY,
+        LicenseListActivityParams.getDefaultInstance(),
+      )
     val dependencyIndex = args?.dependencyIndex ?: 0
     licenseListActivityPresenter.handleOnCreate(dependencyIndex, false)
   }
@@ -36,7 +38,7 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
     /** Returns [Intent] for [LicenseListActivity]. */
     fun createLicenseListActivityIntent(
       context: Context,
-      dependencyIndex: Int
+      dependencyIndex: Int,
     ): Intent {
       val args =
         LicenseListActivityParams.newBuilder().setDependencyIndex(dependencyIndex).build()
@@ -47,13 +49,16 @@ class LicenseListActivity : InjectableAutoLocalizedAppCompatActivity(), RouteToL
     }
   }
 
-  override fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int) {
+  override fun onRouteToLicenseText(
+    dependencyIndex: Int,
+    licenseIndex: Int,
+  ) {
     startActivity(
       LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
         this,
         dependencyIndex,
-        licenseIndex
-      )
+        licenseIndex,
+      ),
     )
   }
 }

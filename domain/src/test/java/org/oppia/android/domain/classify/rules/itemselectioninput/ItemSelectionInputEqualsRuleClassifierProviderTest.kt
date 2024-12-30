@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputEqualsRuleClassifierProviderTest {
-
   private val TEST_HTML_STRING_SET_LOWERCASE = createSetOfTranslatableHtmlContentIds("item ab")
   private val TEST_HTML_STRING_SET_UPPERCASE = createSetOfTranslatableHtmlContentIds("item AB")
   private val TEST_HTML_STRING_SET_MIXED_LOWERCASE =
@@ -54,7 +53,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -68,7 +67,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -82,7 +81,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -96,7 +95,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -110,7 +109,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_UPPERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -124,7 +123,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_MIXED_UPPERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -138,7 +137,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_UPPERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -152,7 +151,7 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifierProvider.matches(
         answer = TEST_HTML_STRING_SET_LOWERCASE,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -162,13 +161,14 @@ class ItemSelectionInputEqualsRuleClassifierProviderTest {
   fun testLowercaseAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to TEST_HTML_STRING_SET_LOWERCASE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifierProvider.matches(
-        answer = TEST_HTML_STRING_SET_LOWERCASE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifierProvider.matches(
+          answer = TEST_HTML_STRING_SET_LOWERCASE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()

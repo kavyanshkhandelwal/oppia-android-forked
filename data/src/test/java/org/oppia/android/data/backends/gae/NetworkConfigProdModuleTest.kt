@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = NetworkConfigProdModuleTest.TestApplication::class)
 class NetworkConfigProdModuleTest {
-
   @field:[Inject BaseUrl]
   lateinit var baseUrl: String
 
@@ -45,7 +44,8 @@ class NetworkConfigProdModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -53,23 +53,21 @@ class NetworkConfigProdModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConfigProdModule::class
-    ]
+      TestModule::class, NetworkConfigProdModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -78,7 +76,8 @@ class NetworkConfigProdModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerNetworkConfigProdModuleTest_TestApplicationComponent.builder()
+      DaggerNetworkConfigProdModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

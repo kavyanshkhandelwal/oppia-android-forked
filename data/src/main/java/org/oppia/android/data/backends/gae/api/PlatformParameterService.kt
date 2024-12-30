@@ -6,7 +6,6 @@ import retrofit2.http.Query
 
 /** Service that provides access to the Oppia platform parameter endpoint. */
 interface PlatformParameterService {
-
   /**
    * Retrieves map of platform parameters where the keys corresponds to parameter names and values
    * corresponds to their server value.
@@ -21,6 +20,6 @@ interface PlatformParameterService {
   @GET("platform_features_evaluation_handler")
   fun getPlatformParametersByVersion(
     @Query("app_version") version: String,
-    @Query("platform_type") platformType: String = "Android"
+    @Query("platform_type") platformType: String = "Android",
   ): Call<Map<String, Any>>
 }

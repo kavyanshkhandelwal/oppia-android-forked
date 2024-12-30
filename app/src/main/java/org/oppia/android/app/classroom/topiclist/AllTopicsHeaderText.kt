@@ -27,17 +27,17 @@ fun AllTopicsHeaderText() {
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Medium,
     fontSize = dimensionResource(id = R.dimen.all_topics_text_size).value.sp,
-    modifier = Modifier
-      .testTag(ALL_TOPICS_HEADER_TEST_TAG)
-      .fillMaxWidth()
-      .background(
-        colorResource(id = R.color.component_color_classroom_topic_list_background_color)
-      )
-      .padding(
-        start = dimensionResource(id = R.dimen.all_topics_text_margin_start),
-        top = dimensionResource(id = R.dimen.all_topics_text_margin_top),
-        end = dimensionResource(id = R.dimen.all_topics_text_margin_end),
-        bottom = dimensionResource(id = R.dimen.all_topics_text_margin_bottom),
-      ),
+    modifier =
+      Modifier
+        .testTag(ALL_TOPICS_HEADER_TEST_TAG)
+        .fillMaxWidth()
+        .background(
+          colorResource(id = R.color.component_color_classroom_topic_list_background_color),
+        ).padding(
+          start = dimensionResource(id = R.dimen.all_topics_text_margin_start),
+          top = dimensionResource(id = R.dimen.all_topics_text_margin_top),
+          end = dimensionResource(id = R.dimen.all_topics_text_margin_end),
+          bottom = dimensionResource(id = R.dimen.all_topics_text_margin_bottom),
+        ),
   )
 }

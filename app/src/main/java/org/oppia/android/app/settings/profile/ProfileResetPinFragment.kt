@@ -26,15 +26,19 @@ class ProfileResetPinFragment : InjectableFragment() {
       profileResetPinProfileId: Int,
       profileResetPinIsAdmin: Boolean,
     ): ProfileResetPinFragment {
-      val args = ProfileResetPinFragmentArguments.newBuilder().apply {
-        this.internalProfileId = profileResetPinProfileId
-        this.isAdmin = profileResetPinIsAdmin
-      }.build()
+      val args =
+        ProfileResetPinFragmentArguments
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileResetPinProfileId
+            this.isAdmin = profileResetPinIsAdmin
+          }.build()
 
       return ProfileResetPinFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -47,16 +51,17 @@ class ProfileResetPinFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to ProfileResetPinFragment"
-    }
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to ProfileResetPinFragment"
+      }
 
     val args =
       arguments.getProto(
         PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
-        ProfileResetPinFragmentArguments.getDefaultInstance()
+        ProfileResetPinFragmentArguments.getDefaultInstance(),
       )
     val profileResetPinProfileId = args.internalProfileId
     val profileResetPinIsAdmin = args.isAdmin
@@ -65,7 +70,7 @@ class ProfileResetPinFragment : InjectableFragment() {
       inflater,
       container,
       profileResetPinProfileId,
-      profileResetPinIsAdmin
+      profileResetPinIsAdmin,
     )
   }
 }

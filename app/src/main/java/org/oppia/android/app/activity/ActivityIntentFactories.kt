@@ -20,7 +20,11 @@ interface ActivityIntentFactories {
      * Returns a new [Intent] to start the topic activity for the specified profile, classroom
      * and topic.
      */
-    fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent
+    fun createIntent(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+    ): Intent
 
     /**
      * Returns a new [Intent] to start the topic activity for the specified profile, classroom,
@@ -31,7 +35,7 @@ interface ActivityIntentFactories {
       profileId: ProfileId,
       classroomId: String,
       topicId: String,
-      storyId: String
+      storyId: String,
     ): Intent
   }
 

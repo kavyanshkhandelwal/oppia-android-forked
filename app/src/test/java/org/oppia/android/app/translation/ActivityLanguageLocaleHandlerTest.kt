@@ -112,17 +112,16 @@ import javax.inject.Singleton
   appStringAndroidLanguageId = "en",
   oppiaRegionEnumId = OppiaRegion.UNITED_STATES_VALUE,
   regionLanguageEnumIds = [OppiaLanguage.ENGLISH_VALUE],
-  regionIetfTag = "US"
+  regionIetfTag = "US",
 )
 class ActivityLanguageLocaleHandlerTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Inject
@@ -202,7 +201,7 @@ class ActivityLanguageLocaleHandlerTest {
   fun testUpdateLocale_afterUpdate_newLocale_returnsTrue() {
     val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
     activityLanguageLocaleHandler.updateLocale(
-      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
+      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE),
     )
 
     // Change language back.
@@ -250,7 +249,8 @@ class ActivityLanguageLocaleHandlerTest {
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -258,9 +258,11 @@ class ActivityLanguageLocaleHandlerTest {
     val updateProvider =
       translationController.updateAppLanguage(
         ProfileId.getDefaultInstance(),
-        AppLanguageSelection.newBuilder().apply {
-          selectedLanguage = language
-        }.build()
+        AppLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
       )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
@@ -297,9 +299,7 @@ class ActivityLanguageLocaleHandlerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -330,10 +330,9 @@ class ActivityLanguageLocaleHandlerTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -346,9 +345,13 @@ class ActivityLanguageLocaleHandlerTest {
     fun inject(activityLanguageLocaleHandlerTest: ActivityLanguageLocaleHandlerTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerActivityLanguageLocaleHandlerTest_TestApplicationComponent.builder()
+      DaggerActivityLanguageLocaleHandlerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -357,12 +360,13 @@ class ActivityLanguageLocaleHandlerTest {
       component.inject(activityLanguageLocaleHandlerTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
-    override fun getApplicationInjector(): ApplicationInjector {
-      return component
-    }
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }

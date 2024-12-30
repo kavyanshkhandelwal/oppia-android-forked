@@ -39,7 +39,6 @@ class StateFragment :
   PreviousResponsesHeaderClickListener,
   ShowHintAvailabilityListener {
   companion object {
-
     /** Arguments key for StateFragment. */
     const val STATE_FRAGMENT_ARGUMENTS_KEY = "StateFragment.arguments"
 
@@ -58,19 +57,22 @@ class StateFragment :
       internalProfileId: Int,
       topicId: String,
       storyId: String,
-      explorationId: String
+      explorationId: String,
     ): StateFragment {
-
-      val args = StateFragmentArguments.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-      }.build()
+      val args =
+        StateFragmentArguments
+          .newBuilder()
+          .apply {
+            this.internalProfileId = internalProfileId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+          }.build()
       return StateFragment().apply {
-        arguments = Bundle().apply {
-          putProto(STATE_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(STATE_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -86,15 +88,16 @@ class StateFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val args =
       arguments?.getProto(STATE_FRAGMENT_ARGUMENTS_KEY, StateFragmentArguments.getDefaultInstance())
 
-    val userAnswerState = savedInstanceState?.getProto(
-      STATE_FRAGMENT_STATE_KEY,
-      UserAnswerState.getDefaultInstance()
-    ) ?: UserAnswerState.getDefaultInstance()
+    val userAnswerState =
+      savedInstanceState?.getProto(
+        STATE_FRAGMENT_STATE_KEY,
+        UserAnswerState.getDefaultInstance(),
+      ) ?: UserAnswerState.getDefaultInstance()
 
     val internalProfileId = args?.internalProfileId ?: -1
     val topicId = args?.topicId!!
@@ -108,7 +111,7 @@ class StateFragment :
       topicId,
       storyId,
       explorationId,
-      userAnswerState
+      userAnswerState,
     )
   }
 
@@ -122,15 +125,16 @@ class StateFragment :
 
   override fun onPreviousButtonClicked() = stateFragmentPresenter.onPreviousButtonClicked()
 
-  override fun onReturnToTopicButtonClicked() =
-    stateFragmentPresenter.onReturnToTopicButtonClicked()
+  override fun onReturnToTopicButtonClicked() = stateFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
-  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
-    stateFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
+  override fun onHintAvailable(
+    helpIndex: HelpIndex,
+    isCurrentStatePendingState: Boolean,
+  ) = stateFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
 
   fun handlePlayAudio() = stateFragmentPresenter.handleAudioClick()
 
@@ -138,13 +142,12 @@ class StateFragment :
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
   }
 
-  fun setAudioBarVisibility(visibility: Boolean) =
-    stateFragmentPresenter.setAudioBarVisibility(visibility)
+  fun setAudioBarVisibility(visibility: Boolean) = stateFragmentPresenter.setAudioBarVisibility(visibility)
 
   fun scrollToTop() = stateFragmentPresenter.scrollToTop()
 
@@ -168,7 +171,7 @@ class StateFragment :
     super.onSaveInstanceState(outState)
     outState.putProto(
       STATE_FRAGMENT_STATE_KEY,
-      stateFragmentPresenter.getUserAnswerState()
+      stateFragmentPresenter.getUserAnswerState(),
     )
   }
 }

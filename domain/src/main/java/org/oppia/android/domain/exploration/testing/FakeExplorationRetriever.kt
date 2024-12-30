@@ -12,34 +12,39 @@ import javax.inject.Singleton
  * to a real [ExplorationRetriever] implementation but supports selective overriding.
  */
 @Singleton
-class FakeExplorationRetriever @Inject constructor(
-  private val productionImpl: ExplorationRetrieverImpl
-) : ExplorationRetriever {
-  private val explorationProxies = ConcurrentHashMap<String, String>()
+class FakeExplorationRetriever
+  @Inject
+  constructor(
+    private val productionImpl: ExplorationRetrieverImpl,
+  ) : ExplorationRetriever {
+    private val explorationProxies = ConcurrentHashMap<String, String>()
 
-  override suspend fun loadExploration(explorationId: String): Exploration {
-    val expIdToLoad = explorationProxies[explorationId] ?: explorationId
-    return productionImpl.loadExploration(expIdToLoad)
-  }
+    override suspend fun loadExploration(explorationId: String): Exploration {
+      val expIdToLoad = explorationProxies[explorationId] ?: explorationId
+      return productionImpl.loadExploration(expIdToLoad)
+    }
 
-  /**
-   * Sets the exploration ID that should be loaded in place of [expIdToLoad] on all future calls to
-   * [loadExploration].
-   *
-   * Additional calls to this function will overwrite any previous bindings set with [expIdToLoad].
-   * The set proxy can be cleared via a call to [clearExplorationProxy].
-   */
-  fun setExplorationProxy(expIdToLoad: String, expIdToLoadInstead: String) {
-    explorationProxies[expIdToLoad] = expIdToLoadInstead
-  }
+    /**
+     * Sets the exploration ID that should be loaded in place of [expIdToLoad] on all future calls to
+     * [loadExploration].
+     *
+     * Additional calls to this function will overwrite any previous bindings set with [expIdToLoad].
+     * The set proxy can be cleared via a call to [clearExplorationProxy].
+     */
+    fun setExplorationProxy(
+      expIdToLoad: String,
+      expIdToLoadInstead: String,
+    ) {
+      explorationProxies[expIdToLoad] = expIdToLoadInstead
+    }
 
-  /**
-   * Clears the proxy corresponding to [expIdToLoad] that has been set in [setExplorationProxy],
-   * returning [loadExploration]'s behavior to normal for this exploration.
-   *
-   * This function does nothing if there's no such binding for the specified exploration ID.
-   */
-  fun clearExplorationProxy(expIdToLoad: String) {
-    explorationProxies.remove(expIdToLoad)
+    /**
+     * Clears the proxy corresponding to [expIdToLoad] that has been set in [setExplorationProxy],
+     * returning [loadExploration]'s behavior to normal for this exploration.
+     *
+     * This function does nothing if there's no such binding for the specified exploration ID.
+     */
+    fun clearExplorationProxy(expIdToLoad: String) {
+      explorationProxies.remove(expIdToLoad)
+    }
   }
-}

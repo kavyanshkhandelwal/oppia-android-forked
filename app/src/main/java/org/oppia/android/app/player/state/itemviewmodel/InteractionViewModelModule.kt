@@ -18,63 +18,57 @@ interface InteractionViewModelModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionViewModelFactory(
-    factoryImpl: ContinueInteractionViewModel.FactoryImpl
+    factoryImpl: ContinueInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputViewModelFactory(
-    factoryImpl: SelectionInteractionViewModel.FactoryImpl
+    factoryImpl: SelectionInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputViewModelFactory(
-    factoryImpl: SelectionInteractionViewModel.FactoryImpl
+    factoryImpl: SelectionInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("FractionInput")
-  fun provideFractionInputViewModelFactory(
-    factoryImpl: FractionInteractionViewModel.FactoryImpl
-  ): StateItemViewModel.InteractionItemFactory
+  fun provideFractionInputViewModelFactory(factoryImpl: FractionInteractionViewModel.FactoryImpl): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("NumericInput")
-  fun provideNumericInputViewModelFactory(
-    factoryImpl: NumericInputViewModel.FactoryImpl
-  ): StateItemViewModel.InteractionItemFactory
+  fun provideNumericInputViewModelFactory(factoryImpl: NumericInputViewModel.FactoryImpl): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("TextInput")
-  fun provideTextInputViewModelFactory(
-    factoryImpl: TextInputViewModel.FactoryImpl
-  ): StateItemViewModel.InteractionItemFactory
+  fun provideTextInputViewModelFactory(factoryImpl: TextInputViewModel.FactoryImpl): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputViewModelFactory(
-    factoryImpl: DragAndDropSortInteractionViewModel.FactoryImpl
+    factoryImpl: DragAndDropSortInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("ImageClickInput")
   fun provideImageClickInputViewModelFactory(
-    factoryImpl: ImageRegionSelectionInteractionViewModel.FactoryImpl
+    factoryImpl: ImageRegionSelectionInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   @Binds
   @IntoMap
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputViewModelFactory(
-    factoryImpl: RatioExpressionInputInteractionViewModel.FactoryImpl
+    factoryImpl: RatioExpressionInputInteractionViewModel.FactoryImpl,
   ): StateItemViewModel.InteractionItemFactory
 
   // Note that Dagger doesn't support mixing binds & provides methods. See
@@ -86,29 +80,23 @@ interface InteractionViewModelModule {
     @StringKey("NumericExpressionInput")
     @JvmStatic
     fun provideNumericExpressionInputViewModelFactory(
-      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl
-    ): StateItemViewModel.InteractionItemFactory {
-      return factoryFactoryImpl.createFactoryForNumericExpression()
-    }
+      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl,
+    ): StateItemViewModel.InteractionItemFactory = factoryFactoryImpl.createFactoryForNumericExpression()
 
     @Provides
     @IntoMap
     @StringKey("AlgebraicExpressionInput")
     @JvmStatic
     fun provideAlgebraicExpressionInputViewModelFactory(
-      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl
-    ): StateItemViewModel.InteractionItemFactory {
-      return factoryFactoryImpl.createFactoryForAlgebraicExpression()
-    }
+      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl,
+    ): StateItemViewModel.InteractionItemFactory = factoryFactoryImpl.createFactoryForAlgebraicExpression()
 
     @Provides
     @IntoMap
     @StringKey("MathEquationInput")
     @JvmStatic
     fun provideMathEquationInputViewModelFactory(
-      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl
-    ): StateItemViewModel.InteractionItemFactory {
-      return factoryFactoryImpl.createFactoryForMathEquation()
-    }
+      factoryFactoryImpl: MathExpressionInteractionsViewModel.FactoryImpl.FactoryFactoryImpl,
+    ): StateItemViewModel.InteractionItemFactory = factoryFactoryImpl.createFactoryForMathEquation()
   }
 }

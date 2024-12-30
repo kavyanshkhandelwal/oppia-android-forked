@@ -30,7 +30,7 @@ class ScalableVectorGraphic {
     parsedSvg: SVG,
     transformations: List<ImageTransformation>,
     extractedWidth: Int?,
-    extractedHeight: Int?
+    extractedHeight: Int?,
   ) {
     this.parsedSvg = lazy { parsedSvg }
     this.transformations = transformations.distinct()
@@ -71,7 +71,7 @@ class ScalableVectorGraphic {
       intrinsicHeight,
       renderedWidth = imageFileNameWidth ?: intrinsicWidth,
       renderedHeight = imageFileNameHeight ?: intrinsicHeight,
-      verticalAlignment = 0f
+      verticalAlignment = 0f,
     )
   }
 
@@ -96,34 +96,32 @@ class ScalableVectorGraphic {
     val adjustedHeight =
       imageFileNameHeight?.convertExToPx(fontHeight) ?: documentHeight ?: DEFAULT_SIZE_PX
 
-    val verticalAlignment = textPaint?.let {
-      adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
-    } ?: 0f
+    val verticalAlignment =
+      textPaint?.let {
+        adjustAlignmentForAndroid(parsedSvg.value.getVerticalAlignment(options))
+      } ?: 0f
 
     return SvgSizeSpecs(
       adjustedWidth,
       adjustedHeight,
       renderedWidth = adjustedWidth,
       renderedHeight = adjustedHeight,
-      verticalAlignment
+      verticalAlignment,
     )
   }
 
-  private fun Float.convertExToPx(fontHeight: Float): Float {
-    return this * fontHeight * 0.5f
-  }
+  private fun Float.convertExToPx(fontHeight: Float): Float = this * fontHeight * 0.5f
 
   /**
    * Returns an Android [Picture] including the draw instructions for rendering this SVG within a
    * line of text whose size and style is configured by the provided [textPaint].
    */
-  fun renderToTextPicture(textPaint: TextPaint): Picture {
-    return computeSizeSpecsForTextPicture(textPaint).let { (width, height, _) ->
+  fun renderToTextPicture(textPaint: TextPaint): Picture =
+    computeSizeSpecsForTextPicture(textPaint).let { (width, height, _) ->
       val options =
         RenderOptions().textPaint(textPaint).viewPort(0f, 0f, width, height) as RenderOptions
       parsedSvg.value.renderToPicture(options)
     }
-  }
 
   /**
    * Returns an Android [Picture] including the draw instructions for rendering this SVG in a block
@@ -135,13 +133,18 @@ class ScalableVectorGraphic {
    * Returns a new [ScalableVectorGraphic] that will be transformed by the specified
    * transformations. Any existing transformations on the graphic will also be included.
    */
-  fun transform(transformations: List<ImageTransformation>): ScalableVectorGraphic {
-    return ScalableVectorGraphic(
-      parsedSvg.value, this.transformations + transformations, extractedWidth, extractedHeight
+  fun transform(transformations: List<ImageTransformation>): ScalableVectorGraphic =
+    ScalableVectorGraphic(
+      parsedSvg.value,
+      this.transformations + transformations,
+      extractedWidth,
+      extractedHeight,
     )
-  }
 
-  fun initializeWithExtractedDimensions(width: Int?, height: Int?) {
+  fun initializeWithExtractedDimensions(
+    width: Int?,
+    height: Int?,
+  ) {
     extractedWidth = width
     extractedHeight = height
   }
@@ -171,7 +174,7 @@ class ScalableVectorGraphic {
     val intrinsicHeight: Float,
     val renderedWidth: Float = intrinsicWidth,
     val renderedHeight: Float = intrinsicHeight,
-    val verticalAlignment: Float = 0f
+    val verticalAlignment: Float = 0f,
   )
 
   private companion object {
@@ -179,10 +182,8 @@ class ScalableVectorGraphic {
     // scale the image.
     private const val DEFAULT_SIZE_PX = 1f
 
-    private fun SVG.getDocumentWidthOrNull(options: RenderOptionsBase): Float? =
-      getDocumentWidth(options).takeIf { it > 0 }
+    private fun SVG.getDocumentWidthOrNull(options: RenderOptionsBase): Float? = getDocumentWidth(options).takeIf { it > 0 }
 
-    private fun SVG.getDocumentHeightOrNull(options: RenderOptionsBase): Float? =
-      getDocumentHeight(options).takeIf { it > 0 }
+    private fun SVG.getDocumentHeightOrNull(options: RenderOptionsBase): Float? = getDocumentHeight(options).takeIf { it > 0 }
   }
 }

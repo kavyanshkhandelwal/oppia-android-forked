@@ -102,7 +102,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = WalkthroughWelcomeFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class WalkthroughWelcomeFragmentTest {
   @get:Rule
@@ -141,12 +141,11 @@ class WalkthroughWelcomeFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
-    return WalkthroughActivity.createWalkthroughActivityIntent(
+  private fun createWalkthroughActivityIntent(profileId: Int): Intent =
+    WalkthroughActivity.createWalkthroughActivityIntent(
       context,
-      profileId
+      profileId,
     )
-  }
 
   @Test
   fun testWalkthroughWelcomeFragment_descriptionIsCorrect() {
@@ -154,8 +153,8 @@ class WalkthroughWelcomeFragmentTest {
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_description_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText(R.string.walkthrough_welcome_description)))
     }
   }
@@ -167,8 +166,8 @@ class WalkthroughWelcomeFragmentTest {
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText("Welcome Admin!")))
     }
   }
@@ -180,16 +179,16 @@ class WalkthroughWelcomeFragmentTest {
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText("Welcome Admin!")))
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(
         allOf(
           withId(R.id.walkthrough_welcome_title_text_view),
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       ).check(matches(withText("Welcome Admin!")))
     }
   }
@@ -223,8 +222,8 @@ class WalkthroughWelcomeFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -235,9 +234,13 @@ class WalkthroughWelcomeFragmentTest {
     fun inject(walkthroughWelcomeFragmentTest: WalkthroughWelcomeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWalkthroughWelcomeFragmentTest_TestApplicationComponent.builder()
+      DaggerWalkthroughWelcomeFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -246,9 +249,12 @@ class WalkthroughWelcomeFragmentTest {
       component.inject(walkthroughWelcomeFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -5,6 +5,8 @@ import org.oppia.android.app.model.WrittenTranslationContext
 
 /** Listener for fetching current Question state data. */
 interface HintsAndSolutionQuestionManagerListener {
-
-  fun onQuestionStateLoaded(state: State, writtenTranslationContext: WrittenTranslationContext)
+  fun onQuestionStateLoaded(
+    state: State,
+    writtenTranslationContext: WrittenTranslationContext,
+  )
 }

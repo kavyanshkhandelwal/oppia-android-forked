@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MultipleChoiceInputEqualsRuleClassifierProviderTest {
-
   private val NON_NEGATIVE_VALUE_TEST_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(value = 0)
   private val NON_NEGATIVE_VALUE_TEST_1 =
@@ -46,11 +45,12 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_nonNegativeInput_sameValue_bothValuesMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val matches = inputEqualsRuleClassifier.matches(
-      answer = NON_NEGATIVE_VALUE_TEST_0,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_TEST_0,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -59,11 +59,12 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_nonNegativeInput_differentValue_bothValuesDoNotMatch() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val matches = inputEqualsRuleClassifier.matches(
-      answer = NON_NEGATIVE_VALUE_TEST_1,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = NON_NEGATIVE_VALUE_TEST_1,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -72,13 +73,14 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifier.matches(
-        answer = NON_NEGATIVE_VALUE_TEST_0,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifier.matches(
+          answer = NON_NEGATIVE_VALUE_TEST_0,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -89,13 +91,14 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testUnexpectedStringAnswer_nonNegativeIntInput_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifier.matches(
-        answer = STRING_VALUE_TEST,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifier.matches(
+          answer = STRING_VALUE_TEST,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -106,13 +109,14 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   fun testNonNegativeAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE_TEST)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifier.matches(
-        answer = NON_NEGATIVE_VALUE_TEST_0,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifier.matches(
+          answer = NON_NEGATIVE_VALUE_TEST_0,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -120,7 +124,8 @@ class MultipleChoiceInputEqualsRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMultipleChoiceInputEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerMultipleChoiceInputEqualsRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

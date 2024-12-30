@@ -22,96 +22,94 @@ import javax.inject.Inject
 
 /** The presenter for [DeveloperOptionsFragment]. */
 @FragmentScope
-class DeveloperOptionsFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) {
-
-  private lateinit var binding: DeveloperOptionsFragmentBinding
-  private lateinit var linearLayoutManager: LinearLayoutManager
-
+class DeveloperOptionsFragmentPresenter
   @Inject
-  lateinit var developerOptionsViewModel: DeveloperOptionsViewModel
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: DeveloperOptionsFragmentBinding
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?
-  ): View? {
-    binding = DeveloperOptionsFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    @Inject
+    lateinit var developerOptionsViewModel: DeveloperOptionsViewModel
 
-    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      binding =
+        DeveloperOptionsFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.developerOptionsList.apply {
-      layoutManager = linearLayoutManager
-      adapter = createRecyclerViewAdapter()
-    }
+      linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
-    binding.apply {
-      this.viewModel = developerOptionsViewModel
-      this.lifecycleOwner = fragment
-    }
-
-    return binding.root
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> {
-    return multiTypeBuilderFactory.create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
-      when (viewModel) {
-        is DeveloperOptionsModifyLessonProgressViewModel -> {
-          viewModel.itemIndex.set(0)
-          ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
-        }
-        is DeveloperOptionsViewLogsViewModel -> {
-          viewModel.itemIndex.set(1)
-          ViewType.VIEW_TYPE_VIEW_LOGS
-        }
-        is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
-          viewModel.itemIndex.set(2)
-          ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
-        }
-        is DeveloperOptionsTestParsersViewModel -> {
-          viewModel.itemIndex.set(3)
-          ViewType.VIEW_TYPE_TEST_PARSERS
-        }
-        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+      binding.developerOptionsList.apply {
+        layoutManager = linearLayoutManager
+        adapter = createRecyclerViewAdapter()
       }
-    }
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS,
-        inflateDataBinding = DeveloperOptionsModifyLessonProgressViewBinding::inflate,
-        setViewModel = DeveloperOptionsModifyLessonProgressViewBinding::setViewModel,
-        transformViewModel = { it as DeveloperOptionsModifyLessonProgressViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_VIEW_LOGS,
-        inflateDataBinding = DeveloperOptionsViewLogsViewBinding::inflate,
-        setViewModel = DeveloperOptionsViewLogsViewBinding::setViewModel,
-        transformViewModel = { it as DeveloperOptionsViewLogsViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
-        inflateDataBinding = DeveloperOptionsOverrideAppBehaviorsViewBinding::inflate,
-        setViewModel = DeveloperOptionsOverrideAppBehaviorsViewBinding::setViewModel,
-        transformViewModel = { it as DeveloperOptionsOverrideAppBehaviorsViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.VIEW_TYPE_TEST_PARSERS,
-        inflateDataBinding = DeveloperOptionsTestParsersViewBinding::inflate,
-        setViewModel = DeveloperOptionsTestParsersViewBinding::setViewModel,
-        transformViewModel = { it as DeveloperOptionsTestParsersViewModel }
-      )
-      .build()
-  }
 
-  private enum class ViewType {
-    VIEW_TYPE_MODIFY_LESSON_PROGRESS,
-    VIEW_TYPE_VIEW_LOGS,
-    VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
-    VIEW_TYPE_TEST_PARSERS
+      binding.apply {
+        this.viewModel = developerOptionsViewModel
+        this.lifecycleOwner = fragment
+      }
+
+      return binding.root
+    }
+
+    private fun createRecyclerViewAdapter(): BindableAdapter<DeveloperOptionsItemViewModel> =
+      multiTypeBuilderFactory
+        .create<DeveloperOptionsItemViewModel, ViewType> { viewModel ->
+          when (viewModel) {
+            is DeveloperOptionsModifyLessonProgressViewModel -> {
+              viewModel.itemIndex.set(0)
+              ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS
+            }
+            is DeveloperOptionsViewLogsViewModel -> {
+              viewModel.itemIndex.set(1)
+              ViewType.VIEW_TYPE_VIEW_LOGS
+            }
+            is DeveloperOptionsOverrideAppBehaviorsViewModel -> {
+              viewModel.itemIndex.set(2)
+              ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS
+            }
+            is DeveloperOptionsTestParsersViewModel -> {
+              viewModel.itemIndex.set(3)
+              ViewType.VIEW_TYPE_TEST_PARSERS
+            }
+            else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+          }
+        }.registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_MODIFY_LESSON_PROGRESS,
+          inflateDataBinding = DeveloperOptionsModifyLessonProgressViewBinding::inflate,
+          setViewModel = DeveloperOptionsModifyLessonProgressViewBinding::setViewModel,
+          transformViewModel = { it as DeveloperOptionsModifyLessonProgressViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_VIEW_LOGS,
+          inflateDataBinding = DeveloperOptionsViewLogsViewBinding::inflate,
+          setViewModel = DeveloperOptionsViewLogsViewBinding::setViewModel,
+          transformViewModel = { it as DeveloperOptionsViewLogsViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
+          inflateDataBinding = DeveloperOptionsOverrideAppBehaviorsViewBinding::inflate,
+          setViewModel = DeveloperOptionsOverrideAppBehaviorsViewBinding::setViewModel,
+          transformViewModel = { it as DeveloperOptionsOverrideAppBehaviorsViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.VIEW_TYPE_TEST_PARSERS,
+          inflateDataBinding = DeveloperOptionsTestParsersViewBinding::inflate,
+          setViewModel = DeveloperOptionsTestParsersViewBinding::setViewModel,
+          transformViewModel = { it as DeveloperOptionsTestParsersViewModel },
+        ).build()
+
+    private enum class ViewType {
+      VIEW_TYPE_MODIFY_LESSON_PROGRESS,
+      VIEW_TYPE_VIEW_LOGS,
+      VIEW_TYPE_OVERRIDE_APP_BEHAVIORS,
+      VIEW_TYPE_TEST_PARSERS,
+    }
   }
-}

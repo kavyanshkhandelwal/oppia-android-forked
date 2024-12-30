@@ -12,7 +12,7 @@ class SubmittedAnswerViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   val supportsConceptCards: Boolean,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : StateItemViewModel(ViewType.SUBMITTED_ANSWER) {
   val isCorrectAnswer = ObservableField(DEFAULT_IS_CORRECT_ANSWER)
   val submittedAnswer: ObservableField<CharSequence> = ObservableField(DEFAULT_SUBMITTED_ANSWER)
@@ -20,12 +20,17 @@ class SubmittedAnswerViewModel(
   val submittedAnswerContentDescription: ObservableField<String> =
     ObservableField(
       computeSubmittedAnswerContentDescription(
-        DEFAULT_IS_CORRECT_ANSWER, DEFAULT_SUBMITTED_ANSWER, DEFAULT_ACCESSIBLE_ANSWER
-      )
+        DEFAULT_IS_CORRECT_ANSWER,
+        DEFAULT_SUBMITTED_ANSWER,
+        DEFAULT_ACCESSIBLE_ANSWER,
+      ),
     )
   private var accessibleAnswer: String? = DEFAULT_ACCESSIBLE_ANSWER
 
-  fun setSubmittedAnswer(submittedAnswer: CharSequence, accessibleAnswer: String?) {
+  fun setSubmittedAnswer(
+    submittedAnswer: CharSequence,
+    accessibleAnswer: String?,
+  ) {
     this.submittedAnswer.set(submittedAnswer)
     this.accessibleAnswer = accessibleAnswer
     updateSubmittedAnswerContentDescription()
@@ -41,24 +46,26 @@ class SubmittedAnswerViewModel(
       computeSubmittedAnswerContentDescription(
         isCorrectAnswer.get() ?: DEFAULT_IS_CORRECT_ANSWER,
         submittedAnswer.get() ?: DEFAULT_SUBMITTED_ANSWER,
-        accessibleAnswer
-      )
+        accessibleAnswer,
+      ),
     )
   }
 
   private fun computeSubmittedAnswerContentDescription(
     isCorrectAnswer: Boolean,
     submittedAnswer: CharSequence,
-    accessibleAnswer: String?
+    accessibleAnswer: String?,
   ): String {
     val answer = if (accessibleAnswer.isNullOrBlank()) submittedAnswer else accessibleAnswer
     return if (isCorrectAnswer) {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.correct_submitted_answer_with_append, answer
+        R.string.correct_submitted_answer_with_append,
+        answer,
       )
     } else {
       resourceHandler.getStringInLocaleWithWrapping(
-        R.string.incorrect_submitted_answer_with_append, answer
+        R.string.incorrect_submitted_answer_with_append,
+        answer,
       )
     }
   }

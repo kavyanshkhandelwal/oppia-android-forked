@@ -93,7 +93,7 @@ class FractionParsingUiErrorTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   private lateinit var fractionParser: FractionParser
@@ -107,9 +107,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_validMixedNumber_noErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("11 22/33")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("11 22/33")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isNull()
     }
   }
@@ -117,9 +119,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("0123456789")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("0123456789")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
     }
@@ -128,9 +132,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_nonDigits_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("jdhfc")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("jdhfc")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -139,9 +145,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_divisionByZero_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("123/0")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("123/0")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
     }
   }
@@ -149,9 +157,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_ambiguousSpacing_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("1 2 3/4")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("1 2 3/4")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -160,9 +170,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_emptyString_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Enter a fraction to continue.")
     }
@@ -171,9 +183,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testSubmitTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("3/")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getSubmitTimeError("3/")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -182,9 +196,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testRealTimeError_validRegularFraction_noErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("2/3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getRealTimeAnswerError("2/3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage).isNull()
     }
   }
@@ -192,9 +208,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testRealTimeError_nonDigits_invalidChars_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("abc")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getRealTimeAnswerError("abc")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
     }
@@ -203,9 +221,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("/3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getRealTimeAnswerError("/3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -214,9 +234,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testRealTimeError_severalSlashes_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("1/3/8")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getRealTimeAnswerError("1/3/8")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -225,9 +247,11 @@ class FractionParsingUiErrorTest {
   @Test
   fun testRealTimeError_severalDashes_invalidFormat_hasRelevantErrorMessage() {
     activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("-1/-3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+      val errorMessage =
+        fractionParser
+          .getRealTimeAnswerError("-1/-3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
       assertThat(errorMessage)
         .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
     }
@@ -238,8 +262,7 @@ class FractionParsingUiErrorTest {
   }
 
   private companion object {
-    private fun FractionParsingError.toUiError(): FractionParsingUiError =
-      FractionParsingUiError.createFromParsingError(this)
+    private fun FractionParsingError.toUiError(): FractionParsingUiError = FractionParsingUiError.createFromParsingError(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -270,8 +293,8 @@ class FractionParsingUiErrorTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -282,9 +305,13 @@ class FractionParsingUiErrorTest {
     fun inject(fractionParsingUiErrorTest: FractionParsingUiErrorTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFractionParsingUiErrorTest_TestApplicationComponent.builder()
+      DaggerFractionParsingUiErrorTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -293,9 +320,12 @@ class FractionParsingUiErrorTest {
       component.inject(fractionParsingUiErrorTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -113,7 +113,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AdminAuthActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AdminAuthActivityTest {
   @get:Rule
@@ -134,9 +134,12 @@ class AdminAuthActivityTest {
   private val internalProfileId: Int = 0
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<AdminAuthActivity> = ActivityTestRule(
-    AdminAuthActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<AdminAuthActivity> =
+    ActivityTestRule(
+      AdminAuthActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Before
   fun setUp() {
@@ -157,13 +160,15 @@ class AdminAuthActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = AdminAuthActivity.createAdminAuthActivityIntent(
-      context = context,
-      adminPin = "12345",
-      profileId = internalProfileId,
-      colorRgb = -10710042,
-      adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-    ).extractCurrentAppScreenName()
+    val screenName =
+      AdminAuthActivity
+        .createAdminAuthActivityIntent(
+          context = context,
+          adminPin = "12345",
+          profileId = internalProfileId,
+          colorRgb = -10710042,
+          adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+        ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.ADMIN_AUTH_ACTIVITY)
   }
@@ -176,8 +181,8 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+      ),
     ).use {
       onView(withContentDescription(R.string.admin_auth_close)).check(matches(isDisplayed()))
     }
@@ -191,17 +196,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       intended(hasComponent(AddProfileActivity::class.java.name))
@@ -216,17 +221,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        pressImeActionButton()
+        pressImeActionButton(),
       )
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
@@ -240,17 +245,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
@@ -265,17 +270,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        pressImeActionButton()
+        pressImeActionButton(),
       )
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
     }
@@ -289,26 +294,26 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12354"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
     }
   }
@@ -321,25 +326,25 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12354"),
-        pressImeActionButton()
+        pressImeActionButton(),
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
     }
   }
@@ -352,8 +357,8 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(withId(R.id.admin_auth_submit_button)).check(matches(not(isEnabled())))
     }
@@ -367,17 +372,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
     }
@@ -391,17 +396,17 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_submit_button)).check(matches(isEnabled()))
@@ -416,45 +421,45 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(withId(R.id.admin_auth_heading_textview)).check(
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
-            )
-          )
-        )
+              R.string.admin_auth_heading,
+            ),
+          ),
+        ),
       )
       onView(withId(R.id.admin_auth_sub_text))
         .check(
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_admin_controls_sub
-              )
-            )
-          )
+                R.string.admin_auth_admin_controls_sub,
+              ),
+            ),
+          ),
         )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_sub_text))
         .check(
           matches(
             withText(
-              context.resources.getString(R.string.admin_auth_admin_controls_sub)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_admin_controls_sub),
+            ),
+          ),
         )
       onView(withId(R.id.admin_auth_heading_textview)).check(
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
-            )
-          )
-        )
+              R.string.admin_auth_heading,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -467,27 +472,27 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+      ),
     ).use {
       onView(withId(R.id.admin_auth_heading_textview)).check(
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
-            )
-          )
-        )
+              R.string.admin_auth_heading,
+            ),
+          ),
+        ),
       )
       onView(withId(R.id.admin_auth_sub_text))
         .check(
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_sub
-              )
-            )
-          )
+                R.string.admin_auth_sub,
+              ),
+            ),
+          ),
         )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_sub_text))
@@ -495,19 +500,19 @@ class AdminAuthActivityTest {
           matches(
             withText(
               context.resources.getString(
-                R.string.admin_auth_sub
-              )
-            )
-          )
+                R.string.admin_auth_sub,
+              ),
+            ),
+          ),
         )
       onView(withId(R.id.admin_auth_heading_textview)).check(
         matches(
           withText(
             context.resources.getString(
-              R.string.admin_auth_heading
-            )
-          )
-        )
+              R.string.admin_auth_heading,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -520,28 +525,28 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).check(
         matches(
-          withText("12345")
-        )
+          withText("12345"),
+        ),
       )
     }
   }
@@ -554,35 +559,35 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12354"),
-        closeSoftKeyboard()
+        closeSoftKeyboard(),
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
     }
   }
@@ -595,34 +600,34 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     ).use {
       onView(
         allOf(
           withId(R.id.admin_auth_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.admin_auth_input_pin))
-        )
+          isDescendantOfA(withId(R.id.admin_auth_input_pin)),
+        ),
       ).perform(
         editTextInputAction.appendText("12354"),
-        pressImeActionButton()
+        pressImeActionButton(),
       )
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.admin_auth_input_pin))
         .check(
           matches(
             hasErrorText(
-              context.resources.getString(R.string.admin_auth_incorrect)
-            )
-          )
+              context.resources.getString(R.string.admin_auth_incorrect),
+            ),
+          ),
         )
     }
   }
@@ -635,15 +640,15 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value,
+      ),
     )
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
     // correct string when it's read out.
     assertThat(title).isEqualTo(
-      context.getString(R.string.admin_auth_activity_access_controls_title)
+      context.getString(R.string.admin_auth_activity_access_controls_title),
     )
   }
 
@@ -655,8 +660,8 @@ class AdminAuthActivityTest {
         adminPin = "12345",
         profileId = internalProfileId,
         colorRgb = -10710042,
-        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
-      )
+        adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value,
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -693,8 +698,8 @@ class AdminAuthActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -705,9 +710,13 @@ class AdminAuthActivityTest {
     fun inject(adminAuthActivityTest: AdminAuthActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAdminAuthActivityTest_TestApplicationComponent.builder()
+      DaggerAdminAuthActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -716,9 +725,12 @@ class AdminAuthActivityTest {
       component.inject(adminAuthActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

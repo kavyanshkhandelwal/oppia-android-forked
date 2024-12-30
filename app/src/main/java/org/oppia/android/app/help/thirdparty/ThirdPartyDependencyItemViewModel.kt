@@ -13,9 +13,8 @@ class ThirdPartyDependencyItemViewModel(
   val dependencyName: String,
   val dependencyVersion: String,
   val dependencyIndex: Int,
-  val isMultipane: Boolean
+  val isMultipane: Boolean,
 ) : ObservableViewModel() {
-
   /** Starts [LicenseListActivity] upon clicking on an item of the third-party dependency list. */
   fun clickOnThirdPartyDependencyItem() {
     if (isMultipane) {

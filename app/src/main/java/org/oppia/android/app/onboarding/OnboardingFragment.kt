@@ -31,14 +31,13 @@ class OnboardingFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return if (enableOnboardingFlowV2.value) {
+    savedInstanceState: Bundle?,
+  ): View? =
+    if (enableOnboardingFlowV2.value) {
       onboardingFragmentPresenter.handleCreateView(inflater, container, savedInstanceState)
     } else {
       onboardingFragmentPresenterV1.handleCreateView(inflater, container)
     }
-  }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)

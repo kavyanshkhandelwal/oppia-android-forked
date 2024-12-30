@@ -38,7 +38,7 @@ fun main(args: Array<String>) {
 class GenerateMavenDependenciesList(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
 ) {
   /**
    * Compiles a list of third-party Maven dependencies along with their license links on
@@ -59,7 +59,7 @@ class GenerateMavenDependenciesList(
           pathToMavenInstallJson,
           pathToMavenDependenciesTextProto,
           pathToMavenDependenciesPb,
-          scriptBgDispatcher
+          scriptBgDispatcher,
         )
       }
     }
@@ -70,19 +70,24 @@ class GenerateMavenDependenciesList(
     pathToMavenInstallJson: String,
     pathToMavenDependenciesTextProto: String,
     pathToMavenDependenciesPb: String,
-    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   ) {
     val retriever =
       MavenDependenciesRetriever(
-        pathToRoot, mavenArtifactPropertyFetcher, scriptBgDispatcher, commandExecutor
+        pathToRoot,
+        mavenArtifactPropertyFetcher,
+        scriptBgDispatcher,
+        commandExecutor,
       )
 
     val bazelQueryDepsList =
       retriever.retrieveThirdPartyMavenDependenciesList()
     val mavenInstallDepsList =
-      retriever.generateDependenciesListFromMavenInstallAsync(
-        pathToMavenInstallJson, bazelQueryDepsList
-      ).await()
+      retriever
+        .generateDependenciesListFromMavenInstallAsync(
+          pathToMavenInstallJson,
+          bazelQueryDepsList,
+        ).await()
 
     val dependenciesListFromPom =
       retriever.retrieveDependencyListFromPomAsync(mavenInstallDepsList).await().mavenDependencyList
@@ -90,9 +95,11 @@ class GenerateMavenDependenciesList(
     val dependenciesListFromTextProto =
       retriever.retrieveMavenDependencyList(pathToMavenDependenciesPb)
 
-    val updatedDependenciesList = retriever.addChangesFromTextProto(
-      dependenciesListFromPom, dependenciesListFromTextProto
-    )
+    val updatedDependenciesList =
+      retriever.addChangesFromTextProto(
+        dependenciesListFromPom,
+        dependenciesListFromTextProto,
+      )
 
     val manuallyUpdatedLicenses =
       retriever.retrieveManuallyUpdatedLicensesSet(updatedDependenciesList)
@@ -101,7 +108,7 @@ class GenerateMavenDependenciesList(
       retriever.updateMavenDependenciesList(updatedDependenciesList, manuallyUpdatedLicenses)
     retriever.writeTextProto(
       pathToMavenDependenciesTextProto,
-      MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build()
+      MavenDependencyList.newBuilder().addAllMavenDependency(finalDependenciesList).build(),
     )
 
     val licensesToBeFixed = retriever.getAllBrokenLicenses(finalDependenciesList)
@@ -151,7 +158,7 @@ class GenerateMavenDependenciesList(
         Please verify the license link(s) for the following license(s) manually in
         maven_dependencies.textproto. Note that only first dependency that contains the license
         needs to be updated and also re-run the script to update the license details at all places.
-        """.trimIndent()
+        """.trimIndent(),
       )
       licensesToBeFixed.forEach {
         println("\nlicense_name: ${it.licenseName}")
@@ -160,7 +167,7 @@ class GenerateMavenDependenciesList(
         println("is_original_link_invalid: ${it.isOriginalLinkInvalid}")
         println(
           "First dependency that should be updated with the license: " +
-            "${licenseToDependencyMap[it]}\n"
+            "${licenseToDependencyMap[it]}\n",
         )
       }
       throw Exception("Licenses details are not completed")
@@ -194,7 +201,7 @@ class GenerateMavenDependenciesList(
         }
 
         Dependencies with invalid or no license links:
-        """.trimIndent() + "\n"
+        """.trimIndent() + "\n",
       )
       dependenciesWithoutAnyLinks.forEach { dependency ->
         println(dependency)

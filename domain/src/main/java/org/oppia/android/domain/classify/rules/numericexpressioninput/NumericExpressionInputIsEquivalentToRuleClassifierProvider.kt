@@ -22,50 +22,52 @@ import javax.inject.Inject
  *
  * See this class's tests for a list of supported cases (both for matching and not matching).
  */
-class NumericExpressionInputIsEquivalentToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val consoleLogger: ConsoleLogger
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+class NumericExpressionInputIsEquivalentToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val consoleLogger: ConsoleLogger,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<String> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun matches(
-    answer: String,
-    input: String,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val answerValue = evaluateNumericExpression(answer, ALL_ERRORS) ?: return false
-    val inputValue = evaluateNumericExpression(input, REQUIRED_ONLY) ?: return false
-    return answerValue.isApproximatelyEqualTo(inputValue)
-  }
+    override fun matches(
+      answer: String,
+      input: String,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val answerValue = evaluateNumericExpression(answer, ALL_ERRORS) ?: return false
+      val inputValue = evaluateNumericExpression(input, REQUIRED_ONLY) ?: return false
+      return answerValue.isApproximatelyEqualTo(inputValue)
+    }
 
-  private fun evaluateNumericExpression(
-    rawExpression: String,
-    checkingMode: ErrorCheckingMode
-  ): Real? {
-    return when (val expResult = parseNumericExpression(rawExpression, checkingMode)) {
-      is MathParsingResult.Success -> {
-        expResult.result.evaluateAsNumericExpression().also {
-          if (it == null) {
-            consoleLogger.w(
-              "NumericExpEquivalent", "Expression failed to evaluate: $rawExpression."
-            )
+    private fun evaluateNumericExpression(
+      rawExpression: String,
+      checkingMode: ErrorCheckingMode,
+    ): Real? =
+      when (val expResult = parseNumericExpression(rawExpression, checkingMode)) {
+        is MathParsingResult.Success -> {
+          expResult.result.evaluateAsNumericExpression().also {
+            if (it == null) {
+              consoleLogger.w(
+                "NumericExpEquivalent",
+                "Expression failed to evaluate: $rawExpression.",
+              )
+            }
           }
         }
+        is MathParsingResult.Failure -> {
+          consoleLogger.e(
+            "NumericExpEquivalent",
+            "Encountered expression that failed parsing. Expression: $rawExpression." +
+              " Failure: ${expResult.error}.",
+          )
+          null
+        }
       }
-      is MathParsingResult.Failure -> {
-        consoleLogger.e(
-          "NumericExpEquivalent",
-          "Encountered expression that failed parsing. Expression: $rawExpression." +
-            " Failure: ${expResult.error}."
-        )
-        null
-      }
-    }
   }
-}

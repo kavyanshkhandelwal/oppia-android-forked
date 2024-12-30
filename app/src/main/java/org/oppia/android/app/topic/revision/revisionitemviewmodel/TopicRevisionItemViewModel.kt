@@ -11,7 +11,7 @@ class TopicRevisionItemViewModel(
   ephemeralSubtopic: EphemeralSubtopic,
   val entityType: String,
   val onRevisionItemPressed: RevisionSubtopicSelector,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : ObservableViewModel() {
   /** The subtopic being displayed. */
   val subtopic = ephemeralSubtopic.subtopic

@@ -8,8 +8,7 @@ import org.hamcrest.TypeSafeMatcher
 /** A custom class that provides matching for ImageView. */
 class ImageViewMatcher {
   companion object {
-    fun hasScaleType(scaleType: ImageView.ScaleType): TypeSafeMatcher<View> =
-      checkScaleType(scaleType)
+    fun hasScaleType(scaleType: ImageView.ScaleType): TypeSafeMatcher<View> = checkScaleType(scaleType)
   }
 
   /**
@@ -19,14 +18,12 @@ class ImageViewMatcher {
    *   has a [scaleType].
    */
   private class checkScaleType(
-    private val scaleType: ImageView.ScaleType
+    private val scaleType: ImageView.ScaleType,
   ) : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("has scale type $scaleType")
     }
 
-    override fun matchesSafely(view: View): Boolean {
-      return view is ImageView && view.scaleType == scaleType
-    }
+    override fun matchesSafely(view: View): Boolean = view is ImageView && view.scaleType == scaleType
   }
 }

@@ -32,7 +32,6 @@ class MathExpressionInteractionsViewTestActivity :
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {
-
   private lateinit var binding:
     ActivityMathExpressionInteractionViewTestBinding
 
@@ -53,13 +52,15 @@ class MathExpressionInteractionsViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityMathExpressionInteractionViewTestBinding>(
-      this, R.layout.activity_math_expression_interaction_view_test
-    )
+    binding =
+      DataBindingUtil.setContentView<ActivityMathExpressionInteractionViewTestBinding>(
+        this,
+        R.layout.activity_math_expression_interaction_view_test,
+      )
     val params =
       intent.getProtoExtra(
         TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
-        MathExpressionInteractionsViewTestActivityParams.getDefaultInstance()
+        MathExpressionInteractionsViewTestActivityParams.getDefaultInstance(),
       )
     writtenTranslationContext = params.writtenTranslationContext
     when (params.mathInteractionType) {
@@ -82,7 +83,8 @@ class MathExpressionInteractionsViewTestActivity :
             .create(interaction = params.interaction)
       }
       MathInteractionType.MATH_INTERACTION_TYPE_UNSPECIFIED,
-      MathInteractionType.UNRECOGNIZED, null -> {
+      MathInteractionType.UNRECOGNIZED, null,
+      -> {
         // Default to numeric expression arbitrarily (since something needs to be defined).
         mathExpressionViewModel =
           mathExpViewModelFactoryFactory
@@ -92,14 +94,15 @@ class MathExpressionInteractionsViewTestActivity :
     }
 
     binding.mathExpressionInteractionsViewModel = mathExpressionViewModel
-    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      mathExpressionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    }
+    binding.getPendingAnswerErrorOnSubmitClick =
+      Runnable {
+        mathExpressionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {
     binding.submitButton.isEnabled = pendingAnswerError == null
   }
@@ -111,10 +114,10 @@ class MathExpressionInteractionsViewTestActivity :
   }
 
   private inline fun <reified T : StateItemViewModel> StateItemViewModel
-  .InteractionItemFactory.create(
-    interaction: Interaction = Interaction.getDefaultInstance()
-  ): T {
-    return create(
+    .InteractionItemFactory.create(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+  ): T =
+    create(
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
@@ -123,9 +126,8 @@ class MathExpressionInteractionsViewTestActivity :
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs = null
+      timeToStartNoticeAnimationMs = null,
     ) as T
-  }
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
@@ -134,11 +136,10 @@ class MathExpressionInteractionsViewTestActivity :
     /** Function to create intent for MathExpressionInteractionsViewTestActivity. */
     fun createIntent(
       context: Context,
-      extras: MathExpressionInteractionsViewTestActivityParams
-    ): Intent {
-      return Intent(context, MathExpressionInteractionsViewTestActivity::class.java).also {
+      extras: MathExpressionInteractionsViewTestActivityParams,
+    ): Intent =
+      Intent(context, MathExpressionInteractionsViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
-    }
   }
 }

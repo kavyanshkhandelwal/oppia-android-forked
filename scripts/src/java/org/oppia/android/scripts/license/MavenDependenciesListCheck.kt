@@ -38,7 +38,7 @@ fun main(args: Array<String>) {
 class MavenDependenciesListCheck(
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher)
+  private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
 ) {
   /**
    * Verifies that the list of third-party Maven dependencies in maven_dependnecies.textproto is
@@ -51,7 +51,10 @@ class MavenDependenciesListCheck(
     ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
       runBlocking {
         checkMavenDependenciesList(
-          pathToRoot, pathToMavenInstallJson, pathToMavenDependenciesPb, scriptBgDispatcher
+          pathToRoot,
+          pathToMavenInstallJson,
+          pathToMavenDependenciesPb,
+          scriptBgDispatcher,
         )
       }
     }
@@ -61,22 +64,24 @@ class MavenDependenciesListCheck(
     pathToRoot: String,
     pathToMavenInstallJson: String,
     pathToMavenDependenciesPb: String,
-    scriptBackgroundCoroutineDispatcher: ScriptBackgroundCoroutineDispatcher
+    scriptBackgroundCoroutineDispatcher: ScriptBackgroundCoroutineDispatcher,
   ) {
-    val mavenDependenciesRetriever = MavenDependenciesRetriever(
-      pathToRoot,
-      mavenArtifactPropertyFetcher,
-      scriptBackgroundCoroutineDispatcher,
-      commandExecutor
-    )
+    val mavenDependenciesRetriever =
+      MavenDependenciesRetriever(
+        pathToRoot,
+        mavenArtifactPropertyFetcher,
+        scriptBackgroundCoroutineDispatcher,
+        commandExecutor,
+      )
 
     val bazelQueryDepsList =
       mavenDependenciesRetriever.retrieveThirdPartyMavenDependenciesList()
     val mavenInstallDepsList =
-      mavenDependenciesRetriever.generateDependenciesListFromMavenInstallAsync(
-        pathToMavenInstallJson,
-        bazelQueryDepsList
-      ).await()
+      mavenDependenciesRetriever
+        .generateDependenciesListFromMavenInstallAsync(
+          pathToMavenInstallJson,
+          bazelQueryDepsList,
+        ).await()
 
     val dependenciesListFromPom =
       mavenDependenciesRetriever
@@ -91,7 +96,7 @@ class MavenDependenciesListCheck(
     val updatedDependenciesList =
       mavenDependenciesRetriever.addChangesFromTextProto(
         dependenciesListFromPom,
-        dependenciesListFromTextProto
+        dependenciesListFromTextProto,
       )
 
     val manuallyUpdatedLicenses =
@@ -101,17 +106,19 @@ class MavenDependenciesListCheck(
     val finalDependenciesList =
       mavenDependenciesRetriever.updateMavenDependenciesList(
         updatedDependenciesList,
-        manuallyUpdatedLicenses
+        manuallyUpdatedLicenses,
       )
 
-    val redundantDependencies = findRedundantDependencies(
-      finalDependenciesList,
-      dependenciesListFromTextProto
-    )
-    val missindDependencies = findMissingDependencies(
-      finalDependenciesList,
-      dependenciesListFromTextProto
-    )
+    val redundantDependencies =
+      findRedundantDependencies(
+        finalDependenciesList,
+        dependenciesListFromTextProto,
+      )
+    val missindDependencies =
+      findMissingDependencies(
+        finalDependenciesList,
+        dependenciesListFromTextProto,
+      )
 
     if (redundantDependencies.isNotEmpty() || missindDependencies.isNotEmpty()) {
       printErrorMessage()
@@ -126,7 +133,7 @@ class MavenDependenciesListCheck(
       println(
         """
         Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-        """.trimIndent()
+        """.trimIndent(),
       )
     }
 
@@ -145,7 +152,7 @@ class MavenDependenciesListCheck(
         mavenDependenciesRetriever
           .findFirstDependenciesWithBrokenLicenses(
             finalDependenciesList,
-            brokenLicenses
+            brokenLicenses,
           )
       printErrorMessage()
       println("Licenses that need to be updated:\n")
@@ -157,7 +164,7 @@ class MavenDependenciesListCheck(
           verified_link_case: ${it.verifiedLinkCase}
           is_original_link_invalid: ${it.isOriginalLinkInvalid}
           First dependency that should be updated with the license: ${licenseToDependencyMap[it]}
-          """.trimIndent() + "\n\n"
+          """.trimIndent() + "\n\n",
         )
       }
       throw Exception("Licenses details are not completed")
@@ -180,18 +187,18 @@ class MavenDependenciesListCheck(
 
   private fun printErrorMessage() {
     println(
-      "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n"
+      "Errors were encountered. Please run script GenerateMavenDependenciesList.kt to fix.\n",
     )
   }
 
   private fun findRedundantDependencies(
     dependenciesList: List<MavenDependency>,
-    updatedDependenciesList: List<MavenDependency>
+    updatedDependenciesList: List<MavenDependency>,
   ): List<MavenDependency> = updatedDependenciesList - dependenciesList.toSet()
 
   private fun findMissingDependencies(
     dependenciesList: List<MavenDependency>,
-    updatedDependenciesList: List<MavenDependency>
+    updatedDependenciesList: List<MavenDependency>,
   ): List<MavenDependency> = dependenciesList - updatedDependenciesList.toSet()
 
   private fun printDependenciesList(dependencyList: List<MavenDependency>) {

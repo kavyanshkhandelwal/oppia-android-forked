@@ -30,7 +30,6 @@ class DeveloperOptionsActivity :
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
   RouteToMathExpressionParserTestListener {
-
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
 
@@ -50,22 +49,24 @@ class DeveloperOptionsActivity :
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
-      )
+        context = this,
+        internalProfileId,
+        showConfirmationNotice = false,
+      ),
     )
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, internalProfileId),
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, internalProfileId),
     )
   }
 
@@ -82,15 +83,15 @@ class DeveloperOptionsActivity :
   }
 
   companion object {
-
     /** Function to create intent for DeveloperOptionsActivity. */
-    fun createDeveloperOptionsActivityIntent(context: Context, profileId: ProfileId): Intent {
-
-      return Intent(context, DeveloperOptionsActivity::class.java).apply {
+    fun createDeveloperOptionsActivityIntent(
+      context: Context,
+      profileId: ProfileId,
+    ): Intent =
+      Intent(context, DeveloperOptionsActivity::class.java).apply {
         decorateWithScreenName(DEVELOPER_OPTIONS_ACTIVITY)
         decorateWithUserProfileId(profileId)
       }
-    }
   }
 
   override fun forceCrash() {

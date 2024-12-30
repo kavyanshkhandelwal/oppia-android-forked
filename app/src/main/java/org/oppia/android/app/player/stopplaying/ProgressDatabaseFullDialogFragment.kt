@@ -37,15 +37,17 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
      *
      * @return [ProgressDatabaseFullDialogFragment]: DialogFragment
      */
-    fun newInstance(
-      oldestSavedExplorationTitle: String
-    ): ProgressDatabaseFullDialogFragment {
-      val args = ProgressDatabaseFullDialogFragmentArguments.newBuilder()
-        .setOldestSavedExplorationTitle(oldestSavedExplorationTitle).build()
+    fun newInstance(oldestSavedExplorationTitle: String): ProgressDatabaseFullDialogFragment {
+      val args =
+        ProgressDatabaseFullDialogFragmentArguments
+          .newBuilder()
+          .setOldestSavedExplorationTitle(oldestSavedExplorationTitle)
+          .build()
       return ProgressDatabaseFullDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -58,41 +60,38 @@ class ProgressDatabaseFullDialogFragment : InjectableDialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val arguments = checkNotNull(arguments) { "Expected arguments to be passed to dialog fragment" }
     val oldestSavedExplorationTitle =
-      arguments.getProto(
-        PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-        ProgressDatabaseFullDialogFragmentArguments.getDefaultInstance()
-      )
-        .oldestSavedExplorationTitle
+      arguments
+        .getProto(
+          PROGRESS_DATABASE_FULL_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+          ProgressDatabaseFullDialogFragmentArguments.getDefaultInstance(),
+        ).oldestSavedExplorationTitle
         ?: error("Expected exploration title to be passed via arguments")
     val stopStatePlayingSessionListenerWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
-        activity as StopStatePlayingSessionWithSavedProgressListener
+      activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
       .setTitle(R.string.progress_database_full_dialog_title)
       .setMessage(
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.progress_database_full_dialog_description, oldestSavedExplorationTitle
-        )
-      )
-      .setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
+          R.string.progress_database_full_dialog_description,
+          oldestSavedExplorationTitle,
+        ),
+      ).setPositiveButton(R.string.progress_database_full_dialog_continue_button) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteOldestProgressAndStopSession()
         dismiss()
-      }
-      .setNeutralButton(
-        R.string.progress_database_full_dialog_leave_without_saving_progress_button
+      }.setNeutralButton(
+        R.string.progress_database_full_dialog_leave_without_saving_progress_button,
       ) { _, _ ->
         stopStatePlayingSessionListenerWithSavedProgressListener
           .deleteCurrentProgressAndStopSession(isCompletion = false)
         dismiss()
-      }
-      .setNegativeButton(
-        R.string.progress_database_full_dialog_back_to_lesson_button
+      }.setNegativeButton(
+        R.string.progress_database_full_dialog_back_to_lesson_button,
       ) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

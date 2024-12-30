@@ -31,7 +31,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class FeedbackReportingServiceTest {
-
   @Inject
   lateinit var mockRetrofit: MockRetrofit
 
@@ -64,7 +63,9 @@ class FeedbackReportingServiceTest {
   private fun setUpTestApplicationComponent() {
     DaggerFeedbackReportingServiceTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -72,9 +73,7 @@ class FeedbackReportingServiceTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -82,8 +81,8 @@ class FeedbackReportingServiceTest {
   @Component(
     modules = [
       TestModule::class, NetworkModule::class, TestDispatcherModule::class,
-      RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class
-    ]
+      RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

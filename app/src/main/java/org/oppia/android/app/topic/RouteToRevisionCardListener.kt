@@ -8,6 +8,6 @@ interface RouteToRevisionCardListener {
     profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int
+    subtopicListSize: Int,
   )
 }

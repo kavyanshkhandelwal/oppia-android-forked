@@ -29,7 +29,6 @@ class DeveloperOptionsTestActivity :
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener {
-
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,38 +40,41 @@ class DeveloperOptionsTestActivity :
     internalProfileId = profileId?.internalId ?: -1
 
     if (getDeveloperOptionsFragment() == null) {
-      supportFragmentManager.beginTransaction().add(
-        R.id.developer_options_fragment_placeholder,
-        DeveloperOptionsFragment.newInstance()
-      ).commitNow()
+      supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.developer_options_fragment_placeholder,
+          DeveloperOptionsFragment.newInstance(),
+        ).commitNow()
     }
   }
 
-  private fun getDeveloperOptionsFragment(): DeveloperOptionsFragment? {
-    return supportFragmentManager.findFragmentById(
-      R.id.developer_options_fragment_placeholder
+  private fun getDeveloperOptionsFragment(): DeveloperOptionsFragment? =
+    supportFragmentManager.findFragmentById(
+      R.id.developer_options_fragment_placeholder,
     ) as DeveloperOptionsFragment?
-  }
 
   override fun routeToMarkChaptersCompleted() {
     startActivity(
       MarkChaptersCompletedActivity.createMarkChaptersCompletedIntent(
-        context = this, internalProfileId, showConfirmationNotice = false
-      )
+        context = this,
+        internalProfileId,
+        showConfirmationNotice = false,
+      ),
     )
   }
 
   override fun routeToMarkStoriesCompleted() {
     startActivity(
       MarkStoriesCompletedActivity
-        .createMarkStoriesCompletedIntent(this, internalProfileId)
+        .createMarkStoriesCompletedIntent(this, internalProfileId),
     )
   }
 
   override fun routeToMarkTopicsCompleted() {
     startActivity(
       MarkTopicsCompletedActivity
-        .createMarkTopicsCompletedIntent(this, internalProfileId)
+        .createMarkTopicsCompletedIntent(this, internalProfileId),
     )
   }
 
@@ -80,13 +82,14 @@ class DeveloperOptionsTestActivity :
     startActivity(ViewEventLogsActivity.createViewEventLogsActivityIntent(this))
   }
 
-  override fun forceCrash() {
-    throw RuntimeException("Force crash occurred")
-  }
+  override fun forceCrash(): Unit = throw RuntimeException("Force crash occurred")
 
   companion object {
     /** Returns [Intent] for [DeveloperOptionsTestActivity]. */
-    fun createDeveloperOptionsTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createDeveloperOptionsTestIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, DeveloperOptionsActivity::class.java)
       intent.decorateWithUserProfileId(profileId)

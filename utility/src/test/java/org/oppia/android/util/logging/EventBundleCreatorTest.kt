@@ -117,7 +117,7 @@ private const val TEST_ANDROID_SDK_VERSION = 30
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = EventBundleCreatorTest.TestApplication::class,
-  sdk = [TEST_ANDROID_SDK_VERSION]
+  sdk = [TEST_ANDROID_SDK_VERSION],
 )
 class EventBundleCreatorTest {
   private companion object {
@@ -155,11 +155,15 @@ class EventBundleCreatorTest {
   }
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var eventBundleCreator: EventBundleCreator
 
   @Parameter lateinit var name: String
+
   @Parameter lateinit var expNameStr: String
+
   @Parameter lateinit var inLang: String
+
   @Parameter lateinit var expLang: String
 
   private val screenName by lazy { ScreenName.valueOf(name) }
@@ -186,9 +190,11 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("oppia_app_lang").isEqualTo("unset_app_language_selection")
-    assertThat(bundle).string("oppia_content_lang")
+    assertThat(bundle)
+      .string("oppia_content_lang")
       .isEqualTo("unset_written_translation_language_selection")
-    assertThat(bundle).string("oppia_audio_lang")
+    assertThat(bundle)
+      .string("oppia_audio_lang")
       .isEqualTo("unset_audio_translation_language_selection")
   }
 
@@ -197,9 +203,11 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      OppiaMetricLog.getDefaultInstance(), bundle
-    )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        OppiaMetricLog.getDefaultInstance(),
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("unknown_loggable_metric")
     assertThat(bundle).hasSize(10)
@@ -232,9 +240,11 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("oppia_app_lang").isEqualTo("unset_app_language_selection")
-    assertThat(bundle).string("oppia_content_lang")
+    assertThat(bundle)
+      .string("oppia_content_lang")
       .isEqualTo("unset_written_translation_language_selection")
-    assertThat(bundle).string("oppia_audio_lang")
+    assertThat(bundle)
+      .string("oppia_audio_lang")
       .isEqualTo("unset_audio_translation_language_selection")
   }
 
@@ -266,9 +276,12 @@ class EventBundleCreatorTest {
     val bundle = Bundle()
     val eventLog =
       createEventLog(
-        appLanguageSelection = AppLanguageSelection.newBuilder().apply {
-          useSystemLanguageOrAppDefault = true
-        }.build()
+        appLanguageSelection =
+          AppLanguageSelection
+            .newBuilder()
+            .apply {
+              useSystemLanguageOrAppDefault = true
+            }.build(),
       )
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -291,9 +304,12 @@ class EventBundleCreatorTest {
     val bundle = Bundle()
     val eventLog =
       createEventLog(
-        appLanguageSelection = AppLanguageSelection.newBuilder().apply {
-          selectedLanguage = inputLanguage
-        }.build()
+        appLanguageSelection =
+          AppLanguageSelection
+            .newBuilder()
+            .apply {
+              selectedLanguage = inputLanguage
+            }.build(),
       )
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -305,9 +321,12 @@ class EventBundleCreatorTest {
   fun testFillEventBundle_eventWithUseAppLanguageForWrittenTranslations_savesCorrectWrittenLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val languageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
-      useAppLanguage = true
-    }.build()
+    val languageSelection =
+      WrittenTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          useAppLanguage = true
+        }.build()
     val eventLog = createEventLog(writtenTranslationLanguageSelection = languageSelection)
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -328,9 +347,12 @@ class EventBundleCreatorTest {
   fun testFillEventBundle_eventWithSelectedWrittenTranslationsLanguage_savesCorrectWrittenLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val languageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = inputLanguage
-    }.build()
+    val languageSelection =
+      WrittenTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = inputLanguage
+        }.build()
     val eventLog = createEventLog(writtenTranslationLanguageSelection = languageSelection)
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -342,9 +364,12 @@ class EventBundleCreatorTest {
   fun testFillEventBundle_eventWithUseAppLanguageForAudioTranslations_savesCorrectAudioLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val languageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
-      useAppLanguage = true
-    }.build()
+    val languageSelection =
+      AudioTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          useAppLanguage = true
+        }.build()
     val eventLog = createEventLog(audioTranslationLanguageSelection = languageSelection)
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -365,9 +390,12 @@ class EventBundleCreatorTest {
   fun testFillEventBundle_eventWithSelectedAudioTranslationsLanguage_savesCorrectAudioLang() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val languageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = inputLanguage
-    }.build()
+    val languageSelection =
+      AudioTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = inputLanguage
+        }.build()
     val eventLog = createEventLog(audioTranslationLanguageSelection = languageSelection)
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -379,20 +407,29 @@ class EventBundleCreatorTest {
   fun testFillEventBundle_eventWithMultipleLanguageConfigurations_savesCorrectLanguages() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val appLanguageSelection = AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = OppiaLanguage.SWAHILI
-    }.build()
-    val writtenLanguageSelection = WrittenTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = OppiaLanguage.ENGLISH
-    }.build()
-    val audioLanguageSelection = AudioTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = OppiaLanguage.HINGLISH
-    }.build()
+    val appLanguageSelection =
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = OppiaLanguage.SWAHILI
+        }.build()
+    val writtenLanguageSelection =
+      WrittenTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = OppiaLanguage.ENGLISH
+        }.build()
+    val audioLanguageSelection =
+      AudioTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = OppiaLanguage.HINGLISH
+        }.build()
     val eventLog =
       createEventLog(
         appLanguageSelection = appLanguageSelection,
         writtenTranslationLanguageSelection = writtenLanguageSelection,
-        audioTranslationLanguageSelection = audioLanguageSelection
+        audioTranslationLanguageSelection = audioLanguageSelection,
       )
 
     eventBundleCreator.fillEventBundle(eventLog, bundle)
@@ -406,20 +443,22 @@ class EventBundleCreatorTest {
   fun testFillMetricsBundle_eventWithDefaultLoggableMetric_fillsDetailsAndRetsUnknownLog() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
-    val performanceMetricLog = createPerformanceMetricLog(
-      timestamp = TEST_TIMESTAMP_1,
-      priority = HIGH_PRIORITY,
-      currentScreen = SCREEN_NAME_UNSPECIFIED,
-      memoryTier = HIGH_MEMORY_TIER,
-      storageTier = HIGH_STORAGE,
-      networkType = WIFI,
-      isAppInForeground = true
-    )
+    val performanceMetricLog =
+      createPerformanceMetricLog(
+        timestamp = TEST_TIMESTAMP_1,
+        priority = HIGH_PRIORITY,
+        currentScreen = SCREEN_NAME_UNSPECIFIED,
+        memoryTier = HIGH_MEMORY_TIER,
+        storageTier = HIGH_STORAGE,
+        networkType = WIFI,
+        isAppInForeground = true,
+      )
 
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetricLog,
-      bundle
-    )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetricLog,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("unknown_loggable_metric")
     assertThat(bundle).hasSize(10)
@@ -652,12 +691,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createApkSizeLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createApkSizeLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("apk_size_metric")
     assertThat(bundle).hasSize(11)
@@ -679,12 +721,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createStorageUsageLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createStorageUsageLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("storage_usage_metric")
     assertThat(bundle).hasSize(11)
@@ -706,12 +751,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createStartupLatencyLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createStartupLatencyLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("startup_latency_metric")
     assertThat(bundle).hasSize(11)
@@ -733,12 +781,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createMemoryUsageLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createMemoryUsageLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("memory_usage_metric")
     assertThat(bundle).hasSize(11)
@@ -760,12 +811,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createNetworkUsageTestLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createNetworkUsageTestLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("network_usage_metric")
     assertThat(bundle).hasSize(12)
@@ -788,12 +842,15 @@ class EventBundleCreatorTest {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
-    val performanceMetric = createPerformanceMetricLog(
-      loggableMetric = createCpuUsageLoggableMetric()
-    )
-    val typeName = eventBundleCreator.fillPerformanceMetricsEventBundle(
-      performanceMetric, bundle
-    )
+    val performanceMetric =
+      createPerformanceMetricLog(
+        loggableMetric = createCpuUsageLoggableMetric(),
+      )
+    val typeName =
+      eventBundleCreator.fillPerformanceMetricsEventBundle(
+        performanceMetric,
+        bundle,
+      )
 
     assertThat(typeName).isEqualTo("cpu_usage_metric")
     assertThat(bundle).hasSize(11)
@@ -2020,7 +2077,7 @@ class EventBundleCreatorTest {
   @Iteration(
     "profileChooser",
     "name=PROFILE_CHOOSER_ACTIVITY",
-    "expNameStr=profile_chooser_activity"
+    "expNameStr=profile_chooser_activity",
   )
   @Iteration("addProfile", "name=ADD_PROFILE_ACTIVITY", "expNameStr=add_profile_activity")
   @Iteration("background", "name=BACKGROUND_SCREEN", "expNameStr=background_screen")
@@ -2028,17 +2085,17 @@ class EventBundleCreatorTest {
   @Iteration(
     "administratorControls",
     "name=ADMINISTRATOR_CONTROLS_ACTIVITY",
-    "expNameStr=administrator_controls_activity"
+    "expNameStr=administrator_controls_activity",
   )
   @Iteration(
     "profileAndDeviceId",
     "name=PROFILE_AND_DEVICE_ID_ACTIVITY",
-    "expNameStr=profile_and_device_id_activity"
+    "expNameStr=profile_and_device_id_activity",
   )
   @Iteration(
     "completedStoryList",
     "name=COMPLETED_STORY_LIST_ACTIVITY",
-    "expNameStr=completed_story_list_activity"
+    "expNameStr=completed_story_list_activity",
   )
   @Iteration("faqSingle", "name=FAQ_SINGLE_ACTIVITY", "expNameStr=faq_single_activity")
   @Iteration("faqList", "name=FAQ_LIST_ACTIVITY", "expNameStr=faq_list_activity")
@@ -2046,37 +2103,37 @@ class EventBundleCreatorTest {
   @Iteration(
     "licenseTextViewer",
     "name=LICENSE_TEXT_VIEWER_ACTIVITY",
-    "expNameStr=license_text_viewer_activity"
+    "expNameStr=license_text_viewer_activity",
   )
   @Iteration(
     "thirdPartyDependencyList",
     "name=THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY",
-    "expNameStr=third_party_dependency_list_activity"
+    "expNameStr=third_party_dependency_list_activity",
   )
   @Iteration("help", "name=HELP_ACTIVITY", "expNameStr=help_activity")
   @Iteration(
     "recentlyPlayed",
     "name=RECENTLY_PLAYED_ACTIVITY",
-    "expNameStr=recently_played_activity"
+    "expNameStr=recently_played_activity",
   )
   @Iteration("myDownloads", "name=MY_DOWNLOADS_ACTIVITY", "expNameStr=my_downloads_activity")
   @Iteration("onboarding", "name=ONBOARDING_ACTIVITY", "expNameStr=onboarding_activity")
   @Iteration(
     "ongoingTopicList",
     "name=ONGOING_TOPIC_LIST_ACTIVITY",
-    "expNameStr=ongoing_topic_list_activity"
+    "expNameStr=ongoing_topic_list_activity",
   )
   @Iteration(
     "audioLanguage",
     "name=AUDIO_LANGUAGE_ACTIVITY",
-    "expNameStr=audio_language_activity"
+    "expNameStr=audio_language_activity",
   )
   @Iteration("appLanguage", "name=APP_LANGUAGE_ACTIVITY", "expNameStr=app_language_activity")
   @Iteration("options", "name=OPTIONS_ACTIVITY", "expNameStr=options_activity")
   @Iteration(
     "readingTextSize",
     "name=READING_TEXT_SIZE_ACTIVITY",
-    "expNameStr=reading_text_size_activity"
+    "expNameStr=reading_text_size_activity",
   )
   @Iteration("exploration", "name=EXPLORATION_ACTIVITY", "expNameStr=exploration_activity")
   @Iteration("adminAuth", "name=ADMIN_AUTH_ACTIVITY", "expNameStr=admin_auth_activity")
@@ -2084,24 +2141,24 @@ class EventBundleCreatorTest {
   @Iteration(
     "profilePicture",
     "name=PROFILE_PICTURE_ACTIVITY",
-    "expNameStr=profile_picture_activity"
+    "expNameStr=profile_picture_activity",
   )
   @Iteration(
     "profileProgress",
     "name=PROFILE_PROGRESS_ACTIVITY",
-    "expNameStr=profile_progress_activity"
+    "expNameStr=profile_progress_activity",
   )
   @Iteration("resumeLesson", "name=RESUME_LESSON_ACTIVITY", "expNameStr=resume_lesson_activity")
   @Iteration("profileEdit", "name=PROFILE_EDIT_ACTIVITY", "expNameStr=profile_edit_activity")
   @Iteration(
     "profileResetPin",
     "name=PROFILE_RESET_PIN_ACTIVITY",
-    "expNameStr=profile_reset_pin_activity"
+    "expNameStr=profile_reset_pin_activity",
   )
   @Iteration(
     "profileRename",
     "name=PROFILE_RENAME_ACTIVITY",
-    "expNameStr=profile_rename_activity"
+    "expNameStr=profile_rename_activity",
   )
   @Iteration("profileList", "name=PROFILE_LIST_ACTIVITY", "expNameStr=profile_list_activity")
   @Iteration("story", "name=STORY_ACTIVITY", "expNameStr=story_activity")
@@ -2110,43 +2167,43 @@ class EventBundleCreatorTest {
   @Iteration(
     "questionPlayer",
     "name=QUESTION_PLAYER_ACTIVITY",
-    "expNameStr=question_player_activity"
+    "expNameStr=question_player_activity",
   )
   @Iteration("walkthrough", "name=WALKTHROUGH_ACTIVITY", "expNameStr=walkthrough_activity")
   @Iteration(
     "developerOptions",
     "name=DEVELOPER_OPTIONS_ACTIVITY",
-    "expNameStr=developer_options_activity"
+    "expNameStr=developer_options_activity",
   )
   @Iteration(
     "viewEventLogs",
     "name=VIEW_EVENT_LOGS_ACTIVITY",
-    "expNameStr=view_event_logs_activity"
+    "expNameStr=view_event_logs_activity",
   )
   @Iteration(
     "markTopicsCompleted",
     "name=MARK_TOPICS_COMPLETED_ACTIVITY",
-    "expNameStr=mark_topics_completed_activity"
+    "expNameStr=mark_topics_completed_activity",
   )
   @Iteration(
     "mathExpressionParser",
     "name=MATH_EXPRESSION_PARSER_ACTIVITY",
-    "expNameStr=math_expression_parser_activity"
+    "expNameStr=math_expression_parser_activity",
   )
   @Iteration(
     "markChaptersCompleted",
     "name=MARK_CHAPTERS_COMPLETED_ACTIVITY",
-    "expNameStr=mark_chapters_completed_activity"
+    "expNameStr=mark_chapters_completed_activity",
   )
   @Iteration(
     "markStoriesCompleted",
     "name=MARK_STORIES_COMPLETED_ACTIVITY",
-    "expNameStr=mark_stories_completed_activity"
+    "expNameStr=mark_stories_completed_activity",
   )
   @Iteration(
     "forceNetworkType",
     "name=FORCE_NETWORK_TYPE_ACTIVITY",
-    "expNameStr=force_network_type_activity"
+    "expNameStr=force_network_type_activity",
   )
   @Iteration("adminPin", "name=ADMIN_PIN_ACTIVITY", "expNameStr=admin_pin_activity")
   @Iteration("policies", "name=POLICIES_ACTIVITY", "expNameStr=policies_activity")
@@ -2171,15 +2228,17 @@ class EventBundleCreatorTest {
     writtenTranslationLanguageSelection: WrittenTranslationLanguageSelection =
       WrittenTranslationLanguageSelection.getDefaultInstance(),
     audioTranslationLanguageSelection: AudioTranslationLanguageSelection =
-      AudioTranslationLanguageSelection.getDefaultInstance()
-  ) = EventLog.newBuilder().apply {
-    this.timestamp = timestamp
-    this.priority = priority
-    this.appLanguageSelection = appLanguageSelection
-    this.writtenTranslationLanguageSelection = writtenTranslationLanguageSelection
-    this.audioTranslationLanguageSelection = audioTranslationLanguageSelection
-    this.context = context
-  }.build()
+      AudioTranslationLanguageSelection.getDefaultInstance(),
+  ) = EventLog
+    .newBuilder()
+    .apply {
+      this.timestamp = timestamp
+      this.priority = priority
+      this.appLanguageSelection = appLanguageSelection
+      this.writtenTranslationLanguageSelection = writtenTranslationLanguageSelection
+      this.audioTranslationLanguageSelection = audioTranslationLanguageSelection
+      this.context = context
+    }.build()
 
   private fun createPerformanceMetricLog(
     timestamp: Long = TEST_TIMESTAMP_1,
@@ -2189,21 +2248,22 @@ class EventBundleCreatorTest {
     storageTier: StorageTier = HIGH_STORAGE,
     isAppInForeground: Boolean = true,
     networkType: NetworkType = WIFI,
-    loggableMetric: LoggableMetric = LoggableMetric.getDefaultInstance()
-  ) = OppiaMetricLog.newBuilder().apply {
-    this.timestampMillis = timestamp
-    this.priority = priority
-    this.currentScreen = currentScreen
-    this.memoryTier = memoryTier
-    this.storageTier = storageTier
-    this.isAppInForeground = isAppInForeground
-    this.networkType = networkType
-    this.loggableMetric = loggableMetric
-  }.build()
+    loggableMetric: LoggableMetric = LoggableMetric.getDefaultInstance(),
+  ) = OppiaMetricLog
+    .newBuilder()
+    .apply {
+      this.timestampMillis = timestamp
+      this.priority = priority
+      this.currentScreen = currentScreen
+      this.memoryTier = memoryTier
+      this.storageTier = storageTier
+      this.isAppInForeground = isAppInForeground
+      this.networkType = networkType
+      this.loggableMetric = loggableMetric
+    }.build()
 
-  private fun createOpenExplorationActivity(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setOpenExplorationActivity)
+  private fun createOpenExplorationActivity(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setOpenExplorationActivity)
 
   private fun createOpenInfoTab(topicContext: TopicContext = createTopicContext()) =
     createEventContext(topicContext, EventContextBuilder::setOpenInfoTab)
@@ -2223,17 +2283,14 @@ class EventBundleCreatorTest {
   private fun createOpenStoryActivity(storyContext: StoryContext = createStoryContext()) =
     createEventContext(storyContext, EventContextBuilder::setOpenStoryActivity)
 
-  private fun createOpenConceptCard(
-    conceptCardContext: ConceptCardContext = createConceptCardContext()
-  ) = createEventContext(conceptCardContext, EventContextBuilder::setOpenConceptCard)
+  private fun createOpenConceptCard(conceptCardContext: ConceptCardContext = createConceptCardContext()) =
+    createEventContext(conceptCardContext, EventContextBuilder::setOpenConceptCard)
 
-  private fun createOpenRevisionCard(
-    revisionCardContext: RevisionCardContext = createRevisionCardContext()
-  ) = createEventContext(revisionCardContext, EventContextBuilder::setOpenRevisionCard)
+  private fun createOpenRevisionCard(revisionCardContext: RevisionCardContext = createRevisionCardContext()) =
+    createEventContext(revisionCardContext, EventContextBuilder::setOpenRevisionCard)
 
-  private fun createCloseRevisionCard(
-    revisionCardContext: RevisionCardContext = createRevisionCardContext()
-  ) = createEventContext(revisionCardContext, EventContextBuilder::setCloseRevisionCard)
+  private fun createCloseRevisionCard(revisionCardContext: RevisionCardContext = createRevisionCardContext()) =
+    createEventContext(revisionCardContext, EventContextBuilder::setCloseRevisionCard)
 
   private fun createStartCardContext(cardContext: CardContext = createCardContext()) =
     createEventContext(cardContext, EventContextBuilder::setStartCardContext)
@@ -2250,81 +2307,67 @@ class EventBundleCreatorTest {
   private fun createViewExistingHintContext(hintContext: HintContext = createHintContext()) =
     createEventContext(hintContext, EventContextBuilder::setViewExistingHintContext)
 
-  private fun createSolutionUnlockedContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
+  private fun createSolutionUnlockedContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setSolutionUnlockedContext)
 
-  private fun createRevealSolutionContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
+  private fun createRevealSolutionContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setRevealSolutionContext)
 
-  private fun createViewExistingSolutionContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setViewExistingSolutionContext)
+  private fun createViewExistingSolutionContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setViewExistingSolutionContext)
 
-  private fun createSubmitAnswerContext(
-    submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()
-  ) = createEventContext(submitAnswerContext, EventContextBuilder::setSubmitAnswerContext)
+  private fun createSubmitAnswerContext(submitAnswerContext: SubmitAnswerContext = createSubmitAnswerContextDetails()) =
+    createEventContext(submitAnswerContext, EventContextBuilder::setSubmitAnswerContext)
 
-  private fun createPlayVoiceOverContext(
-    playVoiceOverContext: VoiceoverActionContext = createPlayVoiceOverContextDetails()
-  ) = createEventContext(playVoiceOverContext, EventContextBuilder::setPlayVoiceOverContext)
+  private fun createPlayVoiceOverContext(playVoiceOverContext: VoiceoverActionContext = createPlayVoiceOverContextDetails()) =
+    createEventContext(playVoiceOverContext, EventContextBuilder::setPlayVoiceOverContext)
 
-  private fun createPauseVoiceOverContext(
-    pauseVoiceOverContext: VoiceoverActionContext = createPauseVoiceOverContextDetails()
-  ) = createEventContext(pauseVoiceOverContext, EventContextBuilder::setPauseVoiceOverContext)
+  private fun createPauseVoiceOverContext(pauseVoiceOverContext: VoiceoverActionContext = createPauseVoiceOverContextDetails()) =
+    createEventContext(pauseVoiceOverContext, EventContextBuilder::setPauseVoiceOverContext)
 
-  private fun createAppInBackgroundContext(
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = createEventContext(learnerDetails, EventContextBuilder::setAppInBackgroundContext)
+  private fun createAppInBackgroundContext(learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()) =
+    createEventContext(learnerDetails, EventContextBuilder::setAppInBackgroundContext)
 
-  private fun createAppInForegroundContext(
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = createEventContext(learnerDetails, EventContextBuilder::setAppInForegroundContext)
+  private fun createAppInForegroundContext(learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()) =
+    createEventContext(learnerDetails, EventContextBuilder::setAppInForegroundContext)
 
-  private fun createExitExplorationContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setExitExplorationContext)
+  private fun createExitExplorationContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setExitExplorationContext)
 
-  private fun createFinishExplorationContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setFinishExplorationContext)
+  private fun createFinishExplorationContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setFinishExplorationContext)
 
-  private fun createResumeExplorationContext(
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = createEventContext(learnerDetails, EventContextBuilder::setResumeExplorationContext)
+  private fun createResumeExplorationContext(learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()) =
+    createEventContext(learnerDetails, EventContextBuilder::setResumeExplorationContext)
 
-  private fun createStartOverExplorationContext(
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = createEventContext(learnerDetails, EventContextBuilder::setStartOverExplorationContext)
+  private fun createStartOverExplorationContext(learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()) =
+    createEventContext(learnerDetails, EventContextBuilder::setStartOverExplorationContext)
 
-  private fun createDeleteProfileContext(
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = createEventContext(learnerDetails, EventContextBuilder::setDeleteProfileContext)
+  private fun createDeleteProfileContext(learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()) =
+    createEventContext(learnerDetails, EventContextBuilder::setDeleteProfileContext)
 
-  private fun createOpenHomeContext() =
-    createEventContext(value = true, EventContextBuilder::setOpenHome)
+  private fun createOpenHomeContext() = createEventContext(value = true, EventContextBuilder::setOpenHome)
 
-  private fun createOpenProfileChooserContext() =
-    createEventContext(value = true, EventContextBuilder::setOpenProfileChooser)
+  private fun createOpenProfileChooserContext() = createEventContext(value = true, EventContextBuilder::setOpenProfileChooser)
 
-  private fun createReachInvestedEngagementContext(
-    explorationContext: ExplorationContext = createExplorationContext()
-  ) = createEventContext(explorationContext, EventContextBuilder::setReachInvestedEngagement)
+  private fun createReachInvestedEngagementContext(explorationContext: ExplorationContext = createExplorationContext()) =
+    createEventContext(explorationContext, EventContextBuilder::setReachInvestedEngagement)
 
   private fun createSwitchInLessonLanguageContext(
     switchLanguageContext: SwitchInLessonLanguageEventContext =
       createSwitchInLessonLanguageEventContext(),
   ) = createEventContext(switchLanguageContext, EventContextBuilder::setSwitchInLessonLanguage)
 
-  private fun createInstallationIdForFailedAnalyticsLogContext(
-    installationId: String = TEST_INSTALLATION_ID
-  ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
+  private fun createInstallationIdForFailedAnalyticsLogContext(installationId: String = TEST_INSTALLATION_ID) =
+    createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
 
   private fun <T> createEventContext(
     value: T,
-    setter: EventContextBuilder.(T) -> EventContextBuilder
-  ) = EventLog.Context.newBuilder().setter(value).build()
+    setter: EventContextBuilder.(T) -> EventContextBuilder,
+  ) = EventLog.Context
+    .newBuilder()
+    .setter(value)
+    .build()
 
   private fun createExplorationContext(
     classroomId: String = TEST_CLASSROOM_ID,
@@ -2334,118 +2377,141 @@ class EventBundleCreatorTest {
     sessionId: String = TEST_LEARNER_SESSION_ID,
     explorationVersion: Int = TEST_EXPLORATION_VERSION,
     stateName: String = TEST_STATE_NAME,
-    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext()
-  ) = ExplorationContext.newBuilder().apply {
-    this.classroomId = classroomId
-    this.topicId = topicId
-    this.storyId = storyId
-    this.explorationId = explorationId
-    this.sessionId = sessionId
-    this.explorationVersion = explorationVersion
-    this.stateName = stateName
-    this.learnerDetails = learnerDetails
-  }.build()
+    learnerDetails: LearnerDetailsContext = createLearnerDetailsContext(),
+  ) = ExplorationContext
+    .newBuilder()
+    .apply {
+      this.classroomId = classroomId
+      this.topicId = topicId
+      this.storyId = storyId
+      this.explorationId = explorationId
+      this.sessionId = sessionId
+      this.explorationVersion = explorationVersion
+      this.stateName = stateName
+      this.learnerDetails = learnerDetails
+    }.build()
 
   private fun createLearnerDetailsContext(
     learnerId: String = TEST_LEARNER_ID,
-    installId: String = TEST_INSTALLATION_ID
-  ) = LearnerDetailsContext.newBuilder().apply {
-    this.learnerId = learnerId
-    this.installId = installId
-  }.build()
+    installId: String = TEST_INSTALLATION_ID,
+  ) = LearnerDetailsContext
+    .newBuilder()
+    .apply {
+      this.learnerId = learnerId
+      this.installId = installId
+    }.build()
 
-  private fun createTopicContext(topicId: String = TEST_TOPIC_ID) =
-    TopicContext.newBuilder().apply { this.topicId = topicId }.build()
+  private fun createTopicContext(topicId: String = TEST_TOPIC_ID) = TopicContext.newBuilder().apply { this.topicId = topicId }.build()
 
   private fun createQuestionContext(
     questionId: String = TEST_QUESTION_ID,
-    skillIds: List<String> = listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
-  ) = QuestionContext.newBuilder().apply {
-    this.questionId = questionId
-    addAllSkillId(skillIds)
-  }.build()
+    skillIds: List<String> = listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2),
+  ) = QuestionContext
+    .newBuilder()
+    .apply {
+      this.questionId = questionId
+      addAllSkillId(skillIds)
+    }.build()
 
   private fun createStoryContext(
     topicId: String = TEST_TOPIC_ID,
-    storyId: String = TEST_STORY_ID
-  ) = StoryContext.newBuilder().apply {
-    this.topicId = topicId
-    this.storyId = storyId
-  }.build()
+    storyId: String = TEST_STORY_ID,
+  ) = StoryContext
+    .newBuilder()
+    .apply {
+      this.topicId = topicId
+      this.storyId = storyId
+    }.build()
 
   private fun createConceptCardContext(skillId: String = TEST_SKILL_ID_1) =
     ConceptCardContext.newBuilder().apply { this.skillId = skillId }.build()
 
   private fun createRevisionCardContext(
     topicId: String = TEST_TOPIC_ID,
-    subTopicIndex: Int = TEST_SUB_TOPIC_INDEX
-  ) = RevisionCardContext.newBuilder().apply {
-    this.topicId = topicId
-    subTopicId = subTopicIndex
-  }.build()
+    subTopicIndex: Int = TEST_SUB_TOPIC_INDEX,
+  ) = RevisionCardContext
+    .newBuilder()
+    .apply {
+      this.topicId = topicId
+      subTopicId = subTopicIndex
+    }.build()
 
   private fun createCardContext(
     explorationDetails: ExplorationContext = createExplorationContext(),
-    skillId: String = TEST_SKILL_ID_1
-  ) = CardContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.skillId = skillId
-  }.build()
+    skillId: String = TEST_SKILL_ID_1,
+  ) = CardContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.skillId = skillId
+    }.build()
 
   private fun createHintContext(
     explorationDetails: ExplorationContext = createExplorationContext(),
-    hintIndex: Int = TEST_HINT_INDEX
-  ) = HintContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.hintIndex = hintIndex
-  }.build()
+    hintIndex: Int = TEST_HINT_INDEX,
+  ) = HintContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.hintIndex = hintIndex
+    }.build()
 
   private fun createSubmitAnswerContextDetails(
     explorationDetails: ExplorationContext = createExplorationContext(),
-    isAnswerCorrect: Boolean = TEST_IS_ANSWER_CORRECT
-  ) = SubmitAnswerContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.isAnswerCorrect = isAnswerCorrect
-  }.build()
+    isAnswerCorrect: Boolean = TEST_IS_ANSWER_CORRECT,
+  ) = SubmitAnswerContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.isAnswerCorrect = isAnswerCorrect
+    }.build()
 
   private fun createPlayVoiceOverContextDetails(
     explorationDetails: ExplorationContext = createExplorationContext(),
     contentId: String = TEST_CONTENT_ID,
-    languageCode: String = TEST_LANGUAGE_CODE
-  ) = VoiceoverActionContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.contentId = contentId
-    this.languageCode = languageCode
-  }.build()
+    languageCode: String = TEST_LANGUAGE_CODE,
+  ) = VoiceoverActionContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.contentId = contentId
+      this.languageCode = languageCode
+    }.build()
 
   private fun createPauseVoiceOverContextDetails(
     explorationDetails: ExplorationContext = createExplorationContext(),
     contentId: String = TEST_CONTENT_ID,
-    languageCode: String = TEST_LANGUAGE_CODE
-  ) = VoiceoverActionContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.contentId = contentId
-    this.languageCode = languageCode
-  }.build()
+    languageCode: String = TEST_LANGUAGE_CODE,
+  ) = VoiceoverActionContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.contentId = contentId
+      this.languageCode = languageCode
+    }.build()
 
   private fun createSwitchInLessonLanguageEventContext(
     explorationDetails: ExplorationContext = createExplorationContext(),
     switchFromLanguage: OppiaLanguage = OppiaLanguage.ENGLISH,
-    switchToLanguage: OppiaLanguage = OppiaLanguage.SWAHILI
-  ) = SwitchInLessonLanguageEventContext.newBuilder().apply {
-    this.explorationDetails = explorationDetails
-    this.switchFromLanguage = switchFromLanguage
-    this.switchToLanguage = switchToLanguage
-  }.build()
+    switchToLanguage: OppiaLanguage = OppiaLanguage.SWAHILI,
+  ) = SwitchInLessonLanguageEventContext
+    .newBuilder()
+    .apply {
+      this.explorationDetails = explorationDetails
+      this.switchFromLanguage = switchFromLanguage
+      this.switchToLanguage = switchToLanguage
+    }.build()
 
   private fun registerTestApplication(context: Context) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -2454,48 +2520,66 @@ class EventBundleCreatorTest {
     packageManager.installPackage(packageInfo)
   }
 
-  private fun createApkSizeLoggableMetric() = LoggableMetric.newBuilder()
-    .setApkSizeMetric(
-      OppiaMetricLog.ApkSizeMetric.newBuilder()
-        .setApkSizeBytes(TEST_APK_SIZE)
-        .build()
-    ).build()
+  private fun createApkSizeLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setApkSizeMetric(
+        OppiaMetricLog.ApkSizeMetric
+          .newBuilder()
+          .setApkSizeBytes(TEST_APK_SIZE)
+          .build(),
+      ).build()
 
-  private fun createStorageUsageLoggableMetric() = LoggableMetric.newBuilder()
-    .setStorageUsageMetric(
-      OppiaMetricLog.StorageUsageMetric.newBuilder()
-        .setStorageUsageBytes(TEST_STORAGE_USAGE)
-        .build()
-    ).build()
+  private fun createStorageUsageLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setStorageUsageMetric(
+        OppiaMetricLog.StorageUsageMetric
+          .newBuilder()
+          .setStorageUsageBytes(TEST_STORAGE_USAGE)
+          .build(),
+      ).build()
 
-  private fun createStartupLatencyLoggableMetric() = LoggableMetric.newBuilder()
-    .setStartupLatencyMetric(
-      OppiaMetricLog.StartupLatencyMetric.newBuilder()
-        .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
-        .build()
-    ).build()
+  private fun createStartupLatencyLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setStartupLatencyMetric(
+        OppiaMetricLog.StartupLatencyMetric
+          .newBuilder()
+          .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
+          .build(),
+      ).build()
 
-  private fun createCpuUsageLoggableMetric() = LoggableMetric.newBuilder()
-    .setCpuUsageMetric(
-      OppiaMetricLog.CpuUsageMetric.newBuilder()
-        .setCpuUsageMetric(TEST_CPU_USAGE)
-        .build()
-    ).build()
+  private fun createCpuUsageLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setCpuUsageMetric(
+        OppiaMetricLog.CpuUsageMetric
+          .newBuilder()
+          .setCpuUsageMetric(TEST_CPU_USAGE)
+          .build(),
+      ).build()
 
-  private fun createNetworkUsageTestLoggableMetric() = LoggableMetric.newBuilder()
-    .setNetworkUsageMetric(
-      OppiaMetricLog.NetworkUsageMetric.newBuilder()
-        .setBytesReceived(TEST_NETWORK_USAGE)
-        .setBytesSent(TEST_NETWORK_USAGE)
-        .build()
-    ).build()
+  private fun createNetworkUsageTestLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setNetworkUsageMetric(
+        OppiaMetricLog.NetworkUsageMetric
+          .newBuilder()
+          .setBytesReceived(TEST_NETWORK_USAGE)
+          .setBytesSent(TEST_NETWORK_USAGE)
+          .build(),
+      ).build()
 
-  private fun createMemoryUsageLoggableMetric() = LoggableMetric.newBuilder()
-    .setMemoryUsageMetric(
-      OppiaMetricLog.MemoryUsageMetric.newBuilder()
-        .setTotalPssBytes(TEST_MEMORY_USAGE)
-        .build()
-    ).build()
+  private fun createMemoryUsageLoggableMetric() =
+    LoggableMetric
+      .newBuilder()
+      .setMemoryUsageMetric(
+        OppiaMetricLog.MemoryUsageMetric
+          .newBuilder()
+          .setTotalPssBytes(TEST_MEMORY_USAGE)
+          .build(),
+      ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
     TestModule.enableLoggingLearnerStudyIds = false
@@ -2519,10 +2603,11 @@ class EventBundleCreatorTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
+      DaggerEventBundleCreatorTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
         .build()
-        .also { registerTestApplication(testApplication) }
+        .also { registerTestApplication(testApplication) },
     )
   }
 
@@ -2537,9 +2622,7 @@ class EventBundleCreatorTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // The scoping here is to ensure changes to the module value above don't change the parameter
     // within the same application instance.
@@ -2550,7 +2633,7 @@ class EventBundleCreatorTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLoggingLearnerStudyIds
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
   }
@@ -2574,7 +2657,8 @@ class EventBundleCreatorTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
+      DaggerEventBundleCreatorTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

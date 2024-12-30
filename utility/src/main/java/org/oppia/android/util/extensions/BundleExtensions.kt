@@ -14,7 +14,10 @@ import java.io.Serializable
  *
  * The proto can then be retrieved from the bundle using [Bundle.getProto].
  */
-fun <T : MessageLite> Bundle.putProto(name: String, message: T) {
+fun <T : MessageLite> Bundle.putProto(
+  name: String,
+  message: T,
+) {
   putSerializable(name, message.toByteString())
 }
 
@@ -33,7 +36,10 @@ fun <T : MessageLite> Bundle.putProto(name: String, message: T) {
  * If the [name] provided corresponds to an existing value of a non-proto type, this function will
  * return [defaultValue].
  */
-fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
+fun <T : MessageLite> Bundle.getProto(
+  name: String,
+  defaultValue: T,
+): T {
   return getTypedSerializable<ByteString>(name)?.let { serializedByteString ->
     // Type safety is *generally* guaranteed by newBuilderForType. If the bundle actually has an
     // incorrect type, then the mergeFrom() call should fail.
@@ -52,7 +58,10 @@ fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
  *
  * The proto can be retrieved using [getProtoExtra].
  */
-fun <T : MessageLite> Intent.putProtoExtra(name: String, message: T) {
+fun <T : MessageLite> Intent.putProtoExtra(
+  name: String,
+  message: T,
+) {
   // Ensure the extras Bundle is fully initialized before adding the proto.
   replaceExtras((extras ?: Bundle()).also { it.putProto(name, message) })
 }
@@ -62,9 +71,10 @@ fun <T : MessageLite> Intent.putProtoExtra(name: String, message: T) {
  * [defaultValue] if the intent doesn't have its extras initialized. See also [getProto] for other
  * scenarios in which the default value is returned.
  */
-fun <T : MessageLite> Intent.getProtoExtra(name: String, defaultValue: T): T {
-  return extras?.getProto(name, defaultValue) ?: defaultValue
-}
+fun <T : MessageLite> Intent.getProtoExtra(
+  name: String,
+  defaultValue: T,
+): T = extras?.getProto(name, defaultValue) ?: defaultValue
 
 /**
  * Returns the string from this [Bundle] corresponding to the specified key, or null if there isn't
@@ -73,15 +83,18 @@ fun <T : MessageLite> Intent.getProtoExtra(name: String, defaultValue: T): T {
 fun Bundle.getStringFromBundle(key: String): String? = getString(key)
 
 // TODO(#5405): Migrate this to BundleCompat.
-private inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? {
-  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+private inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? =
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     getSerializableAboveApi32(name, T::class.java)
-  } else getSerializableBelowApi33(name)
-}
+  } else {
+    getSerializableBelowApi33(name)
+  }
 
 @TargetApi(Build.VERSION_CODES.TIRAMISU)
-private fun <T : Serializable> Bundle.getSerializableAboveApi32(name: String, type: Class<T>): T? =
-  getSerializable(name, type)
+private fun <T : Serializable> Bundle.getSerializableAboveApi32(
+  name: String,
+  type: Class<T>,
+): T? = getSerializable(name, type)
 
 @Suppress("DEPRECATION") // This is needed for old devices. New devices use the new API per above.
 private inline fun <reified T : Serializable> Bundle.getSerializableBelowApi33(name: String): T? =

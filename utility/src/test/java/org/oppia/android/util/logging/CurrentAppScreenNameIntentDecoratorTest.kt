@@ -16,7 +16,6 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CurrentAppScreenNameIntentDecoratorTest {
-
   @Test
   fun testDecorator_decorateWithScreenName_returnsIntentWithCorrectScreenName() {
     val intent = Intent().apply { decorateWithScreenName(ScreenName.BACKGROUND_SCREEN) }

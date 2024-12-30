@@ -9,9 +9,8 @@ import org.oppia.android.app.administratorcontrols.RouteToLearnerAnalyticsListen
  * analytics screen.
  */
 class AdministratorControlsProfileAndDeviceIdViewModel(
-  activity: AppCompatActivity
+  activity: AppCompatActivity,
 ) : AdministratorControlsItemViewModel() {
-
   private val routeToLearnerAnalyticsListener = activity as RouteToLearnerAnalyticsListener
   private val loadLearnerAnalyticsListener = activity as LoadLearnerAnalyticsListener
 

@@ -20,7 +20,8 @@ class ForcedAppDeprecationNoticeDialogFragmentTestActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    ForcedAppDeprecationNoticeDialogFragment.newInstance()
+    ForcedAppDeprecationNoticeDialogFragment
+      .newInstance()
       .showNow(supportFragmentManager, "forced_app_deprecation_dialog")
   }
 

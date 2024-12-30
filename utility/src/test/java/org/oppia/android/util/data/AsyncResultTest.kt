@@ -31,7 +31,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class AsyncResultTest {
-
   @Inject
   lateinit var fakeSystemClock: FakeSystemClock
 
@@ -49,7 +48,7 @@ class AsyncResultTest {
     setUpTestApplicationComponent()
   }
 
-  /* Pending tests. */
+  // Pending tests.
 
   @Test
   fun testPendingAsyncResult_transformed_isStillPending() {
@@ -210,9 +209,10 @@ class AsyncResultTest {
     val resultHash = AsyncResult.Pending<String>().hashCode()
 
     assertThat(resultHash).isNotEqualTo(
-      AsyncResult.Failure<String>(
-        UnsupportedOperationException()
-      ).hashCode()
+      AsyncResult
+        .Failure<String>(
+          UnsupportedOperationException(),
+        ).hashCode(),
     )
   }
 
@@ -287,7 +287,7 @@ class AsyncResultTest {
     assertThat(isNewer).isFalse()
   }
 
-  /* Success tests. */
+  // Success tests.
 
   @Test
   fun testSucceededAsyncResult_hasCorrectValue() {
@@ -327,9 +327,10 @@ class AsyncResultTest {
   fun testSucceededAsyncResult_transformedAsyncFailed_isFailure() {
     val original = AsyncResult.Success("value")
 
-    val transformed = original.blockingTransformAsync {
-      AsyncResult.Failure<String>(UnsupportedOperationException())
-    }
+    val transformed =
+      original.blockingTransformAsync {
+        AsyncResult.Failure<String>(UnsupportedOperationException())
+      }
 
     // Note that the failure is not chained since the transform function was responsible for
     // 'throwing' it.
@@ -394,9 +395,10 @@ class AsyncResultTest {
     val result1 = AsyncResult.Success("value")
     val result2 = AsyncResult.Success(1.0)
 
-    val combined = result1.blockingCombineWithAsync(result2) { _, _ ->
-      AsyncResult.Pending<String>()
-    }
+    val combined =
+      result1.blockingCombineWithAsync(result2) { _, _ ->
+        AsyncResult.Pending<String>()
+      }
 
     assertThat(combined).isInstanceOf(AsyncResult.Pending::class.java)
   }
@@ -406,9 +408,10 @@ class AsyncResultTest {
     val result1 = AsyncResult.Success("value")
     val result2 = AsyncResult.Success(1.0)
 
-    val combined = result1.blockingCombineWithAsync(result2) { _, _ ->
-      AsyncResult.Failure<String>(RuntimeException())
-    }
+    val combined =
+      result1.blockingCombineWithAsync(result2) { _, _ ->
+        AsyncResult.Failure<String>(RuntimeException())
+      }
 
     // Note that the failure is not chained since the transform function was responsible for
     // 'throwing' it.
@@ -420,9 +423,10 @@ class AsyncResultTest {
     val result1 = AsyncResult.Success("value")
     val result2 = AsyncResult.Success(1.0)
 
-    val combined = result1.blockingCombineWithAsync(result2) { v1, v2 ->
-      AsyncResult.Success(v1 + v2)
-    }
+    val combined =
+      result1.blockingCombineWithAsync(result2) { v1, v2 ->
+        AsyncResult.Success(v1 + v2)
+      }
 
     assertThat(combined).isStringSuccessThat().contains("value")
     assertThat(combined).isStringSuccessThat().contains("1.0")
@@ -544,7 +548,7 @@ class AsyncResultTest {
     val resultHash = AsyncResult.Success("Success").hashCode()
 
     assertThat(resultHash).isNotEqualTo(
-      AsyncResult.Failure<String>(UnsupportedOperationException()).hashCode()
+      AsyncResult.Failure<String>(UnsupportedOperationException()).hashCode(),
     )
   }
 
@@ -654,7 +658,7 @@ class AsyncResultTest {
     assertThat(combined).isStringSuccessThat().isEqualTo("combined")
   }
 
-  /* Failure tests. */
+  // Failure tests.
 
   @Test
   fun testFailedAsyncResult_containsFailureException() {
@@ -670,7 +674,8 @@ class AsyncResultTest {
     val transformed = result.transform { 0 }
 
     assertThat(transformed).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(transformed).isFailureThat()
+    assertThat(transformed)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -682,7 +687,8 @@ class AsyncResultTest {
     val transformed = result.blockingTransformAsync { AsyncResult.Success(0) }
 
     assertThat(transformed).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(transformed).isFailureThat()
+    assertThat(transformed)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -695,7 +701,8 @@ class AsyncResultTest {
     val combined = result1.combineWith(result2) { _, _ -> 0 }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -708,7 +715,8 @@ class AsyncResultTest {
     val combined = result1.combineWith(result2) { _, _ -> 0 }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -721,7 +729,8 @@ class AsyncResultTest {
     val combined = result1.combineWith(result2) { _, _ -> 0 }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -734,7 +743,8 @@ class AsyncResultTest {
     val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.Success(0) }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -747,7 +757,8 @@ class AsyncResultTest {
     val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.Success(0) }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -760,7 +771,8 @@ class AsyncResultTest {
     val combined = result1.blockingCombineWithAsync(result2) { _, _ -> AsyncResult.Success(0) }
 
     assertThat(combined).isFailureThat().isInstanceOf(ChainedFailureException::class.java)
-    assertThat(combined).isFailureThat()
+    assertThat(combined)
+      .isFailureThat()
       .hasCauseThat()
       .isInstanceOf(UnsupportedOperationException::class.java)
   }
@@ -795,7 +807,7 @@ class AsyncResultTest {
     // Different exceptions have different stack traces, so they can't be equal despite similar
     // constructions.
     assertThat(result).isNotEqualTo(
-      AsyncResult.Failure<String>(UnsupportedOperationException("Reason"))
+      AsyncResult.Failure<String>(UnsupportedOperationException("Reason")),
     )
   }
 
@@ -878,7 +890,7 @@ class AsyncResultTest {
     // Different exceptions have different stack traces, so they can't be equal despite similar
     // constructions.
     assertThat(resultHash).isNotEqualTo(
-      AsyncResult.Failure<String>(UnsupportedOperationException("Reason")).hashCode()
+      AsyncResult.Failure<String>(UnsupportedOperationException("Reason")).hashCode(),
     )
   }
 
@@ -955,16 +967,15 @@ class AsyncResultTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAsyncResultTest_TestApplicationComponent.builder()
+    DaggerAsyncResultTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  private fun <T, O> AsyncResult<T>.blockingTransformAsync(
-    transformFunction: suspend (T) -> AsyncResult<O>
-  ): AsyncResult<O> {
+  private fun <T, O> AsyncResult<T>.blockingTransformAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
     val deferred = backgroundTestDispatcherScope.async { transformAsync(transformFunction) }
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()
@@ -973,11 +984,12 @@ class AsyncResultTest {
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun <T1, T2, O> AsyncResult<T1>.blockingCombineWithAsync(
     otherResult: AsyncResult<T2>,
-    combineFunction: suspend (T1, T2) -> AsyncResult<O>
+    combineFunction: suspend (T1, T2) -> AsyncResult<O>,
   ): AsyncResult<O> {
-    val deferred = backgroundTestDispatcherScope.async {
-      combineWithAsync(otherResult, combineFunction)
-    }
+    val deferred =
+      backgroundTestDispatcherScope.async {
+        combineWithAsync(otherResult, combineFunction)
+      }
     testCoroutineDispatchers.runCurrent()
     return deferred.getCompleted()
   }
@@ -987,14 +999,15 @@ class AsyncResultTest {
   @Component(
     modules = [
       TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

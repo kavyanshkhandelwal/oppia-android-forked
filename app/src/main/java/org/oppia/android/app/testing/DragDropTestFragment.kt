@@ -13,13 +13,13 @@ import org.oppia.android.app.recyclerview.OnItemDragListener
 import javax.inject.Inject
 
 /** Test-only fragment used for verifying ``BindableAdapter`` functionality. */
-class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEndedListener {
-
+class DragDropTestFragment :
+  InjectableFragment(),
+  OnItemDragListener,
+  OnDragEndedListener {
   companion object {
     /** Returns a new instance of [DragDropTestFragment]. */
-    fun newInstance(): DragDropTestFragment {
-      return DragDropTestFragment()
-    }
+    fun newInstance(): DragDropTestFragment = DragDropTestFragment()
   }
 
   @Inject
@@ -33,13 +33,12 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return dragDropTestFragmentPresenter.handleCreateView(
+    savedInstanceState: Bundle?,
+  ): View? =
+    dragDropTestFragmentPresenter.handleCreateView(
       inflater,
-      container
+      container,
     )
-  }
 
   override fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     dragDropTestFragmentPresenter.onDragEnded(adapter)
@@ -48,7 +47,7 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
   override fun onItemDragged(
     indexFrom: Int,
     indexTo: Int,
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
+    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
   ) {
     dragDropTestFragmentPresenter.onItemDragged(indexFrom, indexTo, adapter)
   }

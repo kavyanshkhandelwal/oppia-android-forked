@@ -44,38 +44,48 @@ class MathTokenizer private constructor() {
         when (chars.peek()) {
           in '0'..'9' -> tokenizeIntegerOrRealNumber(chars)
           in 'a'..'z', in 'A'..'Z' -> tokenizeVariableOrFunctionName(chars)
-          '√' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.SquareRootSymbol(startIndex, endIndex)
-          }
-          '+' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.PlusSymbol(startIndex, endIndex)
-          }
-          '-', '−', '–' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.MinusSymbol(startIndex, endIndex)
-          }
-          '*', '×' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.MultiplySymbol(startIndex, endIndex)
-          }
-          '/', '÷' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.DivideSymbol(startIndex, endIndex)
-          }
-          '^' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.ExponentiationSymbol(startIndex, endIndex)
-          }
-          '=' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.EqualsSymbol(startIndex, endIndex)
-          }
-          '(' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.LeftParenthesisSymbol(startIndex, endIndex)
-          }
-          ')' -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.RightParenthesisSymbol(startIndex, endIndex)
-          }
+          '√' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.SquareRootSymbol(startIndex, endIndex)
+            }
+          '+' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.PlusSymbol(startIndex, endIndex)
+            }
+          '-', '−', '–' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.MinusSymbol(startIndex, endIndex)
+            }
+          '*', '×' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.MultiplySymbol(startIndex, endIndex)
+            }
+          '/', '÷' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.DivideSymbol(startIndex, endIndex)
+            }
+          '^' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.ExponentiationSymbol(startIndex, endIndex)
+            }
+          '=' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.EqualsSymbol(startIndex, endIndex)
+            }
+          '(' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.LeftParenthesisSymbol(startIndex, endIndex)
+            }
+          ')' ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.RightParenthesisSymbol(startIndex, endIndex)
+            }
           null -> null // End of stream.
           // Invalid character.
-          else -> tokenizeSymbol(chars) { startIndex, endIndex ->
-            Token.InvalidToken(startIndex, endIndex)
-          }
+          else ->
+            tokenizeSymbol(chars) { startIndex, endIndex ->
+              Token.InvalidToken(startIndex, endIndex)
+            }
         }
       }
     }
@@ -92,18 +102,20 @@ class MathTokenizer private constructor() {
         chars.consumeWhitespace() // Whitespace is allowed between the '.' and following digits.
 
         // Another integer must follow the ".".
-        val integerPart2 = parseInteger(chars)
-          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        val integerPart2 =
+          parseInteger(chars)
+            ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
 
-        val doubleValue = "$integerPart1.$integerPart2".toValidDoubleOrNull()
-          ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
+        val doubleValue =
+          "$integerPart1.$integerPart2".toValidDoubleOrNull()
+            ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount())
         Token.PositiveRealNumber(doubleValue, startIndex, endIndex = chars.getRetrievalCount())
       } else {
         Token.PositiveInteger(
           integerPart1.toIntOrNull()
             ?: return Token.InvalidToken(startIndex, endIndex = chars.getRetrievalCount()),
           startIndex,
-          integerEndIndex
+          integerEndIndex,
         )
       }
     }
@@ -116,14 +128,16 @@ class MathTokenizer private constructor() {
       // variable = latin_letter ;
       return tokenizeFunctionName(firstChar, startIndex, chars)
         ?: Token.VariableName(
-          firstChar.toString(), startIndex, endIndex = chars.getRetrievalCount()
+          firstChar.toString(),
+          startIndex,
+          endIndex = chars.getRetrievalCount(),
         )
     }
 
     private fun tokenizeFunctionName(
       currChar: Char,
       startIndex: Int,
-      chars: PeekableIterator<Char>
+      chars: PeekableIterator<Char>,
     ): Token? {
       // allowed_function_name = "sqrt" ;
       // disallowed_function_name =
@@ -151,22 +165,28 @@ class MathTokenizer private constructor() {
           when (nextChar) {
             'o' -> {
               chars.next() // Skip the 'o' to go to the last character.
-              val name = if (chars.peek() == 's') {
-                chars.expectNextMatches { it == 's' }
-                  ?: return Token.IncompleteFunctionName(
-                    startIndex, endIndex = chars.getRetrievalCount()
-                  )
-                "cos"
-              } else {
-                // Otherwise, it must be 'c' for 'cot' since the parser can't backtrack.
-                chars.expectNextMatches { it == 't' }
-                  ?: return Token.IncompleteFunctionName(
-                    startIndex, endIndex = chars.getRetrievalCount()
-                  )
-                "cot"
-              }
+              val name =
+                if (chars.peek() == 's') {
+                  chars.expectNextMatches { it == 's' }
+                    ?: return Token.IncompleteFunctionName(
+                      startIndex,
+                      endIndex = chars.getRetrievalCount(),
+                    )
+                  "cos"
+                } else {
+                  // Otherwise, it must be 'c' for 'cot' since the parser can't backtrack.
+                  chars.expectNextMatches { it == 't' }
+                    ?: return Token.IncompleteFunctionName(
+                      startIndex,
+                      endIndex = chars.getRetrievalCount(),
+                    )
+                  "cot"
+                }
               Token.FunctionName(
-                name, isAllowedFunction = false, startIndex, endIndex = chars.getRetrievalCount()
+                name,
+                isAllowedFunction = false,
+                startIndex,
+                endIndex = chars.getRetrievalCount(),
               )
             }
             's' ->
@@ -178,7 +198,9 @@ class MathTokenizer private constructor() {
           // exp or variable.
           if (nextChar == 'x') {
             tokenizeExpectedFunction(name = "exp", isAllowedFunction = false, startIndex, chars)
-          } else null // Must be a variable.
+          } else {
+            null // Must be a variable.
+          }
         }
         'l' -> {
           // ln, log, log10, or variable.
@@ -190,22 +212,31 @@ class MathTokenizer private constructor() {
               chars.next()
               chars.expectNextMatches { it == 'g' }
                 ?: return Token.IncompleteFunctionName(
-                  startIndex, endIndex = chars.getRetrievalCount()
+                  startIndex,
+                  endIndex = chars.getRetrievalCount(),
                 )
-              val name = if (chars.peek() == '1') {
-                // '10' must be next for 'log10'.
-                chars.expectNextMatches { it == '1' }
-                  ?: return Token.IncompleteFunctionName(
-                    startIndex, endIndex = chars.getRetrievalCount()
-                  )
-                chars.expectNextMatches { it == '0' }
-                  ?: return Token.IncompleteFunctionName(
-                    startIndex, endIndex = chars.getRetrievalCount()
-                  )
-                "log10"
-              } else "log"
+              val name =
+                if (chars.peek() == '1') {
+                  // '10' must be next for 'log10'.
+                  chars.expectNextMatches { it == '1' }
+                    ?: return Token.IncompleteFunctionName(
+                      startIndex,
+                      endIndex = chars.getRetrievalCount(),
+                    )
+                  chars.expectNextMatches { it == '0' }
+                    ?: return Token.IncompleteFunctionName(
+                      startIndex,
+                      endIndex = chars.getRetrievalCount(),
+                    )
+                  "log10"
+                } else {
+                  "log"
+                }
               Token.FunctionName(
-                name, isAllowedFunction = false, startIndex, endIndex = chars.getRetrievalCount()
+                name,
+                isAllowedFunction = false,
+                startIndex,
+                endIndex = chars.getRetrievalCount(),
               )
             }
             else -> null // Must be a variable.
@@ -227,7 +258,9 @@ class MathTokenizer private constructor() {
           // tan or variable.
           if (nextChar == 'a') {
             tokenizeExpectedFunction(name = "tan", isAllowedFunction = false, startIndex, chars)
-          } else null // Must be a variable.
+          } else {
+            null // Must be a variable.
+          }
         }
         else -> null // Must be a variable since no known functions match the first character.
       }
@@ -237,15 +270,20 @@ class MathTokenizer private constructor() {
       name: String,
       isAllowedFunction: Boolean,
       startIndex: Int,
-      chars: PeekableIterator<Char>
-    ): Token {
-      return chars.expectNextCharsForFunctionName(name.substring(1), startIndex)
+      chars: PeekableIterator<Char>,
+    ): Token =
+      chars.expectNextCharsForFunctionName(name.substring(1), startIndex)
         ?: Token.FunctionName(
-          name, isAllowedFunction, startIndex, endIndex = chars.getRetrievalCount()
+          name,
+          isAllowedFunction,
+          startIndex,
+          endIndex = chars.getRetrievalCount(),
         )
-    }
 
-    private fun tokenizeSymbol(chars: PeekableIterator<Char>, factory: (Int, Int) -> Token): Token {
+    private fun tokenizeSymbol(
+      chars: PeekableIterator<Char>,
+      factory: (Int, Int) -> Token,
+    ): Token {
       val startIndex = chars.getRetrievalCount()
       chars.next() // Parse the symbol.
       val endIndex = chars.getRetrievalCount()
@@ -259,12 +297,12 @@ class MathTokenizer private constructor() {
       }
       return if (integerBuilder.isNotEmpty()) {
         integerBuilder.toString()
-      } else null // Failed to parse; no digits.
+      } else {
+        null // Failed to parse; no digits.
+      }
     }
 
-    private fun String.toValidDoubleOrNull(): Double? {
-      return toDoubleOrNull()?.takeIf { it.isFinite() }
-    }
+    private fun String.toValidDoubleOrNull(): Double? = toDoubleOrNull()?.takeIf { it.isFinite() }
 
     /** Represents a token that may act as a unary operator. */
     interface UnaryOperatorToken {
@@ -300,7 +338,7 @@ class MathTokenizer private constructor() {
       class PositiveInteger(
         val parsedValue: Int,
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /**
@@ -311,7 +349,7 @@ class MathTokenizer private constructor() {
       class PositiveRealNumber(
         val parsedValue: Double,
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /**
@@ -322,7 +360,7 @@ class MathTokenizer private constructor() {
       class VariableName(
         val parsedName: String,
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /**
@@ -337,17 +375,22 @@ class MathTokenizer private constructor() {
         val parsedName: String,
         val isAllowedFunction: Boolean,
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /** Represents a square root sign, i.e. '√'. */
-      class SquareRootSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
+      class SquareRootSymbol(
+        override val startIndex: Int,
+        override val endIndex: Int,
+      ) : Token()
 
       /** Represents a minus sign, e.g. '-'. */
       class MinusSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token(), UnaryOperatorToken, BinaryOperatorToken {
+        override val endIndex: Int,
+      ) : Token(),
+        UnaryOperatorToken,
+        BinaryOperatorToken {
         override fun getUnaryOperator(): MathUnaryOperation.Operator = NEGATE
 
         override fun getBinaryOperator(): MathBinaryOperation.Operator = SUBTRACT
@@ -356,8 +399,10 @@ class MathTokenizer private constructor() {
       /** Represents a plus sign, e.g. '+'. */
       class PlusSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token(), UnaryOperatorToken, BinaryOperatorToken {
+        override val endIndex: Int,
+      ) : Token(),
+        UnaryOperatorToken,
+        BinaryOperatorToken {
         override fun getUnaryOperator(): MathUnaryOperation.Operator = POSITIVE
 
         override fun getBinaryOperator(): MathBinaryOperation.Operator = ADD
@@ -366,56 +411,66 @@ class MathTokenizer private constructor() {
       /** Represents a multiply sign, e.g. '*'. */
       class MultiplySymbol(
         override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token(), BinaryOperatorToken {
+        override val endIndex: Int,
+      ) : Token(),
+        BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = MULTIPLY
       }
 
       /** Represents a divide sign, e.g. '/'. */
       class DivideSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token(), BinaryOperatorToken {
+        override val endIndex: Int,
+      ) : Token(),
+        BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = DIVIDE
       }
 
       /** Represents an exponent sign, i.e. '^'. */
       class ExponentiationSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
-      ) : Token(), BinaryOperatorToken {
+        override val endIndex: Int,
+      ) : Token(),
+        BinaryOperatorToken {
         override fun getBinaryOperator(): MathBinaryOperation.Operator = EXPONENTIATE
       }
 
       /** Represents an equals sign, i.e. '='. */
-      class EqualsSymbol(override val startIndex: Int, override val endIndex: Int) : Token()
+      class EqualsSymbol(
+        override val startIndex: Int,
+        override val endIndex: Int,
+      ) : Token()
 
       /** Represents a left parenthesis symbol, i.e. '('. */
       class LeftParenthesisSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /** Represents a right parenthesis symbol, i.e. ')'. */
       class RightParenthesisSymbol(
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /** Represents an incomplete function name, e.g. 'sqr'. */
       class IncompleteFunctionName(
         override val startIndex: Int,
-        override val endIndex: Int
+        override val endIndex: Int,
       ) : Token()
 
       /** Represents an invalid character that doesn't fit any of the other [Token] types. */
-      class InvalidToken(override val startIndex: Int, override val endIndex: Int) : Token()
+      class InvalidToken(
+        override val startIndex: Int,
+        override val endIndex: Int,
+      ) : Token()
     }
 
-    private fun Char.isWhitespace(): Boolean = when (this) {
-      ' ', '\t', '\n', '\r' -> true
-      else -> false
-    }
+    private fun Char.isWhitespace(): Boolean =
+      when (this) {
+        ' ', '\t', '\n', '\r' -> true
+        else -> false
+      }
 
     private fun PeekableIterator<Char>.consumeWhitespace() {
       while (peek()?.isWhitespace() == true) next()
@@ -429,7 +484,7 @@ class MathTokenizer private constructor() {
      */
     private fun PeekableIterator<Char>.expectNextCharsForFunctionName(
       chars: String,
-      startIndex: Int
+      startIndex: Int,
     ): Token? {
       for (c in chars) {
         expectNextValue { c }

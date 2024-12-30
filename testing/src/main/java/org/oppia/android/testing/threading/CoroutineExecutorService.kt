@@ -38,6 +38,7 @@ private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
 
 // https://github.com/Kotlin/kotlinx.coroutines/issues/1450 for reference on using a coroutine
 // dispatcher an an executor service.
+
 /**
  * An [ExecutorService] that uses Oppia's [CoroutineDispatcher]s for interoperability with tests.
  *
@@ -56,13 +57,14 @@ private typealias TimeoutBlock<T> = suspend CoroutineScope.() -> T
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineExecutorService(
-  private val backgroundDispatcher: CoroutineDispatcher
+  private val backgroundDispatcher: CoroutineDispatcher,
 ) : ExecutorService {
   private val serviceLock = ReentrantLock()
   private val taskCount = AtomicInteger()
   private var isShutdown = false
   private val pendingTasks = mutableMapOf<Int, Task<*>>()
   private val cachedThreadPool by lazy { Executors.newCachedThreadPool() }
+
   /**
    * Coroutine dispatcher for executing consecutive tasks for blocking the calling thread and without
    * interfering with other potentially blocked operations leveraging this scope. This is done using
@@ -76,11 +78,12 @@ class CoroutineExecutorService(
     serviceLock.withLock { isShutdown = true }
   }
 
-  override fun <T : Any?> submit(task: Callable<T>?): Future<T> {
-    return dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
-  }
+  override fun <T : Any?> submit(task: Callable<T>?): Future<T> = dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
 
-  override fun <T : Any?> submit(task: Runnable?, result: T): Future<T> {
+  override fun <T : Any?> submit(
+    task: Runnable?,
+    result: T,
+  ): Future<T> {
     if (task == null) {
       throw NullPointerException()
     }
@@ -88,13 +91,11 @@ class CoroutineExecutorService(
       Callable<T> {
         task.run()
         return@Callable result
-      }
+      },
     )
   }
 
-  override fun submit(task: Runnable?): Future<*> {
-    return dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
-  }
+  override fun submit(task: Runnable?): Future<*> = dispatchAsync(task ?: throw NullPointerException()).asListenableFuture()
 
   override fun shutdownNow(): MutableList<Runnable> {
     shutdown()
@@ -105,34 +106,37 @@ class CoroutineExecutorService(
 
   override fun isShutdown(): Boolean = serviceLock.withLock { isShutdown }
 
-  override fun awaitTermination(timeout: Long, unit: TimeUnit?): Boolean {
+  override fun awaitTermination(
+    timeout: Long,
+    unit: TimeUnit?,
+  ): Boolean {
     check(serviceLock.withLock { isShutdown })
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
     val timeoutMillis = unit?.toMillis(timeout) ?: 0
 
     // Wait for each task to complete within the specified time. Note that this behaves similarly to
     // invokeAll() below.
-    val futureTasks = incompleteTasks.map { task ->
-      // Create a separate scope in case one of the operations fails--it shouldn't cause later
-      // operations to fail.
-      CoroutineScope(cachedThreadCoroutineDispatcher).async {
-        maybeWithTimeoutOrNull(timeoutMillis) {
-          // Wait for the task to be completed.
-          task.deferred.await()
+    val futureTasks =
+      incompleteTasks.map { task ->
+        // Create a separate scope in case one of the operations fails--it shouldn't cause later
+        // operations to fail.
+        CoroutineScope(cachedThreadCoroutineDispatcher).async {
+          maybeWithTimeoutOrNull(timeoutMillis) {
+            // Wait for the task to be completed.
+            task.deferred.await()
+          }
         }
       }
-    }
     priorToBlockingCallback?.invoke()
     return runBlocking { futureTasks.awaitAll() }.none { it == null } // Null = timed out.
   }
 
-  override fun <T : Any?> invokeAny(tasks: MutableCollection<out Callable<T>>?): T =
-    invokeAny(tasks, 0, TimeUnit.MILLISECONDS)
+  override fun <T : Any?> invokeAny(tasks: MutableCollection<out Callable<T>>?): T = invokeAny(tasks, 0, TimeUnit.MILLISECONDS)
 
   override fun <T : Any?> invokeAny(
     tasks: MutableCollection<out Callable<T>>?,
     timeout: Long,
-    unit: TimeUnit?
+    unit: TimeUnit?,
   ): T {
     if (tasks == null) {
       throw NullPointerException()
@@ -177,18 +181,15 @@ class CoroutineExecutorService(
     }
   }
 
-  override fun isTerminated(): Boolean {
-    return serviceLock.withLock { isShutdown && pendingTasks.isEmpty() }
-  }
+  override fun isTerminated(): Boolean = serviceLock.withLock { isShutdown && pendingTasks.isEmpty() }
 
-  override fun <T : Any?> invokeAll(
-    tasks: MutableCollection<out Callable<T>>?
-  ): MutableList<Future<T>> = invokeAll(tasks, 0, TimeUnit.MILLISECONDS)
+  override fun <T : Any?> invokeAll(tasks: MutableCollection<out Callable<T>>?): MutableList<Future<T>> =
+    invokeAll(tasks, 0, TimeUnit.MILLISECONDS)
 
   override fun <T : Any?> invokeAll(
     tasks: MutableCollection<out Callable<T>>?,
     timeout: Long,
-    unit: TimeUnit?
+    unit: TimeUnit?,
   ): MutableList<Future<T>> {
     if (tasks == null) {
       throw NullPointerException()
@@ -199,30 +200,32 @@ class CoroutineExecutorService(
     // Wait for each task to complete within the specified time, otherwise cancel the task. Note
     // that the timeout needs to be set up for each task in parallel to avoid a sequentialization of
     // the tasks being executed (potentially causing tasks later in the list to not time out).
-    val futureTasks = deferredTasks.map { task ->
-      // Create a separate scope in case one of the operations fails--it shouldn't cause later
-      // operations to fail.
-      CoroutineScope(cachedThreadCoroutineDispatcher).async {
-        // Note that the 'or null' part may unfortunately interfere with a legitimate null return
-        // for the underlying callable.
-        val result = maybeWithTimeoutOrNull(timeoutMillis) {
-          return@maybeWithTimeoutOrNull try {
-            task.await()
-          } catch (e: Exception) {
-            // Do not allow failures to cause the coroutine scope to fail.
-            null
+    val futureTasks =
+      deferredTasks.map { task ->
+        // Create a separate scope in case one of the operations fails--it shouldn't cause later
+        // operations to fail.
+        CoroutineScope(cachedThreadCoroutineDispatcher).async {
+          // Note that the 'or null' part may unfortunately interfere with a legitimate null return
+          // for the underlying callable.
+          val result =
+            maybeWithTimeoutOrNull(timeoutMillis) {
+              return@maybeWithTimeoutOrNull try {
+                task.await()
+              } catch (e: Exception) {
+                // Do not allow failures to cause the coroutine scope to fail.
+                null
+              }
+            }
+          val future = task.asListenableFuture()
+          if (result == null && timeoutMillis > 0) {
+            // Cancel the operation if it's taking too long, but only if there's a timeout set. This
+            // won't cancel the future if the deferred is completed with a failure, or passing with a
+            // null result.
+            check(future.cancel(/* mayInterruptIfRunning = */ true)) { "Failed to cancel task." }
           }
+          return@async future
         }
-        val future = task.asListenableFuture()
-        if (result == null && timeoutMillis > 0) {
-          // Cancel the operation if it's taking too long, but only if there's a timeout set. This
-          // won't cancel the future if the deferred is completed with a failure, or passing with a
-          // null result.
-          check(future.cancel(/* mayInterruptIfRunning = */ true)) { "Failed to cancel task." }
-        }
-        return@async future
       }
-    }
     priorToBlockingCallback?.invoke()
     return runBlocking { futureTasks.awaitAll() }.toMutableList()
   }
@@ -259,13 +262,9 @@ class CoroutineExecutorService(
     this.afterSelectionSetupCallback = afterSelectionSetupCallback
   }
 
-  private fun dispatchAsync(command: Runnable): Deferred<*> {
-    return dispatchAsync(command.let { Callable { it.run() } })
-  }
+  private fun dispatchAsync(command: Runnable): Deferred<*> = dispatchAsync(command.let { Callable { it.run() } })
 
-  private fun <T> dispatchAsync(command: Callable<T>): Deferred<T> {
-    return command.let { dispatchAsync { it.call() } }
-  }
+  private fun <T> dispatchAsync(command: Callable<T>): Deferred<T> = command.let { dispatchAsync { it.call() } }
 
   private fun <T> dispatchAsync(command: suspend () -> T): Deferred<T> {
     if (serviceLock.withLock { isShutdown }) {
@@ -290,14 +289,20 @@ class CoroutineExecutorService(
     return deferred
   }
 
-  private suspend fun <T> runAsync(taskId: Int, command: suspend () -> T): T {
+  private suspend fun <T> runAsync(
+    taskId: Int,
+    command: suspend () -> T,
+  ): T {
     // This should never fail since cleanup of tasks only happens after this completes, or is
     // cancelled. It can't execute after being cleaned up with the current implementation.
     check(serviceLock.withLock { taskId in pendingTasks })
     return command()
   }
 
-  private data class Task<T>(val runnable: Runnable, val deferred: Deferred<T>)
+  private data class Task<T>(
+    val runnable: Runnable,
+    val deferred: Deferred<T>,
+  )
 
   private companion object {
     /**
@@ -306,9 +311,9 @@ class CoroutineExecutorService(
      */
     private suspend fun <T> maybeWithTimeoutOrNull(
       timeoutMillis: Long,
-      block: TimeoutBlock<T>
-    ): T? {
-      return coroutineScope {
+      block: TimeoutBlock<T>,
+    ): T? =
+      coroutineScope {
         if (timeoutMillis > 0) {
           try {
             withTimeoutOrNull(timeoutMillis, block)
@@ -321,6 +326,5 @@ class CoroutineExecutorService(
           block()
         }
       }
-    }
   }
 }

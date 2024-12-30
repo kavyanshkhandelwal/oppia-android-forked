@@ -8,7 +8,5 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 @Module
 interface PlatformParameterSingletonModule {
   @Binds
-  fun providePlatformParameterSingleton(
-    platformParameterSingletonImpl: PlatformParameterSingletonImpl
-  ): PlatformParameterSingleton
+  fun providePlatformParameterSingleton(platformParameterSingletonImpl: PlatformParameterSingletonImpl): PlatformParameterSingleton
 }

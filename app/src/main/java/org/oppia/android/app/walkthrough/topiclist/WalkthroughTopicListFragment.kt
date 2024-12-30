@@ -12,7 +12,9 @@ import org.oppia.android.app.model.TopicSummary
 import javax.inject.Inject
 
 /** The second slide for [WalkthroughActivity]. */
-class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickListener {
+class WalkthroughTopicListFragment :
+  InjectableFragment(),
+  TopicSummaryClickListener {
   @Inject
   lateinit var walkthroughTopicListFragmentPresenter: WalkthroughTopicListFragmentPresenter
 
@@ -24,10 +26,8 @@ class WalkthroughTopicListFragment : InjectableFragment(), TopicSummaryClickList
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return walkthroughTopicListFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = walkthroughTopicListFragmentPresenter.handleCreateView(inflater, container)
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     walkthroughTopicListFragmentPresenter.changePage(topicSummary)

@@ -136,12 +136,15 @@ class MathExpressionAccessibilityUtilTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Parameter lateinit var language: String
+
   @Parameter lateinit var expression: String
+
   @Parameter lateinit var equation: String
+
   @Parameter lateinit var a11yStr: String
 
   lateinit var util: MathExpressionAccessibilityUtil
@@ -208,8 +211,16 @@ class MathExpressionAccessibilityUtilTest {
     assertThat(OppiaLanguage.values())
       .asList()
       .containsExactly(
-        LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
+        LANGUAGE_UNSPECIFIED,
+        ENGLISH,
+        ARABIC,
+        HINDI,
+        HINGLISH,
+        PORTUGUESE,
+        BRAZILIAN_PORTUGUESE,
+        SWAHILI,
+        NIGERIAN_PIDGIN,
+        UNRECOGNIZED,
       )
   }
 
@@ -231,7 +242,9 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("2.0", "expression=2.0", "a11yStr=2")
   @Iteration("3.14", "expression=3.14", "a11yStr=3.14")
   @Iteration(
-    "long_pi", "expression=3.14159265358979323846264338327950288419716939937510", "a11yStr=3.142"
+    "long_pi",
+    "expression=3.14159265358979323846264338327950288419716939937510",
+    "a11yStr=3.142",
   )
   @Iteration("1234.0", "expression=1234.0", "a11yStr=1,234")
   @Iteration("12345.0", "expression=12345.0", "a11yStr=12,345")
@@ -241,7 +254,9 @@ class MathExpressionAccessibilityUtilTest {
   // Verify that scientific notation isn't used.
   @Iteration("small_number", "expression=0.000000000000000000001", "a11yStr=0")
   @Iteration(
-    "large_number", "expression=123456789101112131415.0", "a11yStr=123,456,789,101,112,130,000"
+    "large_number",
+    "expression=123456789101112131415.0",
+    "a11yStr=123,456,789,101,112,130,000",
   )
   fun testConvertToString_eng_constDoubleExp_returnsDoubleConvertedString() {
     val exp = parseAlgebraicExpression(expression)
@@ -411,30 +426,38 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("(1+x)", "expression=(1+x)", "a11yStr=open parenthesis 1 plus x close parenthesis")
   @Iteration("(1+z)", "expression=(1+z)", "a11yStr=open parenthesis 1 plus zed close parenthesis")
   @Iteration(
-    "(1+1234)", "expression=(1+1234)", "a11yStr=open parenthesis 1 plus 1,234 close parenthesis"
+    "(1+1234)",
+    "expression=(1+1234)",
+    "a11yStr=open parenthesis 1 plus 1,234 close parenthesis",
   )
   @Iteration(
-    "(1+3.14)", "expression=(1+3.14)", "a11yStr=open parenthesis 1 plus 3.14 close parenthesis"
+    "(1+3.14)",
+    "expression=(1+3.14)",
+    "a11yStr=open parenthesis 1 plus 3.14 close parenthesis",
   )
   @Iteration("(1-2)", "expression=(1-2)", "a11yStr=open parenthesis 1 minus 2 close parenthesis")
   @Iteration("(x-2)", "expression=(x-2)", "a11yStr=open parenthesis x minus 2 close parenthesis")
   @Iteration("(1*2)", "expression=(1*2)", "a11yStr=open parenthesis 1 times 2 close parenthesis")
   @Iteration("(x*2)", "expression=(x*2)", "a11yStr=open parenthesis x times 2 close parenthesis")
   @Iteration(
-    "(1/2)", "expression=(1/2)", "a11yStr=open parenthesis 1 divided by 2 close parenthesis"
+    "(1/2)",
+    "expression=(1/2)",
+    "a11yStr=open parenthesis 1 divided by 2 close parenthesis",
   )
   @Iteration(
-    "(x/2)", "expression=(x/2)", "a11yStr=open parenthesis x divided by 2 close parenthesis"
+    "(x/2)",
+    "expression=(x/2)",
+    "a11yStr=open parenthesis x divided by 2 close parenthesis",
   )
   @Iteration(
     "(1^2)",
     "expression=(1^2)",
-    "a11yStr=open parenthesis 1 raised to the power of 2 close parenthesis"
+    "a11yStr=open parenthesis 1 raised to the power of 2 close parenthesis",
   )
   @Iteration(
     "(x^2)",
     "expression=(x^2)",
-    "a11yStr=open parenthesis x raised to the power of 2 close parenthesis"
+    "a11yStr=open parenthesis x raised to the power of 2 close parenthesis",
   )
   @Iteration("(-2)", "expression=(-2)", "a11yStr=open parenthesis negative 2 close parenthesis")
   @Iteration("(-x)", "expression=(-x)", "a11yStr=open parenthesis negative x close parenthesis")
@@ -458,74 +481,74 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "√(1+2)",
     "expression=√(1+2)",
-    "a11yStr=start square root open parenthesis 1 plus 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 plus 2 close parenthesis end square root",
   )
   @Iteration(
     "√(1+x)",
     "expression=√(1+x)",
-    "a11yStr=start square root open parenthesis 1 plus x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 plus x close parenthesis end square root",
   )
   @Iteration(
     "√(1-2)",
     "expression=√(1-2)",
-    "a11yStr=start square root open parenthesis 1 minus 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 minus 2 close parenthesis end square root",
   )
   @Iteration(
     "√(1-x)",
     "expression=√(1-x)",
-    "a11yStr=start square root open parenthesis 1 minus x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 minus x close parenthesis end square root",
   )
   @Iteration(
     "√(1*2)",
     "expression=√(1*2)",
-    "a11yStr=start square root open parenthesis 1 times 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 times 2 close parenthesis end square root",
   )
   @Iteration(
     "√(1*x)",
     "expression=√(1*x)",
-    "a11yStr=start square root open parenthesis 1 times x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 times x close parenthesis end square root",
   )
   @Iteration(
     "√(1/2)",
     "expression=√(1/2)",
-    "a11yStr=start square root open parenthesis 1 divided by 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 divided by 2 close parenthesis end square root",
   )
   @Iteration(
     "√(1/x)",
     "expression=√(1/x)",
-    "a11yStr=start square root open parenthesis 1 divided by x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis 1 divided by x close parenthesis end square root",
   )
   @Iteration(
     "√(1^2)",
     "expression=√(1^2)",
     "a11yStr=start square root open parenthesis 1 raised to the power of 2 close parenthesis" +
-      " end square root"
+      " end square root",
   )
   @Iteration(
     "√(1^x)",
     "expression=√(1^x)",
     "a11yStr=start square root open parenthesis 1 raised to the power of x close parenthesis" +
-      " end square root"
+      " end square root",
   )
   @Iteration(
     "√(-2)",
     "expression=√(-2)",
-    "a11yStr=start square root open parenthesis negative 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis negative 2 close parenthesis end square root",
   )
   @Iteration(
     "√(-x)",
     "expression=√(-x)",
-    "a11yStr=start square root open parenthesis negative x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis negative x close parenthesis end square root",
   )
   @Iteration(
     "√(+2)",
     "expression=√(+2)",
-    "a11yStr=start square root open parenthesis positive 2 close parenthesis end square root"
+    "a11yStr=start square root open parenthesis positive 2 close parenthesis end square root",
   )
   @Iteration(
     "√(+x)",
     "expression=√(+x)",
-    "a11yStr=start square root open parenthesis positive x close parenthesis end square root"
+    "a11yStr=start square root open parenthesis positive x close parenthesis end square root",
   )
   fun testConvertToString_eng_inlineSqrt_nestedOp_returnsStartSquareRootConstructString() {
     // Allow for positive unary expressions.
@@ -536,54 +559,74 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   @Iteration(
-    "sqrt(1+2)", "expression=sqrt(1+2)", "a11yStr=start square root 1 plus 2 end square root"
+    "sqrt(1+2)",
+    "expression=sqrt(1+2)",
+    "a11yStr=start square root 1 plus 2 end square root",
   )
   @Iteration(
-    "sqrt(1+x)", "expression=sqrt(1+x)", "a11yStr=start square root 1 plus x end square root"
+    "sqrt(1+x)",
+    "expression=sqrt(1+x)",
+    "a11yStr=start square root 1 plus x end square root",
   )
   @Iteration(
-    "sqrt(1-2)", "expression=sqrt(1-2)", "a11yStr=start square root 1 minus 2 end square root"
+    "sqrt(1-2)",
+    "expression=sqrt(1-2)",
+    "a11yStr=start square root 1 minus 2 end square root",
   )
   @Iteration(
-    "sqrt(1-x)", "expression=sqrt(1-x)", "a11yStr=start square root 1 minus x end square root"
+    "sqrt(1-x)",
+    "expression=sqrt(1-x)",
+    "a11yStr=start square root 1 minus x end square root",
   )
   @Iteration(
-    "sqrt(1*2)", "expression=sqrt(1*2)", "a11yStr=start square root 1 times 2 end square root"
+    "sqrt(1*2)",
+    "expression=sqrt(1*2)",
+    "a11yStr=start square root 1 times 2 end square root",
   )
   @Iteration(
-    "sqrt(1*x)", "expression=sqrt(1*x)", "a11yStr=start square root 1 times x end square root"
+    "sqrt(1*x)",
+    "expression=sqrt(1*x)",
+    "a11yStr=start square root 1 times x end square root",
   )
   @Iteration(
     "sqrt(1/2)",
     "expression=sqrt(1/2)",
-    "a11yStr=start square root 1 divided by 2 end square root"
+    "a11yStr=start square root 1 divided by 2 end square root",
   )
   @Iteration(
     "sqrt(1/x)",
     "expression=sqrt(1/x)",
-    "a11yStr=start square root 1 divided by x end square root"
+    "a11yStr=start square root 1 divided by x end square root",
   )
   @Iteration(
     "sqrt(1^2)",
     "expression=sqrt(1^2)",
-    "a11yStr=start square root 1 raised to the power of 2 end square root"
+    "a11yStr=start square root 1 raised to the power of 2 end square root",
   )
   @Iteration(
     "sqrt(1^x)",
     "expression=sqrt(1^x)",
-    "a11yStr=start square root 1 raised to the power of x end square root"
+    "a11yStr=start square root 1 raised to the power of x end square root",
   )
   @Iteration(
-    "sqrt(-2)", "expression=sqrt(-2)", "a11yStr=start square root negative 2 end square root"
+    "sqrt(-2)",
+    "expression=sqrt(-2)",
+    "a11yStr=start square root negative 2 end square root",
   )
   @Iteration(
-    "sqrt(-x)", "expression=sqrt(-x)", "a11yStr=start square root negative x end square root"
+    "sqrt(-x)",
+    "expression=sqrt(-x)",
+    "a11yStr=start square root negative x end square root",
   )
   @Iteration(
-    "sqrt(+2)", "expression=sqrt(+2)", "a11yStr=start square root positive 2 end square root"
+    "sqrt(+2)",
+    "expression=sqrt(+2)",
+    "a11yStr=start square root positive 2 end square root",
   )
   @Iteration(
-    "sqrt(+x)", "expression=sqrt(+x)", "a11yStr=start square root positive x end square root"
+    "sqrt(+x)",
+    "expression=sqrt(+x)",
+    "a11yStr=start square root positive x end square root",
   )
   fun testConvertToString_eng_sqrt_nestedOp_returnsStartSquareRootConstructString() {
     // Allow for positive unary expressions.
@@ -618,7 +661,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "2(x^3)",
     "expression=2(x^3)",
-    "a11yStr=2 times open parenthesis x raised to the power of 3 close parenthesis"
+    "a11yStr=2 times open parenthesis x raised to the power of 3 close parenthesis",
   )
   fun testConvertToString_eng_impMult_nonLeftConst_orRightIsNotVarOrExp_returnsLeftTimesRightStr() {
     // Allow for redundant single-term parentheses.
@@ -636,7 +679,8 @@ class MathExpressionAccessibilityUtilTest {
     // 1/2 is a special case.
     assertThat(exp)
       .forHumanReadable(ENGLISH)
-      .convertsWithFractionsToStringThat().isEqualTo("one half")
+      .convertsWithFractionsToStringThat()
+      .isEqualTo("one half")
   }
 
   @Test
@@ -688,43 +732,47 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "x/√2",
     "expression=x/√2",
-    "a11yStr=the fraction with numerator x and denominator square root of 2"
+    "a11yStr=the fraction with numerator x and denominator square root of 2",
   )
   @Iteration(
     "x/-2",
     "expression=x/-2",
-    "a11yStr=the fraction with numerator x and denominator negative 2"
+    "a11yStr=the fraction with numerator x and denominator negative 2",
   )
   @Iteration(
     "2/(1+2)",
     "expression=2/(1+2)",
     "a11yStr=the fraction with numerator 2 and denominator open parenthesis 1 plus 2 close" +
-      " parenthesis"
+      " parenthesis",
   )
   // Nested fractions still cause the outer fraction to be read out the long way.
   @Iteration(
     "2/(1/2)",
     "expression=2/(1/2)",
     "a11yStr=the fraction with numerator 2 and denominator open parenthesis one half close" +
-      " parenthesis"
+      " parenthesis",
   )
   @Iteration(
     "2/(1/3)",
     "expression=2/(1/3)",
     "a11yStr=the fraction with numerator 2 and denominator open parenthesis 1 over 3 close" +
-      " parenthesis"
+      " parenthesis",
   )
   @Iteration(
     "x/sqrt(y/3)",
     "expression=x/sqrt(y/3)",
     "a11yStr=the fraction with numerator x and denominator start square root y over 3 end" +
-      " square root"
+      " square root",
   )
   @Iteration(
-    "3.14/x", "expression=3.14/x", "a11yStr=the fraction with numerator 3.14 and denominator x"
+    "3.14/x",
+    "expression=3.14/x",
+    "a11yStr=the fraction with numerator 3.14 and denominator x",
   )
   @Iteration(
-    "x/3.14", "expression=x/3.14", "a11yStr=the fraction with numerator x and denominator 3.14"
+    "x/3.14",
+    "expression=x/3.14",
+    "a11yStr=the fraction with numerator x and denominator 3.14",
   )
   fun testConvertToString_eng_divisionAsFractions_fracWithComplexParts_returnsFracConstructStr() {
     val exp = parseAlgebraicExpression(expression)
@@ -752,12 +800,12 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "-3x^2+23x-14",
     "expression=-3x^2+23x-14",
-    "a11yStr=negative 3 times x raised to the power of 2 plus 23 x minus 14"
+    "a11yStr=negative 3 times x raised to the power of 2 plus 23 x minus 14",
   )
   @Iteration(
     "y^2+xy+x^2",
     "expression=y^2+xy+x^2",
-    "a11yStr=y raised to the power of 2 plus x times y plus x raised to the power of 2"
+    "a11yStr=y raised to the power of 2 plus x times y plus x raised to the power of 2",
   )
   fun testConvertToString_eng_polynomialExpressions_returnsCorrectlyBuiltString() {
     val exp = parseAlgebraicExpression(expression)
@@ -771,19 +819,19 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "y=1+x+x^2",
     "expression=y=1+x+x^2",
-    "a11yStr=y equals 1 plus x plus x raised to the power of 2"
+    "a11yStr=y equals 1 plus x plus x raised to the power of 2",
   )
   @Iteration(
     "-3x^2+23x-14=7y^3",
     "expression=-3x^2+23x-14=7y^3",
     "a11yStr=negative 3 times x raised to the power of 2 plus 23 x minus 14 equals 7 y raised" +
-      " to the power of 3"
+      " to the power of 3",
   )
   @Iteration(
     "sqrt(z)=y^2+xy+x^2",
     "expression=sqrt(z)=y^2+xy+x^2",
     "a11yStr=square root of zed equals y raised to the power of 2 plus x times y plus x raised" +
-      " to the power of 2"
+      " to the power of 2",
   )
   fun testConvertToString_eng_polynomialEquations_returnsCorrectlyBuiltString() {
     val eq = parseAlgebraicEquation(expression)
@@ -797,44 +845,46 @@ class MathExpressionAccessibilityUtilTest {
     "(x^2+2x+1)/(x+1)",
     "expression= (   x^2 +  2x + 1 ) /( x  + 1)",
     "a11yStr=open parenthesis x raised to the power of 2 plus 2 x plus 1 close parenthesis" +
-      " divided by open parenthesis x plus 1 close parenthesis"
+      " divided by open parenthesis x plus 1 close parenthesis",
   )
   @Iteration(
     "(1/2)x",
     "expression=(1/2) x",
-    "a11yStr=open parenthesis 1 divided by 2 close parenthesis times x"
+    "a11yStr=open parenthesis 1 divided by 2 close parenthesis times x",
   )
   @Iteration(
     "(-27x^3)^(1/3)",
     "expression=(\t-27x\n^3\r)^(1 /  3) ",
     "a11yStr=open parenthesis negative 27 times x raised to the power of 3 close parenthesis" +
-      " raised to the power of open parenthesis 1 divided by 3 close parenthesis"
+      " raised to the power of open parenthesis 1 divided by 3 close parenthesis",
   )
   @Iteration(
     "(4x^2)^(-1/2)",
     "expression=( 4x  ^ 2)  ^ (  - 1  / 2  ) ",
     "a11yStr=open parenthesis 4 x raised to the power of 2 close parenthesis raised to the" +
-      " power of open parenthesis negative 1 divided by 2 close parenthesis"
+      " power of open parenthesis negative 1 divided by 2 close parenthesis",
   )
   @Iteration(
     "sqrt(sqrt(sqrt(x)+1))",
     "expression=sqrt(   sqrt(  sqrt( x ) + 1  )   )",
-    "a11yStr=square root of start square root square root of x plus 1 end square root"
+    "a11yStr=square root of start square root square root of x plus 1 end square root",
   )
   @Iteration(
     "x-(1+(y-(2+z)))",
     "expression= x  -   (    1     +      (       y        -        (          2      +    z )))",
     "a11yStr=x minus open parenthesis 1 plus open parenthesis y minus open parenthesis 2 plus" +
-      " zed close parenthesis close parenthesis close parenthesis"
+      " zed close parenthesis close parenthesis close parenthesis",
   )
   @Iteration(
     "1/(2/(y+3/z))",
     "expression=1 /    ( 2 /  ( y + 3/z  ) )",
     "a11yStr=1 divided by open parenthesis 2 divided by open parenthesis y plus 3 divided by" +
-      " zed close parenthesis close parenthesis"
+      " zed close parenthesis close parenthesis",
   )
   @Iteration(
-    "x/y/z/2", "expression= x/ y/ z/ 2", "a11yStr=x divided by y divided by zed divided by 2"
+    "x/y/z/2",
+    "expression= x/ y/ z/ 2",
+    "a11yStr=x divided by y divided by zed divided by 2",
   )
   fun testConvertToString_eng_complexNestedExpression_returnsCorrectlyBuiltString() {
     val exp = parseAlgebraicExpression(expression)
@@ -849,47 +899,49 @@ class MathExpressionAccessibilityUtilTest {
     "(x^2+2x+1)/(x+1)",
     "expression= (   x^2 +  2x + 1 ) /( x  + 1)",
     "a11yStr=the fraction with numerator open parenthesis x raised to the power of 2 plus 2 x" +
-      " plus 1 close parenthesis and denominator open parenthesis x plus 1 close parenthesis"
+      " plus 1 close parenthesis and denominator open parenthesis x plus 1 close parenthesis",
   )
   @Iteration(
-    "(1/2)x", "expression=(1/2) x", "a11yStr=open parenthesis one half close parenthesis times x"
+    "(1/2)x",
+    "expression=(1/2) x",
+    "a11yStr=open parenthesis one half close parenthesis times x",
   )
   @Iteration(
     "(-27x^3)^(1/3)",
     "expression=(\t-27x\n^3\r)^(1 /  3) ",
     "a11yStr=open parenthesis negative 27 times x raised to the power of 3 close parenthesis" +
-      " raised to the power of open parenthesis 1 over 3 close parenthesis"
+      " raised to the power of open parenthesis 1 over 3 close parenthesis",
   )
   @Iteration(
     "(4x^2)^(-1/2)",
     "expression=( 4x  ^ 2)  ^ (  - 1  / 2  ) ",
     "a11yStr=open parenthesis 4 x raised to the power of 2 close parenthesis raised to the" +
       " power of open parenthesis the fraction with numerator negative 1 and denominator 2" +
-      " close parenthesis"
+      " close parenthesis",
   )
   @Iteration(
     "sqrt(sqrt(sqrt(x)+1))",
     "expression=sqrt(   sqrt(  sqrt( x ) + 1  )   )",
-    "a11yStr=square root of start square root square root of x plus 1 end square root"
+    "a11yStr=square root of start square root square root of x plus 1 end square root",
   )
   @Iteration(
     "x-(1+(y-(2+z)))",
     "expression= x  -   (    1     +      (       y        -        (          2      +    z )))",
     "a11yStr=x minus open parenthesis 1 plus open parenthesis y minus open parenthesis 2 plus" +
-      " zed close parenthesis close parenthesis close parenthesis"
+      " zed close parenthesis close parenthesis close parenthesis",
   )
   @Iteration(
     "1/(2/(y+3/z))",
     "expression=1 /    (  2 /  ( y + 3/z  ) )",
     "a11yStr=the fraction with numerator 1 and denominator open parenthesis the fraction with" +
       " numerator 2 and denominator open parenthesis y plus 3 over zed close parenthesis" +
-      " close parenthesis"
+      " close parenthesis",
   )
   @Iteration(
     "x/y/z/2",
     "expression= x/ y/ z/ 2",
     "a11yStr=the fraction with numerator the fraction with numerator x over y and denominator" +
-      " zed and denominator 2"
+      " zed and denominator 2",
   )
   fun testConvertToString_eng_complexNestedExpression_divAsFracs_returnsCorrectlyBuiltString() {
     val exp = parseAlgebraicExpression(expression)
@@ -904,48 +956,48 @@ class MathExpressionAccessibilityUtilTest {
     "y=(x^2+2x+1)/(x+1)",
     "expression=  y = (   x^2 +  2x + 1 ) /( x  + 1)",
     "a11yStr=y equals open parenthesis x raised to the power of 2 plus 2 x plus 1 close" +
-      " parenthesis divided by open parenthesis x plus 1 close parenthesis"
+      " parenthesis divided by open parenthesis x plus 1 close parenthesis",
   )
   @Iteration(
     "(1/2)x=sqrt(x)",
     "expression=(1/2) x               =sqrt                  (x)",
-    "a11yStr=open parenthesis 1 divided by 2 close parenthesis times x equals square root of x"
+    "a11yStr=open parenthesis 1 divided by 2 close parenthesis times x equals square root of x",
   )
   @Iteration(
     "-3x=(-27x^3)^(1/3)",
     "expression=\n-\n3\nx\n=\n(\t-27x\n^3\r)^(1 /  3) ",
     "a11yStr=negative 3 times x equals open parenthesis negative 27 times x raised to the power" +
       " of 3 close parenthesis raised to the power of open parenthesis 1 divided by 3 close" +
-      " parenthesis"
+      " parenthesis",
   )
   @Iteration(
     "(4x^2)^(-1/2)=1+x",
     "expression=( 4x  ^ 2)  ^ (  - 1  / 2  ) =1 +                    x            ",
     "a11yStr=open parenthesis 4 x raised to the power of 2 close parenthesis raised to the" +
-      " power of open parenthesis negative 1 divided by 2 close parenthesis equals 1 plus x"
+      " power of open parenthesis negative 1 divided by 2 close parenthesis equals 1 plus x",
   )
   @Iteration(
     "sqrt(sqrt(sqrt(x)+1))=1/2",
     "expression=sqrt(   sqrt(  sqrt( x ) + 1  )   ) = 1        /        2",
     "a11yStr=square root of start square root square root of x plus 1 end square root equals 1" +
-      " divided by 2"
+      " divided by 2",
   )
   @Iteration(
     "xy+x+y=x-(1+(y-(2+z)))",
     "expression=xy+x+y=x  -   (    1     +      (       y        -        (        2    +  z )))",
     "a11yStr=x times y plus x plus y equals x minus open parenthesis 1 plus open parenthesis y" +
-      " minus open parenthesis 2 plus zed close parenthesis close parenthesis close parenthesis"
+      " minus open parenthesis 2 plus zed close parenthesis close parenthesis close parenthesis",
   )
   @Iteration(
     "x=1/(2/(y+3/z))",
     "expression=  x =   1 /    ( 2 /  ( y + 3/z  ) )",
     "a11yStr=x equals 1 divided by open parenthesis 2 divided by open parenthesis y plus 3" +
-      " divided by zed close parenthesis close parenthesis"
+      " divided by zed close parenthesis close parenthesis",
   )
   @Iteration(
     "x/y/z/2=z",
     "expression= x/ y/ z/ 2=z",
-    "a11yStr=x divided by y divided by zed divided by 2 equals zed"
+    "a11yStr=x divided by y divided by zed divided by 2 equals zed",
   )
   fun testConvertToString_eng_complexNestedEquations_returnsCorrectlyBuiltString() {
     val eq = parseAlgebraicEquation(expression)
@@ -961,50 +1013,50 @@ class MathExpressionAccessibilityUtilTest {
     "expression=  y = (   x^2 +  2x + 1 ) /( x  + 1)",
     "a11yStr=y equals the fraction with numerator open parenthesis x raised to the power of 2" +
       " plus 2 x plus 1 close parenthesis and denominator open parenthesis x plus 1 close" +
-      " parenthesis"
+      " parenthesis",
   )
   @Iteration(
     "(1/2)x=sqrt(x)",
     "expression=(1/2) x               =sqrt                  (x)",
-    "a11yStr=open parenthesis one half close parenthesis times x equals square root of x"
+    "a11yStr=open parenthesis one half close parenthesis times x equals square root of x",
   )
   @Iteration(
     "-3x=(-27x^3)^(1/3)",
     "expression=\n-\n3\nx\n=\n(\t-27x\n^3\r)^(1 /  3) ",
     "a11yStr=negative 3 times x equals open parenthesis negative 27 times x raised to the power" +
-      " of 3 close parenthesis raised to the power of open parenthesis 1 over 3 close parenthesis"
+      " of 3 close parenthesis raised to the power of open parenthesis 1 over 3 close parenthesis",
   )
   @Iteration(
     "(4x^2)^(-1/2)=1+x",
     "expression=( 4x  ^ 2)  ^ (  - 1  / 2  ) =1 +                    x            ",
     "a11yStr=open parenthesis 4 x raised to the power of 2 close parenthesis raised to the" +
       " power of open parenthesis the fraction with numerator negative 1 and denominator 2" +
-      " close parenthesis equals 1 plus x"
+      " close parenthesis equals 1 plus x",
   )
   @Iteration(
     "sqrt(sqrt(sqrt(x)+1))=1/2",
     "expression=sqrt(   sqrt(  sqrt( x ) + 1  )   ) = 1        /        2",
     "a11yStr=square root of start square root square root of x plus 1 end square root equals" +
-      " one half"
+      " one half",
   )
   @Iteration(
     "xy+x+y=x-(1+(y-(2+z)))",
     "expression=xy+x+y=x  -   (    1     +      (       y        -        (        2    +  z )))",
     "a11yStr=x times y plus x plus y equals x minus open parenthesis 1 plus open parenthesis y" +
-      " minus open parenthesis 2 plus zed close parenthesis close parenthesis close parenthesis"
+      " minus open parenthesis 2 plus zed close parenthesis close parenthesis close parenthesis",
   )
   @Iteration(
     "x=1/(2/(y+3/z))",
     "expression=  x =   1 /    ( 2 /  ( y + 3/z  ) )",
     "a11yStr=x equals the fraction with numerator 1 and denominator open parenthesis the" +
       " fraction with numerator 2 and denominator open parenthesis y plus 3 over zed close" +
-      " parenthesis close parenthesis"
+      " parenthesis close parenthesis",
   )
   @Iteration(
     "x/y/z/2=z",
     "expression= x/ y/ z/ 2=z",
     "a11yStr=the fraction with numerator the fraction with numerator x over y and denominator" +
-      " zed and denominator 2 equals zed"
+      " zed and denominator 2 equals zed",
   )
   fun testConvertToString_eng_complexNestedEquations_divAsFracs_returnsCorrectlyBuiltString() {
     val eq = parseAlgebraicEquation(expression)
@@ -1021,12 +1073,12 @@ class MathExpressionAccessibilityUtilTest {
     "(x + 6)/(x - 4)",
     "expression=(x + 6)/(x - 4)",
     "a11yStr=the fraction with numerator open parenthesis x plus 6 close parenthesis and" +
-      " denominator open parenthesis x minus 4 close parenthesis"
+      " denominator open parenthesis x minus 4 close parenthesis",
   )
   @Iteration(
     "4*(x)^(2)+20x",
     "expression=4*(x)^(2)+20x",
-    "a11yStr=4 times x raised to the power of 2 plus 20 x"
+    "a11yStr=4 times x raised to the power of 2 plus 20 x",
   )
   @Iteration("3+x-5", "expression=3+x-5", "a11yStr=3 plus x minus 5")
   @Iteration("Z+A-Z", "expression=Z+A-Z", "a11yStr=Zed plus A minus Zed")
@@ -1036,22 +1088,24 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "2*(2+6+3+4)",
     "expression=2*(2+6+3+4)",
-    "a11yStr=2 times open parenthesis 2 plus 6 plus 3 plus 4 close parenthesis"
+    "a11yStr=2 times open parenthesis 2 plus 6 plus 3 plus 4 close parenthesis",
   )
   @Iteration("sqrt(64)", "expression=sqrt(64)", "a11yStr=square root of 64")
   @Iteration(
     "√(a+b)",
     "expression=√(a+b)",
-    "a11yStr=start square root open parenthesis a plus b close parenthesis end square root"
+    "a11yStr=start square root open parenthesis a plus b close parenthesis end square root",
   )
   @Iteration(
-    "3 * 10^-5", "expression=3 * 10^-5", "a11yStr=3 times 10 raised to the power of negative 5"
+    "3 * 10^-5",
+    "expression=3 * 10^-5",
+    "a11yStr=3 times 10 raised to the power of negative 5",
   )
   @Iteration(
     "((x+2y) + 5*(a - 2b) + z)",
     "expression=((x+2y) + 5*(a - 2b) + z)",
     "a11yStr=open parenthesis open parenthesis x plus 2 y close parenthesis plus 5 times open" +
-      " parenthesis a minus 2 b close parenthesis plus zed close parenthesis"
+      " parenthesis a minus 2 b close parenthesis plus zed close parenthesis",
   )
   fun testConvertToString_eng_assortedExpressionsFromPrd_returnsCorrectlyComputedString() {
     // Some of the expressions include cases that would normally result in errors.
@@ -1064,7 +1118,7 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration(
     "3x^2 + 4y = 62",
     "expression=3x^2 + 4y = 62",
-    "a11yStr=3 x raised to the power of 2 plus 4 y equals 62"
+    "a11yStr=3 x raised to the power of 2 plus 4 y equals 62",
   )
   fun testConvertToString_eng_assortedEquationsFromPrd_returnsCorrectlyComputedString() {
     val eq = parseAlgebraicEquation(expression)
@@ -1074,9 +1128,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_rationalConstant_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          constant = ONE_HALF
+        }.build()
 
     // The conversion should fail since the expression includes a rational real (which aren't yet
     // supported).
@@ -1085,9 +1142,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_invalidConstant_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      constant = Real.getDefaultInstance()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          constant = Real.getDefaultInstance()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid real constant.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1095,9 +1155,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_invalidBinaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      binaryOperation = MathBinaryOperation.getDefaultInstance()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          binaryOperation = MathBinaryOperation.getDefaultInstance()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid binary operation.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1105,9 +1168,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_invalidUnaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      unaryOperation = MathUnaryOperation.getDefaultInstance()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          unaryOperation = MathUnaryOperation.getDefaultInstance()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid unary operation.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1115,9 +1181,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_invalidFunctionType_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      functionCall = MathFunctionCall.getDefaultInstance()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          functionCall = MathFunctionCall.getDefaultInstance()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid function call.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1125,9 +1194,12 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_nestedDefaultExp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.getDefaultInstance()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          group = MathExpression.getDefaultInstance()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid nested expression.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1135,11 +1207,17 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_nestedInvalidBinaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        binaryOperation = MathBinaryOperation.getDefaultInstance()
-      }.build()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          group =
+            MathExpression
+              .newBuilder()
+              .apply {
+                binaryOperation = MathBinaryOperation.getDefaultInstance()
+              }.build()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid nested expression.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1147,11 +1225,17 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_nestedInvalidUnaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        unaryOperation = MathUnaryOperation.getDefaultInstance()
-      }.build()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          group =
+            MathExpression
+              .newBuilder()
+              .apply {
+                unaryOperation = MathUnaryOperation.getDefaultInstance()
+              }.build()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid nested expression.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1159,11 +1243,17 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eng_nestedInvalidFunctionType_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        functionCall = MathFunctionCall.getDefaultInstance()
-      }.build()
-    }.build()
+    val exp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          group =
+            MathExpression
+              .newBuilder()
+              .apply {
+                functionCall = MathFunctionCall.getDefaultInstance()
+              }.build()
+        }.build()
 
     // The conversion should fail since the expression includes an invalid nested expression.
     assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1171,14 +1261,20 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eq_withLeftInvalidExp_returnsNull() {
-    val validExp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
+    val validExp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          constant = ONE_HALF
+        }.build()
     val invalidExp = MathExpression.getDefaultInstance()
-    val eq = MathEquation.newBuilder().apply {
-      leftSide = invalidExp
-      rightSide = validExp
-    }.build()
+    val eq =
+      MathEquation
+        .newBuilder()
+        .apply {
+          leftSide = invalidExp
+          rightSide = validExp
+        }.build()
 
     // Both sides of the equation must be valid.
     assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
@@ -1186,34 +1282,34 @@ class MathExpressionAccessibilityUtilTest {
 
   @Test
   fun testConvertToString_eq_withRightInvalidExp_returnsNull() {
-    val validExp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
+    val validExp =
+      MathExpression
+        .newBuilder()
+        .apply {
+          constant = ONE_HALF
+        }.build()
     val invalidExp = MathExpression.getDefaultInstance()
-    val eq = MathEquation.newBuilder().apply {
-      leftSide = validExp
-      rightSide = invalidExp
-    }.build()
+    val eq =
+      MathEquation
+        .newBuilder()
+        .apply {
+          leftSide = validExp
+          rightSide = invalidExp
+        }.build()
 
     // Both sides of the equation must be valid.
     assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
   }
 
-  private fun MathExpressionSubject.forHumanReadable(
-    language: OppiaLanguage
-  ): HumanReadableStringChecker {
-    return HumanReadableStringChecker(language) { divAsFraction ->
+  private fun MathExpressionSubject.forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
+    HumanReadableStringChecker(language) { divAsFraction ->
       util.convertToHumanReadableString(actual, language, divAsFraction)
     }
-  }
 
-  private fun MathEquationSubject.forHumanReadable(
-    language: OppiaLanguage
-  ): HumanReadableStringChecker {
-    return HumanReadableStringChecker(language) { divAsFraction ->
+  private fun MathEquationSubject.forHumanReadable(language: OppiaLanguage): HumanReadableStringChecker =
+    HumanReadableStringChecker(language) { divAsFraction ->
       util.convertToHumanReadableString(actual, language, divAsFraction)
     }
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1221,13 +1317,11 @@ class MathExpressionAccessibilityUtilTest {
 
   private class HumanReadableStringChecker(
     private val language: OppiaLanguage,
-    private val maybeConvertToHumanReadableString: (Boolean) -> String?
+    private val maybeConvertToHumanReadableString: (Boolean) -> String?,
   ) {
-    fun convertsToStringThat(): StringSubject =
-      assertThat(convertToHumanReadableString(language, /* divAsFraction= */ false))
+    fun convertsToStringThat(): StringSubject = assertThat(convertToHumanReadableString(language, /* divAsFraction= */ false))
 
-    fun convertsWithFractionsToStringThat(): StringSubject =
-      assertThat(convertToHumanReadableString(language, /* divAsFraction= */ true))
+    fun convertsWithFractionsToStringThat(): StringSubject = assertThat(convertToHumanReadableString(language, /* divAsFraction= */ true))
 
     fun doesNotConvertToString() {
       assertWithMessage("Expected to not convert to: $language")
@@ -1237,7 +1331,7 @@ class MathExpressionAccessibilityUtilTest {
 
     private fun convertToHumanReadableString(
       language: OppiaLanguage,
-      divAsFraction: Boolean
+      divAsFraction: Boolean,
     ): String {
       val readableString = maybeConvertToHumanReadableString(divAsFraction)
       assertWithMessage("Expected to convert to: $language").that(readableString).isNotNull()
@@ -1273,8 +1367,8 @@ class MathExpressionAccessibilityUtilTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1288,9 +1382,13 @@ class MathExpressionAccessibilityUtilTest {
     fun inject(test: MathExpressionAccessibilityUtilTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMathExpressionAccessibilityUtilTest_TestApplicationComponent.builder()
+      DaggerMathExpressionAccessibilityUtilTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -1299,9 +1397,12 @@ class MathExpressionAccessibilityUtilTest {
       component.inject(test)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
@@ -1310,22 +1411,22 @@ class MathExpressionAccessibilityUtilTest {
     private fun parseAlgebraicExpression(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z"),
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables, errorCheckingMode
-      ).getExpectedSuccess()
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      MathExpressionParser
+        .parseAlgebraicExpression(
+          expression,
+          allowedVariables,
+          errorCheckingMode,
+        ).getExpectedSuccess()
 
-    private fun parseAlgebraicEquation(
-      expression: String,
-    ): MathEquation {
-      return MathExpressionParser.parseAlgebraicEquation(
-        expression,
-        allowedVariables = listOf("x", "y", "z"),
-        errorCheckingMode = ALL_ERRORS
-      ).getExpectedSuccess()
-    }
+    private fun parseAlgebraicEquation(expression: String): MathEquation =
+      MathExpressionParser
+        .parseAlgebraicEquation(
+          expression,
+          allowedVariables = listOf("x", "y", "z"),
+          errorCheckingMode = ALL_ERRORS,
+        ).getExpectedSuccess()
 
     private inline fun <reified T> MathParsingResult<T>.getExpectedSuccess(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

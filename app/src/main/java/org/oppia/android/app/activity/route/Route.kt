@@ -15,6 +15,6 @@ interface Route {
    */
   fun createIntent(
     context: Context,
-    destinationScreen: DestinationScreen
+    destinationScreen: DestinationScreen,
   ): Intent
 }

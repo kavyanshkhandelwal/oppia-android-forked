@@ -101,7 +101,7 @@ import javax.inject.Singleton
     DeveloperBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
     AuthenticationModule::class,
-  ]
+  ],
 )
 interface DeveloperApplicationComponent : ApplicationComponent {
   /**

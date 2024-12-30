@@ -41,10 +41,15 @@ import javax.inject.Singleton
 @Config(application = UncaughtExceptionLoggerStartupListenerTest.TestApplication::class)
 class UncaughtExceptionLoggerStartupListenerTest {
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var uncaughtExceptionStartupListener: UncaughtExceptionLoggerStartupListener
+
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject lateinit var exceptionsController: ExceptionsController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -58,7 +63,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionStartupListener.uncaughtException(
       Thread.currentThread(),
-      exceptionThrown
+      exceptionThrown,
     )
 
     val cachedExceptions = exceptionsController.getExceptionLogStore()
@@ -73,7 +78,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
     val exceptionThrown = Exception("TEST")
     uncaughtExceptionStartupListener.uncaughtException(
       Thread.currentThread(),
-      exceptionThrown
+      exceptionThrown,
     )
 
     val exceptionCaught = fakeExceptionLogger.getMostRecentException()
@@ -93,14 +98,11 @@ class UncaughtExceptionLoggerStartupListenerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageCacheSize(): Int = 2
@@ -113,23 +115,27 @@ class UncaughtExceptionLoggerStartupListenerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, UncaughtExceptionLoggerModule::class
-    ]
+      AssetModule::class, UncaughtExceptionLoggerModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(startupListenerTest: UncaughtExceptionLoggerStartupListenerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent.builder()
+      DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

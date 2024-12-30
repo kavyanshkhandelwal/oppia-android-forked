@@ -9,5 +9,5 @@ class NextButtonViewModel(
   val hasConversationView: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
   val nextNavigationButtonListener: NextNavigationButtonListener,
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
 ) : StateItemViewModel(ViewType.NEXT_NAVIGATION_BUTTON)

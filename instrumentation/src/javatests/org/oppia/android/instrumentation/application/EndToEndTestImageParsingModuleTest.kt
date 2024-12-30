@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestImageParsingModuleTest.TestApplication::class)
 class EndToEndTestImageParsingModuleTest {
-
   @field:[Inject DefaultGcsPrefix]
   lateinit var defaultGcsPrefix: String
 
@@ -55,7 +54,8 @@ class EndToEndTestImageParsingModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -63,23 +63,21 @@ class EndToEndTestImageParsingModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestImageParsingModule::class
-    ]
+      TestModule::class, EndToEndTestImageParsingModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -88,7 +86,8 @@ class EndToEndTestImageParsingModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerEndToEndTestImageParsingModuleTest_TestApplicationComponent.builder()
+      DaggerEndToEndTestImageParsingModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

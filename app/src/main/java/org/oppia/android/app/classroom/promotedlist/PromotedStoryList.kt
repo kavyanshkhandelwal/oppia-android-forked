@@ -57,14 +57,15 @@ fun PromotedStoryList(
     contentAlignment = Alignment.Center,
   ) {
     Row(
-      modifier = Modifier
-        .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
-        .fillMaxWidth()
-        .padding(
-          start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-          top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
-          end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
-        ),
+      modifier =
+        Modifier
+          .testTag(PROMOTED_STORY_LIST_HEADER_TEST_TAG)
+          .fillMaxWidth()
+          .padding(
+            start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+            top = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_top),
+            end = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_end),
+          ),
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -74,8 +75,9 @@ fun PromotedStoryList(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
         fontSize = dimensionResource(id = R.dimen.promoted_story_list_header_text_size).value.sp,
-        modifier = Modifier
-          .weight(weight = 1f, fill = false),
+        modifier =
+          Modifier
+            .weight(weight = 1f, fill = false),
       )
       if (promotedStoryListViewModel.getViewAllButtonVisibility() == View.VISIBLE) {
         Text(
@@ -83,31 +85,34 @@ fun PromotedStoryList(
           color = colorResource(id = R.color.component_color_home_activity_view_all_text_color),
           fontFamily = FontFamily.SansSerif,
           fontWeight = FontWeight.Medium,
-          fontSize = dimensionResource(
-            id = R.dimen.promoted_story_list_view_all_text_size
-          ).value.sp,
-          modifier = Modifier
-            .padding(
-              start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start)
-            )
-            .clickable { promotedStoryListViewModel.clickOnViewAll() },
+          fontSize =
+            dimensionResource(
+              id = R.dimen.promoted_story_list_view_all_text_size,
+            ).value.sp,
+          modifier =
+            Modifier
+              .padding(
+                start = dimensionResource(id = R.dimen.promoted_story_list_view_all_padding_start),
+              ).clickable { promotedStoryListViewModel.clickOnViewAll() },
         )
       }
     }
   }
   LazyRow(
-    modifier = Modifier
-      .testTag(PROMOTED_STORY_LIST_TEST_TAG)
-      .padding(top = dimensionResource(id = R.dimen.promoted_story_list_padding)),
-    contentPadding = PaddingValues(
-      start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
-      end = promotedStoryListViewModel.endPadding.dp,
-    ),
+    modifier =
+      Modifier
+        .testTag(PROMOTED_STORY_LIST_TEST_TAG)
+        .padding(top = dimensionResource(id = R.dimen.promoted_story_list_padding)),
+    contentPadding =
+      PaddingValues(
+        start = dimensionResource(id = R.dimen.promoted_story_list_layout_margin_start),
+        end = promotedStoryListViewModel.endPadding.dp,
+      ),
   ) {
     items(promotedStoryListViewModel.promotedStoryList) {
       PromotedStoryCard(
         promotedStoryViewModel = it,
-        machineLocale = machineLocale
+        machineLocale = machineLocale,
       )
     }
   }
@@ -121,116 +126,136 @@ fun PromotedStoryCard(
 ) {
   val cardLayoutWidth = promotedStoryViewModel.computeLayoutWidth()
   val cardColumnModifier =
-    if (cardLayoutWidth == ViewGroup.LayoutParams.MATCH_PARENT) Modifier.fillMaxWidth()
-    else Modifier.width(promotedStoryViewModel.computeLayoutWidth().dp)
+    if (cardLayoutWidth == ViewGroup.LayoutParams.MATCH_PARENT) {
+      Modifier.fillMaxWidth()
+    } else {
+      Modifier.width(promotedStoryViewModel.computeLayoutWidth().dp)
+    }
 
   Card(
-    modifier = Modifier
-      .width(width = dimensionResource(id = R.dimen.promoted_story_card_layout_width))
-      .padding(
-        start = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_start),
-        end = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_end),
-        bottom = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_bottom),
-      )
-      .clickable { promotedStoryViewModel.clickOnStoryTile() },
-    backgroundColor = colorResource(
-      id = R.color.component_color_classroom_promoted_list_card_background_color
-    ),
+    modifier =
+      Modifier
+        .width(width = dimensionResource(id = R.dimen.promoted_story_card_layout_width))
+        .padding(
+          start = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_start),
+          end = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_end),
+          bottom = dimensionResource(id = R.dimen.promoted_story_card_layout_margin_bottom),
+        ).clickable { promotedStoryViewModel.clickOnStoryTile() },
+    backgroundColor =
+      colorResource(
+        id = R.color.component_color_classroom_promoted_list_card_background_color,
+      ),
     elevation = dimensionResource(id = R.dimen.promoted_story_card_elevation),
   ) {
     Column(
-      modifier = cardColumnModifier
+      modifier = cardColumnModifier,
     ) {
       Image(
-        painter = painterResource(
-          id = promotedStoryViewModel.promotedStory.lessonThumbnail.getDrawableResource()
-        ),
+        painter =
+          painterResource(
+            id = promotedStoryViewModel.promotedStory.lessonThumbnail.getDrawableResource(),
+          ),
         contentDescription = promotedStoryViewModel.storyTitle,
-        modifier = Modifier
-          .aspectRatio(16f / 9f)
-          .background(
-            Color(
-              (
-                0xff000000L or
-                  promotedStoryViewModel.promotedStory.lessonThumbnail.backgroundColorRgb.toLong()
-                ).toInt()
-            )
-          )
+        modifier =
+          Modifier
+            .aspectRatio(16f / 9f)
+            .background(
+              Color(
+                (
+                  0xff000000L or
+                    promotedStoryViewModel.promotedStory.lessonThumbnail.backgroundColorRgb
+                      .toLong()
+                ).toInt(),
+              ),
+            ),
       )
       Text(
         text = promotedStoryViewModel.nextChapterTitle,
-        modifier = Modifier.padding(
-          start = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
+        modifier =
+          Modifier.padding(
+            start =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_horizontal,
+              ),
+            top =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_vertical,
+              ),
+            end =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_horizontal,
+              ),
           ),
-          top = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_vertical
-          ),
-          end = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
-        ),
         color = colorResource(id = R.color.component_color_shared_primary_text_color),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = dimensionResource(
-          id = R.dimen.promoted_story_card_chapter_title_text_size
-        ).value.sp,
+        fontSize =
+          dimensionResource(
+            id = R.dimen.promoted_story_card_chapter_title_text_size,
+          ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
       )
       Text(
         text = machineLocale.run { promotedStoryViewModel.topicTitle.toMachineUpperCase() },
-        modifier = Modifier.padding(
-          start = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
+        modifier =
+          Modifier.padding(
+            start =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_horizontal,
+              ),
+            top =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_vertical,
+              ),
+            end =
+              dimensionResource(
+                id = R.dimen.promoted_story_card_padding_horizontal,
+              ),
           ),
-          top = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_vertical
+        color =
+          colorResource(
+            id = R.color.component_color_shared_story_card_topic_name_text_color,
           ),
-          end = dimensionResource(
-            id = R.dimen.promoted_story_card_padding_horizontal
-          ),
-        ),
-        color = colorResource(
-          id = R.color.component_color_shared_story_card_topic_name_text_color
-        ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Light,
-        fontSize = dimensionResource(
-          id = R.dimen.promoted_story_card_topic_title_text_size
-        ).value.sp,
+        fontSize =
+          dimensionResource(
+            id = R.dimen.promoted_story_card_topic_title_text_size,
+          ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
       )
       Text(
         text = machineLocale.run { promotedStoryViewModel.classroomTitle.toMachineUpperCase() },
-        modifier = Modifier
-          .padding(
-            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
-            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
-          )
-          .border(
-            width = 2.dp,
-            color = colorResource(
-              id = R.color.component_color_classroom_promoted_list_classroom_label_color
+        modifier =
+          Modifier
+            .padding(
+              horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
+              vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+            ).border(
+              width = 2.dp,
+              color =
+                colorResource(
+                  id = R.color.component_color_classroom_promoted_list_classroom_label_color,
+                ),
+              shape = RoundedCornerShape(50),
+            ).padding(
+              horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
+              vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
             ),
-            shape = RoundedCornerShape(50)
-          )
-          .padding(
-            horizontal = dimensionResource(id = R.dimen.promoted_story_card_padding_horizontal),
-            vertical = dimensionResource(id = R.dimen.promoted_story_card_padding_vertical),
+        color =
+          colorResource(
+            id = R.color.component_color_classroom_promoted_list_classroom_label_color,
           ),
-        color = colorResource(
-          id = R.color.component_color_classroom_promoted_list_classroom_label_color
-        ),
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Medium,
-        fontSize = dimensionResource(
-          id = R.dimen.promoted_story_card_classroom_title_text_size
-        ).value.sp,
+        fontSize =
+          dimensionResource(
+            id = R.dimen.promoted_story_card_classroom_title_text_size,
+          ).value.sp,
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,

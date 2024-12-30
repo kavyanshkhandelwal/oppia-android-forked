@@ -29,7 +29,6 @@ class RevisionCardActivity :
   RouteToRevisionCardListener,
   DefaultFontSizeStateListener,
   BottomSheetOptionsMenuItemClickListener {
-
   @Inject
   lateinit var revisionCardActivityPresenter: RevisionCardActivityPresenter
 
@@ -38,15 +37,17 @@ class RevisionCardActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
 
     intent?.let { intent ->
-      val args = intent.getProtoExtra(
-        REVISION_CARD_ACTIVITY_PARAMS_KEY,
-        RevisionCardActivityParams.getDefaultInstance()
-      )
+      val args =
+        intent.getProtoExtra(
+          REVISION_CARD_ACTIVITY_PARAMS_KEY,
+          RevisionCardActivityParams.getDefaultInstance(),
+        )
 
       val profileId = intent.extractCurrentUserProfileId()
-      val topicId = checkNotNull(args.topicId) {
-        "Expected topic ID to be included in intent for RevisionCardActivity."
-      }
+      val topicId =
+        checkNotNull(args.topicId) {
+          "Expected topic ID to be included in intent for RevisionCardActivity."
+        }
       val subtopicId = args?.subtopicId ?: -1
       val subtopicListSize = args?.subtopicListSize ?: -1
 
@@ -54,7 +55,7 @@ class RevisionCardActivity :
         profileId,
         topicId,
         subtopicId,
-        subtopicListSize
+        subtopicListSize,
       )
     }
     onBackPressedDispatcher.addCallback(
@@ -64,7 +65,7 @@ class RevisionCardActivity :
           revisionCardActivityPresenter.setReadingTextSizeMedium()
           onReturnToTopicRequested()
         }
-      }
+      },
     )
   }
 
@@ -82,13 +83,16 @@ class RevisionCardActivity :
       profileId: ProfileId,
       topicId: String,
       subtopicId: Int,
-      subtopicListSize: Int
+      subtopicListSize: Int,
     ): Intent {
-      val args = RevisionCardActivityParams.newBuilder().apply {
-        this.topicId = topicId
-        this.subtopicId = subtopicId
-        this.subtopicListSize = subtopicListSize
-      }.build()
+      val args =
+        RevisionCardActivityParams
+          .newBuilder()
+          .apply {
+            this.topicId = topicId
+            this.subtopicId = subtopicId
+            this.subtopicListSize = subtopicListSize
+          }.build()
       return Intent(context, RevisionCardActivity::class.java).apply {
         putProtoExtra(REVISION_CARD_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
@@ -101,7 +105,7 @@ class RevisionCardActivity :
     profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int
+    subtopicListSize: Int,
   ) {
     startActivity(
       createRevisionCardActivityIntent(
@@ -109,8 +113,8 @@ class RevisionCardActivity :
         profileId,
         topicId,
         subtopicId,
-        subtopicListSize
-      )
+        subtopicListSize,
+      ),
     )
     this.finish()
   }

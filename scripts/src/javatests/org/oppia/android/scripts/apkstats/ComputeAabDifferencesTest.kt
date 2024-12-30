@@ -44,26 +44,27 @@ class ComputeAabDifferencesTest {
     val differencesUtility = createComputeAabDifferences()
     val profile = createProfile(oldAabFilePath = "fake.apk", newAabFilePath = "fake.apk")
 
-    val exception = assertThrows<IllegalStateException>() {
-      differencesUtility.computeBuildStats(profile)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        differencesUtility.computeBuildStats(profile)
+      }
 
     assertThat(exception).hasMessageThat().contains("was not found")
   }
 
-  private fun createComputeAabDifferences(): ComputeAabDifferences {
-    return ComputeAabDifferences(
-      workingDirectoryPath = tempFolder.root.absoluteFile.normalize().path,
+  private fun createComputeAabDifferences(): ComputeAabDifferences =
+    ComputeAabDifferences(
+      workingDirectoryPath =
+        tempFolder.root.absoluteFile
+          .normalize()
+          .path,
       sdkProperties = AndroidBuildSdkProperties(),
-      scriptBgDispatcher
+      scriptBgDispatcher,
     )
-  }
 
   private fun createProfile(
     oldAabFilePath: String,
     newAabFilePath: String,
-    buildFlavor: String = "dev"
-  ): ComputeAabDifferences.AabProfile {
-    return ComputeAabDifferences.AabProfile(buildFlavor, oldAabFilePath, newAabFilePath)
-  }
+    buildFlavor: String = "dev",
+  ): ComputeAabDifferences.AabProfile = ComputeAabDifferences.AabProfile(buildFlavor, oldAabFilePath, newAabFilePath)
 }

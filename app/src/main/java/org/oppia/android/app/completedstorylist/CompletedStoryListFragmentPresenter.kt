@@ -13,50 +13,52 @@ import org.oppia.android.databinding.CompletedStoryListFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [CompletedStoryListFragment]. */
-class CompletedStoryListFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModel: CompletedStoryListViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) {
+class CompletedStoryListFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val viewModel: CompletedStoryListViewModel,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: CompletedStoryListFragmentBinding
 
-  private lateinit var binding: CompletedStoryListFragmentBinding
+    /** Initializes and creates the views for [CompletedStoryListFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      internalProfileId: Int,
+    ): View? {
+      viewModel.setProfileId(internalProfileId)
 
-  /** Initializes and creates the views for [CompletedStoryListFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    internalProfileId: Int
-  ): View? {
-    viewModel.setProfileId(internalProfileId)
+      binding =
+        CompletedStoryListFragmentBinding
+          .inflate(
+            inflater,
+            container,
+            // attachToRoot=
+            false,
+          )
+      binding.completedStoryListToolbar.setNavigationOnClickListener {
+        (activity as CompletedStoryListActivity).finish()
+      }
+      binding.completedStoryList.apply {
+        val spanCount = activity.resources.getInteger(R.integer.completed_story_span_count)
+        layoutManager = GridLayoutManager(context, spanCount)
+        adapter = createRecyclerViewAdapter()
+      }
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = viewModel
+      }
+      return binding.root
+    }
 
-    binding = CompletedStoryListFragmentBinding
-      .inflate(
-        inflater,
-        container,
-        /* attachToRoot= */ false
-      )
-    binding.completedStoryListToolbar.setNavigationOnClickListener {
-      (activity as CompletedStoryListActivity).finish()
-    }
-    binding.completedStoryList.apply {
-      val spanCount = activity.resources.getInteger(R.integer.completed_story_span_count)
-      layoutManager = GridLayoutManager(context, spanCount)
-      adapter = createRecyclerViewAdapter()
-    }
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = viewModel
-    }
-    return binding.root
+    private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> =
+      singleTypeBuilderFactory
+        .create<CompletedStoryItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = CompletedStoryItemBinding::inflate,
+          setViewModel = CompletedStoryItemBinding::setViewModel,
+        ).build()
   }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> {
-    return singleTypeBuilderFactory.create<CompletedStoryItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = CompletedStoryItemBinding::inflate,
-        setViewModel = CompletedStoryItemBinding::setViewModel
-      )
-      .build()
-  }
-}

@@ -87,23 +87,27 @@ class ExplorationProgressModuleTest {
       FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
-      TestPlatformParameterModule::class
-    ]
+      TestPlatformParameterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(moduleTest: ExplorationProgressModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationProgressModuleTest_TestApplicationComponent.builder()
+      DaggerExplorationProgressModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

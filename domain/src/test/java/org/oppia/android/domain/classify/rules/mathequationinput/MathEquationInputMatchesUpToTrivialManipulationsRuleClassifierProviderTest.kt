@@ -50,6 +50,7 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   @Inject internal lateinit var provider: RuleClassifierProvider
 
   @Parameter lateinit var answer: String
+
   @Parameter lateinit var input: String
 
   private lateinit var classifier: RuleClassifier
@@ -162,7 +163,9 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   @Iteration("y=x+(y+z)==y=(x+y)+z", "answer=y=x+(y+z)", "input=y=(x+y)+z")
   @Iteration("x+(y+z)=1==(x+y)+z=1", "answer=x+(y+z)=1", "input=(x+y)+z=1")
   @Iteration(
-    "(x+y)+z=1+(2+3)==x+(y+z)=(1+2)+3", "answer=(x+y)+z=1+(2+3)", "input=x+(y+z)=(1+2)+3"
+    "(x+y)+z=1+(2+3)==x+(y+z)=(1+2)+3",
+    "answer=(x+y)+z=1+(2+3)",
+    "input=x+(y+z)=(1+2)+3",
   )
   @Iteration("y=2*(3*4)==y=(2*3)*4", "answer=y=2*(3*4)", "input=y=(2*3)*4")
   @Iteration("y=2*(3x)==y=(2x)*3", "answer=y=2*(3x)", "input=y=(2x)*3")
@@ -295,7 +298,9 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   @Iteration("y^2 = 3x^2y - 4y!=y = 3x^2 - 4", "answer=y^2 = 3x^2y - 4y", "input=y = 3x^2 - 4")
   @Iteration("y = (3x^3 - 4x)/x!=y = 3x^2 - 4", "answer=y = (3x^3 - 4x)/x", "input=y = 3x^2 - 4")
   @Iteration(
-    "y^2 * y^−1 = -12x^2!=y = 3x^2 - 4", "answer=y^2 * y^−1 = -12x^2", "input=y = 3x^2 - 4"
+    "y^2 * y^−1 = -12x^2!=y = 3x^2 - 4",
+    "answer=y^2 * y^−1 = -12x^2",
+    "input=y = 3x^2 - 4",
   )
   @Iteration("y^2/y = 3x^2 - 4!=y = 3x^2 - 4", "answer=y^2/y = 3x^2 - 4", "input=y = 3x^2 - 4")
   @Iteration("2 − 3 = -4!=y = 3x^2 - 4", "answer=2 − 3 = -4", "input=y = 3x^2 - 4")
@@ -324,35 +329,47 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   private fun matchesClassifier(
     answerExpression: InteractionObject,
     inputExpression: InteractionObject,
-    allowedVariables: List<String> = allPossibleVariables
-  ): Boolean {
-    return classifier.matches(
+    allowedVariables: List<String> = allPossibleVariables,
+  ): Boolean =
+    classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      classificationContext = ClassificationContext(
-        customizationArgs = mapOf(
-          "customOskLetters" to SchemaObject.newBuilder().apply {
-            schemaObjectList = SchemaObjectList.newBuilder().apply {
-              addAllSchemaObject(
-                allowedVariables.map {
-                  SchemaObject.newBuilder().setNormalizedString(it).build()
-                }
-              )
-            }.build()
-          }.build()
-        )
-      )
+      classificationContext =
+        ClassificationContext(
+          customizationArgs =
+            mapOf(
+              "customOskLetters" to
+                SchemaObject
+                  .newBuilder()
+                  .apply {
+                    schemaObjectList =
+                      SchemaObjectList
+                        .newBuilder()
+                        .apply {
+                          addAllSchemaObject(
+                            allowedVariables.map {
+                              SchemaObject.newBuilder().setNormalizedString(it).build()
+                            },
+                          )
+                        }.build()
+                  }.build(),
+            ),
+        ),
     )
-  }
 
-  private fun createMathExpression(rawExpression: String) = InteractionObject.newBuilder().apply {
-    mathExpression = rawExpression
-  }.build()
+  private fun createMathExpression(rawExpression: String) =
+    InteractionObject
+      .newBuilder()
+      .apply {
+        mathExpression = rawExpression
+      }.build()
 
   private fun setUpTestApplicationComponent() {
     DaggerTestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -360,9 +377,7 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -370,8 +385,8 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   @Component(
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -382,8 +397,6 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
       fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      test: MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
-    )
+    fun inject(test: MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest)
   }
 }

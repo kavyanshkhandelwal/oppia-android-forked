@@ -71,7 +71,7 @@ class XmlSyntaxCheckTest {
     val tempFile = tempFolder.newFile("testfiles/TestFile.xml")
     tempFile.writeText(invalidXml)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -108,7 +108,7 @@ class XmlSyntaxCheckTest {
     tempFile1.writeText(invalidXmlForFile1)
     tempFile2.writeText(invalidXmlForFile2)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -157,7 +157,7 @@ class XmlSyntaxCheckTest {
     tempFile2.writeText(invalidXmlForFile2)
     tempFile3.writeText(invalidXmlForFile3)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(XML_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -172,9 +172,7 @@ class XmlSyntaxCheckTest {
   }
 
   /** Retrieves the absolute path of testfiles directory. */
-  private fun retrieveTestFilesDirectoryPath(): String {
-    return "${tempFolder.root}/testfiles"
-  }
+  private fun retrieveTestFilesDirectoryPath(): String = "${tempFolder.root}/testfiles"
 
   /** Runs the xml_syntax_check. */
   private fun runScript() {

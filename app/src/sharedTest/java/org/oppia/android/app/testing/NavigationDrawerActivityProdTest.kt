@@ -142,7 +142,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = NavigationDrawerActivityProdTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class NavigationDrawerActivityProdTest {
   @get:Rule
@@ -177,10 +177,12 @@ class NavigationDrawerActivityProdTest {
     testCoroutineDispatchers.registerIdlingResource()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProfileTestHelper.markCompletedRatiosStory0(
-      ProfileId.newBuilder().setInternalId(
-        internalProfileId
-      ).build(),
-      timestampOlderThanOneWeek = false
+      ProfileId
+        .newBuilder()
+        .setInternalId(
+          internalProfileId,
+        ).build(),
+      timestampOlderThanOneWeek = false,
     )
   }
 
@@ -190,12 +192,11 @@ class NavigationDrawerActivityProdTest {
     Intents.release()
   }
 
-  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
+  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent =
+    NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
       context,
-      internalProfileId
+      internalProfileId,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -204,7 +205,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
@@ -215,7 +216,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -226,15 +227,15 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
-          isDescendantOfA(withId(R.id.header_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.header_linear_layout)),
+        ),
       ).check(matches(withText("Admin")))
     }
   }
@@ -242,7 +243,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_configChange_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -250,8 +251,8 @@ class NavigationDrawerActivityProdTest {
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
-          isDescendantOfA(withId(R.id.header_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.header_linear_layout)),
+        ),
       ).check(matches(withText("Admin")))
     }
   }
@@ -259,21 +260,23 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileStoryProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
-      ProfileId.newBuilder().setInternalId(
-        internalProfileId
-      ).build(),
-      timestampOlderThanOneWeek = false
+      ProfileId
+        .newBuilder()
+        .setInternalId(
+          internalProfileId,
+        ).build(),
+      timestampOlderThanOneWeek = false,
     )
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.profile_story_progress_text_view),
-          isDescendantOfA(withId(R.id.progress_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.progress_linear_layout)),
+        ),
       ).check(matches(withText("1 Story Completed")))
     }
   }
@@ -281,21 +284,23 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_oneTopicInProgress_profileTopicProgressIsDisplayedCorrectly() {
     storyProfileTestHelper.markCompletedRatiosStory1Exp0(
-      ProfileId.newBuilder().setInternalId(
-        internalProfileId
-      ).build(),
-      timestampOlderThanOneWeek = false
+      ProfileId
+        .newBuilder()
+        .setInternalId(
+          internalProfileId,
+        ).build(),
+      timestampOlderThanOneWeek = false,
     )
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.profile_topic_progress_text_view),
-          isDescendantOfA(withId(R.id.progress_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.progress_linear_layout)),
+        ),
       ).check(matches(withText("1 Topic in Progress")))
     }
   }
@@ -303,15 +308,15 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_openNavDrawer_profileNameIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId1)
+      createNavigationDrawerActivityIntent(internalProfileId1),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
       onView(
         allOf(
           withId(R.id.nav_header_profile_name),
-          isDescendantOfA(withId(R.id.header_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.header_linear_layout)),
+        ),
       ).check(matches(withText("Ben")))
     }
   }
@@ -319,7 +324,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_clickOnHeader_opensProfileProgressActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -330,8 +335,8 @@ class NavigationDrawerActivityProdTest {
       intended(
         hasProtoExtra(
           PROFILE_ID_INTENT_DECORATOR,
-          profileId
-        )
+          profileId,
+        ),
       )
     }
   }
@@ -341,7 +346,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -360,7 +365,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_optionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_options)).perform(click())
@@ -381,7 +386,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_helpIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
@@ -404,7 +409,7 @@ class NavigationDrawerActivityProdTest {
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_downloadIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -425,7 +430,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_adminIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
@@ -439,8 +444,8 @@ class NavigationDrawerActivityProdTest {
       onView(
         allOf(
           withText(R.string.administrator_controls),
-          isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.administrator_controls_linear_layout)),
+        ),
       ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
@@ -450,7 +455,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_cancel_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -470,7 +475,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_options_switchProfile_cancel_configChange_optionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_options)).perform(click())
@@ -492,7 +497,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_help_switchProfile_cancel_configChange_helpIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
@@ -516,7 +521,7 @@ class NavigationDrawerActivityProdTest {
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_switchProfile_cancel_configChange_downloadIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -537,7 +542,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_admin_switchProfile_cancel_configChange_adminIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
@@ -553,8 +558,8 @@ class NavigationDrawerActivityProdTest {
       onView(
         allOf(
           withText(R.string.administrator_controls),
-          isDescendantOfA(withId(R.id.administrator_controls_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.administrator_controls_linear_layout)),
+        ),
       ).check(matches(hasTextColor(R.color.component_color_drawer_fragment_selected_text_color)))
     }
   }
@@ -564,7 +569,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_options_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_options)).perform(click())
@@ -580,7 +585,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_help_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
@@ -598,7 +603,7 @@ class NavigationDrawerActivityProdTest {
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -614,7 +619,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -630,7 +635,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_admin_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
@@ -646,7 +651,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_options_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_options)).perform(click())
@@ -663,7 +668,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_help_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
@@ -682,7 +687,7 @@ class NavigationDrawerActivityProdTest {
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_openNavDrawer_download_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -699,7 +704,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_switchProfile_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -716,7 +721,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_admin_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.administrator_controls)).perform(click())
@@ -731,7 +736,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).check(matches(not(isDisplayed())))
@@ -741,7 +746,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_inProdMode_openNavDrawer_configChange_devOptionsIsNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -753,10 +758,11 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_openNavDrawer_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
+      onView(withId(R.id.administrator_controls_linear_layout))
+        .perform(nestedScrollTo())
         .check(matches(isDisplayed()))
     }
   }
@@ -764,7 +770,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_configChange_adminControlsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -776,11 +782,13 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withAdminProfile_adminMenu_opensAdminControlsActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.administrator_controls_linear_layout)).perform(nestedScrollTo())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.administrator_controls_linear_layout))
+        .perform(nestedScrollTo())
+        .check(matches(isDisplayed()))
+        .perform(click())
       val profileId = ProfileId.newBuilder().setInternalId(0).build()
       intended(hasComponent(AdministratorControlsActivity::class.java.name))
       intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
@@ -790,7 +798,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_withUserProfile_adminControlsAreNotDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId1)
+      createNavigationDrawerActivityIntent(internalProfileId1),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.administrator_controls_linear_layout))
@@ -803,7 +811,7 @@ class NavigationDrawerActivityProdTest {
   @Ignore("My Downloads is removed until we have full download support.")
   fun testNavDrawer_myDownloadsMenu_myDownloadsFragmentIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_my_downloads)).perform(click())
@@ -814,7 +822,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_switchProfileMenu_exitToProfileChooserDialogIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -827,7 +835,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_switchProfileMenu_clickExit_opensProfileChooserActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -845,7 +853,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawerAndClose_navDrawerIsClosed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.openNavigationDrawer()
@@ -858,7 +866,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_selectSwitchProfileMenu_clickCancel_navDrawerIsClosed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -876,7 +884,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_selectSwitchProfile_configChange_dialogIsVisible() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_switch_profile)).perform(click())
@@ -891,7 +899,7 @@ class NavigationDrawerActivityProdTest {
   @Test
   fun testNavDrawer_openNavDrawer_selectHelpMenu_opensHelpActivity() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.menu_help)).perform(click())
@@ -927,25 +935,26 @@ class NavigationDrawerActivityProdTest {
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
-  private fun nestedScrollTo(): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "View is not NestedScrollView"
-      }
+  private fun nestedScrollTo(): ViewAction =
+    object : ViewAction {
+      override fun getDescription(): String = "View is not NestedScrollView"
 
-      override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return allOf(
-          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
+      override fun getConstraints(): org.hamcrest.Matcher<View> =
+        allOf(
+          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
         )
-      }
 
-      override fun perform(uiController: UiController, view: View) {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         try {
           val nestedScrollView =
             findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
         } catch (e: Exception) {
-          throw PerformException.Builder()
+          throw PerformException
+            .Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
             .withCause(e)
@@ -954,9 +963,11 @@ class NavigationDrawerActivityProdTest {
         uiController.loopMainThreadUntilIdle()
       }
     }
-  }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+  private fun findFirstParentLayoutOfClass(
+    view: View,
+    parentClass: Class<out View>,
+  ): View {
     var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
@@ -972,13 +983,9 @@ class NavigationDrawerActivityProdTest {
     return parent as View
   }
 
-  private fun findParent(view: View): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: View): ViewParent = view.getParent()
 
-  private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: ViewParent): ViewParent = view.getParent()
 
   private fun checkNavigationViewItemStatus(item: NavigationDrawerItem) =
     object : TypeSafeMatcher<View>() {
@@ -986,9 +993,7 @@ class NavigationDrawerActivityProdTest {
         description.appendText("NavigationViewItem is checked")
       }
 
-      override fun matchesSafely(view: View): Boolean {
-        return (view as NavigationView).menu.getItem(item.ordinal).isChecked
-      }
+      override fun matchesSafely(view: View): Boolean = (view as NavigationView).menu.getItem(item.ordinal).isChecked
     }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1020,8 +1025,8 @@ class NavigationDrawerActivityProdTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1032,20 +1037,25 @@ class NavigationDrawerActivityProdTest {
     fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityProdTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityProdTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest) {
-      return component.inject(navigationDrawerActivityProdTest)
-    }
+    fun inject(navigationDrawerActivityProdTest: NavigationDrawerActivityProdTest) = component.inject(navigationDrawerActivityProdTest)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

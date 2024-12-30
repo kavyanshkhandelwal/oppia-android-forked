@@ -225,12 +225,13 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createOpenExplorationActivityContext_returnsCorrectExplorationContext() {
-    val eventContext = oppiaLogger.createOpenExplorationActivityContext(
-      TEST_CLASSROOM_ID,
-      TEST_TOPIC_ID,
-      TEST_STORY_ID,
-      TEST_EXPLORATION_ID
-    )
+    val eventContext =
+      oppiaLogger.createOpenExplorationActivityContext(
+        TEST_CLASSROOM_ID,
+        TEST_TOPIC_ID,
+        TEST_STORY_ID,
+        TEST_EXPLORATION_ID,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
     assertThat(eventContext.openExplorationActivity.topicId).matches(TEST_TOPIC_ID)
@@ -254,10 +255,11 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createQuestionContext_returnsCorrectQuestionContext() {
-    val eventContext = oppiaLogger.createOpenQuestionPlayerContext(
-      TEST_QUESTION_ID,
-      listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID)
-    )
+    val eventContext =
+      oppiaLogger.createOpenQuestionPlayerContext(
+        TEST_QUESTION_ID,
+        listOf(TEST_SKILL_LIST_ID, TEST_SKILL_LIST_ID),
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(OPEN_QUESTION_PLAYER)
     assertThat(eventContext.openQuestionPlayer.questionId).matches(TEST_QUESTION_ID)
@@ -267,10 +269,11 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createStoryContext_returnsCorrectStoryContext() {
-    val eventContext = oppiaLogger.createOpenStoryActivityContext(
-      TEST_TOPIC_ID,
-      TEST_STORY_ID
-    )
+    val eventContext =
+      oppiaLogger.createOpenStoryActivityContext(
+        TEST_TOPIC_ID,
+        TEST_STORY_ID,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(OPEN_STORY_ACTIVITY)
     assertThat(eventContext.openStoryActivity.topicId).matches(TEST_TOPIC_ID)
@@ -363,11 +366,12 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createConsoleLogContext_returnsCorrectConsoleLogContext() {
-    val eventContext = oppiaLogger.createConsoleLogContext(
-      logLevel = TEST_ERROR_LOG_LEVEL,
-      logTag = TEST_ERROR_LOG_TAG,
-      errorLog = TEST_ERROR_LOG_MSG
-    )
+    val eventContext =
+      oppiaLogger.createConsoleLogContext(
+        logLevel = TEST_ERROR_LOG_LEVEL,
+        logTag = TEST_ERROR_LOG_TAG,
+        errorLog = TEST_ERROR_LOG_MSG,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(CONSOLE_LOG)
     assertThat(eventContext.consoleLog.logLevel).matches(TEST_ERROR_LOG_LEVEL)
@@ -377,12 +381,13 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createRetrofitCallContext_returnsCorrectRetrofitCallContext() {
-    val eventContext = oppiaLogger.createRetrofitCallContext(
-      url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
-      responseCode = TEST_RESPONSE_CODE,
-    )
+    val eventContext =
+      oppiaLogger.createRetrofitCallContext(
+        url = TEST_URL,
+        headers = TEST_HEADERS,
+        body = TEST_BODY,
+        responseCode = TEST_RESPONSE_CODE,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_CONTEXT)
     assertThat(eventContext.retrofitCallContext.requestUrl).matches(TEST_URL)
@@ -393,13 +398,14 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createRetrofitCallFailedContext_returnsCorrectRetrofitCallFailedContext() {
-    val eventContext = oppiaLogger.createRetrofitCallFailedContext(
-      url = TEST_URL,
-      headers = TEST_HEADERS,
-      body = TEST_BODY,
-      responseCode = TEST_RESPONSE_CODE,
-      errorMessage = TEST_ERROR_LOG_MSG,
-    )
+    val eventContext =
+      oppiaLogger.createRetrofitCallFailedContext(
+        url = TEST_URL,
+        headers = TEST_HEADERS,
+        body = TEST_BODY,
+        responseCode = TEST_RESPONSE_CODE,
+        errorMessage = TEST_ERROR_LOG_MSG,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(RETROFIT_CALL_FAILED_CONTEXT)
     assertThat(eventContext.retrofitCallFailedContext.requestUrl).matches(TEST_URL)
@@ -412,11 +418,12 @@ class OppiaLoggerTest {
 
   @Test
   fun testController_createAppInForegroundTimeContext_returnsCorrectAppInForegroundTimeContext() {
-    val eventContext = oppiaLogger.createAppInForegroundTimeContext(
-      installationId = TEST_INSTALLATION_ID,
-      appSessionId = TEST_APP_SESSION_ID,
-      foregroundTime = TEST_FOREGROUND_TIME
-    )
+    val eventContext =
+      oppiaLogger.createAppInForegroundTimeContext(
+        installationId = TEST_INSTALLATION_ID,
+        appSessionId = TEST_APP_SESSION_ID,
+        foregroundTime = TEST_FOREGROUND_TIME,
+      )
 
     assertThat(eventContext.activityContextCase).isEqualTo(APP_IN_FOREGROUND_TIME)
     assertThat(eventContext.appInForegroundTime.installationId).matches(TEST_INSTALLATION_ID)
@@ -442,7 +449,8 @@ class OppiaLoggerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaLoggerTest_TestApplicationComponent.builder()
+    DaggerOppiaLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -453,9 +461,7 @@ class OppiaLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -474,7 +480,6 @@ class OppiaLoggerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -488,14 +493,15 @@ class OppiaLoggerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class
-    ]
+      SyncStatusModule::class, ApplicationLifecycleModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

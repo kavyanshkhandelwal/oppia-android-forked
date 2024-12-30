@@ -21,7 +21,6 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   lateinit var markTopicsCompletedFragmentPresenter: MarkTopicsCompletedFragmentPresenter
 
   companion object {
-
     /** State key for MarkTopicsCompletedFragment.. */
     const val MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY =
       "MarkTopicsCompletedFragment.state"
@@ -30,9 +29,10 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): MarkTopicsCompletedFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return MarkTopicsCompletedFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -45,7 +45,7 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkTopicsCompletedFragment" }
@@ -54,26 +54,29 @@ class MarkTopicsCompletedFragment : InjectableFragment() {
 
     var selectedTopicIdList = ArrayList<String>()
     if (savedInstanceState != null) {
-
-      val stateArgs = savedInstanceState.getProto(
-        MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
-        MarkTopicsCompletedFragmentStateBundle.getDefaultInstance()
-      )
+      val stateArgs =
+        savedInstanceState.getProto(
+          MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY,
+          MarkTopicsCompletedFragmentStateBundle.getDefaultInstance(),
+        )
       selectedTopicIdList = stateArgs?.topicIdsList?.let { ArrayList(it) } ?: ArrayList()
     }
     return markTopicsCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
-      selectedTopicIdList
+      selectedTopicIdList,
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val args = MarkTopicsCompletedFragmentStateBundle.newBuilder().apply {
-      addAllTopicIds(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
-    }.build()
+    val args =
+      MarkTopicsCompletedFragmentStateBundle
+        .newBuilder()
+        .apply {
+          addAllTopicIds(markTopicsCompletedFragmentPresenter.selectedTopicIdList)
+        }.build()
     outState.apply {
       putProto(MARK_TOPICS_COMPLETED_FRAGMENT_STATE_KEY, args)
     }

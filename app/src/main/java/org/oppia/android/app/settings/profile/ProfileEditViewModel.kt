@@ -18,61 +18,64 @@ import javax.inject.Inject
 
 /** The ViewModel for [ProfileEditActivity]. */
 @FragmentScope
-class ProfileEditViewModel @Inject constructor(
-  private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>,
-  @EnableFastLanguageSwitchingInLesson
-  private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>
-) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
+class ProfileEditViewModel
+  @Inject
+  constructor(
+    private val oppiaLogger: OppiaLogger,
+    private val profileManagementController: ProfileManagementController,
+    @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
+    @EnableLearnerStudyAnalytics private val enableLearnerStudy: PlatformParameterValue<Boolean>,
+    @EnableFastLanguageSwitchingInLesson
+    private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>,
+  ) : ObservableViewModel() {
+    private lateinit var profileId: ProfileId
 
-  /** Whether the admin is allowed to mark chapters as finished. */
-  val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
+    /** Whether the admin is allowed to mark chapters as finished. */
+    val isAllowedToMarkFinishedChapters: Boolean = enableLearnerStudy.value
 
-  /** Whether the admin can allow learners to quickly switch content languages within a lesson. */
-  val isAllowedToEnableQuickLessonLanguageSwitching: Boolean =
-    enableFastLanguageSwitchingInLesson.value
+    /** Whether the admin can allow learners to quickly switch content languages within a lesson. */
+    val isAllowedToEnableQuickLessonLanguageSwitching: Boolean =
+      enableFastLanguageSwitchingInLesson.value
 
-  /** List of all the current profiles registered in the app [ProfileListFragment]. */
-  val profile: LiveData<Profile> by lazy {
-    Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
-    )
-  }
-
-  /** Indicates whether downloads-related settings should be shown for this profile. */
-  val showEditDownloadAccess: LiveData<Boolean> by lazy {
-    Transformations.map(profile) { profile ->
-      enableDownloadsSupport.value && !profile.isAdmin
+    /** List of all the current profiles registered in the app [ProfileListFragment]. */
+    val profile: LiveData<Profile> by lazy {
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processGetProfileResult,
+      )
     }
-  }
 
-  /** Whether the user is an admin. */
-  var isAdmin = false
-
-  /** Sets the identifier of the profile. */
-  fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
-  }
-
-  /** Fetches the profile of a user asynchronously. */
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    val profile = when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ProfileEditViewModel",
-          "Failed to retrieve the profile with ID: ${profileId.internalId}",
-          profileResult.error
-        )
-        Profile.getDefaultInstance()
+    /** Indicates whether downloads-related settings should be shown for this profile. */
+    val showEditDownloadAccess: LiveData<Boolean> by lazy {
+      Transformations.map(profile) { profile ->
+        enableDownloadsSupport.value && !profile.isAdmin
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
     }
-    isAdmin = profile.isAdmin
-    return profile
+
+    /** Whether the user is an admin. */
+    var isAdmin = false
+
+    /** Sets the identifier of the profile. */
+    fun setProfileId(id: Int) {
+      profileId = ProfileId.newBuilder().setInternalId(id).build()
+    }
+
+    /** Fetches the profile of a user asynchronously. */
+    private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+      val profile =
+        when (profileResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ProfileEditViewModel",
+              "Failed to retrieve the profile with ID: ${profileId.internalId}",
+              profileResult.error,
+            )
+            Profile.getDefaultInstance()
+          }
+          is AsyncResult.Pending -> Profile.getDefaultInstance()
+          is AsyncResult.Success -> profileResult.value
+        }
+      isAdmin = profile.isAdmin
+      return profile
+    }
   }
-}

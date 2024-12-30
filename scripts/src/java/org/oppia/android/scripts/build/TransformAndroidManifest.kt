@@ -67,11 +67,12 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     TransformAndroidManifest(
       repoRoot = repoRoot,
-      sourceManifestFile = File(args[1]).also {
-        if (!it.exists()) {
-          error("File doesn't exist: ${args[1]}")
-        }
-      },
+      sourceManifestFile =
+        File(args[1]).also {
+          if (!it.exists()) {
+            error("File doesn't exist: ${args[1]}")
+          }
+        },
       outputManifestFile = File(args[2]),
       buildFlavor = args[3],
       majorVersion = args[4].toIntOrNull() ?: error(USAGE_STRING),
@@ -79,7 +80,7 @@ fun main(args: Array<String>) {
       versionCode = args[6].toIntOrNull() ?: error(USAGE_STRING),
       relativelyQualifiedApplicationClass = args[7],
       baseDevelopBranchReference = args[8],
-      scriptBgDispatcher
+      scriptBgDispatcher,
     ).generateAndOutputNewManifest()
   }
 }
@@ -94,7 +95,7 @@ private class TransformAndroidManifest(
   private val versionCode: Int,
   private val relativelyQualifiedApplicationClass: String,
   private val baseDevelopBranchReference: String,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
 ) {
   private val commandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
   private val gitClient by lazy { GitClient(repoRoot, baseDevelopBranchReference, commandExecutor) }
@@ -108,22 +109,30 @@ private class TransformAndroidManifest(
   fun generateAndOutputNewManifest() {
     // Parse the manifest & add the version code & name.
     val manifestDocument = documentBuilderFactory.parseXmlFile(sourceManifestFile)
-    val versionCodeAttribute = manifestDocument.createAttribute("android:versionCode").apply {
-      value = versionCode.toString()
-    }
-    val versionNameAttribute = manifestDocument.createAttribute("android:versionName").apply {
-      value = computeVersionName(
-        buildFlavor, majorVersion, minorVersion, commitHash = gitClient.currentCommit
-      )
-    }
-    val applicationNameAttribute = manifestDocument.createAttribute("android:name").apply {
-      value = relativelyQualifiedApplicationClass
-    }
-    val replaceNameAttribute = manifestDocument.createAttribute("tools:replace").apply {
-      // Other manifests may define duplicate names. Make sure the manifest merger knows to
-      // prioritize this name.
-      value = "android:name"
-    }
+    val versionCodeAttribute =
+      manifestDocument.createAttribute("android:versionCode").apply {
+        value = versionCode.toString()
+      }
+    val versionNameAttribute =
+      manifestDocument.createAttribute("android:versionName").apply {
+        value =
+          computeVersionName(
+            buildFlavor,
+            majorVersion,
+            minorVersion,
+            commitHash = gitClient.currentCommit,
+          )
+      }
+    val applicationNameAttribute =
+      manifestDocument.createAttribute("android:name").apply {
+        value = relativelyQualifiedApplicationClass
+      }
+    val replaceNameAttribute =
+      manifestDocument.createAttribute("tools:replace").apply {
+        // Other manifests may define duplicate names. Make sure the manifest merger knows to
+        // prioritize this name.
+        value = "android:name"
+      }
     val manifestNode = manifestDocument.childNodes.item(0)
     manifestNode.attributes.apply {
       setNamedItem(versionCodeAttribute)
@@ -146,18 +155,18 @@ private class TransformAndroidManifest(
     flavor: String,
     majorVersion: Int,
     minorVersion: Int,
-    commitHash: String
+    commitHash: String,
   ): String = "$majorVersion.$minorVersion-$flavor-${commitHash.take(10)}"
 
-  private fun DocumentBuilderFactory.parseXmlFile(file: File): Document =
-    newDocumentBuilder().parse(file)
+  private fun DocumentBuilderFactory.parseXmlFile(file: File): Document = newDocumentBuilder().parse(file)
 
   private fun Document.toSource(): String {
     // Reference: https://stackoverflow.com/a/5456836.
     val transformer = transformerFactory.newTransformer()
-    return StringWriter().apply {
-      transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
-    }.toString()
+    return StringWriter()
+      .apply {
+        transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
+      }.toString()
   }
 
   private companion object {

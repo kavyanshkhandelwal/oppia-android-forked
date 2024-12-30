@@ -23,18 +23,27 @@ interface AssetRepository {
    * name. The [baseMessage] is used to load the proto; its value will never actually be used (so
    * callers are recommended to use [T]'s default instance for this purpose).
    */
-  fun <T : MessageLite> loadProtoFromLocalAssets(assetName: String, baseMessage: T): T
+  fun <T : MessageLite> loadProtoFromLocalAssets(
+    assetName: String,
+    baseMessage: T,
+  ): T
 
   /**
    * A version of [loadProtoFromLocalAssets] which will return the specified default message if the
    * asset doesn't exist locally (rather than throwing an exception).
    */
-  fun <T : MessageLite> tryLoadProtoFromLocalAssets(assetName: String, defaultMessage: T): T
+  fun <T : MessageLite> tryLoadProtoFromLocalAssets(
+    assetName: String,
+    defaultMessage: T,
+  ): T
 
   /**
    * A version of [loadProtoFromLocalAssets] that returns null if the specified asset doesn't exist.
    */
-  fun <T : MessageLite> maybeLoadProtoFromLocalAssets(assetName: String, baseMessage: T): T?
+  fun <T : MessageLite> maybeLoadProtoFromLocalAssets(
+    assetName: String,
+    baseMessage: T,
+  ): T?
 
   /** Returns the size of the specified proto asset, or -1 if the asset doesn't exist. */
   fun getLocalAssetProtoSize(assetName: String): Int

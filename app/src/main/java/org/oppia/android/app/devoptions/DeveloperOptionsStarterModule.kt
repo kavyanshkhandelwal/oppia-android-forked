@@ -7,7 +7,5 @@ import dagger.Module
 @Module
 interface DeveloperOptionsStarterModule {
   @Binds
-  fun bindsDeveloperOptionsStarter(
-    impl: DeveloperOptionsStarterImpl
-  ): DeveloperOptionsStarter
+  fun bindsDeveloperOptionsStarter(impl: DeveloperOptionsStarterImpl): DeveloperOptionsStarter
 }

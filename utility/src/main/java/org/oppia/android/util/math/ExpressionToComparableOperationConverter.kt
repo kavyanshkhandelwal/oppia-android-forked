@@ -50,75 +50,102 @@ class ExpressionToComparableOperationConverter private constructor() {
      * this function supports. In particular, the equality tests are useful to see what sorts of
      * expressions can be considered the same per [ComparableOperation].
      */
-    fun MathExpression.convertToComparableOperation(): ComparableOperation {
-      return when (expressionTypeCase) {
-        CONSTANT -> ComparableOperation.newBuilder().apply {
-          constantTerm = constant
-        }.build()
-        VARIABLE -> ComparableOperation.newBuilder().apply {
-          variableTerm = variable
-        }.build()
-        BINARY_OPERATION -> when (binaryOperation.operator) {
-          ADD -> toSummation(isRhsNegative = false)
-          SUBTRACT -> toSummation(isRhsNegative = true)
-          MULTIPLY -> toProduct(isRhsInverted = false)
-          DIVIDE -> toProduct(isRhsInverted = true)
-          EXPONENTIATE ->
-            toNonCommutativeOperation(NonCommutativeOperation.Builder::setExponentiation)
-          BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null ->
-            ComparableOperation.getDefaultInstance()
-        }
-        UNARY_OPERATION -> when (unaryOperation.operator) {
-          NEGATE -> unaryOperation.operand.convertToComparableOperation().invertNegation()
-          POSITIVE -> unaryOperation.operand.convertToComparableOperation()
-          UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
-            ComparableOperation.getDefaultInstance()
-        }
-        FUNCTION_CALL -> when (functionCall.functionType) {
-          SQUARE_ROOT -> ComparableOperation.newBuilder().apply {
-            nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
-              squareRoot = functionCall.argument.convertToComparableOperation()
+    fun MathExpression.convertToComparableOperation(): ComparableOperation =
+      when (expressionTypeCase) {
+        CONSTANT ->
+          ComparableOperation
+            .newBuilder()
+            .apply {
+              constantTerm = constant
             }.build()
-          }.build()
-          FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null ->
-            ComparableOperation.getDefaultInstance()
-        }
+        VARIABLE ->
+          ComparableOperation
+            .newBuilder()
+            .apply {
+              variableTerm = variable
+            }.build()
+        BINARY_OPERATION ->
+          when (binaryOperation.operator) {
+            ADD -> toSummation(isRhsNegative = false)
+            SUBTRACT -> toSummation(isRhsNegative = true)
+            MULTIPLY -> toProduct(isRhsInverted = false)
+            DIVIDE -> toProduct(isRhsInverted = true)
+            EXPONENTIATE ->
+              toNonCommutativeOperation(NonCommutativeOperation.Builder::setExponentiation)
+            BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null ->
+              ComparableOperation.getDefaultInstance()
+          }
+        UNARY_OPERATION ->
+          when (unaryOperation.operator) {
+            NEGATE -> unaryOperation.operand.convertToComparableOperation().invertNegation()
+            POSITIVE -> unaryOperation.operand.convertToComparableOperation()
+            UnaryOperator.OPERATOR_UNSPECIFIED, UnaryOperator.UNRECOGNIZED, null ->
+              ComparableOperation.getDefaultInstance()
+          }
+        FUNCTION_CALL ->
+          when (functionCall.functionType) {
+            SQUARE_ROOT ->
+              ComparableOperation
+                .newBuilder()
+                .apply {
+                  nonCommutativeOperation =
+                    NonCommutativeOperation
+                      .newBuilder()
+                      .apply {
+                        squareRoot = functionCall.argument.convertToComparableOperation()
+                      }.build()
+                }.build()
+            FunctionType.FUNCTION_UNSPECIFIED, FunctionType.UNRECOGNIZED, null ->
+              ComparableOperation.getDefaultInstance()
+          }
         GROUP -> group.convertToComparableOperation()
         EXPRESSIONTYPE_NOT_SET, null -> ComparableOperation.getDefaultInstance()
       }
-    }
 
-    private fun MathExpression.toSummation(isRhsNegative: Boolean): ComparableOperation {
-      return ComparableOperation.newBuilder().apply {
-        commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
-          accumulationType = SUMMATION
-          addOperationToSum(binaryOperation.leftOperand, forceNegative = false)
-          addOperationToSum(binaryOperation.rightOperand, forceNegative = isRhsNegative)
-          sort()
+    private fun MathExpression.toSummation(isRhsNegative: Boolean): ComparableOperation =
+      ComparableOperation
+        .newBuilder()
+        .apply {
+          commutativeAccumulation =
+            CommutativeAccumulation
+              .newBuilder()
+              .apply {
+                accumulationType = SUMMATION
+                addOperationToSum(binaryOperation.leftOperand, forceNegative = false)
+                addOperationToSum(binaryOperation.rightOperand, forceNegative = isRhsNegative)
+                sort()
+              }.build()
         }.build()
-      }.build()
-    }
 
-    private fun MathExpression.toProduct(isRhsInverted: Boolean): ComparableOperation {
-      return ComparableOperation.newBuilder().apply {
-        commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
-          accumulationType = PRODUCT
-          val negativeCount =
-            addOperationToProduct(
-              binaryOperation.leftOperand, forceInverse = false, invertNegation = false
-            ) + addOperationToProduct(
-              binaryOperation.rightOperand, forceInverse = isRhsInverted, invertNegation = false
-            )
-          // If an odd number of terms were negative then the overall product is negative.
-          isNegated = (negativeCount % 2) != 0
-          sort()
+    private fun MathExpression.toProduct(isRhsInverted: Boolean): ComparableOperation =
+      ComparableOperation
+        .newBuilder()
+        .apply {
+          commutativeAccumulation =
+            CommutativeAccumulation
+              .newBuilder()
+              .apply {
+                accumulationType = PRODUCT
+                val negativeCount =
+                  addOperationToProduct(
+                    binaryOperation.leftOperand,
+                    forceInverse = false,
+                    invertNegation = false,
+                  ) +
+                    addOperationToProduct(
+                      binaryOperation.rightOperand,
+                      forceInverse = isRhsInverted,
+                      invertNegation = false,
+                    )
+                // If an odd number of terms were negative then the overall product is negative.
+                isNegated = (negativeCount % 2) != 0
+                sort()
+              }.build()
         }.build()
-      }.build()
-    }
 
     private fun CommutativeAccumulation.Builder.addOperationToSum(
       expression: MathExpression,
-      forceNegative: Boolean
+      forceNegative: Boolean,
     ) {
       when {
         expression.binaryOperation.operator == ADD -> {
@@ -158,7 +185,7 @@ class ExpressionToComparableOperationConverter private constructor() {
     private fun CommutativeAccumulation.Builder.addOperationToProduct(
       expression: MathExpression,
       forceInverse: Boolean,
-      invertNegation: Boolean
+      invertNegation: Boolean,
     ): Int {
       // Note that negation only distributes "leftward" since subsequent right-hand operations would
       // otherwise actually reverse the negation.
@@ -167,19 +194,29 @@ class ExpressionToComparableOperationConverter private constructor() {
           // If the entire operation is inverted, that means each part of the multiplication should
           // be, i.e.: 1/(x*y)=(1/x)*(1/y).
           addOperationToProduct(
-            expression.binaryOperation.leftOperand, forceInverse, invertNegation
-          ) + addOperationToProduct(
-            expression.binaryOperation.rightOperand, forceInverse, invertNegation = false
-          )
+            expression.binaryOperation.leftOperand,
+            forceInverse,
+            invertNegation,
+          ) +
+            addOperationToProduct(
+              expression.binaryOperation.rightOperand,
+              forceInverse,
+              invertNegation = false,
+            )
         }
         expression.binaryOperation.operator == DIVIDE -> {
           // Similar to multiplication, inversion for the whole operation results in distribution
           // except the division inverts for the right-hand operand, i.e.: 1/(x/y)=(1/x)*y.
           addOperationToProduct(
-            expression.binaryOperation.leftOperand, forceInverse, invertNegation
-          ) + addOperationToProduct(
-            expression.binaryOperation.rightOperand, !forceInverse, invertNegation = false
-          )
+            expression.binaryOperation.leftOperand,
+            forceInverse,
+            invertNegation,
+          ) +
+            addOperationToProduct(
+              expression.binaryOperation.rightOperand,
+              !forceInverse,
+              invertNegation = false,
+            )
         }
         expression.unaryOperation.operator == NEGATE ->
           addOperationToProduct(expression.unaryOperation.operand, forceInverse, !invertNegation)
@@ -191,13 +228,18 @@ class ExpressionToComparableOperationConverter private constructor() {
           addOperationToProduct(expression.group, forceInverse, invertNegation)
         else -> {
           val operationExpression = expression.convertToComparableOperation()
-          val potentiallyInvertedExpression = if (invertNegation) {
-            operationExpression.invertNegation()
-          } else operationExpression
+          val potentiallyInvertedExpression =
+            if (invertNegation) {
+              operationExpression.invertNegation()
+            } else {
+              operationExpression
+            }
           val positiveConvertedOperation = potentiallyInvertedExpression.makePositive()
           if (forceInverse) {
             addCombinedOperations(positiveConvertedOperation.invertInverted())
-          } else addCombinedOperations(positiveConvertedOperation)
+          } else {
+            addCombinedOperations(positiveConvertedOperation)
+          }
           if (potentiallyInvertedExpression.isNegated) 1 else 0
         }
       }
@@ -214,29 +256,32 @@ class ExpressionToComparableOperationConverter private constructor() {
 
     private fun MathExpression.toNonCommutativeOperation(
       setOperation: NonCommutativeOperation.Builder.(
-        BinaryOperation
-      ) -> NonCommutativeOperation.Builder
-    ): ComparableOperation {
-      return ComparableOperation.newBuilder().apply {
-        nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
-          setOperation(
-            BinaryOperation.newBuilder().apply {
-              leftOperand = binaryOperation.leftOperand.convertToComparableOperation()
-              rightOperand = binaryOperation.rightOperand.convertToComparableOperation()
-            }.build()
-          )
+        BinaryOperation,
+      ) -> NonCommutativeOperation.Builder,
+    ): ComparableOperation =
+      ComparableOperation
+        .newBuilder()
+        .apply {
+          nonCommutativeOperation =
+            NonCommutativeOperation
+              .newBuilder()
+              .apply {
+                setOperation(
+                  BinaryOperation
+                    .newBuilder()
+                    .apply {
+                      leftOperand = binaryOperation.leftOperand.convertToComparableOperation()
+                      rightOperand = binaryOperation.rightOperand.convertToComparableOperation()
+                    }.build(),
+                )
+              }.build()
         }.build()
-      }.build()
-    }
 
-    private fun ComparableOperation.makePositive(): ComparableOperation =
-      toBuilder().apply { isNegated = false }.build()
+    private fun ComparableOperation.makePositive(): ComparableOperation = toBuilder().apply { isNegated = false }.build()
 
-    private fun ComparableOperation.invertNegation(): ComparableOperation =
-      toBuilder().apply { isNegated = !isNegated }.build()
+    private fun ComparableOperation.invertNegation(): ComparableOperation = toBuilder().apply { isNegated = !isNegated }.build()
 
-    private fun ComparableOperation.invertInverted(): ComparableOperation =
-      toBuilder().apply { isInverted = !isInverted }.build()
+    private fun ComparableOperation.invertInverted(): ComparableOperation = toBuilder().apply { isInverted = !isInverted }.build()
 
     private fun createComparableOperationComparator(): Comparator<ComparableOperation> {
       // Note that this & constituent comparators is designed to also verify undefined fields (such
@@ -256,27 +301,25 @@ class ExpressionToComparableOperationConverter private constructor() {
             .compareProtos(a.nonCommutativeOperation, b.nonCommutativeOperation)
         }.thenComparator { a, b ->
           REAL_COMPARATOR.compareProtos(a.constantTerm, b.constantTerm)
-        }
-        .thenBy(ComparableOperation::getVariableTerm)
+        }.thenBy(ComparableOperation::getVariableTerm)
     }
 
-    private fun createCommutativeAccumulationComparator(): Comparator<CommutativeAccumulation> {
-      return compareBy(CommutativeAccumulation::getAccumulationType)
+    private fun createCommutativeAccumulationComparator(): Comparator<CommutativeAccumulation> =
+      compareBy(CommutativeAccumulation::getAccumulationType)
         .thenComparator { a, b ->
           createComparableOperationComparator().compareIterables(
-            a.combinedOperationsList, b.combinedOperationsList
+            a.combinedOperationsList,
+            b.combinedOperationsList,
           )
         }
-    }
 
-    private fun createNonCommutativeOperationComparator(): Comparator<NonCommutativeOperation> {
-      return compareBy(NonCommutativeOperation::getOperationTypeCase)
+    private fun createNonCommutativeOperationComparator(): Comparator<NonCommutativeOperation> =
+      compareBy(NonCommutativeOperation::getOperationTypeCase)
         .thenComparator { a, b ->
           createBinaryOperationComparator().compareProtos(a.exponentiation, b.exponentiation)
         }.thenComparator { a, b ->
           createComparableOperationComparator().compareProtos(a.squareRoot, b.squareRoot)
         }
-    }
 
     private fun createBinaryOperationComparator(): Comparator<BinaryOperation> {
       // Start with a trivial comparator to start the chain for nicer syntax.

@@ -17,7 +17,9 @@ import android.renderscript.ScriptIntrinsicBlur
 private const val BLUR_RADIUS = 20f
 
 /** Utility used to blur [Bitmap]s. */
-class BitmapBlurrer(private val context: Context) {
+class BitmapBlurrer(
+  private val context: Context,
+) {
   private val renderScript by lazy { RenderScript.create(context) }
   private val blurScript by lazy {
     // Create a new Gaussian blur script with 4 expect 8-bit color channels (e.g. ARGB).
@@ -38,12 +40,13 @@ class BitmapBlurrer(private val context: Context) {
 
     val blurredBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, /* isMutable = */ true)
     // Create a RenderScript allocation pointing to a copy.
-    val inputAllocation = Allocation.createFromBitmap(
-      renderScript,
-      blurredBitmap,
-      Allocation.MipmapControl.MIPMAP_FULL,
-      Allocation.USAGE_SHARED
-    )
+    val inputAllocation =
+      Allocation.createFromBitmap(
+        renderScript,
+        blurredBitmap,
+        Allocation.MipmapControl.MIPMAP_FULL,
+        Allocation.USAGE_SHARED,
+      )
 
     // Create a new RenderScript allocation to receive the output from the blur operation.
     val outputAllocation = Allocation.createTyped(renderScript, inputAllocation.type)

@@ -124,10 +124,9 @@ import kotlin.reflect.KClass
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = PoliciesFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class PoliciesFragmentTest {
-
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   @Inject
@@ -160,8 +159,8 @@ class PoliciesFragmentTest {
     ActivityScenarioRule(
       Intent(
         getApplicationContext(),
-        PoliciesFragmentTestActivity::class.java
-      )
+        PoliciesFragmentTestActivity::class.java,
+      ),
     )
 
   // Note that the locale rule must be initialized first since the scenario rule can depend on the
@@ -183,17 +182,18 @@ class PoliciesFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return createPoliciesFragmentTestActivity(context, policyPage)
-  }
+  private fun createPoliciesFragmentTestIntent(
+    context: Context,
+    policyPage: PolicyPage,
+  ): Intent = createPoliciesFragmentTestActivity(context, policyPage)
 
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestActivity(
         getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
+        PolicyPage.PRIVACY_POLICY,
+      ),
     ).use {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -204,8 +204,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
+        PolicyPage.PRIVACY_POLICY,
+      ),
     ).use {
       it.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
@@ -214,7 +214,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo(
-            "Please visit this page for the latest version of this privacy policy."
+            "Please visit this page for the latest version of this privacy policy.",
           )
       }
     }
@@ -225,8 +225,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
+        PolicyPage.PRIVACY_POLICY,
+      ),
     ).use {
       it.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
@@ -235,7 +235,7 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo(
-            "Please visit this page for the latest version of this privacy policy."
+            "Please visit this page for the latest version of this privacy policy.",
           )
         val link = "https://www.oppia.org/privacy-policy"
         val expectingIntent = allOf(hasAction(Intent.ACTION_VIEW), hasData(link))
@@ -251,8 +251,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestActivity(
         getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -263,8 +263,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestActivity(
         getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use { scenario ->
       scenario.onActivity {
         it.mockCallbackListener = mockRouteToPoliciesListener
@@ -286,8 +286,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use {
       it.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
@@ -305,8 +305,8 @@ class PoliciesFragmentTest {
     launch<PoliciesFragmentTestActivity>(
       createPoliciesFragmentTestIntent(
         getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
+        PolicyPage.TERMS_OF_SERVICE,
+      ),
     ).use {
       it.onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
@@ -360,8 +360,8 @@ class PoliciesFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -372,9 +372,13 @@ class PoliciesFragmentTest {
     fun inject(privacyPolicyFragmentTest: PoliciesFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPoliciesFragmentTest_TestApplicationComponent.builder()
+      DaggerPoliciesFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -383,9 +387,12 @@ class PoliciesFragmentTest {
       component.inject(privacyPolicyFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

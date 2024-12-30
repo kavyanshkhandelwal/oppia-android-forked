@@ -21,12 +21,15 @@ class CircularProgressIndicatorAdaptersTestActivity : InjectableSystemLocalizedA
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<CircularProgressIndicatorAdaptersTestActivityBinding>(
-      this, R.layout.circular_progress_indicator_adapters_test_activity
-    ).apply {
-      this.viewModel = this@CircularProgressIndicatorAdaptersTestActivity.viewModel
-      this.lifecycleOwner = this@CircularProgressIndicatorAdaptersTestActivity
-    }
+    binding =
+      DataBindingUtil
+        .setContentView<CircularProgressIndicatorAdaptersTestActivityBinding>(
+          this,
+          R.layout.circular_progress_indicator_adapters_test_activity,
+        ).apply {
+          this.viewModel = this@CircularProgressIndicatorAdaptersTestActivity.viewModel
+          this.lifecycleOwner = this@CircularProgressIndicatorAdaptersTestActivity
+        }
   }
 
   companion object {
@@ -34,7 +37,6 @@ class CircularProgressIndicatorAdaptersTestActivity : InjectableSystemLocalizedA
      * Returns a new [Intent] for the given [Context] to launch new
      * [CircularProgressIndicatorAdaptersTestActivity]s.
      */
-    fun createIntent(context: Context): Intent =
-      Intent(context, CircularProgressIndicatorAdaptersTestActivity::class.java)
+    fun createIntent(context: Context): Intent = Intent(context, CircularProgressIndicatorAdaptersTestActivity::class.java)
   }
 }

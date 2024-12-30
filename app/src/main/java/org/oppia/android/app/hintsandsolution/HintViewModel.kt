@@ -13,17 +13,18 @@ import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 class HintViewModel(
   val title: String,
   val hintSummary: String,
-  val isHintRevealed: ObservableBoolean
+  val isHintRevealed: ObservableBoolean,
 ) : HintsAndSolutionItemViewModel() {
   /**
    * A screenreader-friendly version of [hintSummary] that should be used for readout, in place of
    * the original summary.
    */
   val hintContentDescription: String by lazy {
-    CustomHtmlContentHandler.fromHtml(
-      hintSummary,
-      imageRetriever = null,
-      customTagHandlers = mapOf()
-    ).toString()
+    CustomHtmlContentHandler
+      .fromHtml(
+        hintSummary,
+        imageRetriever = null,
+        customTagHandlers = mapOf(),
+      ).toString()
   }
 }

@@ -24,10 +24,8 @@ class SvgBlurTransformation : Transformation<ScalableVectorGraphic> {
     context: Context,
     toTransform: Resource<ScalableVectorGraphic>,
     outWidth: Int,
-    outHeight: Int
-  ): Resource<ScalableVectorGraphic> {
-    return SimpleResource(toTransform.get().transform(listOf(ImageTransformation.BLUR)))
-  }
+    outHeight: Int,
+  ): Resource<ScalableVectorGraphic> = SimpleResource(toTransform.get().transform(listOf(ImageTransformation.BLUR)))
 
   override fun updateDiskCacheKey(messageDigest: MessageDigest) {
     messageDigest.update(ID.toByteArray())

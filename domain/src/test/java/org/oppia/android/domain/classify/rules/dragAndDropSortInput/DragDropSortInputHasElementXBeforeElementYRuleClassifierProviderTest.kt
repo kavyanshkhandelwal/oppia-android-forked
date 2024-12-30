@@ -26,14 +26,15 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
-
   private val VALID_CONTENT_ID_1 = createTranslatableHtmlContentId(contentId = "content_id_1")
   private val VALID_CONTENT_ID_2 = createTranslatableHtmlContentId(contentId = "content_id_2")
   private val INVALID_CONTENT_ID = createTranslatableHtmlContentId(contentId = "invalid_content_id")
   private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
   private val LIST_OF_SETS_OF_CONTENT_IDS =
     createListOfSetsOfTranslatableHtmlContentIds(
-      listOf("content_id_1"), listOf("content_id_2"), listOf("content_id_3")
+      listOf("content_id_1"),
+      listOf("content_id_2"),
+      listOf("content_id_3"),
     )
 
   @Inject
@@ -51,18 +52,20 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_bothInputsWithIncorrectTypes_throwsException() {
-    val inputs = mapOf(
-      "x" to NON_NEGATIVE_VALUE_1,
-      "y" to NON_NEGATIVE_VALUE_1
-    )
-
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
+    val inputs =
+      mapOf(
+        "x" to NON_NEGATIVE_VALUE_1,
+        "y" to NON_NEGATIVE_VALUE_1,
       )
-    }
+
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -73,13 +76,14 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -90,13 +94,14 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to NON_NEGATIVE_VALUE_1)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -107,13 +112,14 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_testString_missingInputX_throwsException() {
     val inputs = mapOf("y" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -124,13 +130,14 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_missingInputY_throwsException() {
     val inputs = mapOf("x" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -141,13 +148,14 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   fun testAnswer_bothInputsMissing_throwsException() {
     val inputs = mapOf("z" to VALID_CONTENT_ID_2)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
-        answer = LIST_OF_SETS_OF_CONTENT_IDS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasElementXBeforeElementYRuleClassifier.matches(
+          answer = LIST_OF_SETS_OF_CONTENT_IDS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -162,7 +170,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -176,7 +184,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -190,16 +198,19 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       hasElementXBeforeElementYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest_TestApplicationComponent // ktlint-disable max-line-length
+    @Suppress("ktlint:standard:max-line-length")
+    DaggerDragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -9,37 +9,41 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */
 @ActivityScope
-class ProfileRenameActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+class ProfileRenameActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    /** Handles onCreate() of [ProfileRenameActivity]. */
+    fun handleOnCreate(profileId: Int) {
+      activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+      activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
 
-  /** Handles onCreate() of [ProfileRenameActivity]. */
-  fun handleOnCreate(profileId: Int) {
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+      val binding =
+        DataBindingUtil.setContentView<ProfileRenameActivityBinding>(
+          activity,
+          R.layout.profile_rename_activity,
+        )
 
-    val binding =
-      DataBindingUtil.setContentView<ProfileRenameActivityBinding>(
-        activity,
-        R.layout.profile_rename_activity
-      )
+      binding.apply {
+        lifecycleOwner = activity
+      }
 
-    binding.apply {
-      lifecycleOwner = activity
+      binding.profileRenameToolbar.setNavigationOnClickListener {
+        (activity as ProfileRenameActivity).finish()
+      }
+      if (getProfileRenameFragment() == null) {
+        val profileRenameFragment = ProfileRenameFragment.newInstance(profileId)
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(R.id.profile_rename_fragment_placeholder, profileRenameFragment)
+          .commitNow()
+      }
     }
 
-    binding.profileRenameToolbar.setNavigationOnClickListener {
-      (activity as ProfileRenameActivity).finish()
-    }
-    if (getProfileRenameFragment() == null) {
-      val profileRenameFragment = ProfileRenameFragment.newInstance(profileId)
-      activity.supportFragmentManager.beginTransaction()
-        .add(R.id.profile_rename_fragment_placeholder, profileRenameFragment).commitNow()
-    }
+    private fun getProfileRenameFragment(): ProfileRenameFragment? =
+      activity.supportFragmentManager
+        .findFragmentById(
+          R.id.profile_rename_fragment_placeholder,
+        ) as ProfileRenameFragment?
   }
-
-  private fun getProfileRenameFragment(): ProfileRenameFragment? {
-    return activity.supportFragmentManager
-      .findFragmentById(
-        R.id.profile_rename_fragment_placeholder
-      ) as ProfileRenameFragment?
-  }
-}

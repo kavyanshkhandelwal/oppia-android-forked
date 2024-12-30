@@ -110,7 +110,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileEditActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileEditActivityTest {
   @get:Rule
@@ -152,7 +152,8 @@ class ProfileEditActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenName =
-      ProfileEditActivity.createProfileEditActivity(context, 1)
+      ProfileEditActivity
+        .createProfileEditActivity(context, 1)
         .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_EDIT_ACTIVITY)
@@ -163,15 +164,15 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use { activityScenario ->
       activityScenario.onActivity {
         val titleToolbar = it.findViewById<Toolbar>(R.id.profile_edit_toolbar)
         val titleToolbarText = titleToolbar.title
 
         assertThat(titleToolbarText).isEqualTo(
-          context.getString(R.string.profile_edit_activity_title)
+          context.getString(R.string.profile_edit_activity_title),
         )
       }
     }
@@ -182,8 +183,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(withId(R.id.profile_rename_button)).perform(click())
       intended(hasComponent(ProfileRenameActivity::class.java.name))
@@ -195,8 +196,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_rename_button)).perform(click())
@@ -209,8 +210,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(withId(R.id.profile_reset_button)).perform(click())
       intended(hasComponent(ProfileResetPinActivity::class.java.name))
@@ -222,8 +223,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_button)).perform(scrollTo()).perform(click())
@@ -236,8 +237,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive))
@@ -261,8 +262,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
@@ -287,8 +288,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Ben")))
@@ -304,8 +305,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 0
-      )
+        profileId = 0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -322,8 +323,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 1
-      )
+        profileId = 1,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -339,8 +340,8 @@ class ProfileEditActivityTest {
     launch<ProfileEditActivity>(
       ProfileEditActivity.createProfileEditActivity(
         context = context,
-        profileId = 0
-      )
+        profileId = 0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_edit_name)).check(matches(withText("Admin")))
@@ -380,8 +381,8 @@ class ProfileEditActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -392,9 +393,13 @@ class ProfileEditActivityTest {
     fun inject(profileEditActivityTest: ProfileEditActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileEditActivityTest_TestApplicationComponent.builder()
+      DaggerProfileEditActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -403,9 +408,12 @@ class ProfileEditActivityTest {
       component.inject(profileEditActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

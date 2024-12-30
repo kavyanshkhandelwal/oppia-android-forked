@@ -60,8 +60,9 @@ class UrlImageParser private constructor(
   private val imageCenterAlign: Boolean,
   private val imageLoader: ImageLoader,
   private val consoleLogger: ConsoleLogger,
-  private val machineLocale: OppiaLocale.MachineLocale
-) : Html.ImageGetter, ImageRetriever {
+  private val machineLocale: OppiaLocale.MachineLocale,
+) : Html.ImageGetter,
+  ImageRetriever {
   private val diagonalPixelsPerInch by lazy {
     context.resources.displayMetrics.computeDiagonalPpi()
   }
@@ -76,21 +77,29 @@ class UrlImageParser private constructor(
     return loadDrawable(urlString, BLOCK_IMAGE)
   }
 
-  override fun loadDrawable(filename: String, type: ImageRetriever.Type): Drawable {
-    val imagePath = machineLocale.run {
-      imageDownloadUrlTemplate.formatForMachines(entityType, entityId, filename)
-    }
+  override fun loadDrawable(
+    filename: String,
+    type: ImageRetriever.Type,
+  ): Drawable {
+    val imagePath =
+      machineLocale.run {
+        imageDownloadUrlTemplate.formatForMachines(entityType, entityId, filename)
+      }
     val imageUrl = "$gcsPrefix/$gcsResourceName/$imagePath"
     val proxyDrawable = ProxyDrawable()
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
-    val isSvg = machineLocale.run {
-      imageUrl.endsWithIgnoreCase("svg") || imageUrl.endsWithIgnoreCase("svgz")
-    }
-    val adjustedType = if (type == INLINE_TEXT_IMAGE && !isSvg) {
-      // Treat non-svg in-line images as block, instead, since only SVG is supported.
-      consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
-      BLOCK_IMAGE
-    } else type
+    val isSvg =
+      machineLocale.run {
+        imageUrl.endsWithIgnoreCase("svg") || imageUrl.endsWithIgnoreCase("svgz")
+      }
+    val adjustedType =
+      if (type == INLINE_TEXT_IMAGE && !isSvg) {
+        // Treat non-svg in-line images as block, instead, since only SVG is supported.
+        consoleLogger.w("UrlImageParser", "Forcing image $filename to block image")
+        BLOCK_IMAGE
+      } else {
+        type
+      }
 
     return when (adjustedType) {
       INLINE_TEXT_IMAGE -> {
@@ -98,7 +107,7 @@ class UrlImageParser private constructor(
           imageUrl,
           createCustomTarget(proxyDrawable) {
             AutoAdjustingImageTarget.InlineTextImage.createForSvg(it)
-          }
+          },
         )
         proxyDrawable
       }
@@ -108,16 +117,16 @@ class UrlImageParser private constructor(
             imageUrl,
             createCustomTarget(
               proxyDrawable,
-              AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create
-            )
+              AutoAdjustingImageTarget.BlockImageTarget.SvgTarget::create,
+            ),
           )
         } else {
           imageLoader.loadBitmap(
             imageUrl,
             createCustomTarget(
               proxyDrawable,
-              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create
-            )
+              AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget::create,
+            ),
           )
         }
         proxyDrawable
@@ -128,9 +137,9 @@ class UrlImageParser private constructor(
   override fun loadMathDrawable(
     rawLatex: String,
     lineHeight: Float,
-    type: ImageRetriever.Type
-  ): Drawable {
-    return ProxyDrawable().also { drawable ->
+    type: ImageRetriever.Type,
+  ): Drawable =
+    ProxyDrawable().also { drawable ->
       imageLoader.loadMathDrawable(
         rawLatex,
         lineHeight,
@@ -142,32 +151,34 @@ class UrlImageParser private constructor(
               // Render the LaTeX as a block image, but don't automatically resize it since it's
               // text (which means resizing may make it unreadable).
               AutoAdjustingImageTarget.BlockImageTarget.BitmapTarget.create(
-                it, autoResizeImage = false
+                it,
+                autoResizeImage = false,
               )
             }
           }
-        }
+        },
       )
     }
-  }
 
   private fun <T, D : Drawable, C : AutoAdjustingImageTarget<T, D>> createCustomTarget(
     proxyDrawable: ProxyDrawable,
-    createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C
+    createTarget: (AutoAdjustingImageTarget.TargetConfiguration) -> C,
   ): CustomImageTarget<T> {
-    val configuration = AutoAdjustingImageTarget.TargetConfiguration(
-      context,
-      htmlContentTextView,
-      imageCenterAlign,
-      proxyDrawable,
-      oppiaLocalImageSpaceConversionFactor
-    )
+    val configuration =
+      AutoAdjustingImageTarget.TargetConfiguration(
+        context,
+        htmlContentTextView,
+        imageCenterAlign,
+        proxyDrawable,
+        oppiaLocalImageSpaceConversionFactor,
+      )
     return CustomImageTarget(createTarget(configuration))
   }
 
   // T must be bounded to a non-null value per https://youtrack.jetbrains.com/issue/KT-50961 and
   // https://youtrack.jetbrains.com/issue/KT-26245 to ensure that the Kotlin compiler can be
   // confident an NPE can't unwittingly happen.
+
   /**
    * A [CustomTarget] that can automatically resized, or align, the loaded image as needed. This
    * class coordinates with a [ProxyDrawable] defined as part of the specified
@@ -175,9 +186,8 @@ class UrlImageParser private constructor(
    * per the holding TextView's lifecycle.
    */
   private sealed class AutoAdjustingImageTarget<T : Any, D : Drawable>(
-    private val targetConfiguration: TargetConfiguration
+    private val targetConfiguration: TargetConfiguration,
   ) : CustomTarget<T>() {
-
     protected val context by lazy { targetConfiguration.context }
     protected val htmlContentTextView by lazy { targetConfiguration.htmlContentTextView }
     protected val imageCenterAlign by lazy { targetConfiguration.imageCenterAlign }
@@ -190,7 +200,10 @@ class UrlImageParser private constructor(
       // No resources to clear.
     }
 
-    override fun onResourceReady(resource: T, transition: Transition<in T?>?) {
+    override fun onResourceReady(
+      resource: T,
+      transition: Transition<in T?>?,
+    ) {
       val drawable = retrieveDrawable(resource)
       htmlContentTextView.post {
         htmlContentTextView.width { viewWidth ->
@@ -199,7 +212,7 @@ class UrlImageParser private constructor(
               htmlContentTextView.paddingLeft,
               htmlContentTextView.paddingTop,
               htmlContentTextView.paddingRight,
-              htmlContentTextView.paddingBottom
+              htmlContentTextView.paddingBottom,
             )
           proxyDrawable.initialize(drawable, computeBounds(context, drawable, viewWidth, padding))
           htmlContentTextView.text = htmlContentTextView.text
@@ -219,15 +232,14 @@ class UrlImageParser private constructor(
       context: Context,
       drawable: D,
       viewWidth: Int,
-      padding: Rect
+      padding: Rect,
     ): Rect
 
     /**
      * Returns a conversion of [this] from "Oppia" image space to local Android screen space (to
      * ensure images take up the same physical space locally as they do on @seanlip's monitor).
      */
-    protected fun Float.oppiaPxToLocalAndroidPx() =
-      context.dpToPx(this * oppiaLocalImageSpaceConversionFactor)
+    protected fun Float.oppiaPxToLocalAndroidPx() = context.dpToPx(this * oppiaLocalImageSpaceConversionFactor)
 
     /**
      * A [AutoAdjustingImageTarget] that may automatically center and/or resize loaded images to
@@ -235,39 +247,41 @@ class UrlImageParser private constructor(
      */
     sealed class BlockImageTarget<T : Any, D : Drawable>(
       targetConfiguration: TargetConfiguration,
-      private val autoResizeImage: Boolean
+      private val autoResizeImage: Boolean,
     ) : AutoAdjustingImageTarget<T, D>(targetConfiguration) {
-
-      private fun isRTLMode(): Boolean {
-        return ViewCompat.getLayoutDirection(htmlContentTextView) == ViewCompat
-          .LAYOUT_DIRECTION_RTL
-      }
+      private fun isRTLMode(): Boolean =
+        ViewCompat.getLayoutDirection(htmlContentTextView) ==
+          ViewCompat
+            .LAYOUT_DIRECTION_RTL
 
       override fun computeBounds(
         context: Context,
         drawable: D,
         viewWidth: Int,
-        padding: Rect
+        padding: Rect,
       ): Rect {
         val layoutParams = htmlContentTextView.layoutParams
-        val maxAvailableWidth = when (layoutParams.width) {
-          ViewGroup.LayoutParams.WRAP_CONTENT -> {
-            // Assume that wrap_content cases means that the view cannot exceed its parent's width
-            // minus margins.
-            val parent = htmlContentTextView.parent
-            if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
-              // Only pick the computed space if it allows the view to expand to accommodate larger
-              // images.
-              max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
-            } else viewWidth
+        val maxAvailableWidth =
+          when (layoutParams.width) {
+            ViewGroup.LayoutParams.WRAP_CONTENT -> {
+              // Assume that wrap_content cases means that the view cannot exceed its parent's width
+              // minus margins.
+              val parent = htmlContentTextView.parent
+              if (parent is View && layoutParams is ViewGroup.MarginLayoutParams) {
+                // Only pick the computed space if it allows the view to expand to accommodate larger
+                // images.
+                max(viewWidth, parent.width - (layoutParams.leftMargin + layoutParams.rightMargin))
+              } else {
+                viewWidth
+              }
+            }
+            ViewGroup.LayoutParams.MATCH_PARENT -> {
+              // match_parent means the view's width likely represents the maximum space that can be
+              // taken up, but padding must be subtracted to avoid the image being cut-off.
+              viewWidth - (padding.left + padding.right)
+            }
+            else -> viewWidth // The view's width
           }
-          ViewGroup.LayoutParams.MATCH_PARENT -> {
-            // match_parent means the view's width likely represents the maximum space that can be
-            // taken up, but padding must be subtracted to avoid the image being cut-off.
-            viewWidth - (padding.left + padding.right)
-          }
-          else -> viewWidth // The view's width
-        }
 
         var drawableWidth = drawable.intrinsicWidth.toFloat()
         var drawableHeight = drawable.intrinsicHeight.toFloat()
@@ -286,13 +300,14 @@ class UrlImageParser private constructor(
             // Example: Height is 90, width is 60 and minimumImageSize is 120.
             // Then multipleFactor will be 2 (120/60).
             // The new height will be 180 and new width will be 120.
-            val multipleFactor = if (drawableHeight <= drawableWidth) {
-              // If height is less then the width, multipleFactor value is determined by height.
-              minimumImageSize.toFloat() / drawableHeight
-            } else {
-              // If height is less then the width, multipleFactor value is determined by width.
-              minimumImageSize.toFloat() / drawableWidth
-            }
+            val multipleFactor =
+              if (drawableHeight <= drawableWidth) {
+                // If height is less then the width, multipleFactor value is determined by height.
+                minimumImageSize.toFloat() / drawableHeight
+              } else {
+                // If height is less then the width, multipleFactor value is determined by width.
+                minimumImageSize.toFloat() / drawableWidth
+              }
             drawableHeight *= multipleFactor
             drawableWidth *= multipleFactor
           }
@@ -303,13 +318,14 @@ class UrlImageParser private constructor(
             // remains the same. Example: Height is 420, width is 440 and maximumImageSize is 200.
             // Then multipleFactor will be (200/440). The new height will be 191 and new width will
             // be 200.
-            val multipleFactor = if (drawableHeight >= drawableWidth) {
-              // If height is greater then the width, multipleFactor value is determined by height.
-              (maximumImageSize.toFloat() / drawableHeight)
-            } else {
-              // If height is greater then the width, multipleFactor value is determined by width.
-              (maximumImageSize.toFloat() / drawableWidth)
-            }
+            val multipleFactor =
+              if (drawableHeight >= drawableWidth) {
+                // If height is greater then the width, multipleFactor value is determined by height.
+                (maximumImageSize.toFloat() / drawableHeight)
+              } else {
+                // If height is greater then the width, multipleFactor value is determined by width.
+                (maximumImageSize.toFloat() / drawableWidth)
+              }
             drawableHeight *= multipleFactor
             drawableWidth *= multipleFactor
           }
@@ -319,28 +335,32 @@ class UrlImageParser private constructor(
           drawableWidth -= maxContentItemPadding
         }
 
-        val drawableLeft = if (imageCenterAlign && !isRTLMode()) {
-          calculateInitialMargin(maxAvailableWidth, drawableWidth)
-        } else {
-          0f
-        }
+        val drawableLeft =
+          if (imageCenterAlign && !isRTLMode()) {
+            calculateInitialMargin(maxAvailableWidth, drawableWidth)
+          } else {
+            0f
+          }
 
         val drawableTop = 0f
         val drawableRight = drawableLeft + drawableWidth
         val drawableBottom = drawableTop + drawableHeight
         return Rect(
-          drawableLeft.toInt(), drawableTop.toInt(), drawableRight.toInt(), drawableBottom.toInt()
+          drawableLeft.toInt(),
+          drawableTop.toInt(),
+          drawableRight.toInt(),
+          drawableBottom.toInt(),
         )
       }
 
       /** A [BlockImageTarget] used to load & arrange SVGs. */
       internal class SvgTarget(
-        targetConfiguration: TargetConfiguration
+        targetConfiguration: TargetConfiguration,
       ) : BlockImageTarget<BlockPictureDrawable, BlockPictureDrawable>(
-        targetConfiguration, autoResizeImage = true
-      ) {
-        override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable =
-          resource
+          targetConfiguration,
+          autoResizeImage = true,
+        ) {
+        override fun retrieveDrawable(resource: BlockPictureDrawable): BlockPictureDrawable = resource
 
         companion object {
           /** Returns a new [SvgTarget] for the specified configuration. */
@@ -351,16 +371,16 @@ class UrlImageParser private constructor(
       /** A [BlockImageTarget] used to load & arrange bitmaps. */
       internal class BitmapTarget(
         targetConfiguration: TargetConfiguration,
-        autoResizeImage: Boolean
+        autoResizeImage: Boolean,
       ) : BlockImageTarget<Bitmap, BitmapDrawable>(targetConfiguration, autoResizeImage) {
-        override fun retrieveDrawable(resource: Bitmap): BitmapDrawable {
-          return BitmapDrawable(context.resources, resource)
-        }
+        override fun retrieveDrawable(resource: Bitmap): BitmapDrawable = BitmapDrawable(context.resources, resource)
 
         companion object {
           /** Returns a new [BitmapTarget] for the specified configuration. */
-          fun create(targetConfiguration: TargetConfiguration, autoResizeImage: Boolean = true) =
-            BitmapTarget(targetConfiguration, autoResizeImage)
+          fun create(
+            targetConfiguration: TargetConfiguration,
+            autoResizeImage: Boolean = true,
+          ) = BitmapTarget(targetConfiguration, autoResizeImage)
         }
       }
     }
@@ -381,7 +401,7 @@ class UrlImageParser private constructor(
         context: Context,
         drawable: D,
         viewWidth: Int,
-        padding: Rect
+        padding: Rect,
       ): Rect {
         computeDimensions(drawable, htmlContentTextView)
         // Note that the original size is used here since inline images should be sized based on the
@@ -391,29 +411,25 @@ class UrlImageParser private constructor(
 
       companion object {
         /** Returns a new [InlineTextImage] for the specified SVG configuration. */
-        fun createForSvg(
-          targetConfiguration: TargetConfiguration
-        ): InlineTextImage<TextPictureDrawable, TextPictureDrawable> {
-          return InlineTextImage(
+        fun createForSvg(targetConfiguration: TargetConfiguration): InlineTextImage<TextPictureDrawable, TextPictureDrawable> =
+          InlineTextImage(
             targetConfiguration,
             computeDrawable = { it },
             computeDimensions = { drawable, textView ->
               drawable.computeTextPicture(textView.paint)
-            }
+            },
           )
-        }
 
         /** Returns a new [InlineTextImage] for the specified math configuration. */
         fun createForMath(
           applicationContext: Context,
-          targetConfiguration: TargetConfiguration
-        ): InlineTextImage<Bitmap, Drawable> {
-          return InlineTextImage(
+          targetConfiguration: TargetConfiguration,
+        ): InlineTextImage<Bitmap, Drawable> =
+          InlineTextImage(
             targetConfiguration,
             computeDrawable = { BitmapDrawable(applicationContext.resources, it) },
-            computeDimensions = { _, _ -> }
+            computeDimensions = { _, _ -> },
           )
-        }
       }
     }
 
@@ -434,7 +450,7 @@ class UrlImageParser private constructor(
       val htmlContentTextView: TextView,
       val imageCenterAlign: Boolean,
       val proxyDrawable: ProxyDrawable,
-      val oppiaLocalImageSpaceConversionFactor: Float
+      val oppiaLocalImageSpaceConversionFactor: Float,
     )
   }
 
@@ -446,7 +462,10 @@ class UrlImageParser private constructor(
     private var drawable: Drawable? = null
 
     /** Initializes the drawable with the specified root [Drawable] and [bounds]. */
-    fun initialize(drawable: Drawable, bounds: Rect) {
+    fun initialize(
+      drawable: Drawable,
+      bounds: Rect,
+    ) {
       this.drawable = drawable
       this.bounds = bounds
     }
@@ -474,53 +493,57 @@ class UrlImageParser private constructor(
   }
 
   /** Factory to create new [UrlImageParser]s. This is injectable in any component. */
-  class Factory @Inject constructor(
-    private val context: Context,
-    @DefaultGcsPrefix private val gcsPrefix: String,
-    @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
-    private val imageLoader: ImageLoader,
-    private val consoleLogger: ConsoleLogger,
-    private val machineLocale: OppiaLocale.MachineLocale
-  ) {
-    /**
-     * Creates a new [UrlImageParser] based on the specified settings.
-     *
-     * @param htmlContentTextView the [TextView] that will contain [Drawable]s loaded by the
-     *     returned [UrlImageParser]. The [TextView]'s paint and size settings will affect the
-     *     drawable (which means text resizing or other layout changes may cause slight "jittering"
-     *     effects as images are automatically adjusted in subsequent layout & draw steps after the
-     *     [TextView] changes).
-     * @param gcsResourceName the GCS resource bucket that should be used when loading images
-     * @param entityType the entity type corresponding to loaded images (such as explorations)
-     * @param entityId the ID of the entity for retrieving images (such as an exploration ID)
-     * @param imageCenterAlign whether to center-align block images within the [TextView]
-     * @return the new [UrlImageParser] configured with the provided parameters
-     */
-    fun create(
-      htmlContentTextView: TextView,
-      gcsResourceName: String,
-      entityType: String,
-      entityId: String,
-      imageCenterAlign: Boolean
-    ): UrlImageParser {
-      return UrlImageParser(
-        context,
-        gcsPrefix,
-        gcsResourceName,
-        imageDownloadUrlTemplate,
-        htmlContentTextView,
-        entityType,
-        entityId,
-        imageCenterAlign,
-        imageLoader,
-        consoleLogger,
-        machineLocale
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val context: Context,
+      @DefaultGcsPrefix private val gcsPrefix: String,
+      @ImageDownloadUrlTemplate private val imageDownloadUrlTemplate: String,
+      private val imageLoader: ImageLoader,
+      private val consoleLogger: ConsoleLogger,
+      private val machineLocale: OppiaLocale.MachineLocale,
+    ) {
+      /**
+       * Creates a new [UrlImageParser] based on the specified settings.
+       *
+       * @param htmlContentTextView the [TextView] that will contain [Drawable]s loaded by the
+       *     returned [UrlImageParser]. The [TextView]'s paint and size settings will affect the
+       *     drawable (which means text resizing or other layout changes may cause slight "jittering"
+       *     effects as images are automatically adjusted in subsequent layout & draw steps after the
+       *     [TextView] changes).
+       * @param gcsResourceName the GCS resource bucket that should be used when loading images
+       * @param entityType the entity type corresponding to loaded images (such as explorations)
+       * @param entityId the ID of the entity for retrieving images (such as an exploration ID)
+       * @param imageCenterAlign whether to center-align block images within the [TextView]
+       * @return the new [UrlImageParser] configured with the provided parameters
+       */
+      fun create(
+        htmlContentTextView: TextView,
+        gcsResourceName: String,
+        entityType: String,
+        entityId: String,
+        imageCenterAlign: Boolean,
+      ): UrlImageParser =
+        UrlImageParser(
+          context,
+          gcsPrefix,
+          gcsResourceName,
+          imageDownloadUrlTemplate,
+          htmlContentTextView,
+          entityType,
+          entityId,
+          imageCenterAlign,
+          imageLoader,
+          consoleLogger,
+          machineLocale,
+        )
     }
-  }
 }
 
-private fun calculateInitialMargin(availableAreaWidth: Int, drawableWidth: Float): Float {
+private fun calculateInitialMargin(
+  availableAreaWidth: Int,
+  drawableWidth: Float,
+): Float {
   val margin = (availableAreaWidth - drawableWidth) / 2
   return margin.coerceAtLeast(0f)
 }
@@ -533,18 +556,19 @@ private fun TextView.width(computeWidthOnGlobalLayout: (Int) -> Unit) {
     // will not be called because the view is created before the request to load images is
     // processed, so calling requestLayout() will ensure that onGlobalLayoutListener is called.
     requestLayout()
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-      override fun onGlobalLayout() {
-        viewTreeObserver.removeOnGlobalLayoutListener(this)
-        computeWidthOnGlobalLayout(width)
-      }
-    })
+    viewTreeObserver.addOnGlobalLayoutListener(
+      object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+          viewTreeObserver.removeOnGlobalLayoutListener(this)
+          computeWidthOnGlobalLayout(width)
+        }
+      },
+    )
   } else {
     computeWidthOnGlobalLayout(width)
   }
 }
 
-private fun Context.dpToPx(dp: Float): Float =
-  TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+private fun Context.dpToPx(dp: Float): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 
 private fun DisplayMetrics.computeDiagonalPpi() = sqrt(xdpi * xdpi + ydpi * ydpi)

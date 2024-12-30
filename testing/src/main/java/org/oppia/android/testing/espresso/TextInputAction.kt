@@ -10,7 +10,6 @@ import org.hamcrest.Description
  * infrastructure-specific way.
  */
 class TextInputAction {
-
   companion object {
     /**
      * Checks that the TextInputLayout view has the [expectedErrorText] error text.
@@ -18,28 +17,23 @@ class TextInputAction {
      * @return a [BoundedMatcher] that matches the [expectedErrorText] with the TextInputLayout's
      *     error text
      */
-    fun hasErrorText(expectedErrorText: String): BoundedMatcher<View, TextInputLayout> {
-      return ErrorTextExistsMatcher(expectedErrorText)
-    }
+    fun hasErrorText(expectedErrorText: String): BoundedMatcher<View, TextInputLayout> = ErrorTextExistsMatcher(expectedErrorText)
 
     /**
      * Checks that the TextInputLayout view has an empty error text.
      *
      * @return a [BoundedMatcher] that matches if error text is null or empty
      */
-    fun hasNoErrorText(): BoundedMatcher<View, TextInputLayout> {
-      return ErrorTextDoesNotExistMatcher()
-    }
+    fun hasNoErrorText(): BoundedMatcher<View, TextInputLayout> = ErrorTextDoesNotExistMatcher()
 
     /**
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to match the
      * [expectedErrorText] with the TextInputLayout's error text.
      */
-    private class ErrorTextExistsMatcher(private val expectedErrorText: String) :
-      BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
-        return textInputLayout.error == expectedErrorText
-      }
+    private class ErrorTextExistsMatcher(
+      private val expectedErrorText: String,
+    ) : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean = textInputLayout.error == expectedErrorText
 
       override fun describeTo(description: Description) {
         description.appendText("The expected error text is '$expectedErrorText'")
@@ -50,11 +44,8 @@ class TextInputAction {
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to check if the
      * error text is null of empty.
      */
-    private class ErrorTextDoesNotExistMatcher :
-      BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
-        return textInputLayout.error.isNullOrEmpty()
-      }
+    private class ErrorTextDoesNotExistMatcher : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean = textInputLayout.error.isNullOrEmpty()
 
       override fun describeTo(description: Description) {
         description.appendText("There is no error text.")
@@ -67,20 +58,16 @@ class TextInputAction {
      * @return a [BoundedMatcher] that matches the [expectedHelperText] with the TextInputLayout's
      *     helper text
      */
-    fun hasHelperText(expectedHelperText: String): BoundedMatcher<View, TextInputLayout> {
-      return HelperTextExistsMatcher(expectedHelperText)
-    }
+    fun hasHelperText(expectedHelperText: String): BoundedMatcher<View, TextInputLayout> = HelperTextExistsMatcher(expectedHelperText)
 
     /**
      * Class which inherits [BoundedMatcher] and overrides [matchesSafely] function to match the
      * [expectedHelperText] with the TextInputLayout's helper text.
      */
     private class HelperTextExistsMatcher(
-      private val expectedHelperText: String
+      private val expectedHelperText: String,
     ) : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean {
-        return textInputLayout.helperText == expectedHelperText
-      }
+      override fun matchesSafely(textInputLayout: TextInputLayout): Boolean = textInputLayout.helperText == expectedHelperText
 
       override fun describeTo(description: Description) {
         description.appendText("The expected helper text is '$expectedHelperText'")

@@ -69,7 +69,6 @@ private const val TEST_STARTUP_LATENCY_IN_MILLISECONDS = 3000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLoggerTest.TestApplication::class)
 class PerformanceMetricsLoggerTest {
-
   @Inject
   lateinit var performanceMetricsLogger: PerformanceMetricsLogger
 
@@ -146,7 +145,7 @@ class PerformanceMetricsLoggerTest {
     assertThat(loggedEvent.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(loggedEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(STORAGE_USAGE_METRIC)
     assertThat(loggedEvent.loggableMetric.storageUsageMetric.storageUsageBytes).isEqualTo(
-      storageUsage
+      storageUsage,
     )
     assertThat(loggedEvent.memoryTier).isEqualTo(memoryTier)
     assertThat(loggedEvent.storageTier).isEqualTo(storageTier)
@@ -181,7 +180,7 @@ class PerformanceMetricsLoggerTest {
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logStartupLatency(
       TEST_STARTUP_LATENCY_IN_MILLISECONDS,
-      SCREEN_NAME_UNSPECIFIED
+      SCREEN_NAME_UNSPECIFIED,
     )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -207,7 +206,7 @@ class PerformanceMetricsLoggerTest {
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
     performanceMetricsLogger.logCpuUsage(
       SCREEN_NAME_UNSPECIFIED,
-      TEST_CPU_USAGE
+      TEST_CPU_USAGE,
     )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -290,9 +289,7 @@ class PerformanceMetricsLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -311,7 +308,6 @@ class PerformanceMetricsLoggerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
@@ -324,9 +320,7 @@ class PerformanceMetricsLoggerTest {
   @Module
   interface TestPerformanceMetricsModule {
     @Binds
-    fun bindPerformanceMetricsUtils(
-      fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
-    ): PerformanceMetricsAssessor
+    fun bindPerformanceMetricsUtils(fakePerformanceMetricAssessor: FakePerformanceMetricAssessor): PerformanceMetricsAssessor
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -338,23 +332,27 @@ class PerformanceMetricsLoggerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class
-    ]
+      ApplicationLifecycleModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(performanceMetricsLoggerTest: PerformanceMetricsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsLoggerTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsLoggerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

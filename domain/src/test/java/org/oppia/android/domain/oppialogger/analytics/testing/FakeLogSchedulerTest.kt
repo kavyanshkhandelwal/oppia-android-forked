@@ -56,7 +56,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FakeLogSchedulerTest.TestApplication::class)
 class FakeLogSchedulerTest {
-
   @Inject
   lateinit var fakeLogScheduler: FakeLogScheduler
 
@@ -69,10 +68,12 @@ class FakeLogSchedulerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(workerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(workerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -80,18 +81,22 @@ class FakeLogSchedulerTest {
   fun testFakeScheduler_scheduleStorageLogging_verifyScheduling() {
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.STORAGE_USAGE_WORKER,
+        ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
-      .setInputData(inputData)
-      .build()
+    val request =
+      PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+        .setInputData(inputData)
+        .build()
 
     fakeLogScheduler.enqueueWorkRequestForStorageUsage(
       workManager,
-      request
+      request,
     )
 
     assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId())
@@ -102,18 +107,22 @@ class FakeLogSchedulerTest {
   fun testFakeScheduler_schedulePeriodicBackgroundMetricsLogging_verifyScheduling() {
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER,
+        ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
-      .setInputData(inputData)
-      .build()
+    val request =
+      PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+        .setInputData(inputData)
+        .build()
 
     fakeLogScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
       workManager,
-      request
+      request,
     )
 
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId())
@@ -124,18 +133,22 @@ class FakeLogSchedulerTest {
   fun testFakeScheduler_schedulePeriodicUiMetricsLogging_verifyScheduling() {
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER,
+        ).build()
 
-    val request = PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
-      .setInputData(inputData)
-      .build()
+    val request =
+      PeriodicWorkRequestBuilder<LogUploadWorker>(10, TimeUnit.SECONDS)
+        .setInputData(inputData)
+        .build()
 
     fakeLogScheduler.enqueueWorkRequestForPeriodicUiMetrics(
       workManager,
-      request
+      request,
     )
 
     assertThat(fakeLogScheduler.getMostRecentPeriodicUiMetricLoggingRequestId())
@@ -158,7 +171,6 @@ class FakeLogSchedulerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -182,23 +194,27 @@ class FakeLogSchedulerTest {
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class
-    ]
+      CpuPerformanceSnapshotterModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: FakeLogSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeLogSchedulerTest_TestApplicationComponent.builder()
+      DaggerFakeLogSchedulerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

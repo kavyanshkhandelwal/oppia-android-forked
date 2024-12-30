@@ -17,93 +17,141 @@ import java.lang.ArithmeticException
 @LooperMode(LooperMode.Mode.PAUSED)
 class FractionExtensionsTest {
   private companion object {
-    private val ZERO_FRACTION = Fraction.newBuilder().apply {
-      denominator = 1
-    }.build()
+    private val ZERO_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          denominator = 1
+        }.build()
 
-    private val NEGATIVE_ZERO_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      denominator = 1
-    }.build()
+    private val NEGATIVE_ZERO_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          denominator = 1
+        }.build()
 
-    private val ONE_FRACTION = Fraction.newBuilder().apply {
-      wholeNumber = 1
-      denominator = 1
-    }.build()
+    private val ONE_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 1
+          denominator = 1
+        }.build()
 
-    private val NEGATIVE_ONE_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      wholeNumber = 1
-      denominator = 1
-    }.build()
+    private val NEGATIVE_ONE_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          wholeNumber = 1
+          denominator = 1
+        }.build()
 
-    private val ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
-    }.build()
+    private val ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 2
+        }.build()
 
-    private val NEGATIVE_ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 1
-      denominator = 2
-    }.build()
+    private val NEGATIVE_ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 1
+          denominator = 2
+        }.build()
 
-    private val ONE_THIRD_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 3
-    }.build()
+    private val ONE_THIRD_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 3
+        }.build()
 
-    private val NEGATIVE_ONE_THIRD_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 1
-      denominator = 3
-    }.build()
+    private val NEGATIVE_ONE_THIRD_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 1
+          denominator = 3
+        }.build()
 
-    private val ONE_AND_ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      wholeNumber = 1
-      numerator = 1
-      denominator = 2
-    }.build()
+    private val ONE_AND_ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 1
+          numerator = 1
+          denominator = 2
+        }.build()
 
-    private val NEGATIVE_ONE_AND_ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      wholeNumber = 1
-      numerator = 1
-      denominator = 2
-    }.build()
+    private val NEGATIVE_ONE_AND_ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          wholeNumber = 1
+          numerator = 1
+          denominator = 2
+        }.build()
 
-    private val THREE_HALVES_FRACTION = Fraction.newBuilder().apply {
-      numerator = 3
-      denominator = 2
-    }.build()
+    private val THREE_HALVES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 3
+          denominator = 2
+        }.build()
 
-    private val NEGATIVE_THREE_HALVES_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 3
-      denominator = 2
-    }.build()
+    private val NEGATIVE_THREE_HALVES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 3
+          denominator = 2
+        }.build()
 
-    private val THREE_ONES_FRACTION = Fraction.newBuilder().apply {
-      numerator = 3
-      denominator = 1
-    }.build()
+    private val THREE_ONES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 3
+          denominator = 1
+        }.build()
 
-    private val NEGATIVE_THREE_ONES_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 3
-      denominator = 1
-    }.build()
+    private val NEGATIVE_THREE_ONES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 3
+          denominator = 1
+        }.build()
 
-    private val TWO_FRACTION = Fraction.newBuilder().apply {
-      wholeNumber = 2
-      denominator = 1
-    }.build()
+    private val TWO_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 2
+          denominator = 1
+        }.build()
 
-    private val NEGATIVE_TWO_FRACTION = Fraction.newBuilder().apply {
-      isNegative = true
-      wholeNumber = 2
-      denominator = 1
-    }.build()
+    private val NEGATIVE_TWO_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          wholeNumber = 2
+          denominator = 1
+        }.build()
   }
 
   @Test
@@ -410,10 +458,13 @@ class FractionExtensionsTest {
 
   @Test
   fun testToSimplestForm_sixFourths_returnsThreeHalvesFraction() {
-    val sixHalvesFraction = Fraction.newBuilder().apply {
-      numerator = 6
-      denominator = 4
-    }.build()
+    val sixHalvesFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 6
+          denominator = 4
+        }.build()
 
     val result = sixHalvesFraction.toSimplestForm()
 
@@ -425,11 +476,14 @@ class FractionExtensionsTest {
 
   @Test
   fun testToSimplestForm_largeNegativeImproperFraction_reducesToSimplestImproperFraction() {
-    val largeImproperFraction = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 1650
-      denominator = 209
-    }.build()
+    val largeImproperFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 1650
+          denominator = 209
+        }.build()
 
     val result = largeImproperFraction.toSimplestForm()
 
@@ -444,7 +498,7 @@ class FractionExtensionsTest {
     val zeroDenominatorFraction = Fraction.getDefaultInstance()
 
     // Converting to simplest form results in a divide by zero in this case.
-    assertThrows<ArithmeticException>() { zeroDenominatorFraction.toSimplestForm() }
+    assertThrows<ArithmeticException> { zeroDenominatorFraction.toSimplestForm() }
   }
 
   @Test
@@ -497,11 +551,14 @@ class FractionExtensionsTest {
 
   @Test
   fun testToProperForm_largeNegativeImproperFraction_reducesToSimplestProperFraction() {
-    val largeImproperFraction = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 1650
-      denominator = 209
-    }.build()
+    val largeImproperFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 1650
+          denominator = 209
+        }.build()
 
     val result = largeImproperFraction.toProperForm()
 
@@ -518,7 +575,7 @@ class FractionExtensionsTest {
     val zeroDenominatorFraction = Fraction.getDefaultInstance()
 
     // Converting to simplest form results in a divide by zero in this case.
-    assertThrows<ArithmeticException>() { zeroDenominatorFraction.toProperForm() }
+    assertThrows<ArithmeticException> { zeroDenominatorFraction.toProperForm() }
   }
 
   @Test
@@ -573,12 +630,15 @@ class FractionExtensionsTest {
 
   @Test
   fun testToImproperForm_negativeOneAndTwoThirds_returnsNegativeFiveThirdsFraction() {
-    val negativeOneAndTwoThirds = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 2
-      denominator = 3
-      wholeNumber = 1
-    }.build()
+    val negativeOneAndTwoThirds =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 2
+          denominator = 3
+          wholeNumber = 1
+        }.build()
 
     val result = negativeOneAndTwoThirds.toImproperForm()
 
@@ -590,12 +650,15 @@ class FractionExtensionsTest {
 
   @Test
   fun testToImproperForm_largeSimpleFormFraction_returnsLargeImproperFraction() {
-    val negativeOneAndTwoThirds = Fraction.newBuilder().apply {
-      isNegative = true
-      numerator = 17
-      denominator = 19
-      wholeNumber = 7
-    }.build()
+    val negativeOneAndTwoThirds =
+      Fraction
+        .newBuilder()
+        .apply {
+          isNegative = true
+          numerator = 17
+          denominator = 19
+          wholeNumber = 7
+        }.build()
 
     val result = negativeOneAndTwoThirds.toImproperForm()
 
@@ -744,14 +807,20 @@ class FractionExtensionsTest {
 
   @Test
   fun testPlus_twentyFiveThirtiethsAndFiveSevenths_returnsOneAndTwentyThreeFortyTwos() {
-    val lhsFraction = Fraction.newBuilder().apply {
-      numerator = 25
-      denominator = 30
-    }.build()
-    val rhsFraction = Fraction.newBuilder().apply {
-      numerator = 5
-      denominator = 7
-    }.build()
+    val lhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 25
+          denominator = 30
+        }.build()
+    val rhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 5
+          denominator = 7
+        }.build()
 
     val result = lhsFraction + rhsFraction
 
@@ -873,14 +942,20 @@ class FractionExtensionsTest {
 
   @Test
   fun testMinus_twentyFiveThirtiethsAndTwentyThreeSevenths_returnsNegTwoAndNineteenFortyTwos() {
-    val lhsFraction = Fraction.newBuilder().apply {
-      numerator = 25
-      denominator = 30
-    }.build()
-    val rhsFraction = Fraction.newBuilder().apply {
-      numerator = 23
-      denominator = 7
-    }.build()
+    val lhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 25
+          denominator = 30
+        }.build()
+    val rhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 23
+          denominator = 7
+        }.build()
 
     val result = lhsFraction - rhsFraction
 
@@ -999,14 +1074,20 @@ class FractionExtensionsTest {
 
   @Test
   fun testTimes_sevenHalvesAndTwentyFifteenths_returnsFourAndTwoThirds() {
-    val lhsFraction = Fraction.newBuilder().apply {
-      numerator = 7
-      denominator = 2
-    }.build()
-    val rhsFraction = Fraction.newBuilder().apply {
-      numerator = 20
-      denominator = 15
-    }.build()
+    val lhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 7
+          denominator = 2
+        }.build()
+    val rhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 20
+          denominator = 15
+        }.build()
 
     val result = lhsFraction * rhsFraction
 
@@ -1062,7 +1143,7 @@ class FractionExtensionsTest {
     val lhsFraction = ZERO_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows<Exception>() { lhsFraction / rhsFraction }
+    assertThrows<Exception> { lhsFraction / rhsFraction }
   }
 
   @Test
@@ -1070,7 +1151,7 @@ class FractionExtensionsTest {
     val lhsFraction = ONE_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows<Exception>() { lhsFraction / rhsFraction }
+    assertThrows<Exception> { lhsFraction / rhsFraction }
   }
 
   @Test
@@ -1078,7 +1159,7 @@ class FractionExtensionsTest {
     val lhsFraction = TWO_FRACTION
     val rhsFraction = ZERO_FRACTION
 
-    assertThrows<Exception>() { lhsFraction / rhsFraction }
+    assertThrows<Exception> { lhsFraction / rhsFraction }
   }
 
   @Test
@@ -1118,14 +1199,20 @@ class FractionExtensionsTest {
 
   @Test
   fun testDivides_fourThirdsAndTenThirtyFifths_returnsFourAndTwoThirds() {
-    val lhsFraction = Fraction.newBuilder().apply {
-      numerator = 4
-      denominator = 3
-    }.build()
-    val rhsFraction = Fraction.newBuilder().apply {
-      numerator = 10
-      denominator = 35
-    }.build()
+    val lhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 4
+          denominator = 3
+        }.build()
+    val rhsFraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 10
+          denominator = 35
+        }.build()
 
     val result = lhsFraction / rhsFraction
 
@@ -1325,10 +1412,13 @@ class FractionExtensionsTest {
 
   @Test
   fun testPow_fourSeventhsCubed_returnsSixtyFourThreeHundredFortyThirds() {
-    val fraction = Fraction.newBuilder().apply {
-      numerator = 4
-      denominator = 7
-    }.build()
+    val fraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 4
+          denominator = 7
+        }.build()
 
     val result = fraction pow 3
 
@@ -1341,10 +1431,13 @@ class FractionExtensionsTest {
 
   @Test
   fun testPow_twentyOneTwelfthsToNegativeThree_returnsFiveAndTwentyThreeSixtyFourths() {
-    val fraction = Fraction.newBuilder().apply {
-      numerator = 12
-      denominator = 21
-    }.build()
+    val fraction =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 12
+          denominator = 21
+        }.build()
 
     val result = fraction pow -3
 

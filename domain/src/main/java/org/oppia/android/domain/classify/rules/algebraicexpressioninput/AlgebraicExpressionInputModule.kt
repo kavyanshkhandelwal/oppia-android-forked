@@ -17,7 +17,7 @@ class AlgebraicExpressionInputModule {
   @StringKey("MatchesExactlyWith")
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputMatchesExactlyWithRuleClassifier(
-    classifierProvider: AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider
+    classifierProvider: AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -25,8 +25,7 @@ class AlgebraicExpressionInputModule {
   @StringKey("MatchesUpToTrivialManipulations")
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifier(
-    classifierProvider:
-      AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+    classifierProvider: AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -34,6 +33,6 @@ class AlgebraicExpressionInputModule {
   @StringKey("IsEquivalentTo")
   @AlgebraicExpressionInputRules
   internal fun provideAlgebraicExpressionInputIsEquivalentToRuleClassifier(
-    classifierProvider: AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider
+    classifierProvider: AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

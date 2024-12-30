@@ -72,10 +72,12 @@ class OptionsActivity :
     fun createOptionsActivity(
       context: Context,
       profileId: ProfileId?,
-      isFromNavigationDrawer: Boolean
+      isFromNavigationDrawer: Boolean,
     ): Intent {
       val args =
-        OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(isFromNavigationDrawer)
+        OptionsActivityParams
+          .newBuilder()
+          .setIsFromNavigationDrawer(isFromNavigationDrawer)
           .build()
       return Intent(context, OptionsActivity::class.java).apply {
         putProtoExtra(OPTIONS_ACTIVITY_PARAMS_KEY, args)
@@ -90,10 +92,11 @@ class OptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      OPTIONS_ACTIVITY_PARAMS_KEY,
-      OptionsActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        OPTIONS_ACTIVITY_PARAMS_KEY,
+        OptionsActivityParams.getDefaultInstance(),
+      )
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
     profileId = intent.extractCurrentUserProfileId()
     internalProfileId = profileId.internalId
@@ -103,14 +106,15 @@ class OptionsActivity :
     val stateArgs =
       savedInstanceState?.getProto(
         OPTIONS_ACTIVITY_STATE_KEY,
-        OptionsActivityStateBundle.getDefaultInstance()
+        OptionsActivityStateBundle.getDefaultInstance(),
       )
 
-    selectedFragment = if (savedInstanceState == null) {
-      READING_TEXT_SIZE_FRAGMENT
-    } else {
-      stateArgs?.selectedFragment as String
-    }
+    selectedFragment =
+      if (savedInstanceState == null) {
+        READING_TEXT_SIZE_FRAGMENT
+      } else {
+        stateArgs?.selectedFragment as String
+      }
     val extraOptionsTitle =
       stateArgs?.selectedOptionsTitle
     optionActivityPresenter.handleOnCreate(
@@ -118,36 +122,42 @@ class OptionsActivity :
       extraOptionsTitle,
       isFirstOpen,
       selectedFragment,
-      internalProfileId
+      internalProfileId,
     )
     title = resourceHandler.getStringInLocale(R.string.menu_options)
 
-    readingTextSizeLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == RESULT_OK && result.data != null) {
-        val textSizeResults = result.data?.getProtoExtra(
-          MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
-          ReadingTextSizeActivityResultBundle.getDefaultInstance()
-        )
-        if (textSizeResults != null) {
-          optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+    readingTextSizeLauncher =
+      registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+      ) { result ->
+        if (result.resultCode == RESULT_OK && result.data != null) {
+          val textSizeResults =
+            result.data?.getProtoExtra(
+              MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
+              ReadingTextSizeActivityResultBundle.getDefaultInstance(),
+            )
+          if (textSizeResults != null) {
+            optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
+          }
         }
       }
-    }
 
-    audioLanguageLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == RESULT_OK && result.data != null) {
-        val audioLanguage = result.data?.getProtoExtra(
-          MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
-        )?.audioLanguage
-        if (audioLanguage != null) {
-          optionActivityPresenter.updateAudioLanguage(audioLanguage)
+    audioLanguageLauncher =
+      registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+      ) { result ->
+        if (result.resultCode == RESULT_OK && result.data != null) {
+          val audioLanguage =
+            result.data
+              ?.getProtoExtra(
+                MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY,
+                AudioLanguageActivityResultBundle.getDefaultInstance(),
+              )?.audioLanguage
+          if (audioLanguage != null) {
+            optionActivityPresenter.updateAudioLanguage(audioLanguage)
+          }
         }
       }
-    }
   }
 
   override fun routeAppLanguageList(oppiaLanguage: OppiaLanguage) {
@@ -155,8 +165,8 @@ class OptionsActivity :
       AppLanguageActivity.createAppLanguageActivityIntent(
         this,
         oppiaLanguage,
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     )
   }
 
@@ -168,14 +178,14 @@ class OptionsActivity :
 
   override fun routeReadingTextSize(readingTextSize: ReadingTextSize) {
     readingTextSizeLauncher.launch(
-      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize)
+      ReadingTextSizeActivity.createReadingTextSizeActivityIntent(this, readingTextSize),
     )
   }
 
   override fun loadReadingTextSizeFragment(textSize: ReadingTextSize) {
     selectedFragment = READING_TEXT_SIZE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.reading_text_size)
+      resourceHandler.getStringInLocale(R.string.reading_text_size),
     )
     optionActivityPresenter.loadReadingTextSizeFragment(textSize)
   }
@@ -183,7 +193,7 @@ class OptionsActivity :
   override fun loadAppLanguageFragment(oppiaLanguage: OppiaLanguage) {
     selectedFragment = APP_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.app_language)
+      resourceHandler.getStringInLocale(R.string.app_language),
     )
     optionActivityPresenter.loadAppLanguageFragment(oppiaLanguage)
   }
@@ -191,7 +201,7 @@ class OptionsActivity :
   override fun loadAudioLanguageFragment(audioLanguage: AudioLanguage) {
     selectedFragment = AUDIO_LANGUAGE_FRAGMENT
     optionActivityPresenter.setExtraOptionTitle(
-      resourceHandler.getStringInLocale(R.string.audio_language)
+      resourceHandler.getStringInLocale(R.string.audio_language),
     )
     optionActivityPresenter.loadAudioLanguageFragment(audioLanguage, profileId)
   }
@@ -199,12 +209,15 @@ class OptionsActivity :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
-    val args = OptionsActivityStateBundle.newBuilder().apply {
-      if (titleTextView != null) {
-        selectedOptionsTitle = titleTextView.text.toString()
-      }
-      selectedFragment = this@OptionsActivity.selectedFragment
-    }.build()
+    val args =
+      OptionsActivityStateBundle
+        .newBuilder()
+        .apply {
+          if (titleTextView != null) {
+            selectedOptionsTitle = titleTextView.text.toString()
+          }
+          selectedFragment = this@OptionsActivity.selectedFragment
+        }.build()
     outState.putProto(OPTIONS_ACTIVITY_STATE_KEY, args)
   }
 }

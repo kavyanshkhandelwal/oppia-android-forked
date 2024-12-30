@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 /** Test Activity used for testing [DragAndDropItemFacilitator] functionality. */
 class DragDropTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var dragDropTestActivityPresenter: DragDropTestActivityPresenter
 

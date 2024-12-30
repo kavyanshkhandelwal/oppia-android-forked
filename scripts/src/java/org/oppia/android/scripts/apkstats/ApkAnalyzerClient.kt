@@ -18,20 +18,20 @@ import javax.swing.tree.DefaultMutableTreeNode
  *
  * @property aapt2Client the [Aapt2Client] needed to access aapt2 by some routines
  */
-class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
+class ApkAnalyzerClient(
+  private val aapt2Client: Aapt2Client,
+) {
   private val apkSizeCalculator by lazy { ApkSizeCalculator.getDefault() }
 
   // CLI reference: https://developer.android.com/studio/command-line/apkanalyzer.
 
   /** Returns the file size of the specified APK as similarly reported by apkanalyzer. */
-  fun computeFileSize(inputApkPath: String): Long =
-    apkSizeCalculator.getFullApkRawSize(File(inputApkPath).toPath())
+  fun computeFileSize(inputApkPath: String): Long = apkSizeCalculator.getFullApkRawSize(File(inputApkPath).toPath())
 
   /**
    * Returns the estimated download size of the specified APK as similarly reported by apkanalyzer.
    */
-  fun computeDownloadSize(inputApkPath: String): Long =
-    apkSizeCalculator.getFullApkDownloadSize(File(inputApkPath).toPath())
+  fun computeDownloadSize(inputApkPath: String): Long = apkSizeCalculator.getFullApkDownloadSize(File(inputApkPath).toPath())
 
   /**
    * Returns the list of required features of the specified APK as similarly reported by
@@ -47,29 +47,30 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
    * entry of the returned list represents a single line (the list is in the order of the comparison
    * output).
    */
-  fun compare(inputApkPath1: String, inputApkPath2: String): List<String> {
-    return Archives.open(File(inputApkPath1).toPath()).use { apkArchive1 ->
+  fun compare(
+    inputApkPath1: String,
+    inputApkPath2: String,
+  ): List<String> =
+    Archives.open(File(inputApkPath1).toPath()).use { apkArchive1 ->
       Archives.open(File(inputApkPath2).toPath()).use { apkArchive2 ->
         walkParseTree(ApkFileByFileDiffParser.createTreeNode(apkArchive1, apkArchive2))
       }
     }
-  }
 
   /**
    * Returns the map of dex files to method counts contained within the specified APK file, as
    * similarly reported by apkanalyzer.
    */
-  fun computeDexReferencesList(inputApkPath: String): Map<String, Int> {
-    return collectZipEntries(inputApkPath) {
+  fun computeDexReferencesList(inputApkPath: String): Map<String, Int> =
+    collectZipEntries(inputApkPath) {
       it.endsWith(".dex")
     }.mapValues { (_, dexFileContents) ->
       DexFileStats.create(listOf(DexFiles.getDexFile(dexFileContents))).referencedMethodCount
     }
-  }
 
   // Based on the apkanalyzer CLI implementation.
-  private fun walkParseTree(node: DefaultMutableTreeNode?): List<String> {
-    return node?.let {
+  private fun walkParseTree(node: DefaultMutableTreeNode?): List<String> =
+    node?.let {
       (node.userObject as? ApkDiffEntry)?.let { entry ->
         val path = entry.path.toString()
         when {
@@ -88,18 +89,17 @@ class ApkAnalyzerClient(private val aapt2Client: Aapt2Client) {
         }
       }
     } ?: listOf()
-  }
 
   private fun collectZipEntries(
     inputZipFile: String,
-    namePredicate: (String) -> Boolean
-  ): Map<String, ByteArray> {
-    return ZipFile(inputZipFile).use { zipFile ->
-      zipFile.entries()
+    namePredicate: (String) -> Boolean,
+  ): Map<String, ByteArray> =
+    ZipFile(inputZipFile).use { zipFile ->
+      zipFile
+        .entries()
         .asSequence()
         .filter { namePredicate(it.name) }
         .associateBy { it.name }
         .mapValues { (_, entry) -> zipFile.getInputStream(entry).readBytes() }
     }
-  }
 }

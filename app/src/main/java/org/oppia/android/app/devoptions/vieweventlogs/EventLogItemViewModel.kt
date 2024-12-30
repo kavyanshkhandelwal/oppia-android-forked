@@ -9,27 +9,32 @@ import org.oppia.android.util.locale.OppiaLocale
 class EventLogItemViewModel(
   val eventLog: EventLog,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
-
   /** Returns the event log timestamp in a human readable format. */
   fun processDateAndTime(): String = resourceHandler.computeDateTimeString(eventLog.timestamp)
 
   /** Returns the event log priority in a human readable format. */
-  fun formatPriorityString(): String = machineLocale.run {
-    // Use the machine locale for capitalization/case changes since this string is only used by
-    // developers.
-    eventLog.priority.name.toMachineLowerCase().capitalizeForMachines()
-  }
+  fun formatPriorityString(): String =
+    machineLocale.run {
+      // Use the machine locale for capitalization/case changes since this string is only used by
+      // developers.
+      eventLog.priority.name
+        .toMachineLowerCase()
+        .capitalizeForMachines()
+    }
 
   /** Returns the event log context in a human readable format. */
-  fun formatContextString(): String = eventLog.context.activityContextCase.name.capitalizeWords()
+  fun formatContextString(): String =
+    eventLog.context.activityContextCase.name
+      .capitalizeWords()
 
-  private fun String.capitalizeWords(): String = machineLocale.run {
-    // Use the machine locale for capitalization/case changes since this string is only used by
-    // developers.
-    this@capitalizeWords.toMachineLowerCase().split("_").joinToString(" ") {
-      it.capitalizeForMachines()
+  private fun String.capitalizeWords(): String =
+    machineLocale.run {
+      // Use the machine locale for capitalization/case changes since this string is only used by
+      // developers.
+      this@capitalizeWords.toMachineLowerCase().split("_").joinToString(" ") {
+        it.capitalizeForMachines()
+      }
     }
-  }
 }

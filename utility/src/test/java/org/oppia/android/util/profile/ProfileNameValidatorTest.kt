@@ -94,7 +94,9 @@ class ProfileNameValidatorTest {
   private fun setUpTestApplicationComponent() {
     DaggerProfileNameValidatorTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Singleton

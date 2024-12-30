@@ -14,17 +14,17 @@ import javax.inject.Inject
 
 /** The activity that will show the license text of a copyright license. */
 class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var licenseTextViewerActivityPresenter: LicenseTextViewerActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY,
-      LicenseTextViewerActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY,
+        LicenseTextViewerActivityParams.getDefaultInstance(),
+      )
     val dependencyIndex = args?.dependencyIndex ?: 0
     val licenseIndex = args?.licenseIndex ?: 0
     licenseTextViewerActivityPresenter.handleOnCreate(dependencyIndex, licenseIndex)
@@ -39,12 +39,15 @@ class LicenseTextViewerActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createLicenseTextViewerActivityIntent(
       context: Context,
       dependencyIndex: Int,
-      licenseIndex: Int
+      licenseIndex: Int,
     ): Intent {
-      val args = LicenseTextViewerActivityParams.newBuilder().apply {
-        this.dependencyIndex = dependencyIndex
-        this.licenseIndex = licenseIndex
-      }.build()
+      val args =
+        LicenseTextViewerActivityParams
+          .newBuilder()
+          .apply {
+            this.dependencyIndex = dependencyIndex
+            this.licenseIndex = licenseIndex
+          }.build()
       return Intent(context, LicenseTextViewerActivity::class.java).apply {
         putProtoExtra(LICENSE_TEXT_VIEWER_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(LICENSE_TEXT_VIEWER_ACTIVITY)

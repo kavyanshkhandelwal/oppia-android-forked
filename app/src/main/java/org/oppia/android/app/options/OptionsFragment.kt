@@ -34,18 +34,21 @@ class OptionsFragment : InjectableFragment() {
     fun newInstance(
       isMultipane: Boolean,
       isFirstOpen: Boolean,
-      selectedFragment: String
+      selectedFragment: String,
     ): OptionsFragment {
-
-      val args = OptionsFragmentArguments.newBuilder().apply {
-        this.isMultipane = isMultipane
-        this.isFirstOpen = isFirstOpen
-        this.selectedFragment = selectedFragment
-      }.build()
+      val args =
+        OptionsFragmentArguments
+          .newBuilder()
+          .apply {
+            this.isMultipane = isMultipane
+            this.isFirstOpen = isFirstOpen
+            this.selectedFragment = selectedFragment
+          }.build()
       return OptionsFragment().apply {
-        arguments = Bundle().apply {
-          putProto(OPTIONS_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(OPTIONS_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -58,14 +61,15 @@ class OptionsFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to OptionsFragment" }
-    val args = arguments.getProto(
-      OPTIONS_FRAGMENT_ARGUMENTS_KEY,
-      OptionsFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        OPTIONS_FRAGMENT_ARGUMENTS_KEY,
+        OptionsFragmentArguments.getDefaultInstance(),
+      )
 
     val isMultipane = args.isMultipane
     val isFirstOpen = args.isFirstOpen
@@ -75,7 +79,7 @@ class OptionsFragment : InjectableFragment() {
       container,
       isMultipane,
       isFirstOpen,
-      selectedFragment
+      selectedFragment,
     )
   }
 

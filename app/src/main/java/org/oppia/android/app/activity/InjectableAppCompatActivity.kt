@@ -12,12 +12,15 @@ import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
+
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
  */
 abstract class InjectableAppCompatActivity :
-  AppCompatActivity(), FragmentComponentFactory, AppLanguageActivityInjectorProvider {
+  AppCompatActivity(),
+  FragmentComponentFactory,
+  AppLanguageActivityInjectorProvider {
   /**
    * The [ActivityComponent] corresponding to this activity. This cannot be used before
    * [attachBaseContext] is called, and can be used to inject lateinit fields in child activities
@@ -26,9 +29,10 @@ abstract class InjectableAppCompatActivity :
   lateinit var activityComponent: ActivityComponent
 
   override fun attachBaseContext(newBase: Context?) {
-    val applicationContext = checkNotNull(newBase?.applicationContext) {
-      "Expected attached Context to have an application context defined."
-    }
+    val applicationContext =
+      checkNotNull(newBase?.applicationContext) {
+        "Expected attached Context to have an application context defined."
+      }
     onInitializeActivityComponent(applicationContext)
     val newConfiguration = onInitializeLocalization(newBase)
     super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
@@ -39,14 +43,21 @@ abstract class InjectableAppCompatActivity :
     super.onCreate(savedInstanceState)
   }
 
-  override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+  override fun onCreate(
+    savedInstanceState: Bundle?,
+    persistentState: PersistableBundle?,
+  ) {
     ensureLayoutDirection()
     super.onCreate(savedInstanceState, persistentState)
   }
 
   override fun createFragmentComponent(fragment: Fragment): FragmentComponent {
     val builderInjector = activityComponent as FragmentComponentBuilderInjector
-    return builderInjector.getFragmentComponentBuilderProvider().get().setFragment(fragment).build()
+    return builderInjector
+      .getFragmentComponentBuilderProvider()
+      .get()
+      .setFragment(fragment)
+      .build()
   }
 
   override fun getAppLanguageActivityInjector(): AppLanguageActivityInjector = activityComponent
@@ -56,9 +67,7 @@ abstract class InjectableAppCompatActivity :
     activityComponent = componentFactory.createActivityComponent(this)
   }
 
-  private fun onInitializeLocalization(
-    newBase: Context?
-  ): Configuration {
+  private fun onInitializeLocalization(newBase: Context?): Configuration {
     // Given how DataProviders work (i.e. by resolving data races using eventual consistency), it's
     // possible to miss some updates in really unlikely situations. No additional work will be done
     // to prevent these data races unless they're actually hit by users. It shouldn't, in practice,

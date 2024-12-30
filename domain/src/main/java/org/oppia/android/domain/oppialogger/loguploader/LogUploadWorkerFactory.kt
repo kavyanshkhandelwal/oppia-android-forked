@@ -7,16 +7,15 @@ import androidx.work.WorkerParameters
 import javax.inject.Inject
 
 /** Custom [WorkerFactory] for the [LogUploadWorker]. */
-class LogUploadWorkerFactory @Inject constructor(
-  private val workerFactory: LogUploadWorker.Factory
-) : WorkerFactory() {
-
-  /** Returns a new [LogUploadWorker] for the given context and parameters. */
-  override fun createWorker(
-    appContext: Context,
-    workerClassName: String,
-    workerParameters: WorkerParameters
-  ): ListenableWorker? {
-    return workerFactory.create(appContext, workerParameters)
+class LogUploadWorkerFactory
+  @Inject
+  constructor(
+    private val workerFactory: LogUploadWorker.Factory,
+  ) : WorkerFactory() {
+    /** Returns a new [LogUploadWorker] for the given context and parameters. */
+    override fun createWorker(
+      appContext: Context,
+      workerClassName: String,
+      workerParameters: WorkerParameters,
+    ): ListenableWorker? = workerFactory.create(appContext, workerParameters)
   }
-}

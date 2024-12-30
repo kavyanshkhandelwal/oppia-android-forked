@@ -32,67 +32,70 @@ private const val TEST_FRAGMENT_TAG = "ExplorationTestActivity.TestFragment"
 
 /** The presenter for [ExplorationTestActivityPresenter]. */
 @ActivityScope
-class ExplorationTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val explorationDataController: ExplorationDataController,
-  private val oppiaLogger: OppiaLogger
-) {
+class ExplorationTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val explorationDataController: ExplorationDataController,
+    private val oppiaLogger: OppiaLogger,
+  ) {
+    private val routeToExplorationListener = activity as RouteToExplorationListener
 
-  private val routeToExplorationListener = activity as RouteToExplorationListener
-
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.exploration_test_activity)
-    activity.supportFragmentManager.beginTransaction().apply {
-      add(R.id.exploration_test_fragment_placeholder, TestFragment(), TEST_FRAGMENT_TAG)
-    }.commitNow()
-    activity.findViewById<Button>(R.id.play_exploration_button).setOnClickListener {
-      playExplorationButton()
-    }
-  }
-
-  private fun playExplorationButton() {
-    explorationDataController.stopPlayingExploration(isCompletion = false)
-    explorationDataController.replayExploration(
-      INTERNAL_PROFILE_ID,
-      CLASSROOM_ID,
-      TOPIC_ID,
-      STORY_ID,
-      EXPLORATION_ID
-    ).toLiveData().observe(
-      activity,
-      Observer<AsyncResult<Any?>> { result ->
-        when (result) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
-          is AsyncResult.Failure ->
-            oppiaLogger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.error)
-          is AsyncResult.Success -> {
-            oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-            routeToExplorationListener.routeToExploration(
-              ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
-              CLASSROOM_ID,
-              TOPIC_ID,
-              STORY_ID,
-              EXPLORATION_ID,
-              parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
-              isCheckpointingEnabled = false
-            )
-          }
-        }
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.exploration_test_activity)
+      activity.supportFragmentManager
+        .beginTransaction()
+        .apply {
+          add(R.id.exploration_test_fragment_placeholder, TestFragment(), TEST_FRAGMENT_TAG)
+        }.commitNow()
+      activity.findViewById<Button>(R.id.play_exploration_button).setOnClickListener {
+        playExplorationButton()
       }
-    )
-  }
+    }
 
-  fun getTestFragment(): TestFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG) as? TestFragment
-  }
+    private fun playExplorationButton() {
+      explorationDataController.stopPlayingExploration(isCompletion = false)
+      explorationDataController
+        .replayExploration(
+          INTERNAL_PROFILE_ID,
+          CLASSROOM_ID,
+          TOPIC_ID,
+          STORY_ID,
+          EXPLORATION_ID,
+        ).toLiveData()
+        .observe(
+          activity,
+          Observer<AsyncResult<Any?>> { result ->
+            when (result) {
+              is AsyncResult.Pending ->
+                oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Loading exploration")
+              is AsyncResult.Failure ->
+                oppiaLogger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.error)
+              is AsyncResult.Success -> {
+                oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
+                routeToExplorationListener.routeToExploration(
+                  ProfileId.newBuilder().apply { internalId = INTERNAL_PROFILE_ID }.build(),
+                  CLASSROOM_ID,
+                  TOPIC_ID,
+                  STORY_ID,
+                  EXPLORATION_ID,
+                  parentScreen = ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED,
+                  isCheckpointingEnabled = false,
+                )
+              }
+            }
+          },
+        )
+    }
 
-  class TestFragment : InjectableFragment() {
-    @Inject lateinit var splitScreenManager: SplitScreenManager
+    fun getTestFragment(): TestFragment? = activity.supportFragmentManager.findFragmentByTag(TEST_FRAGMENT_TAG) as? TestFragment
 
-    override fun onAttach(context: Context) {
-      super.onAttach(context)
-      (fragmentComponent as FragmentComponentImpl).inject(this)
+    class TestFragment : InjectableFragment() {
+      @Inject lateinit var splitScreenManager: SplitScreenManager
+
+      override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (fragmentComponent as FragmentComponentImpl).inject(this)
+      }
     }
   }
-}

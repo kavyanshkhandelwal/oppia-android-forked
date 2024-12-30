@@ -34,7 +34,10 @@ fun main(args: Array<String>) {
   println("License texts Check Passed")
 }
 
-private fun checkIfCommentIsPresent(xmlContent: String, comment: String) {
+private fun checkIfCommentIsPresent(
+  xmlContent: String,
+  comment: String,
+) {
   if (comment !in xmlContent) {
     println("Please revert the changes in third_party_dependencies.xml")
     throw Exception("License texts potentially checked into VCS")

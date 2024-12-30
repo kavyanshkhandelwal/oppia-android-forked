@@ -19,9 +19,10 @@ interface OppiaClock {
    * Returns the current date and time as a [Calendar]. Unlike [getCurrentTimeMs], the returned
    * [Calendar] takes into account the user's local time zone.
    */
-  fun getCurrentCalendar(): Calendar = Calendar.getInstance().apply {
-    timeInMillis = getCurrentTimeMs()
-  }
+  fun getCurrentCalendar(): Calendar =
+    Calendar.getInstance().apply {
+      timeInMillis = getCurrentTimeMs()
+    }
 
   /**
    * Returns the [Date] corresponding to the current instant in time, according to

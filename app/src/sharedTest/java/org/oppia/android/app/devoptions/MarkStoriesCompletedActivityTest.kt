@@ -97,7 +97,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MarkStoriesCompletedActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MarkStoriesCompletedActivityTest {
   @get:Rule
@@ -109,11 +109,14 @@ class MarkStoriesCompletedActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkStoriesCompletedActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      MarkStoriesCompletedActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -148,10 +151,10 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_markStoriesCompletedFragmentIsDisplayed() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
+      createMarkStoriesCompletedActivityIntent(internalProfileId),
     ).use {
       onView(withId(R.id.mark_stories_completed_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -159,20 +162,20 @@ class MarkStoriesCompletedActivityTest {
   @Test
   fun testMarkStoriesCompletedActivity_configChange_markStoriesCompletedFragmentIsDisplayed() {
     launch<MarkStoriesCompletedActivity>(
-      createMarkStoriesCompletedActivityIntent(internalProfileId)
+      createMarkStoriesCompletedActivityIntent(internalProfileId),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_stories_completed_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
 
-  private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
-      context, internalProfileId
+  private fun createMarkStoriesCompletedActivityIntent(internalProfileId: Int): Intent =
+    MarkStoriesCompletedActivity.createMarkStoriesCompletedIntent(
+      context,
+      internalProfileId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -203,8 +206,8 @@ class MarkStoriesCompletedActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -215,9 +218,13 @@ class MarkStoriesCompletedActivityTest {
     fun inject(markStoriesCompletedActivityTest: MarkStoriesCompletedActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkStoriesCompletedActivityTest_TestApplicationComponent.builder()
+      DaggerMarkStoriesCompletedActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -226,9 +233,12 @@ class MarkStoriesCompletedActivityTest {
       component.inject(markStoriesCompletedActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

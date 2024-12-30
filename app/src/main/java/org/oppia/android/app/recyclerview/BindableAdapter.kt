@@ -32,7 +32,7 @@ private typealias ViewHolderFactory<T> = (ViewGroup) -> BindableAdapter.Bindable
 class BindableAdapter<T : Any> internal constructor(
   private val computeIntViewType: ComputeIntViewType<T>,
   private val viewHolderFactoryMap: Map<Int, ViewHolderFactory<T>>,
-  private val dataClassType: KClass<T>
+  private val dataClassType: KClass<T>,
 ) : RecyclerView.Adapter<BindableAdapter.BindableViewHolder<T>>() {
   private val dataList: MutableList<T> = ArrayList()
 
@@ -70,27 +70,29 @@ class BindableAdapter<T : Any> internal constructor(
     setData(newDataList as List<T>)
   }
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindableViewHolder<T> {
+  override fun onCreateViewHolder(
+    parent: ViewGroup,
+    viewType: Int,
+  ): BindableViewHolder<T> {
     val viewHolderFactory = viewHolderFactoryMap[viewType]
     checkNotNull(viewHolderFactory) { "Encountered missing view factory for type: $viewType" }
     return viewHolderFactory(parent)
   }
 
-  override fun getItemCount(): Int {
-    return dataList.size
-  }
+  override fun getItemCount(): Int = dataList.size
 
-  override fun getItemViewType(position: Int): Int {
-    return computeIntViewType(dataList[position])
-  }
+  override fun getItemViewType(position: Int): Int = computeIntViewType(dataList[position])
 
-  override fun onBindViewHolder(holder: BindableViewHolder<T>, position: Int) {
+  override fun onBindViewHolder(
+    holder: BindableViewHolder<T>,
+    position: Int,
+  ) {
     holder.bind(dataList[position])
   }
 
   /** A generic [RecyclerView.ViewHolder] that generically binds data to the specified view. */
   abstract class BindableViewHolder<T> internal constructor(
-    view: View
+    view: View,
   ) : RecyclerView.ViewHolder(view) {
     internal abstract fun bind(data: T)
   }
@@ -99,7 +101,9 @@ class BindableAdapter<T : Any> internal constructor(
    * The base builder for [BindableAdapter]. This class should not be used directly--use either
    * [SingleTypeBuilder] or [MultiTypeBuilder] instead.
    */
-  abstract class BaseBuilder(fragment: Fragment) {
+  abstract class BaseBuilder(
+    fragment: Fragment,
+  ) {
     /**
      * A [WeakReference] to a [LifecycleOwner] for databinding inflation.
      * Note that this needs to be a weak reference so that long-held references to the adapter do
@@ -131,7 +135,7 @@ class BindableAdapter<T : Any> internal constructor(
    */
   class SingleTypeBuilder<T : Any>(
     private val dataClassType: KClass<T>,
-    fragment: Fragment
+    fragment: Fragment,
   ) : BaseBuilder(fragment) {
     private lateinit var viewHolderFactory: ViewHolderFactory<T>
 
@@ -149,7 +153,7 @@ class BindableAdapter<T : Any> internal constructor(
      */
     fun <V : View> registerViewBinder(
       inflateView: (ViewGroup) -> V,
-      bindView: (V, T) -> Unit
+      bindView: (V, T) -> Unit,
     ): SingleTypeBuilder<T> {
       check(!::viewHolderFactory.isInitialized) { "A view binder is already initialized" }
       viewHolderFactory = { viewGroup ->
@@ -170,13 +174,12 @@ class BindableAdapter<T : Any> internal constructor(
     /** See [registerViewDataBinder]. */
     fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
-    ): SingleTypeBuilder<T> {
-      return registerViewDataBinder(
+      setViewModel: (DB, T) -> Unit,
+    ): SingleTypeBuilder<T> =
+      registerViewDataBinder(
         inflateDataBinding = inflateDataBinding,
-        setViewModel = setViewModel
+        setViewModel = setViewModel,
       )
-    }
 
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods
@@ -192,17 +195,19 @@ class BindableAdapter<T : Any> internal constructor(
      */
     private fun <DB : ViewDataBinding> registerViewDataBinder(
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
+      setViewModel: (DB, T) -> Unit,
     ): SingleTypeBuilder<T> {
       check(!::viewHolderFactory.isInitialized) { "A view binder is already initialized" }
       viewHolderFactory = { viewGroup ->
         // See registerViewBinder() comments for why this approach should be lifecycle safe and not
         // introduce memory leaks.
-        val binding = inflateDataBinding(
-          LayoutInflater.from(viewGroup.context),
-          viewGroup,
-          /* attachToRoot= */ false
-        )
+        val binding =
+          inflateDataBinding(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            // attachToRoot=
+            false,
+          )
 
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
@@ -223,16 +228,19 @@ class BindableAdapter<T : Any> internal constructor(
       return BindableAdapter(
         { DEFAULT_VIEW_TYPE },
         mapOf(DEFAULT_VIEW_TYPE to viewHolderFactory),
-        dataClassType
+        dataClassType,
       )
     }
 
     /** Fragment injectable factory to create new [SingleTypeBuilder]. */
-    class Factory @Inject constructor(val fragment: Fragment) {
-      /** Returns a new [SingleTypeBuilder] for the specified Data class type. */
-      inline fun <reified T : Any> create(): SingleTypeBuilder<T> =
-        SingleTypeBuilder(T::class, fragment)
-    }
+    class Factory
+      @Inject
+      constructor(
+        val fragment: Fragment,
+      ) {
+        /** Returns a new [SingleTypeBuilder] for the specified Data class type. */
+        inline fun <reified T : Any> create(): SingleTypeBuilder<T> = SingleTypeBuilder(T::class, fragment)
+      }
   }
 
   /**
@@ -244,7 +252,7 @@ class BindableAdapter<T : Any> internal constructor(
   class MultiTypeBuilder<T : Any, E : Enum<E>>(
     private val dataClassType: KClass<T>,
     private val computeViewType: ComputeViewType<T, E>,
-    fragment: Fragment
+    fragment: Fragment,
   ) : BaseBuilder(fragment) {
     private var viewHolderFactoryMap: MutableMap<E, ViewHolderFactory<T>> = HashMap()
 
@@ -267,7 +275,7 @@ class BindableAdapter<T : Any> internal constructor(
     fun <V : View> registerViewBinder(
       viewType: E,
       inflateView: (ViewGroup) -> V,
-      bindView: (V, T) -> Unit
+      bindView: (V, T) -> Unit,
     ): MultiTypeBuilder<T, E> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
@@ -291,13 +299,14 @@ class BindableAdapter<T : Any> internal constructor(
     fun <DB : ViewDataBinding> registerViewDataBinderWithSameModelType(
       viewType: E,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
-      setViewModel: (DB, T) -> Unit
-    ): MultiTypeBuilder<T, E> {
-      return registerViewDataBinder(
-        viewType = viewType, inflateDataBinding = inflateDataBinding, setViewModel = setViewModel,
-        transformViewModel = { it }
+      setViewModel: (DB, T) -> Unit,
+    ): MultiTypeBuilder<T, E> =
+      registerViewDataBinder(
+        viewType = viewType,
+        inflateDataBinding = inflateDataBinding,
+        setViewModel = setViewModel,
+        transformViewModel = { it },
       )
-    }
 
     /**
      * Behaves in the same way as [registerViewBinder] except the inflate and bind methods
@@ -318,17 +327,19 @@ class BindableAdapter<T : Any> internal constructor(
       viewType: E,
       inflateDataBinding: (LayoutInflater, ViewGroup, Boolean) -> DB,
       setViewModel: (DB, T2) -> Unit,
-      transformViewModel: (T) -> T2
+      transformViewModel: (T) -> T2,
     ): MultiTypeBuilder<T, E> {
       checkViewTypeIsUnique(viewType)
       val viewHolderFactory: ViewHolderFactory<T> = { viewGroup ->
         // See registerViewBinder() comments for why this approach should be lifecycle safe and not
         // introduce memory leaks.
-        val binding = inflateDataBinding(
-          LayoutInflater.from(viewGroup.context),
-          viewGroup,
-          /* attachToRoot= */ false
-        )
+        val binding =
+          inflateDataBinding(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            // attachToRoot=
+            false,
+          )
 
         object : BindableViewHolder<T>(binding.root) {
           override fun bind(data: T) {
@@ -357,16 +368,19 @@ class BindableAdapter<T : Any> internal constructor(
       return BindableAdapter(
         { value -> computeViewType(value).ordinal },
         viewHolderFactoryMap.mapKeys { entry -> entry.key.ordinal },
-        dataClassType
+        dataClassType,
       )
     }
 
     /** Fragment injectable factory to create new [MultiTypeBuilder]. */
-    class Factory @Inject constructor(val fragment: Fragment) {
-      /** Returns a new [MultiTypeBuilder] for the specified data class type. */
-      inline fun <reified T : Any, reified E : Enum<E>> create(
-        noinline computeViewType: ComputeViewType<T, E>
-      ): MultiTypeBuilder<T, E> = MultiTypeBuilder(T::class, computeViewType, fragment)
-    }
+    class Factory
+      @Inject
+      constructor(
+        val fragment: Fragment,
+      ) {
+        /** Returns a new [MultiTypeBuilder] for the specified data class type. */
+        inline fun <reified T : Any, reified E : Enum<E>> create(noinline computeViewType: ComputeViewType<T, E>): MultiTypeBuilder<T, E> =
+          MultiTypeBuilder(T::class, computeViewType, fragment)
+      }
   }
 }

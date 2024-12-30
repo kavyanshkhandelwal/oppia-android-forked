@@ -50,6 +50,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   internal lateinit var provider: AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider
 
   @Parameter lateinit var answer: String
+
   @Parameter lateinit var input: String
 
   private lateinit var classifier: RuleClassifier
@@ -226,12 +227,14 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration("2*(2+6+3+4)==2*(2+6+3+4)", "answer=2*(2+6+3+4)", "input=2*(2+6+3+4)")
   @Iteration("2 × (2+6+3+4)==2*(2+6+3+4)", "answer=2 × (2+6+3+4)", "input=2*(2+6+3+4)")
   @Iteration(
-    "15 - (6 × 2) + 3==15 - (6 × 2) + 3", "answer=15 - (6 × 2) + 3", "input=15 - (6 × 2) + 3"
+    "15 - (6 × 2) + 3==15 - (6 × 2) + 3",
+    "answer=15 - (6 × 2) + 3",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
     "2 * (50 + 150 + 100 + 25) ==2 × (50 + 150 + 100 + 25)",
     "answer=2 * (50 + 150 + 100 + 25) ",
-    "input=2 × (50 + 150 + 100 + 25)"
+    "input=2 × (50 + 150 + 100 + 25)",
   )
   @Iteration("5+2==5+2", "answer=5+2", "input=5+2")
   @Iteration("6 − (− 4)==6 − (− 4)", "answer=6 − (− 4)", "input=6 − (− 4)")
@@ -240,7 +243,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "1000 + 200 + 30 + 4 + 0.5 + 0.06==1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1000 + 200 + 30 + 4 + 0.5 + 0.06",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration("2 * 2 * 3 * 3==2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3", "input=2 * 2 * 3 * 3")
   @Iteration("4x^2+20x==4*x^2+20x", "answer=4x^2+20x", "input=4*x^2+20x")
@@ -261,10 +264,12 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "a^2 + b^2 + c^2+ 2a*b  + 2a*c + 2bc==a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2 + b^2 + c^2+ 2a*b  + 2a*c + 2bc",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
-    "(x^2 − x)/3 − 4y==(x^2 − x)/3 − 4y", "answer=(x^2 − x)/3 − 4y", "input=(x^2 − x)/3 − 4y"
+    "(x^2 − x)/3 − 4y==(x^2 − x)/3 − 4y",
+    "answer=(x^2 − x)/3 − 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration("(3x -1)^2==(3x-1)^2", "answer=(3x -1)^2", "input=(3x-1)^2")
   fun testMatches_assortedExpressions_withMatchingCharacteristics_returnsTrue() {
@@ -282,7 +287,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "2 × (50 + 150 + 100 + 25) ==(50 + 150 + 100 + 25) × 2",
     "answer=2 × (50 + 150 + 100 + 25) ",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   @Iteration("2+5!=5+2", "answer=2+5", "input=5+2")
   @Iteration("− (− 4) + 6!=6 − (− 4)", "answer=− (− 4) + 6", "input=6 − (− 4)")
@@ -295,40 +300,42 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "200 + 30 + 4 + 0.5 + 0.06 + 1000!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=200 + 30 + 4 + 0.5 + 0.06 + 1000",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "0.06 + 0.5 + 4 + 30 + 200 + 1000!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=0.06 + 0.5 + 4 + 30 + 200 + 1000",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1234.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1234.56",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "123456/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=123456/100",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "61728/50!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=61728/50",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1234 + 56/100!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1234 + 56/100",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1230 + 4.56!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1230 + 4.56",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
-    "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3", "answer=2 * 2 * 3 * 3 * 1", "input=2 * 2 * 3 * 3"
+    "2 * 2 * 3 * 3 * 1!=2 * 2 * 3 * 3",
+    "answer=2 * 2 * 3 * 3 * 1",
+    "input=2 * 2 * 3 * 3",
   )
   @Iteration("2 * 2 * 9!=2 * 2 * 3 * 3", "answer=2 * 2 * 9", "input=2 * 2 * 3 * 3")
   @Iteration("4 * 3^2!=2 * 2 * 3 * 3", "answer=4 * 3^2", "input=2 * 2 * 3 * 3")
@@ -344,35 +351,37 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "a^2 + b^2 + c^2+ 2a*b  + 2bc + 2a*c!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2 + b^2 + c^2+ 2a*b  + 2bc + 2a*c",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "2a*b  + 2bc + 2a*c + a^2 + b^2 + c^2!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=2a*b  + 2bc + 2a*c + a^2 + b^2 + c^2",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "2a*b + b^2 + c^2+ a^2 + 2bc + 2a*c!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=2a*b + b^2 + c^2+ a^2 + 2bc + 2a*c",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "a*a + b*b + c*c + 2*a*b + 2*a*c + 2*b*c!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a*a + b*b + c*c + 2*a*b + 2*a*c + 2*b*c",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "(a+ b)^2 + c^2 + 2bc + 2a*c!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=(a+ b)^2 + c^2 + 2bc + 2a*c",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
-    "(a+b+c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc", "answer=(a+b+c)^2", "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "(a+b+c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc",
+    "answer=(a+b+c)^2",
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "(-a -b -c)^2!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=(-a -b -c)^2",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration("1 - 6x + 9x^2!=9x^2 − 6x + 1", "answer=1 - 6x + 9x^2", "input=9x^2 − 6x + 1")
   @Iteration("9x^2 + 1 - 6x!=9x^2 − 6x + 1", "answer=9x^2 + 1 - 6x", "input=9x^2 − 6x + 1")
@@ -383,26 +392,40 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration("(x+1)+2!=x+1+2", "answer=(x+1)+2", "input=x+1+2")
   @Iteration("x + (1+2)!=x+1+2", "answer=x + (1+2)", "input=x+1+2")
   @Iteration(
-    "y+1+ 9x(x − 6)!=9x(x − 6) + 1+ y", "answer=y+1+ 9x(x − 6)", "input=9x(x − 6) + 1+ y"
+    "y+1+ 9x(x − 6)!=9x(x − 6) + 1+ y",
+    "answer=y+1+ 9x(x − 6)",
+    "input=9x(x − 6) + 1+ y",
   )
   @Iteration("1+y+9x(x − 6)!=9x(x − 6) + 1+ y", "answer=1+y+9x(x − 6)", "input=9x(x − 6) + 1+ y")
   @Iteration(
-    "1 + 9x(x − 6) + y!=9x(x − 6) + 1+ y", "answer=1 + 9x(x − 6) + y", "input=9x(x − 6) + 1+ y"
+    "1 + 9x(x − 6) + y!=9x(x − 6) + 1+ y",
+    "answer=1 + 9x(x − 6) + y",
+    "input=9x(x − 6) + 1+ y",
   )
   @Iteration(
-    "(y+1)+9x(x − 6)!=9x(x − 6) + 1+ y", "answer=(y+1)+9x(x − 6)", "input=9x(x − 6) + 1+ y"
+    "(y+1)+9x(x − 6)!=9x(x − 6) + 1+ y",
+    "answer=(y+1)+9x(x − 6)",
+    "input=9x(x − 6) + 1+ y",
   )
   @Iteration(
-    "-4y + (x^2 − x)/3!=(x^2 − x)/3 − 4y", "answer=-4y + (x^2 − x)/3", "input=(x^2 − x)/3 − 4y"
+    "-4y + (x^2 − x)/3!=(x^2 − x)/3 − 4y",
+    "answer=-4y + (x^2 − x)/3",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "x(x − 1)/3 −4y!=(x^2 − x)/3 − 4y", "answer=x(x − 1)/3 −4y", "input=(x^2 − x)/3 − 4y"
+    "x(x − 1)/3 −4y!=(x^2 − x)/3 − 4y",
+    "answer=x(x − 1)/3 −4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "x^2/3 − x/3 − 4y!=(x^2 − x)/3 − 4y", "answer=x^2/3 − x/3 − 4y", "input=(x^2 − x)/3 − 4y"
+    "x^2/3 − x/3 − 4y!=(x^2 − x)/3 − 4y",
+    "answer=x^2/3 − x/3 − 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "x^2/3 − (x/3 + 4y)!=(x^2 − x)/3 − 4y", "answer=x^2/3 − (x/3 + 4y)", "input=(x^2 − x)/3 − 4y"
+    "x^2/3 − (x/3 + 4y)!=(x^2 − x)/3 − 4y",
+    "answer=x^2/3 − (x/3 + 4y)",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration("√(3x −1)4!=(3x-1)^2", "answer=√(3x −1)4", "input=(3x-1)^2")
   @Iteration("3x(3x - 2) + 1!=(3x-1)^2", "answer=3x(3x - 2) + 1", "input=(3x-1)^2")
@@ -421,20 +444,24 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration("(2+6+3+4) × 2!=2*(2+6+3+4)", "answer=(2+6+3+4) × 2", "input=2*(2+6+3+4)")
   @Iteration("15 - 12 + 3!=15 - (6 × 2) + 3", "answer=15 - 12 + 3", "input=15 - (6 × 2) + 3")
   @Iteration(
-    "3 - (6 * 2) + 15!=15 - (6 × 2) + 3", "answer=3 - (6 * 2) + 15", "input=15 - (6 × 2) + 3"
+    "3 - (6 * 2) + 15!=15 - (6 × 2) + 3",
+    "answer=3 - (6 * 2) + 15",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
-    "15 - (2 × 6) + 3!=15 - (6 × 2) + 3", "answer=15 - (2 × 6) + 3", "input=15 - (6 × 2) + 3"
+    "15 - (2 × 6) + 3!=15 - (6 × 2) + 3",
+    "answer=15 - (2 × 6) + 3",
+    "input=15 - (6 × 2) + 3",
   )
   @Iteration(
     "2 *(50 + 150) + 2*(100 + 25)!=(50 + 150 + 100 + 25) × 2",
     "answer=2 *(50 + 150) + 2*(100 + 25)",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   @Iteration(
     "2* ( 25+50+100+150)!=(50 + 150 + 100 + 25) × 2",
     "answer=2* ( 25+50+100+150)",
-    "input=(50 + 150 + 100 + 25) × 2"
+    "input=(50 + 150 + 100 + 25) × 2",
   )
   @Iteration("10^−5 * 3!=3 * 10^-5", "answer=10^−5 * 3", "input=3 * 10^-5")
   @Iteration("3 * 10^5!=3 * 10^-5", "answer=3 * 10^5", "input=3 * 10^-5")
@@ -446,12 +473,12 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration(
     "123456!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=123456",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration(
     "1000 + 200 + 30!=1000 + 200 + 30 + 4 + 0.5 + 0.06",
     "answer=1000 + 200 + 30",
-    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06"
+    "input=1000 + 200 + 30 + 4 + 0.5 + 0.06",
   )
   @Iteration("3 *2 – (− 4)!=6 − (− 4)", "answer=3 *2 – (− 4)", "input=6 − (− 4)")
   @Iteration("6 − 4!=6 − (− 4)", "answer=6 − 4", "input=6 − (− 4)")
@@ -476,64 +503,74 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Iteration("S(L-3)+L!=L*S-3S+L", "answer=S(L-3)+L", "input=L*S-3S+L")
   @Iteration("L+LS-3S!=L*S-3S+L", "answer=L+LS-3S", "input=L*S-3S+L")
   @Iteration(
-    "x(x  − 1)/3 − 4y!=(x^2 − x)/3 − 4y", "answer=x(x  − 1)/3 − 4y", "input=(x^2 − x)/3 − 4y"
+    "x(x  − 1)/3 − 4y!=(x^2 − x)/3 − 4y",
+    "answer=x(x  − 1)/3 − 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "- 4y + (x^2 − x)/3!=(x^2 − x)/3 − 4y", "answer=- 4y + (x^2 − x)/3", "input=(x^2 − x)/3 − 4y"
+    "- 4y + (x^2 − x)/3!=(x^2 − x)/3 − 4y",
+    "answer=- 4y + (x^2 − x)/3",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
     "(x^2 − x) * 3^-1 − 4y!=(x^2 − x)/3 − 4y",
     "answer=(x^2 − x) * 3^-1 − 4y",
-    "input=(x^2 − x)/3 − 4y"
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "x(x^2 − x)/3 − 4y!=(x^2 − x)/3 − 4y", "answer=x(x^2 − x)/3 − 4y", "input=(x^2 − x)/3 − 4y"
+    "x(x^2 − x)/3 − 4y!=(x^2 − x)/3 − 4y",
+    "answer=x(x^2 − x)/3 − 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "(x^2 − x)/3 + 4y!=(x^2 − x)/3 − 4y", "answer=(x^2 − x)/3 + 4y", "input=(x^2 − x)/3 − 4y"
+    "(x^2 − x)/3 + 4y!=(x^2 − x)/3 − 4y",
+    "answer=(x^2 − x)/3 + 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
-    "(x^2 + x)/3 - 4y!=(x^2 − x)/3 − 4y", "answer=(x^2 + x)/3 - 4y", "input=(x^2 − x)/3 − 4y"
+    "(x^2 + x)/3 - 4y!=(x^2 − x)/3 − 4y",
+    "answer=(x^2 + x)/3 - 4y",
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
     "(x^2 − x)*0.33 - 4y!=(x^2 − x)/3 − 4y",
     "answer=(x^2 − x)*0.33 - 4y",
-    "input=(x^2 − x)/3 − 4y"
+    "input=(x^2 − x)/3 − 4y",
   )
   @Iteration(
     "a^2 + b^2 + c^2 + 2(a*b + a*c + bc)!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2 + b^2 + c^2 + 2(a*b + a*c + bc)",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "(a + b)^2 + c^2 + 2a*c + 2bc!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=(a + b)^2 + c^2 + 2a*c + 2bc",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "a * a  + b * b  + c^3/c +   2a*b + 2a*c + 2bc!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a * a  + b * b  + c^3/c +   2a*b + 2a*c + 2bc",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "a^2+ b^2 + c^2 + 2bc + 2a*c +  2a*b!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2+ b^2 + c^2 + 2bc + 2a*c +  2a*b",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "(a + b + c)^3!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=(a + b + c)^3",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "a^2 + b^2 + c^2!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2 + b^2 + c^2",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration(
     "a^2 + b^2 + c^2- 2a*b - 2a*c - 2bc!=a^2+b^2+c^2+2a*b+2a*c+2bc",
     "answer=a^2 + b^2 + c^2- 2a*b - 2a*c - 2bc",
-    "input=a^2+b^2+c^2+2a*b+2a*c+2bc"
+    "input=a^2+b^2+c^2+2a*b+2a*c+2bc",
   )
   @Iteration("(3x − 1)^2!=9x^2 − 6x + 1", "answer=(3x − 1)^2", "input=9x^2 − 6x + 1")
   @Iteration("3x(3x  − 2) + 1!=9x^2 − 6x + 1", "answer=3x(3x  − 2) + 1", "input=9x^2 − 6x + 1")
@@ -569,35 +606,47 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   private fun matchesClassifier(
     answerExpression: InteractionObject,
     inputExpression: InteractionObject,
-    allowedVariables: List<String> = allPossibleVariables
-  ): Boolean {
-    return classifier.matches(
+    allowedVariables: List<String> = allPossibleVariables,
+  ): Boolean =
+    classifier.matches(
       answerExpression,
       inputs = mapOf("x" to inputExpression),
-      classificationContext = ClassificationContext(
-        customizationArgs = mapOf(
-          "customOskLetters" to SchemaObject.newBuilder().apply {
-            schemaObjectList = SchemaObjectList.newBuilder().apply {
-              addAllSchemaObject(
-                allowedVariables.map {
-                  SchemaObject.newBuilder().setNormalizedString(it).build()
-                }
-              )
-            }.build()
-          }.build()
-        )
-      )
+      classificationContext =
+        ClassificationContext(
+          customizationArgs =
+            mapOf(
+              "customOskLetters" to
+                SchemaObject
+                  .newBuilder()
+                  .apply {
+                    schemaObjectList =
+                      SchemaObjectList
+                        .newBuilder()
+                        .apply {
+                          addAllSchemaObject(
+                            allowedVariables.map {
+                              SchemaObject.newBuilder().setNormalizedString(it).build()
+                            },
+                          )
+                        }.build()
+                  }.build(),
+            ),
+        ),
     )
-  }
 
-  private fun createMathExpression(rawExpression: String) = InteractionObject.newBuilder().apply {
-    mathExpression = rawExpression
-  }.build()
+  private fun createMathExpression(rawExpression: String) =
+    InteractionObject
+      .newBuilder()
+      .apply {
+        mathExpression = rawExpression
+      }.build()
 
   private fun setUpTestApplicationComponent() {
     DaggerTestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -605,9 +654,7 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -615,8 +662,8 @@ class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
   @Component(
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

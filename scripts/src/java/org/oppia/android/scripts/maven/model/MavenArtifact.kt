@@ -9,4 +9,6 @@ import com.squareup.moshi.JsonClass
  * @property version the self-reported version of the artifact
  */
 @JsonClass(generateAdapter = true)
-data class MavenArtifact(@Json(name = "version") val version: String)
+data class MavenArtifact(
+  @Json(name = "version") val version: String,
+)

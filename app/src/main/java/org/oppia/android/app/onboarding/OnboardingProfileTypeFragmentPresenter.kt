@@ -23,66 +23,72 @@ const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
 /** The presenter for [OnboardingProfileTypeFragment]. */
-class OnboardingProfileTypeFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController
-) {
-  private lateinit var binding: OnboardingProfileTypeFragmentBinding
+class OnboardingProfileTypeFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val profileManagementController: ProfileManagementController,
+  ) {
+    private lateinit var binding: OnboardingProfileTypeFragmentBinding
 
-  /** Handle creation and binding of the  OnboardingProfileTypeFragment layout. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId
-  ): View {
-    binding = OnboardingProfileTypeFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    /** Handle creation and binding of the  OnboardingProfileTypeFragment layout. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileId: ProfileId,
+    ): View {
+      binding =
+        OnboardingProfileTypeFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.apply {
-      lifecycleOwner = fragment
+      binding.apply {
+        lifecycleOwner = fragment
 
-      profileTypeLearnerNavigationCard.setOnClickListener {
-        val intent = CreateProfileActivity.createProfileActivityIntent(activity)
-        intent.apply {
-          decorateWithUserProfileId(profileId)
-          putProtoExtra(
-            CREATE_PROFILE_PARAMS_KEY,
-            CreateProfileActivityParams.newBuilder()
-              .setProfileType(ProfileType.SOLE_LEARNER)
-              .build()
-          )
+        profileTypeLearnerNavigationCard.setOnClickListener {
+          val intent = CreateProfileActivity.createProfileActivityIntent(activity)
+          intent.apply {
+            decorateWithUserProfileId(profileId)
+            putProtoExtra(
+              CREATE_PROFILE_PARAMS_KEY,
+              CreateProfileActivityParams
+                .newBuilder()
+                .setProfileType(ProfileType.SOLE_LEARNER)
+                .build(),
+            )
+          }
+          fragment.startActivity(intent)
         }
-        fragment.startActivity(intent)
-      }
 
-      profileTypeSupervisorNavigationCard.setOnClickListener {
-        // TODO(#4938): Remove once admin profile onboarding is implemented.
-        profileManagementController.markProfileOnboardingStarted(profileId)
+        profileTypeSupervisorNavigationCard.setOnClickListener {
+          // TODO(#4938): Remove once admin profile onboarding is implemented.
+          profileManagementController.markProfileOnboardingStarted(profileId)
 
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-        intent.apply {
-          decorateWithUserProfileId(profileId)
-          putProtoExtra(
-            PROFILE_CHOOSER_PARAMS_KEY,
-            ProfileChooserActivityParams.newBuilder()
-              .setProfileType(ProfileType.SUPERVISOR)
-              .build()
-          )
+          val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
+          intent.apply {
+            decorateWithUserProfileId(profileId)
+            putProtoExtra(
+              PROFILE_CHOOSER_PARAMS_KEY,
+              ProfileChooserActivityParams
+                .newBuilder()
+                .setProfileType(ProfileType.SUPERVISOR)
+                .build(),
+            )
+          }
+          fragment.startActivity(intent)
+          // Clear back stack so that user cannot go back to the onboarding flow.
+          fragment.activity?.finishAffinity()
         }
-        fragment.startActivity(intent)
-        // Clear back stack so that user cannot go back to the onboarding flow.
-        fragment.activity?.finishAffinity()
+
+        onboardingNavigationBack.setOnClickListener {
+          activity.finish()
+        }
       }
 
-      onboardingNavigationBack.setOnClickListener {
-        activity.finish()
-      }
+      return binding.root
     }
-
-    return binding.root
   }
-}

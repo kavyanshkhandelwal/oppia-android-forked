@@ -20,50 +20,40 @@ class TestDispatcherModule {
   @Provides
   @BackgroundDispatcher
   fun provideBackgroundDispatcher(
-    @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
+    @BackgroundTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher,
   ): CoroutineDispatcher = testCoroutineDispatcher
 
   @Provides
   @BlockingDispatcher
   fun provideBlockingDispatcher(
-    @BlockingTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher
+    @BlockingTestDispatcher testCoroutineDispatcher: TestCoroutineDispatcher,
   ): CoroutineDispatcher = testCoroutineDispatcher
 
   @Provides
   @BackgroundTestDispatcher
   @Singleton
-  fun provideBackgroundTestDispatcher(
-    factory: TestCoroutineDispatcher.Factory
-  ): TestCoroutineDispatcher {
-    return factory.createDispatcher(
-      Executors.newFixedThreadPool(/* nThreads = */ 4).asCoroutineDispatcher()
+  fun provideBackgroundTestDispatcher(factory: TestCoroutineDispatcher.Factory): TestCoroutineDispatcher =
+    factory.createDispatcher(
+      Executors.newFixedThreadPool(/* nThreads = */ 4).asCoroutineDispatcher(),
     )
-  }
 
   @Provides
   @BlockingTestDispatcher
   @Singleton
-  fun provideBlockingTestDispatcher(
-    factory: TestCoroutineDispatcher.Factory
-  ): TestCoroutineDispatcher {
-    return factory.createDispatcher(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
-  }
+  fun provideBlockingTestDispatcher(factory: TestCoroutineDispatcher.Factory): TestCoroutineDispatcher =
+    factory.createDispatcher(Executors.newSingleThreadExecutor().asCoroutineDispatcher())
 
   @Provides
   fun provideTestCoroutineDispatchers(
     @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricImplProvider: Provider<TestCoroutineDispatchersRobolectricImpl>,
-    espressoImplProvider: Provider<TestCoroutineDispatchersEspressoImpl>
-  ): TestCoroutineDispatchers {
-    return if (isOnRobolectric) robolectricImplProvider.get() else espressoImplProvider.get()
-  }
+    espressoImplProvider: Provider<TestCoroutineDispatchersEspressoImpl>,
+  ): TestCoroutineDispatchers = if (isOnRobolectric) robolectricImplProvider.get() else espressoImplProvider.get()
 
   @Provides
   fun provideTestCoroutineDispatcherFactory(
     @IsOnRobolectric isOnRobolectric: Boolean,
     robolectricFactoryProvider: Provider<TestCoroutineDispatcherRobolectricImpl.FactoryImpl>,
-    espressoFactoryProvider: Provider<TestCoroutineDispatcherEspressoImpl.FactoryImpl>
-  ): TestCoroutineDispatcher.Factory {
-    return if (isOnRobolectric) robolectricFactoryProvider.get() else espressoFactoryProvider.get()
-  }
+    espressoFactoryProvider: Provider<TestCoroutineDispatcherEspressoImpl.FactoryImpl>,
+  ): TestCoroutineDispatcher.Factory = if (isOnRobolectric) robolectricFactoryProvider.get() else espressoFactoryProvider.get()
 }

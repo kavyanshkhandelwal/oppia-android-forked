@@ -9,5 +9,5 @@ import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListe
 class PreviousButtonViewModel(
   val hasConversationView: Boolean,
   val previousNavigationButtonListener: PreviousNavigationButtonListener,
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
 ) : StateItemViewModel(ViewType.PREVIOUS_NAVIGATION_BUTTON)

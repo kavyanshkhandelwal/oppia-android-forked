@@ -14,7 +14,6 @@ import org.robolectric.shadows.ShadowActivityManager
  */
 @Implements(ActivityManager::class)
 class OppiaShadowActivityManager : ShadowActivityManager() {
-
   private var processMemoryInfo: Array<Debug.MemoryInfo?>? = arrayOf(Debug.MemoryInfo())
 
   private var memoryInfo: ActivityManager.MemoryInfo = ActivityManager.MemoryInfo()
@@ -38,9 +37,7 @@ class OppiaShadowActivityManager : ShadowActivityManager() {
    */
   @Implementation
   @Suppress("UNUSED_PARAMETER") // The pids parameter must be present for Robolectric.
-  fun getProcessMemoryInfo(pids: IntArray?): Array<Debug.MemoryInfo?>? {
-    return processMemoryInfo
-  }
+  fun getProcessMemoryInfo(pids: IntArray?): Array<Debug.MemoryInfo?>? = processMemoryInfo
 
   /** Robolectric shadow override of [ActivityManager.getMemoryInfo]. */
   @Implementation

@@ -99,9 +99,12 @@ class OptionsActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<OptionsActivity> = ActivityTestRule(
-    OptionsActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<OptionsActivity> =
+    ActivityTestRule(
+      OptionsActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -137,7 +140,7 @@ class OptionsActivityTest {
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
       profileId = profileId,
-      isFromNavigationDrawer = false
+      isFromNavigationDrawer = false,
     )
   }
 
@@ -170,8 +173,8 @@ class OptionsActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -182,9 +185,13 @@ class OptionsActivityTest {
     fun inject(optionsActivityTest: OptionsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOptionsActivityTest_TestApplicationComponent.builder()
+      DaggerOptionsActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -193,9 +200,12 @@ class OptionsActivityTest {
       component.inject(optionsActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

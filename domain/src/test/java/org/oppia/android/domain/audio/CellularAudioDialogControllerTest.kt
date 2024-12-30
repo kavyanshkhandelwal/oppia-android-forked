@@ -44,7 +44,9 @@ import javax.inject.Singleton
 @Config(application = CellularAudioDialogControllerTest.TestApplication::class)
 class CellularAudioDialogControllerTest {
   @Inject lateinit var cellularAudioDialogController: CellularAudioDialogController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -122,9 +124,7 @@ class CellularAudioDialogControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -150,23 +150,27 @@ class CellularAudioDialogControllerTest {
       LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(cellularDataControllerTest: CellularAudioDialogControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCellularAudioDialogControllerTest_TestApplicationComponent.builder()
+      DaggerCellularAudioDialogControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -79,7 +79,7 @@ class DebugFirestoreEventLoggerImplTest {
 
   @Test
   fun testDebugFirestoreEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows<NoSuchElementException>() { debugFirestoreLoggerImpl.getMostRecentEvent() }
+    assertThrows<NoSuchElementException> { debugFirestoreLoggerImpl.getMostRecentEvent() }
   }
 
   @Test
@@ -87,9 +87,10 @@ class DebugFirestoreEventLoggerImplTest {
     eventLogger.uploadEvent(eventLog1)
     debugFirestoreLoggerImpl.clearAllEvents()
 
-    val eventException = assertThrows<NoSuchElementException>() {
-      debugFirestoreLoggerImpl.getMostRecentEvent()
-    }
+    val eventException =
+      assertThrows<NoSuchElementException> {
+        debugFirestoreLoggerImpl.getMostRecentEvent()
+      }
 
     assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
   }
@@ -130,7 +131,8 @@ class DebugFirestoreEventLoggerImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDebugFirestoreEventLoggerImplTest_TestApplicationComponent.builder()
+    DaggerDebugFirestoreEventLoggerImplTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -141,9 +143,7 @@ class DebugFirestoreEventLoggerImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -161,14 +161,13 @@ class DebugFirestoreEventLoggerImplTest {
 
     @Provides
     @Singleton
-    fun provideDebugFirestoreLogger(debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl):
-      FirestoreEventLogger = debugFirestoreEventLogger
+    fun provideDebugFirestoreLogger(debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl): FirestoreEventLogger =
+      debugFirestoreEventLogger
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(
-      debugWrapperImpl: FakeFirestoreInstanceWrapperImpl
-    ): FirestoreInstanceWrapper = debugWrapperImpl
+    fun provideFirebaseFirestoreInstanceWrapper(debugWrapperImpl: FakeFirestoreInstanceWrapperImpl): FirestoreInstanceWrapper =
+      debugWrapperImpl
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -176,15 +175,15 @@ class DebugFirestoreEventLoggerImplTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
-    ]
+      TestDispatcherModule::class, FakeOppiaClockModule::class, LocaleTestModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

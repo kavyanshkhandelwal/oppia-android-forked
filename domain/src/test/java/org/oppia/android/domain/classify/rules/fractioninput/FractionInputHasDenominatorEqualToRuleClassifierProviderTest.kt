@@ -23,31 +23,30 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
-
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 123
+      value = 123,
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_2_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 2,
-      denominator = 4
+      denominator = 4,
     )
   private val NON_NEGATIVE_VALUE_TEST_1 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 1
+      value = 1,
     )
   private val NON_NEGATIVE_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 2
+      value = 2,
     )
 
   @Inject
@@ -71,7 +70,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
       denominatorIsEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // This should match because whole numbers have a denominator of 1 by default
@@ -86,7 +85,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
       denominatorIsEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -100,7 +99,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
       denominatorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -114,7 +113,7 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
       denominatorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -124,18 +123,19 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   fun testDenominatorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to FRACTION_VALUE_TEST_2_OVER_4)
 
-    val exception = assertThrows<IllegalStateException>() {
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        denominatorIsEqualClassifierProvider.matches(
+          answer = FRACTION_VALUE_TEST_2_OVER_4,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type NON_NEGATIVE_INT not FRACTION"
+        "Expected input value to be of type NON_NEGATIVE_INT not FRACTION",
       )
   }
 
@@ -143,13 +143,14 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   fun testDenominatorEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_1)
 
-    val exception = assertThrows<IllegalStateException>() {
-      denominatorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        denominatorIsEqualClassifierProvider.matches(
+          answer = FRACTION_VALUE_TEST_2_OVER_4,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -159,7 +160,9 @@ class FractionInputHasDenominatorEqualToRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputHasDenominatorEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -18,41 +18,48 @@ const val CREATE_PROFILE_FRAGMENT_ARGS = "CreateProfileFragment.args"
 private const val TAG_CREATE_PROFILE_FRAGMENT = "TAG_CREATE_PROFILE_FRAGMENT"
 
 /** Presenter for [CreateProfileActivity]. */
-class CreateProfileActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-  private lateinit var binding: CreateProfileActivityBinding
+class CreateProfileActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    private lateinit var binding: CreateProfileActivityBinding
 
-  /** Handle creation and binding of the CreateProfileActivity layout. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
-    binding = DataBindingUtil.setContentView(activity, R.layout.create_profile_activity)
-    binding.apply {
-      lifecycleOwner = activity
-    }
-
-    if (getNewLearnerProfileFragment() == null) {
-      val createLearnerProfileFragment = CreateProfileFragment()
-
-      val args = Bundle().apply {
-        val fragmentArgs =
-          CreateProfileFragmentArguments.newBuilder().setProfileType(profileType).build()
-        putProto(CREATE_PROFILE_FRAGMENT_ARGS, fragmentArgs)
-        decorateWithUserProfileId(profileId)
+    /** Handle creation and binding of the CreateProfileActivity layout. */
+    fun handleOnCreate(
+      profileId: ProfileId,
+      profileType: ProfileType,
+    ) {
+      binding = DataBindingUtil.setContentView(activity, R.layout.create_profile_activity)
+      binding.apply {
+        lifecycleOwner = activity
       }
 
-      createLearnerProfileFragment.arguments = args
+      if (getNewLearnerProfileFragment() == null) {
+        val createLearnerProfileFragment = CreateProfileFragment()
 
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.profile_fragment_placeholder,
-        createLearnerProfileFragment,
-        TAG_CREATE_PROFILE_FRAGMENT
-      ).commitNow()
+        val args =
+          Bundle().apply {
+            val fragmentArgs =
+              CreateProfileFragmentArguments.newBuilder().setProfileType(profileType).build()
+            putProto(CREATE_PROFILE_FRAGMENT_ARGS, fragmentArgs)
+            decorateWithUserProfileId(profileId)
+          }
+
+        createLearnerProfileFragment.arguments = args
+
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.profile_fragment_placeholder,
+            createLearnerProfileFragment,
+            TAG_CREATE_PROFILE_FRAGMENT,
+          ).commitNow()
+      }
     }
-  }
 
-  private fun getNewLearnerProfileFragment(): CreateProfileFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_CREATE_PROFILE_FRAGMENT
-    ) as? CreateProfileFragment
+    private fun getNewLearnerProfileFragment(): CreateProfileFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_CREATE_PROFILE_FRAGMENT,
+      ) as? CreateProfileFragment
   }
-}

@@ -99,7 +99,7 @@ import javax.inject.Singleton
     ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
     ExplorationProgressModule::class, AuthenticationModule::class,
-  ]
+  ],
 )
 interface BetaApplicationComponent : ApplicationComponent {
   /**

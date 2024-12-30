@@ -6,13 +6,10 @@ import dagger.Provides
 /** Provides network-specific constants. */
 @Module
 class NetworkConfigProdModule {
-
   /** Provides BaseUrl that connects to production server. */
   @Provides
   @BaseUrl
-  fun provideNetworkBaseUrl(): String {
-    return "https://oppia.org"
-  }
+  fun provideNetworkBaseUrl(): String = "https://oppia.org"
 
   /**
    * Prefix in Json response for extra layer of security in API calls
@@ -21,7 +18,5 @@ class NetworkConfigProdModule {
    */
   @Provides
   @XssiPrefix
-  fun provideXssiPrefix(): String {
-    return ")]}'"
-  }
+  fun provideXssiPrefix(): String = ")]}'"
 }

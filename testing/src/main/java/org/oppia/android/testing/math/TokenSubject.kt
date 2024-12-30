@@ -35,7 +35,7 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
  */
 class TokenSubject(
   metadata: FailureMetadata,
-  private val actual: Token
+  private val actual: Token,
 ) : Subject(metadata, actual) {
   /** Returns an [IntegerSubject] to test [Token.startIndex]. */
   fun hasStartIndexThat(): IntegerSubject = assertThat(actual.startIndex)
@@ -47,33 +47,25 @@ class TokenSubject(
    * Verifies that the [Token] being tested is a [PositiveInteger], and returns an [IntegerSubject]
    * to test its [PositiveInteger.parsedValue].
    */
-  fun isPositiveIntegerWhoseValue(): IntegerSubject {
-    return assertThat(actual.asVerifiedType<PositiveInteger>().parsedValue)
-  }
+  fun isPositiveIntegerWhoseValue(): IntegerSubject = assertThat(actual.asVerifiedType<PositiveInteger>().parsedValue)
 
   /**
    * Verifies that the [Token] being tested is a [PositiveRealNumber], and returns a [DoubleSubject]
    * to test its [PositiveRealNumber.parsedValue].
    */
-  fun isPositiveRealNumberWhoseValue(): DoubleSubject {
-    return assertThat(actual.asVerifiedType<PositiveRealNumber>().parsedValue)
-  }
+  fun isPositiveRealNumberWhoseValue(): DoubleSubject = assertThat(actual.asVerifiedType<PositiveRealNumber>().parsedValue)
 
   /**
    * Verifies that the [Token] being tested is a [VariableName], and returns a [StringSubject] to
    * test its [VariableName.parsedName].
    */
-  fun isVariableWhoseName(): StringSubject {
-    return assertThat(actual.asVerifiedType<VariableName>().parsedName)
-  }
+  fun isVariableWhoseName(): StringSubject = assertThat(actual.asVerifiedType<VariableName>().parsedName)
 
   /**
    * Verifies that the [Token] being tested is a [FunctionName], and returns a [FunctionNameSubject]
    * to test specific attributes of the function name.
    */
-  fun isFunctionNameThat(): FunctionNameSubject {
-    return FunctionNameSubject.assertThat(actual.asVerifiedType())
-  }
+  fun isFunctionNameThat(): FunctionNameSubject = FunctionNameSubject.assertThat(actual.asVerifiedType())
 
   /** Verifies that the [Token] being tested is a [MinusSymbol]. */
   fun isMinusSymbol() {
@@ -137,7 +129,7 @@ class TokenSubject(
    */
   class FunctionNameSubject(
     metadata: FailureMetadata,
-    private val actual: FunctionName
+    private val actual: FunctionName,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test the value of [FunctionName.parsedName] for the function
@@ -156,8 +148,7 @@ class TokenSubject(
        * Returns a new [FunctionNameSubject] to verify aspects of the specified [FunctionName]
        * value.
        */
-      internal fun assertThat(actual: FunctionName): FunctionNameSubject =
-        assertAbout(::FunctionNameSubject).that(actual)
+      internal fun assertThat(actual: FunctionName): FunctionNameSubject = assertAbout(::FunctionNameSubject).that(actual)
     }
   }
 

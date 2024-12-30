@@ -205,19 +205,30 @@ import javax.inject.Singleton
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var editTextInputAction: EditTextInputAction
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
+
   @Inject lateinit var profileManagementController: ProfileManagementController
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
@@ -312,7 +323,7 @@ class StateFragmentTest {
 
       verifySubmitAnswerButtonIsEnabled()
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_submit_button)),
       )
     }
   }
@@ -328,7 +339,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_submit_button)),
       )
     }
   }
@@ -359,7 +370,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_continue_button)),
       )
     }
   }
@@ -392,7 +403,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_continue_button)),
       )
     }
   }
@@ -531,9 +542,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
           withContentDescription(
-            "Incorrect submitted answer: 1/4"
-          )
-        )
+            "Incorrect submitted answer: 1/4",
+          ),
+        ),
       )
     }
   }
@@ -553,9 +564,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
           withContentDescription(
-            "Correct submitted answer: 1/2"
-          )
-        )
+            "Correct submitted answer: 1/2",
+          ),
+        ),
       )
     }
   }
@@ -570,7 +581,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_submit_button)),
       )
       onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
@@ -588,7 +599,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMIT_ANSWER_BUTTON)
       onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
+        matches(withText(R.string.state_submit_button)),
       )
       onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
     }
@@ -607,9 +618,9 @@ class StateFragmentTest {
         .check(
           matches(
             withText(
-              R.string.selection_error_empty_input
-            )
-          )
+              R.string.selection_error_empty_input,
+            ),
+          ),
         )
     }
   }
@@ -642,7 +653,7 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_continue_button)),
       )
     }
   }
@@ -676,7 +687,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
+        matches(withText(R.string.state_continue_button)),
       )
     }
   }
@@ -758,22 +769,22 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isNotChecked()))
     }
   }
@@ -796,43 +807,43 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 3,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 4,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 5,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
     }
   }
@@ -857,7 +868,7 @@ class StateFragmentTest {
       typeAlgebraicExpression("x^2-x-2")
       rotateToLandscape()
       onView(withId(R.id.math_expression_input_interaction_view)).check(
-        matches(withText("x^2-x-2"))
+        matches(withText("x^2-x-2")),
       )
     }
   }
@@ -871,7 +882,7 @@ class StateFragmentTest {
       typeMathEquation("x^2-x-2=2y")
       rotateToLandscape()
       onView(withId(R.id.math_expression_input_interaction_view)).check(
-        matches(withText("x^2-x-2=2y"))
+        matches(withText("x^2-x-2=2y")),
       )
     }
   }
@@ -890,8 +901,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isChecked()))
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -901,43 +912,43 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 3,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 4,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 5,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isNotChecked()))
     }
   }
@@ -955,8 +966,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isChecked()))
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -966,22 +977,22 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isNotChecked()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.multiple_choice_radio_button
-        )
+          targetViewId = R.id.multiple_choice_radio_button,
+        ),
       ).check(matches(isNotChecked()))
     }
   }
@@ -1079,15 +1090,16 @@ class StateFragmentTest {
         .check(
           matches(
             withText(
-              R.string.drag_and_drop_interaction_empty_input
-            )
-          )
+              R.string.drag_and_drop_interaction_empty_input,
+            ),
+          ),
         )
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+  fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1099,8 +1111,8 @@ class StateFragmentTest {
       onView(withId(R.id.drag_drop_interaction_error))
         .check(
           matches(
-            isDisplayed()
-          )
+            isDisplayed(),
+          ),
         )
       // Submit button is disabled due to the error.
       verifySubmitAnswerButtonIsDisabled()
@@ -1110,8 +1122,8 @@ class StateFragmentTest {
       onView(withId(R.id.drag_drop_interaction_error))
         .check(
           matches(
-            not(isDisplayed())
-          )
+            not(isDisplayed()),
+          ),
         )
       // Submit button is enabled back.
       verifySubmitAnswerButtonIsEnabled()
@@ -1143,8 +1155,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText(containsString("a camera at the store"))))
     }
   }
@@ -1162,16 +1174,16 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 2,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(2)))
       scrollToViewType(DRAG_DROP_SORT_INTERACTION)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText(containsString("a camera at the store"))))
     }
   }
@@ -1185,7 +1197,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       rotateToLandscape()
       onView(withId(R.id.drag_drop_interaction_error)).check(
-        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+        matches(withText(R.string.drag_and_drop_interaction_empty_input)),
       )
     }
   }
@@ -1202,14 +1214,15 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(2)))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
+  fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1230,8 +1243,8 @@ class StateFragmentTest {
       onView(withId(R.id.drag_drop_interaction_error))
         .check(
           matches(
-            isDisplayed()
-          )
+            isDisplayed(),
+          ),
         )
       // Submit button is disabled due to the error.
       verifySubmitAnswerButtonIsDisabled()
@@ -1241,8 +1254,8 @@ class StateFragmentTest {
       onView(withId(R.id.drag_drop_interaction_error))
         .check(
           matches(
-            not(isDisplayed())
-          )
+            not(isDisplayed()),
+          ),
         )
       // Submit button is enabled back.
       verifySubmitAnswerButtonIsEnabled()
@@ -1262,8 +1275,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(2)))
     }
   }
@@ -1283,8 +1296,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 0,
-          targetViewId = R.id.submitted_html_answer_recycler_view
-        )
+          targetViewId = R.id.submitted_html_answer_recycler_view,
+        ),
       ).check(matches(hasChildCount(2)))
     }
   }
@@ -1302,9 +1315,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_recycler_view_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.incorrect_submitted_answer)
-          )
-        )
+            context.getString(R.string.incorrect_submitted_answer),
+          ),
+        ),
       )
     }
   }
@@ -1332,9 +1345,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_recycler_view_container)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.correct_submitted_answer)
-          )
-        )
+            context.getString(R.string.correct_submitted_answer),
+          ),
+        ),
       )
     }
   }
@@ -1364,15 +1377,15 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("3/5")))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("0.35")))
     }
   }
@@ -1402,13 +1415,13 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("3/5")))
       clickSubmitAnswerButton()
 
       onView(withId(R.id.drag_drop_interaction_error)).check(
-        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+        matches(withText(R.string.drag_and_drop_interaction_empty_input)),
       )
     }
   }
@@ -1428,8 +1441,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(2)))
     }
   }
@@ -1448,15 +1461,15 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_item_recyclerview,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("a camera at the store")))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_item_recyclerview,
           position = 1,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("I bought")))
     }
   }
@@ -1477,8 +1490,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(1)))
     }
   }
@@ -1499,8 +1512,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("a camera at the store")))
     }
   }
@@ -1519,13 +1532,13 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_item_recyclerview,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("a camera at the store")))
       clickSubmitAnswerButton()
 
       onView(withId(R.id.drag_drop_interaction_error)).check(
-        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+        matches(withText(R.string.drag_and_drop_interaction_empty_input)),
       )
     }
   }
@@ -1548,8 +1561,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 2,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("a camera at the store")))
     }
   }
@@ -1568,8 +1581,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_item_recyclerview
-        )
+          targetViewId = R.id.drag_drop_item_recyclerview,
+        ),
       ).check(matches(hasChildCount(1)))
     }
   }
@@ -1588,8 +1601,8 @@ class StateFragmentTest {
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Saturn"))
-        )
+          withText(containsString("Saturn")),
+        ),
       )
     }
   }
@@ -1604,7 +1617,7 @@ class StateFragmentTest {
       clickSubmitAnswerButton()
       rotateToLandscape()
       onView(withId(R.id.image_input_error)).check(
-        matches(withText(R.string.image_error_empty_input))
+        matches(withText(R.string.image_error_empty_input)),
       )
     }
   }
@@ -1640,8 +1653,8 @@ class StateFragmentTest {
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Saturn"))
-        )
+          withText(containsString("Saturn")),
+        ),
       )
     }
   }
@@ -1707,8 +1720,8 @@ class StateFragmentTest {
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Saturn"))
-        )
+          withText(containsString("Saturn")),
+        ),
       )
     }
   }
@@ -1728,8 +1741,8 @@ class StateFragmentTest {
       scrollToViewType(SUBMITTED_ANSWER)
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
-          withText("Clicks on Saturn")
-        )
+          withText("Clicks on Saturn"),
+        ),
       )
     }
   }
@@ -1767,8 +1780,8 @@ class StateFragmentTest {
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Jupiter"))
-        )
+          withText(containsString("Jupiter")),
+        ),
       )
     }
   }
@@ -1895,7 +1908,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -1913,7 +1926,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -2000,7 +2013,7 @@ class StateFragmentTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -2023,7 +2036,7 @@ class StateFragmentTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -2035,8 +2048,8 @@ class StateFragmentTest {
 
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Take a look at the short refresher lesson"))
-        )
+          withText(containsString("Take a look at the short refresher lesson")),
+        ),
       )
     }
   }
@@ -2049,7 +2062,7 @@ class StateFragmentTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -2061,8 +2074,8 @@ class StateFragmentTest {
 
       onView(withId(R.id.feedback_text_view)).check(
         matches(
-          withText(containsString("Take a look at the short refresher lesson"))
-        )
+          withText(containsString("Take a look at the short refresher lesson")),
+        ),
       )
     }
   }
@@ -2074,7 +2087,7 @@ class StateFragmentTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -2099,7 +2112,7 @@ class StateFragmentTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
@@ -2188,7 +2201,7 @@ class StateFragmentTest {
       verifyViewTypeIsPresent(SELECTION_INTERACTION)
       verifyAccessibilityForItemSelection(
         position = 0,
-        targetViewId = R.id.multiple_choice_radio_button
+        targetViewId = R.id.multiple_choice_radio_button,
       )
     }
   }
@@ -2427,13 +2440,14 @@ class StateFragmentTest {
       clickReturnToTopicButton()
     }
     explorationCheckpointTestHelper.verifyExplorationProgressIsDeleted(
-      profileId, TEST_EXPLORATION_ID_2
+      profileId,
+      TEST_EXPLORATION_ID_2,
     )
   }
 
   // TODO(#503): Add versions of the following multi-language & localization tests for questions.
 
-  /* Multi-language & localization tests. */
+  // Multi-language & localization tests.
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
@@ -2640,8 +2654,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
+          targetViewId = R.id.multiple_choice_content_text_view,
+        ),
       ).check(matches(withText(containsString("Eagle"))))
     }
   }
@@ -2680,8 +2694,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 2,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
+          targetViewId = R.id.multiple_choice_content_text_view,
+        ),
       ).check(matches(withText(containsString("النسر"))))
     }
   }
@@ -2744,8 +2758,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.item_selection_contents_text_view
-        )
+          targetViewId = R.id.item_selection_contents_text_view,
+        ),
       ).check(matches(withText(containsString("Red"))))
     }
   }
@@ -2791,8 +2805,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 0,
-          targetViewId = R.id.item_selection_contents_text_view
-        )
+          targetViewId = R.id.item_selection_contents_text_view,
+        ),
       ).check(matches(withText(containsString("أحمر"))))
     }
   }
@@ -3110,8 +3124,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_item_recyclerview,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText(containsString("0.35"))))
     }
   }
@@ -3141,8 +3155,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 3,
-          targetViewId = R.id.submitted_answer_content_text_view
-        )
+          targetViewId = R.id.submitted_answer_content_text_view,
+        ),
       ).check(matches(withText("0.35")))
     }
   }
@@ -3170,8 +3184,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.drag_drop_item_recyclerview,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText(containsString("0,35"))))
     }
   }
@@ -3201,8 +3215,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 3,
-          targetViewId = R.id.submitted_answer_content_text_view
-        )
+          targetViewId = R.id.submitted_answer_content_text_view,
+        ),
       ).check(matches(withText("0,35")))
     }
   }
@@ -3234,8 +3248,8 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.submitted_answer_recycler_view,
           position = 3,
-          targetViewId = R.id.submitted_answer_content_text_view
-        )
+          targetViewId = R.id.submitted_answer_content_text_view,
+        ),
       ).check(matches(withText("0,35")))
     }
   }
@@ -3253,7 +3267,7 @@ class StateFragmentTest {
       // Ninth state: end exploration.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -3666,7 +3680,7 @@ class StateFragmentTest {
       // Numeric expressions cannot contain variables.
       verifyMathInteractionHasError(
         "It looks like you have entered some variables. Please make sure that your answer" +
-          " contains numbers only and remove any variables from your answer."
+          " contains numbers only and remove any variables from your answer.",
       )
     }
   }
@@ -3732,7 +3746,7 @@ class StateFragmentTest {
 
       scrollToViewType(SUBMITTED_ANSWER)
       onView(withId(R.id.submitted_answer_text_view)).check(
-        matches(withContentDescription("Incorrect submitted answer: 1 divided by 2 times 2"))
+        matches(withContentDescription("Incorrect submitted answer: 1 divided by 2 times 2")),
       )
     }
   }
@@ -4030,7 +4044,7 @@ class StateFragmentTest {
 
       // Variables cannot be in exponent powers.
       verifyMathInteractionHasError(
-        "Sorry, variables in exponents are not supported by the app. Please revise your answer."
+        "Sorry, variables in exponents are not supported by the app. Please revise your answer.",
       )
     }
   }
@@ -4114,9 +4128,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
           withContentDescription(
-            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 divided by x"
-          )
-        )
+            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 divided by x",
+          ),
+        ),
       )
     }
   }
@@ -4136,9 +4150,9 @@ class StateFragmentTest {
       onView(withId(R.id.submitted_answer_text_view)).check(
         matches(
           withContentDescription(
-            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 over x"
-          )
-        )
+            "Incorrect submitted answer: x raised to the power of 2 minus x minus 2 over x",
+          ),
+        ),
       )
     }
   }
@@ -4351,7 +4365,7 @@ class StateFragmentTest {
       // Verify that the user is now on the tenth state.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4371,7 +4385,7 @@ class StateFragmentTest {
       // in this interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4391,7 +4405,7 @@ class StateFragmentTest {
       // interaction.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4411,7 +4425,7 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4450,7 +4464,7 @@ class StateFragmentTest {
       // different expressions will match if they evaluate to the same value).
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4470,7 +4484,7 @@ class StateFragmentTest {
       // the '='.
       scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
       onView(withId(R.id.return_to_topic_button)).check(
-        matches(withText(R.string.state_end_exploration_button))
+        matches(withText(R.string.state_end_exploration_button)),
       )
     }
   }
@@ -4551,7 +4565,7 @@ class StateFragmentTest {
 
       // Only the enabled variables can be used.
       verifyMathInteractionHasError(
-        "Please use the variables specified in the question and not a, b."
+        "Please use the variables specified in the question and not a, b.",
       )
     }
   }
@@ -4621,9 +4635,9 @@ class StateFragmentTest {
         matches(
           withContentDescription(
             "Incorrect submitted answer: 2 y equals x raised to the power of 2 minus x minus 2" +
-              " divided by x"
-          )
-        )
+              " divided by x",
+          ),
+        ),
       )
     }
   }
@@ -4645,9 +4659,9 @@ class StateFragmentTest {
           matches(
             withContentDescription(
               "Incorrect submitted answer: 2 y equals x raised to the power of 2 minus x minus 2" +
-                " over x"
-            )
-          )
+                " over x",
+            ),
+          ),
         )
     }
   }
@@ -4801,24 +4815,24 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 4,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 5,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
@@ -4883,32 +4897,32 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 1,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isEnabled()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 3,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isEnabled()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 4,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isEnabled()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 5,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(isEnabled()))
     }
   }
@@ -4933,24 +4947,24 @@ class StateFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 3,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 4,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
           position = 5,
-          targetViewId = R.id.item_selection_checkbox
-        )
+          targetViewId = R.id.item_selection_checkbox,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
@@ -4978,9 +4992,9 @@ class StateFragmentTest {
       onView(withId(R.id.play_test_exploration_button)).check(
         matches(
           withEffectiveVisibility(
-            VISIBLE
-          )
-        )
+            VISIBLE,
+          ),
+        ),
       )
     }
   }
@@ -5008,9 +5022,9 @@ class StateFragmentTest {
       onView(withId(R.id.play_test_exploration_button)).check(
         matches(
           withEffectiveVisibility(
-            VISIBLE
-          )
-        )
+            VISIBLE,
+          ),
+        ),
       )
     }
   }
@@ -5036,9 +5050,9 @@ class StateFragmentTest {
           matches(
             allOf(
               withText(R.string.survey_onboarding_title_text),
-              isDisplayed()
-            )
-          )
+              isDisplayed(),
+            ),
+          ),
         )
     }
   }
@@ -5064,9 +5078,9 @@ class StateFragmentTest {
           matches(
             allOf(
               withText(R.string.survey_onboarding_title_text),
-              isDisplayed()
-            )
-          )
+              isDisplayed(),
+            ),
+          ),
         )
     }
   }
@@ -5092,9 +5106,9 @@ class StateFragmentTest {
           matches(
             allOf(
               withText(R.string.survey_onboarding_title_text),
-              isDisplayed()
-            )
-          )
+              isDisplayed(),
+            ),
+          ),
         )
     }
   }
@@ -5126,9 +5140,9 @@ class StateFragmentTest {
       onView(withId(R.id.play_test_exploration_button)).check(
         matches(
           withEffectiveVisibility(
-            VISIBLE
-          )
-        )
+            VISIBLE,
+          ),
+        ),
       )
     }
   }
@@ -5163,9 +5177,9 @@ class StateFragmentTest {
       onView(withId(R.id.play_test_exploration_button)).check(
         matches(
           withEffectiveVisibility(
-            VISIBLE
-          )
-        )
+            VISIBLE,
+          ),
+        ),
       )
     }
   }
@@ -5228,10 +5242,11 @@ class StateFragmentTest {
       playThroughRatioExplorationState13()
       playThroughRatioExplorationState14()
 
-      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie." +
-        " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
-        " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
-        " James’s sentence? What is the ratio of milk to banana puree?”"
+      val expectedDescription =
+        "James turned the page, and saw a recipe for banana smoothie." +
+          " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
+          " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
+          " James’s sentence? What is the ratio of milk to banana puree?”"
 
       onView(withId(R.id.content_text_view))
         .check(matches(withContentDescription(expectedDescription)))
@@ -5289,7 +5304,7 @@ class StateFragmentTest {
   private fun playThroughRatioExplorationState11() {
     selectMultipleChoiceOption(
       2,
-      "The relative relationship between the amounts of different things."
+      "The relative relationship between the amounts of different things.",
     )
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
@@ -5311,37 +5326,49 @@ class StateFragmentTest {
     clickContinueNavigationButton()
   }
 
-  private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
+  private fun addShadowMediaPlayerException(
+    dataSource: Any,
+    exception: Exception,
+  ) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
     val addException =
       shadowMediaPlayerClass.getDeclaredMethod(
-        "addException", dataSource.javaClass, IOException::class.java
+        "addException",
+        dataSource.javaClass,
+        IOException::class.java,
       )
     addException.invoke(/* obj= */ null, dataSource, exception)
   }
 
-  private fun createAudioDataSource(explorationId: String, audioFileName: String): Any? {
+  private fun createAudioDataSource(
+    explorationId: String,
+    audioFileName: String,
+  ): Any? {
     val audioUrl = createAudioUrl(explorationId, audioFileName)
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val dataSourceClass = classLoader.loadClass("org.robolectric.shadows.util.DataSource")
     val toDataSource =
       dataSourceClass.getDeclaredMethod(
-        "toDataSource", String::class.java, Map::class.java
+        "toDataSource",
+        String::class.java,
+        Map::class.java,
       )
     return toDataSource.invoke(/* obj= */ null, audioUrl, /* headers= */ null)
   }
 
-  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
-    return "https://storage.googleapis.com/oppiaserver-resources/" +
+  private fun createAudioUrl(
+    explorationId: String,
+    audioFileName: String,
+  ): String =
+    "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
-  }
 
   private fun launchForExploration(
     explorationId: String,
-    shouldSavePartialProgress: Boolean
-  ): ActivityScenario<StateFragmentTestActivity> {
-    return launch(
+    shouldSavePartialProgress: Boolean,
+  ): ActivityScenario<StateFragmentTestActivity> =
+    launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
         profileId.internalId,
@@ -5349,10 +5376,9 @@ class StateFragmentTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
-        shouldSavePartialProgress
-      )
+        shouldSavePartialProgress,
+      ),
     )
-  }
 
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
@@ -5430,8 +5456,8 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.submitted_answer_recycler_view,
         position = 0,
-        targetViewId = R.id.submitted_answer_content_text_view
-      )
+        targetViewId = R.id.submitted_answer_content_text_view,
+      ),
     ).check(matches(withText("3/5")))
     clickContinueNavigationButton()
   }
@@ -5448,8 +5474,8 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.submitted_answer_recycler_view,
         position = 0,
-        targetViewId = R.id.submitted_answer_content_text_view
-      )
+        targetViewId = R.id.submitted_answer_content_text_view,
+      ),
     ).check(matches(withText("0.6")))
     clickContinueNavigationButton()
   }
@@ -5602,25 +5628,34 @@ class StateFragmentTest {
     typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
   }
 
-  private fun selectMultipleChoiceOption(optionPosition: Int, expectedOptionText: String) {
+  private fun selectMultipleChoiceOption(
+    optionPosition: Int,
+    expectedOptionText: String,
+  ) {
     clickSelection(
       optionPosition,
       targetClickViewId = R.id.multiple_choice_radio_button,
       expectedText = expectedOptionText,
-      targetTextViewId = R.id.multiple_choice_content_text_view
+      targetTextViewId = R.id.multiple_choice_content_text_view,
     )
   }
 
-  private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {
+  private fun selectItemSelectionCheckbox(
+    optionPosition: Int,
+    expectedOptionText: String,
+  ) {
     clickSelection(
       optionPosition,
       targetClickViewId = R.id.item_selection_checkbox,
       expectedText = expectedOptionText,
-      targetTextViewId = R.id.item_selection_contents_text_view
+      targetTextViewId = R.id.item_selection_contents_text_view,
     )
   }
 
-  private fun dragAndDropItem(fromPosition: Int, toPosition: Int) {
+  private fun dragAndDropItem(
+    fromPosition: Int,
+    toPosition: Int,
+  ) {
     scrollToViewType(DRAG_DROP_SORT_INTERACTION)
     onView(withId(R.id.drag_drop_interaction_recycler_view)).perform(
       DragViewAction(
@@ -5628,12 +5663,12 @@ class StateFragmentTest {
           fromPosition,
           ChildViewCoordinatesProvider(
             R.id.drag_drop_item_container,
-            GeneralLocation.CENTER
-          )
+            GeneralLocation.CENTER,
+          ),
         ),
         RecyclerViewCoordinatesProvider(toPosition, CustomGeneralLocation.UNDER_RIGHT),
-        Press.FINGER
-      )
+        Press.FINGER,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -5646,9 +5681,12 @@ class StateFragmentTest {
     clickDragAndDropOption(position, targetViewId = R.id.drag_drop_content_unlink_items)
   }
 
-  private fun clickImageRegion(pointX: Float, pointY: Float) {
+  private fun clickImageRegion(
+    pointX: Float,
+    pointY: Float,
+  ) {
     onView(withId(R.id.image_click_interaction_image_view)).perform(
-      clickPoint(pointX, pointY)
+      clickPoint(pointX, pointY),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -5656,21 +5694,24 @@ class StateFragmentTest {
   private fun typeNumericExpression(expression: String) {
     scrollToViewType(NUMERIC_EXPRESSION_INPUT_INTERACTION)
     typeTextIntoInteraction(
-      expression, interactionViewId = R.id.math_expression_input_interaction_view
+      expression,
+      interactionViewId = R.id.math_expression_input_interaction_view,
     )
   }
 
   private fun typeAlgebraicExpression(expression: String) {
     scrollToViewType(ALGEBRAIC_EXPRESSION_INPUT_INTERACTION)
     typeTextIntoInteraction(
-      expression, interactionViewId = R.id.math_expression_input_interaction_view
+      expression,
+      interactionViewId = R.id.math_expression_input_interaction_view,
     )
   }
 
   private fun typeMathEquation(equation: String) {
     scrollToViewType(MATH_EQUATION_INPUT_INTERACTION)
     typeTextIntoInteraction(
-      equation, interactionViewId = R.id.math_expression_input_interaction_view
+      equation,
+      interactionViewId = R.id.math_expression_input_interaction_view,
     )
   }
 
@@ -5708,15 +5749,18 @@ class StateFragmentTest {
     waitForTheView(
       allOf(
         withId(R.id.image_click_interaction_image_view),
-        WithNonZeroDimensionsMatcher()
-      )
+        WithNonZeroDimensionsMatcher(),
+      ),
     )
   }
 
-  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+  private fun typeTextIntoInteraction(
+    text: String,
+    interactionViewId: Int,
+  ) {
     onView(withId(interactionViewId)).perform(
       editTextInputAction.appendText(text),
-      closeSoftKeyboard()
+      closeSoftKeyboard(),
     )
     testCoroutineDispatchers.runCurrent()
   }
@@ -5725,7 +5769,7 @@ class StateFragmentTest {
     optionPosition: Int,
     targetClickViewId: Int,
     expectedText: String,
-    targetTextViewId: Int
+    targetTextViewId: Int,
   ) {
     scrollToViewType(SELECTION_INTERACTION)
     // First, check that the option matches what's expected by the test.
@@ -5733,53 +5777,64 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetTextViewId
-      )
+        targetViewId = targetTextViewId,
+      ),
     ).check(matches(withText(containsString(expectedText))))
     // Then, click on it.
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetClickViewId
-      )
+        targetViewId = targetClickViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickDragAndDropOption(position: Int, targetViewId: Int) {
+  private fun clickDragAndDropOption(
+    position: Int,
+    targetViewId: Int,
+  ) {
     scrollToViewType(DRAG_DROP_SORT_INTERACTION)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.drag_drop_interaction_recycler_view,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
   private fun scrollToViewType(viewType: StateItemViewModel.ViewType) {
     onView(withId(R.id.state_recycler_view)).perform(
-      scrollToHolder(StateViewHolderTypeMatcher(viewType))
+      scrollToHolder(StateViewHolderTypeMatcher(viewType)),
     )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   private fun enableInLessonLanguageSwitching() {
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId,
+        allowInLessonQuickLanguageSwitching = true,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
   }
 
@@ -5789,8 +5844,8 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.state_recycler_view,
         position = 0,
-        targetViewId = R.id.content_text_view
-      )
+        targetViewId = R.id.content_text_view,
+      ),
     ).check(matches(withText(containsString(expectedHtml))))
   }
 
@@ -5800,8 +5855,8 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.state_recycler_view,
         position = 1,
-        targetViewId = R.id.numeric_input_interaction_view
-      )
+        targetViewId = R.id.numeric_input_interaction_view,
+      ),
     ).check(matches(withHint(containsString(hint))))
   }
 
@@ -5820,21 +5875,24 @@ class StateFragmentTest {
     scrollToViewType(viewType)
   }
 
-  private fun verifyAccessibilityForItemSelection(position: Int, targetViewId: Int) {
+  private fun verifyAccessibilityForItemSelection(
+    position: Int,
+    targetViewId: Int,
+  ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(not(isClickable())))
 
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(not(isFocusable())))
     testCoroutineDispatchers.runCurrent()
   }
@@ -5847,9 +5905,7 @@ class StateFragmentTest {
     verifySubmitAnswerButtonIsDisabled()
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction = onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
@@ -5880,29 +5936,35 @@ class StateFragmentTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
-    val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundDispatcher)
-    )
+    val executorService =
+      MockGlideExecutor.newTestExecutor(
+        CoroutineExecutorService(backgroundDispatcher),
+      )
     Glide.init(
       context,
-      GlideBuilder().setDiskCacheExecutor(executorService)
+      GlideBuilder()
+        .setDiskCacheExecutor(executorService)
         .setAnimationExecutor(executorService)
-        .setSourceExecutor(executorService)
+        .setSourceExecutor(executorService),
     )
 
     // Only initialize the Robolectric shadows when running on Robolectric (and use reflection since
     // Espresso can't load Robolectric into its classpath).
     if (isOnRobolectric()) {
-      val dataSource = checkNotNull(
-        createAudioDataSource(
-          explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
-        )
-      ) { "Failed to create audio data source." }
-      val dataSource2 = checkNotNull(
-        createAudioDataSource(
-          explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
-        )
-      ) { "Failed to create audio data source." }
+      val dataSource =
+        checkNotNull(
+          createAudioDataSource(
+            explorationId = FRACTIONS_EXPLORATION_ID_1,
+            audioFileName = "content-en-ouqm7j21vt8.mp3",
+          ),
+        ) { "Failed to create audio data source." }
+      val dataSource2 =
+        checkNotNull(
+          createAudioDataSource(
+            explorationId = RATIOS_EXPLORATION_ID_0,
+            audioFileName = "content-en-057j51i2es.mp3",
+          ),
+        ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
       addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
     }
@@ -5912,9 +5974,7 @@ class StateFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
-  }
+  private fun isOnRobolectric(): Boolean = ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
 
   // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
   //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
@@ -5922,21 +5982,24 @@ class StateFragmentTest {
   //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
   //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
   //  thread helps to counter that.
+
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.
    */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
+  private fun waitForMatch(
+    viewMatcher: Matcher<View>,
+    millis: Long,
+  ): ViewAction {
     return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
+      override fun getDescription(): String = "wait for a specific view with matcher <$viewMatcher> during $millis millis."
 
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
+      override fun getConstraints(): Matcher<View> = isRoot()
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         checkNotNull(uiController)
         uiController.loopMainThreadUntilIdle()
         val startTime = System.currentTimeMillis()
@@ -5950,7 +6013,8 @@ class StateFragmentTest {
         } while (System.currentTimeMillis() < endTime)
 
         // Couldn't match in time.
-        throw PerformException.Builder()
+        throw PerformException
+          .Builder()
           .withActionDescription(description)
           .withViewDescription(HumanReadables.describe(view))
           .withCause(TimeoutException())
@@ -5964,20 +6028,17 @@ class StateFragmentTest {
    * StateFragment's RecyclerView.
    */
   private class StateViewHolderTypeMatcher(
-    private val viewType: StateItemViewModel.ViewType
+    private val viewType: StateItemViewModel.ViewType,
   ) : BaseMatcher<RecyclerView.ViewHolder>() {
     override fun describeTo(description: Description?) {
       description?.appendText("item view type of $viewType")
     }
 
-    override fun matches(item: Any?): Boolean {
-      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
-    }
+    override fun matches(item: Any?): Boolean = (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
   }
 
   /** Returns a matcher that matches view based on non-zero width and height. */
   private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
-
     override fun matchesSafely(target: View): Boolean {
       val targetWidth = target.width
       val targetHeight = target.height
@@ -5994,34 +6055,33 @@ class StateFragmentTest {
    * within that text view that contains the specified text, then clicks it. The need for this was
    * inspired by https://stackoverflow.com/q/38314077.
    */
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
   /**
    * Returns a matcher that matches against text views with clickable spans that contain the
    * specified text.
    */
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text as Spanned
@@ -6032,21 +6092,15 @@ class StateFragmentTest {
 
   private inline fun <reified T : Any> TextView.getSpans(): List<T> = (text as Spanned).getSpans()
 
-  private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
-    getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
+  private inline fun <reified T : Any> Spanned.getSpans(): List<T> = getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
-    text: String
-  ): ClickableSpan? {
-    return find { text in it.first }?.second
-  }
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String): ClickableSpan? = find { text in it.first }?.second
 
   @Module
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     @LoadImagesFromAssets
@@ -6081,8 +6135,8 @@ class StateFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -6099,9 +6153,13 @@ class StateFragmentTest {
     fun isOnRobolectric(): Boolean
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateFragmentTest_TestApplicationComponent.builder()
+      DaggerStateFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -6110,9 +6168,12 @@ class StateFragmentTest {
 
     fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

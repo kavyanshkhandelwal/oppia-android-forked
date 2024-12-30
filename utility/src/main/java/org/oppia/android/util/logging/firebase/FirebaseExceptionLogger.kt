@@ -5,9 +5,8 @@ import org.oppia.android.util.logging.ExceptionLogger
 
 /** Logger for providing custom crash reporting to Firebase Crashlytics. */
 class FirebaseExceptionLogger(
-  private var firebaseCrashlytics: FirebaseCrashlytics
+  private var firebaseCrashlytics: FirebaseCrashlytics,
 ) : ExceptionLogger {
-
   /** Logs a custom non-fatal exception to Firebase Crashlytics. */
   override fun logException(exception: Exception) {
     firebaseCrashlytics.recordException(exception)

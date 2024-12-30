@@ -87,25 +87,60 @@ import javax.inject.Singleton
 class ProfileManagementControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var profileManagementController: ProfileManagementController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+
   @Inject lateinit var oppiaClock: FakeOppiaClock
 
   private companion object {
-    private val PROFILES_LIST = listOf<Profile>(
-      Profile.newBuilder().setName("James").setPin("123").setAllowDownloadAccess(true).build(),
-      Profile.newBuilder().setName("Sean").setPin("234").setAllowDownloadAccess(false).build(),
-      Profile.newBuilder().setName("Ben").setPin("345").setAllowDownloadAccess(true).build(),
-      Profile.newBuilder().setName("Rajat").setPin("456").setAllowDownloadAccess(false).build(),
-      Profile.newBuilder().setName("Veena").setPin("567").setAllowDownloadAccess(true).build()
-    )
+    private val PROFILES_LIST =
+      listOf<Profile>(
+        Profile
+          .newBuilder()
+          .setName("James")
+          .setPin("123")
+          .setAllowDownloadAccess(true)
+          .build(),
+        Profile
+          .newBuilder()
+          .setName("Sean")
+          .setPin("234")
+          .setAllowDownloadAccess(false)
+          .build(),
+        Profile
+          .newBuilder()
+          .setName("Ben")
+          .setPin("345")
+          .setAllowDownloadAccess(true)
+          .build(),
+        Profile
+          .newBuilder()
+          .setName("Rajat")
+          .setPin("456")
+          .setAllowDownloadAccess(false)
+          .build(),
+        Profile
+          .newBuilder()
+          .setName("Veena")
+          .setPin("567")
+          .setAllowDownloadAccess(true)
+          .build(),
+      )
 
     private val ADMIN_PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
     private val PROFILE_ID_0 = ProfileId.newBuilder().setInternalId(0).build()
@@ -321,9 +356,10 @@ class ProfileManagementControllerTest {
 
     val dataProvider = profileManagementController.getProfiles()
 
-    val profiles = monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
-      it.id.internalId
-    }
+    val profiles =
+      monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
+        it.id.internalId
+      }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size)
     checkTestProfilesArePresent(profiles)
   }
@@ -337,9 +373,10 @@ class ProfileManagementControllerTest {
     addNonAdminProfileAndWait(name = "Nikita", pin = "678", allowDownloadAccess = false)
     val dataProvider = profileManagementController.getProfiles()
 
-    val profiles = monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
-      it.id.internalId
-    }
+    val profiles =
+      monitorFactory.waitForNextSuccessfulResult(dataProvider).sortedBy {
+        it.id.internalId
+      }
     assertThat(profiles.size).isEqualTo(PROFILES_LIST.size + 1)
     checkTestProfilesArePresent(profiles)
   }
@@ -391,7 +428,7 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     val currentProfileId = profileManagementController.getCurrentProfileId()
@@ -405,10 +442,10 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_2)
+      profileManagementController.loginToProfile(PROFILE_ID_2),
     )
 
     val currentProfileId = profileManagementController.getCurrentProfileId()
@@ -432,13 +469,14 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
-    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchContinueAnimationSeenStatus,
-      PROFILE_ID_2
-    )
+    val continueButtonSeenStatus =
+      fetchSuccessfulAsyncValue(
+        profileManagementController::fetchContinueAnimationSeenStatus,
+        PROFILE_ID_2,
+      )
     assertThat(continueButtonSeenStatus).isFalse()
   }
 
@@ -447,12 +485,14 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
-    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchContinueAnimationSeenStatus, PROFILE_ID_1
-    )
+    val continueButtonSeenStatus =
+      fetchSuccessfulAsyncValue(
+        profileManagementController::fetchContinueAnimationSeenStatus,
+        PROFILE_ID_1,
+      )
     assertThat(continueButtonSeenStatus).isFalse()
   }
 
@@ -461,18 +501,19 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     fetchSuccessfulAsyncValue(
       profileManagementController::markContinueButtonAnimationSeen,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
 
-    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchContinueAnimationSeenStatus,
-      PROFILE_ID_1
-    )
+    val continueButtonSeenStatus =
+      fetchSuccessfulAsyncValue(
+        profileManagementController::fetchContinueAnimationSeenStatus,
+        PROFILE_ID_1,
+      )
     assertThat(continueButtonSeenStatus).isTrue()
   }
 
@@ -481,22 +522,23 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     fetchSuccessfulAsyncValue(
       profileManagementController::markContinueButtonAnimationSeen,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
     fetchSuccessfulAsyncValue(
       profileManagementController::markContinueButtonAnimationSeen,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
 
-    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchContinueAnimationSeenStatus,
-      PROFILE_ID_1
-    )
+    val continueButtonSeenStatus =
+      fetchSuccessfulAsyncValue(
+        profileManagementController::fetchContinueAnimationSeenStatus,
+        PROFILE_ID_1,
+      )
     assertThat(continueButtonSeenStatus).isTrue()
   }
 
@@ -505,22 +547,23 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     fetchSuccessfulAsyncValue(
       profileManagementController::markContinueButtonAnimationSeen,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_2)
+      profileManagementController.loginToProfile(PROFILE_ID_2),
     )
 
-    val continueButtonSeenStatus = fetchSuccessfulAsyncValue(
-      profileManagementController::fetchContinueAnimationSeenStatus,
-      PROFILE_ID_2
-    )
+    val continueButtonSeenStatus =
+      fetchSuccessfulAsyncValue(
+        profileManagementController::fetchContinueAnimationSeenStatus,
+        PROFILE_ID_2,
+      )
     assertThat(continueButtonSeenStatus).isFalse()
   }
 
@@ -529,7 +572,7 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
@@ -542,7 +585,7 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
@@ -554,9 +597,10 @@ class ProfileManagementControllerTest {
   fun testFetchLearnerId_nonExistentProfile_returnsNull() {
     setUpTestApplicationComponent()
 
-    val learnerId = fetchSuccessfulAsyncValue {
-      profileManagementController.fetchLearnerId(PROFILE_ID_2)
-    }
+    val learnerId =
+      fetchSuccessfulAsyncValue {
+        profileManagementController.fetchLearnerId(PROFILE_ID_2)
+      }
 
     assertThat(learnerId).isNull()
   }
@@ -566,9 +610,10 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
 
-    val learnerId = fetchSuccessfulAsyncValue {
-      profileManagementController.fetchLearnerId(PROFILE_ID_2)
-    }
+    val learnerId =
+      fetchSuccessfulAsyncValue {
+        profileManagementController.fetchLearnerId(PROFILE_ID_2)
+      }
 
     assertThat(learnerId).isEmpty()
   }
@@ -578,9 +623,10 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
 
-    val learnerId = fetchSuccessfulAsyncValue {
-      profileManagementController.fetchLearnerId(PROFILE_ID_2)
-    }
+    val learnerId =
+      fetchSuccessfulAsyncValue {
+        profileManagementController.fetchLearnerId(PROFILE_ID_2)
+      }
 
     assertThat(learnerId).isEqualTo("a625db55")
   }
@@ -625,12 +671,14 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
 
-    val updateProvider = profileManagementController
-      .updateProfileAvatar(
-        PROFILE_ID_2,
-        /* avatarImagePath = */ null,
-        colorRgb = DEFAULT_AVATAR_COLOR_RGB
-      )
+    val updateProvider =
+      profileManagementController
+        .updateProfileAvatar(
+          PROFILE_ID_2,
+          // avatarImagePath =
+          null,
+          colorRgb = DEFAULT_AVATAR_COLOR_RGB,
+        )
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_2)
 
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -693,9 +741,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_6, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_6,
+        allowInLessonQuickLanguageSwitching = true,
+      )
 
     val error = monitorFactory.waitForNextFailureResult(updateProvider)
     assertThat(error).hasMessageThat().contains("ProfileId 6 does not match an existing Profile")
@@ -706,9 +756,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = true,
+      )
     val monitor = monitorFactory.createMonitor(updateProvider)
     testCoroutineDispatchers.runCurrent()
 
@@ -720,9 +772,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = true,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
     // The permission has been enabled.
@@ -735,9 +789,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = false,
+      )
     val monitor = monitorFactory.createMonitor(updateProvider)
     testCoroutineDispatchers.runCurrent()
 
@@ -749,9 +805,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = false,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
     val profile = retrieveProfile(PROFILE_ID_0)
@@ -763,9 +821,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = true,
+      )
     val monitor = monitorFactory.createMonitor(updateProvider)
     testCoroutineDispatchers.runCurrent()
 
@@ -777,9 +837,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = true
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = true,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
     val profile = retrieveProfile(PROFILE_ID_0)
@@ -791,9 +853,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = false,
+      )
     val monitor = monitorFactory.createMonitor(updateProvider)
     testCoroutineDispatchers.runCurrent()
 
@@ -805,9 +869,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
-    val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = PROFILE_ID_0, allowInLessonQuickLanguageSwitching = false
-    )
+    val updateProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = PROFILE_ID_0,
+        allowInLessonQuickLanguageSwitching = false,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
     // The permission has been disabled.
@@ -1016,9 +1082,10 @@ class ProfileManagementControllerTest {
     addAdminProfileAndWait(name = "John", pin = "321")
 
     val profilesProvider = profileManagementController.getProfiles()
-    val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider).sortedBy {
-      it.id.internalId
-    }
+    val profiles =
+      monitorFactory.waitForNextSuccessfulResult(profilesProvider).sortedBy {
+        it.id.internalId
+      }
     assertThat(profiles.size).isEqualTo(4)
     assertThat(profiles[profiles.size - 2].name).isEqualTo("Ben")
     assertThat(profiles.last().name).isEqualTo("John")
@@ -1093,7 +1160,7 @@ class ProfileManagementControllerTest {
       .hasMessageThat()
       .contains(
         "org.oppia.android.domain.profile.ProfileManagementController\$ProfileNotFoundException: " +
-          "ProfileId 6 is not associated with an existing profile"
+          "ProfileId 6 is not associated with an existing profile",
       )
   }
 
@@ -1104,7 +1171,7 @@ class ProfileManagementControllerTest {
     val previousSessionId = retrieveCurrentSessionId()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     // Logging into a new profile should regenerate the session ID.
@@ -1117,13 +1184,13 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
     val previousSessionId = retrieveCurrentSessionId()
 
     // Log into the same profile twice (e.g. the case where the user logs out, then back in).
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     // Logging into the same profile a second time should also regenerate the session ID.
@@ -1136,12 +1203,12 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
     val sessionIdForProfile1 = retrieveCurrentSessionId()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_2)
+      profileManagementController.loginToProfile(PROFILE_ID_2),
     )
 
     // Logging into a different profile a should regenerate the session ID.
@@ -1156,7 +1223,7 @@ class ProfileManagementControllerTest {
     val previousSessionId = retrieveCurrentSessionId()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_6)
+      profileManagementController.loginToProfile(PROFILE_ID_6),
     )
 
     // The session ID shouldn't change if the attempt to log in failed.
@@ -1245,7 +1312,7 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.deleteProfile(PROFILE_ID_2)
+      profileManagementController.deleteProfile(PROFILE_ID_2),
     )
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -1284,10 +1351,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
-    val updateProvider = profileManagementController.updateWifiPermissionDeviceSettings(
-      ADMIN_PROFILE_ID_0,
-      downloadAndUpdateOnWifiOnly = true
-    )
+    val updateProvider =
+      profileManagementController.updateWifiPermissionDeviceSettings(
+        ADMIN_PROFILE_ID_0,
+        downloadAndUpdateOnWifiOnly = true,
+      )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
     val deviceSettingsProvider = profileManagementController.getDeviceSettings()
@@ -1303,7 +1371,8 @@ class ProfileManagementControllerTest {
 
     val updateProvider =
       profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        ADMIN_PROFILE_ID_0, automaticallyUpdateTopics = true
+        ADMIN_PROFILE_ID_0,
+        automaticallyUpdateTopics = true,
       )
     monitorFactory.ensureDataProviderExecutes(updateProvider)
 
@@ -1320,12 +1389,14 @@ class ProfileManagementControllerTest {
 
     val updateProvider1 =
       profileManagementController.updateWifiPermissionDeviceSettings(
-        ADMIN_PROFILE_ID_0, downloadAndUpdateOnWifiOnly = true
+        ADMIN_PROFILE_ID_0,
+        downloadAndUpdateOnWifiOnly = true,
       )
     monitorFactory.ensureDataProviderExecutes(updateProvider1)
     val updateProvider2 =
       profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        ADMIN_PROFILE_ID_0, automaticallyUpdateTopics = true
+        ADMIN_PROFILE_ID_0,
+        automaticallyUpdateTopics = true,
       )
     monitorFactory.ensureDataProviderExecutes(updateProvider2)
 
@@ -1343,7 +1414,8 @@ class ProfileManagementControllerTest {
 
     val updateProvider =
       profileManagementController.updateWifiPermissionDeviceSettings(
-        PROFILE_ID_1, downloadAndUpdateOnWifiOnly = true
+        PROFILE_ID_1,
+        downloadAndUpdateOnWifiOnly = true,
       )
 
     monitorFactory.waitForNextFailureResult(updateProvider)
@@ -1357,7 +1429,8 @@ class ProfileManagementControllerTest {
 
     val updateProvider =
       profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-        PROFILE_ID_1, automaticallyUpdateTopics = true
+        PROFILE_ID_1,
+        automaticallyUpdateTopics = true,
       )
 
     monitorFactory.waitForNextFailureResult(updateProvider)
@@ -1369,14 +1442,15 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
-    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveSurveyLastShownTimestamp(
-        PROFILE_ID_1
+    val lastShownTimeMs =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveSurveyLastShownTimestamp(
+          PROFILE_ID_1,
+        ),
       )
-    )
 
     assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
   }
@@ -1389,19 +1463,20 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     fetchSuccessfulAsyncValue(
       profileManagementController::updateSurveyLastShownTimestamp,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
 
-    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveSurveyLastShownTimestamp(
-        PROFILE_ID_1
+    val lastShownTimeMs =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveSurveyLastShownTimestamp(
+          PROFILE_ID_1,
+        ),
       )
-    )
 
     assertThat(lastShownTimeMs).isEqualTo(CURRENT_TIMESTAMP)
   }
@@ -1414,23 +1489,24 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     fetchSuccessfulAsyncValue(
       profileManagementController::updateSurveyLastShownTimestamp,
-      PROFILE_ID_1
+      PROFILE_ID_1,
     )
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_2)
+      profileManagementController.loginToProfile(PROFILE_ID_2),
     )
 
-    val lastShownTimeMs = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveSurveyLastShownTimestamp(
-        PROFILE_ID_2
+    val lastShownTimeMs =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveSurveyLastShownTimestamp(
+          PROFILE_ID_2,
+        ),
       )
-    )
 
     assertThat(lastShownTimeMs).isEqualTo(DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS)
   }
@@ -1441,19 +1517,20 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
 
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.updateLastSelectedClassroomId(
         PROFILE_ID_0,
-        TEST_CLASSROOM_ID_1
-      )
+        TEST_CLASSROOM_ID_1,
+      ),
     )
 
-    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
+    val lastSelectedClassroomId =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0),
+      )
 
     assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
   }
@@ -1464,26 +1541,27 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
 
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.updateLastSelectedClassroomId(
         PROFILE_ID_0,
-        TEST_CLASSROOM_ID_1
-      )
+        TEST_CLASSROOM_ID_1,
+      ),
     )
 
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.updateLastSelectedClassroomId(
         PROFILE_ID_0,
-        TEST_CLASSROOM_ID_2
-      )
+        TEST_CLASSROOM_ID_2,
+      ),
     )
 
-    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
+    val lastSelectedClassroomId =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0),
+      )
 
     assertThat(lastSelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_2)
   }
@@ -1495,36 +1573,38 @@ class ProfileManagementControllerTest {
 
     // Login to profile 0 and update the last selected classroom to classroom 1.
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.updateLastSelectedClassroomId(
         PROFILE_ID_0,
-        TEST_CLASSROOM_ID_1
-      )
+        TEST_CLASSROOM_ID_1,
+      ),
     )
 
     // Login to profile 1 and update the last selected classroom to classroom 2.
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.updateLastSelectedClassroomId(
         PROFILE_ID_1,
-        TEST_CLASSROOM_ID_2
-      )
+        TEST_CLASSROOM_ID_2,
+      ),
     )
 
     // Verify that last selected classroom of profile 0 is classroom 1.
-    val profile0SelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
+    val profile0SelectedClassroomId =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0),
+      )
     assertThat(profile0SelectedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
 
     // Verify that last selected classroom of profile 1 is classroom 2.
-    val classroomIdProfile1 = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_1)
-    )
+    val classroomIdProfile1 =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_1),
+      )
     assertThat(classroomIdProfile1).isEqualTo(TEST_CLASSROOM_ID_2)
   }
 
@@ -1534,11 +1614,12 @@ class ProfileManagementControllerTest {
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
-    val lastSelectedClassroomId = monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0)
-    )
+    val lastSelectedClassroomId =
+      monitorFactory.waitForNextSuccessfulResult(
+        profileManagementController.retrieveLastSelectedClassroomId(PROFILE_ID_0),
+      )
     assertThat(lastSelectedClassroomId).isEmpty()
   }
 
@@ -1547,14 +1628,15 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER,
-      null,
-      -1,
-      "John",
-      isAdmin = true
-    )
+    val updateProvider =
+      profileManagementController.updateNewProfileDetails(
+        PROFILE_ID_0,
+        ProfileType.SOLE_LEARNER,
+        null,
+        -1,
+        "John",
+        isAdmin = true,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
@@ -1572,14 +1654,15 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER,
-      null,
-      -1,
-      "John123",
-      isAdmin = true
-    )
+    val updateProvider =
+      profileManagementController.updateNewProfileDetails(
+        PROFILE_ID_0,
+        ProfileType.SOLE_LEARNER,
+        null,
+        -1,
+        "John123",
+        isAdmin = true,
+      )
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
 
     assertThat(failure).hasMessageThat().contains("John123 does not contain only letters")
@@ -1590,14 +1673,15 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER,
-      null,
-      -11235672,
-      "John",
-      isAdmin = true
-    )
+    val updateProvider =
+      profileManagementController.updateNewProfileDetails(
+        PROFILE_ID_0,
+        ProfileType.SOLE_LEARNER,
+        null,
+        -11235672,
+        "John",
+        isAdmin = true,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val profileProvider = profileManagementController.getProfile(PROFILE_ID_0)
@@ -1615,14 +1699,15 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_0,
-      ProfileType.PROFILE_TYPE_UNSPECIFIED,
-      null,
-      -11235672,
-      "John",
-      isAdmin = true
-    )
+    val updateProvider =
+      profileManagementController.updateNewProfileDetails(
+        PROFILE_ID_0,
+        ProfileType.PROFILE_TYPE_UNSPECIFIED,
+        null,
+        -11235672,
+        "John",
+        isAdmin = true,
+      )
 
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
     assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
@@ -1633,17 +1718,19 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateNewProfileDetails(
-      PROFILE_ID_3,
-      ProfileType.SOLE_LEARNER,
-      null,
-      -1,
-      "John",
-      isAdmin = true
-    )
+    val updateProvider =
+      profileManagementController.updateNewProfileDetails(
+        PROFILE_ID_3,
+        ProfileType.SOLE_LEARNER,
+        null,
+        -1,
+        "John",
+        isAdmin = true,
+      )
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
 
-    assertThat(failure).hasMessageThat()
+    assertThat(failure)
+      .hasMessageThat()
       .contains("ProfileId ${PROFILE_ID_3?.internalId} does not match an existing Profile")
   }
 
@@ -1652,10 +1739,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
 
-    val updateProvider = profileManagementController.updateProfileType(
-      PROFILE_ID_0,
-      ProfileType.SUPERVISOR
-    )
+    val updateProvider =
+      profileManagementController.updateProfileType(
+        PROFILE_ID_0,
+        ProfileType.SUPERVISOR,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
@@ -1668,10 +1756,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     addAdminProfile(name = "Admin", pin = "")
 
-    val updateProvider = profileManagementController.updateProfileType(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER
-    )
+    val updateProvider =
+      profileManagementController.updateProfileType(
+        PROFILE_ID_0,
+        ProfileType.SOLE_LEARNER,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
@@ -1685,10 +1774,11 @@ class ProfileManagementControllerTest {
     addAdminProfile("Admin")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
-    val updateProvider = profileManagementController.updateProfileType(
-      PROFILE_ID_1,
-      ProfileType.ADDITIONAL_LEARNER
-    )
+    val updateProvider =
+      profileManagementController.updateProfileType(
+        PROFILE_ID_1,
+        ProfileType.ADDITIONAL_LEARNER,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_1)
@@ -1701,10 +1791,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateProfileType(
-      PROFILE_ID_0,
-      ProfileType.SOLE_LEARNER
-    )
+    val updateProvider =
+      profileManagementController.updateProfileType(
+        PROFILE_ID_0,
+        ProfileType.SOLE_LEARNER,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
 
     val updatedProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
@@ -1717,10 +1808,11 @@ class ProfileManagementControllerTest {
     setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
-    val updateProvider = profileManagementController.updateProfileType(
-      PROFILE_ID_0,
-      ProfileType.PROFILE_TYPE_UNSPECIFIED
-    )
+    val updateProvider =
+      profileManagementController.updateProfileType(
+        PROFILE_ID_0,
+        ProfileType.PROFILE_TYPE_UNSPECIFIED,
+      )
 
     val failure = monitorFactory.waitForNextFailureResult(updateProvider)
     assertThat(failure).hasMessageThat().isEqualTo("ProfileType must be set.")
@@ -1736,7 +1828,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = true,
         pin = "12345",
         colorRgb = -1,
-        avatarImagePath = null
+        avatarImagePath = null,
       )
       testComponent.getProfileManagementController().addProfile(
         name = "John",
@@ -1744,7 +1836,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = true,
         pin = "",
         colorRgb = -1,
-        avatarImagePath = null
+        avatarImagePath = null,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -1765,7 +1857,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = true,
         pin = "12345",
         colorRgb = -1,
-        avatarImagePath = null
+        avatarImagePath = null,
       )
       testComponent.getProfileManagementController().addProfile(
         name = "John",
@@ -1773,7 +1865,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = true,
         pin = "",
         colorRgb = -1,
-        avatarImagePath = null
+        avatarImagePath = null,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -1794,7 +1886,7 @@ class ProfileManagementControllerTest {
         allowDownloadAccess = true,
         pin = "",
         colorRgb = -1,
-        avatarImagePath = null
+        avatarImagePath = null,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -1819,7 +1911,7 @@ class ProfileManagementControllerTest {
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
     assertThat(profileOnboardingModeResult).isEqualTo(
-      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY,
     )
   }
 
@@ -1926,9 +2018,10 @@ class ProfileManagementControllerTest {
   }
 
   private fun addTestProfiles() {
-    val profileAdditionProviders = PROFILES_LIST.map {
-      addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
-    }
+    val profileAdditionProviders =
+      PROFILES_LIST.map {
+        addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
+      }
     profileAdditionProviders.forEach(monitorFactory::ensureDataProviderExecutes)
   }
 
@@ -1945,15 +2038,14 @@ class ProfileManagementControllerTest {
   private fun addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching: Boolean) {
     addNonAdminProfileAndWait(
       name = "Test Profile",
-      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
+      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching,
     )
   }
 
   private fun retrieveProfile(profileId: ProfileId) =
     monitorFactory.waitForNextSuccessfulResult(profileManagementController.getProfile(profileId))
 
-  private fun retrieveCurrentSessionId() =
-    monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getSessionId())
+  private fun retrieveCurrentSessionId() = monitorFactory.waitForNextSuccessfulResult(loggingIdentifierController.getSessionId())
 
   private fun getAbsoluteDirPath(path: String): String {
     /**
@@ -1963,16 +2055,20 @@ class ProfileManagementControllerTest {
     return context.filesDir.toString().dropLast(5) + "app_" + path
   }
 
-  private fun readProfileDatabase(): ProfileDatabase {
-    return FileInputStream(
-      File(context.filesDir, "profile_database.cache")
+  private fun readProfileDatabase(): ProfileDatabase =
+    FileInputStream(
+      File(context.filesDir, "profile_database.cache"),
     ).use(ProfileDatabase::parseFrom)
-  }
 
-  private fun addAdminProfile(name: String, pin: String = DEFAULT_PIN): DataProvider<Any?> =
-    addProfile(name, pin, isAdmin = true)
+  private fun addAdminProfile(
+    name: String,
+    pin: String = DEFAULT_PIN,
+  ): DataProvider<Any?> = addProfile(name, pin, isAdmin = true)
 
-  private fun addAdminProfileAndWait(name: String, pin: String = DEFAULT_PIN) {
+  private fun addAdminProfileAndWait(
+    name: String,
+    pin: String = DEFAULT_PIN,
+  ) {
     monitorFactory.ensureDataProviderExecutes(addAdminProfile(name, pin))
   }
 
@@ -1981,30 +2077,33 @@ class ProfileManagementControllerTest {
     pin: String = DEFAULT_PIN,
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
     allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
-    colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB
-  ): DataProvider<Any?> {
-    return addProfile(
+    colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB,
+  ): DataProvider<Any?> =
+    addProfile(
       name,
       pin,
       avatarImagePath = null,
       allowDownloadAccess,
       allowInLessonQuickLanguageSwitching,
       colorRgb,
-      isAdmin = false
+      isAdmin = false,
     )
-  }
 
   private fun addNonAdminProfileAndWait(
     name: String,
     pin: String = DEFAULT_PIN,
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
     allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
-    colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB
+    colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB,
   ) {
     monitorFactory.ensureDataProviderExecutes(
       addNonAdminProfile(
-        name, pin, allowDownloadAccess, allowInLessonQuickLanguageSwitching, colorRgb
-      )
+        name,
+        pin,
+        allowDownloadAccess,
+        allowInLessonQuickLanguageSwitching,
+        colorRgb,
+      ),
     )
   }
 
@@ -2015,50 +2114,48 @@ class ProfileManagementControllerTest {
     allowDownloadAccess: Boolean = DEFAULT_ALLOW_DOWNLOAD_ACCESS,
     allowInLessonQuickLanguageSwitching: Boolean = DEFAULT_ALLOW_IN_LESSON_QUICK_LANGUAGE_SWITCHING,
     colorRgb: Int = DEFAULT_AVATAR_COLOR_RGB,
-    isAdmin: Boolean
-  ): DataProvider<Any?> {
-    return profileManagementController.addProfile(
+    isAdmin: Boolean,
+  ): DataProvider<Any?> =
+    profileManagementController.addProfile(
       name,
       pin,
       avatarImagePath,
       allowDownloadAccess,
       colorRgb,
       isAdmin,
-      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching
+      allowInLessonQuickLanguageSwitching = allowInLessonQuickLanguageSwitching,
     )
-  }
 
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
   private fun <T> fetchSuccessfulAsyncValue(
     block: suspend (profileId: ProfileId) -> T,
-    profileId: ProfileId
+    profileId: ProfileId,
   ) = CoroutineScope(backgroundDispatcher).async { block(profileId) }.waitForSuccessfulResult()
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
-    return when (val result = waitForResult()) {
+  private fun <T> Deferred<T>.waitForSuccessfulResult(): T =
+    when (val result = waitForResult()) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> result.value
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
-  }
 
   private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      CoroutineScope(backgroundDispatcher)
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
+  private fun <T> StateFlow<T>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
 
@@ -2088,9 +2185,10 @@ class ProfileManagementControllerTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
+      DaggerProfileManagementControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build()
+        .build(),
     )
   }
 
@@ -2106,9 +2204,7 @@ class ProfileManagementControllerTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -2133,7 +2229,7 @@ class ProfileManagementControllerTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
 
@@ -2144,7 +2240,7 @@ class ProfileManagementControllerTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableLearnerStudyAnalytics
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
 
@@ -2154,7 +2250,7 @@ class ProfileManagementControllerTest {
       // Snapshot the value so that it doesn't change between injection and use.
       val enableFeature = enableOnboardingFlowV2
       return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
+        defaultValue = enableFeature,
       )
     }
   }
@@ -2178,8 +2274,8 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
-      ApplicationLifecycleModule::class
-    ]
+      ApplicationLifecycleModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -2197,9 +2293,12 @@ class ProfileManagementControllerTest {
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
+      DaggerProfileManagementControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

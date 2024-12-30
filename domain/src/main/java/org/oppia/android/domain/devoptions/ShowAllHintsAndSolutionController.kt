@@ -8,15 +8,16 @@ import javax.inject.Singleton
  * is expected to be called on the main thread only.
  */
 @Singleton
-class ShowAllHintsAndSolutionController @Inject constructor() {
+class ShowAllHintsAndSolutionController
+  @Inject
+  constructor() {
+    private var showAllHintsAndSolution = false
 
-  private var showAllHintsAndSolution = false
+    /** Returns whether all hints and solutions should be shown by default. */
+    fun getShowAllHintsAndSolution(): Boolean = showAllHintsAndSolution
 
-  /** Returns whether all hints and solutions should be shown by default. */
-  fun getShowAllHintsAndSolution(): Boolean = showAllHintsAndSolution
-
-  /** Sets whether all hints and solutions should be shown by default. */
-  fun setShowAllHintsAndSolution(isEnabled: Boolean) {
-    showAllHintsAndSolution = isEnabled
+    /** Sets whether all hints and solutions should be shown by default. */
+    fun setShowAllHintsAndSolution(isEnabled: Boolean) {
+      showAllHintsAndSolution = isEnabled
+    }
   }
-}

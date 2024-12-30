@@ -15,18 +15,26 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
   companion object {
     /** Arguments key for ResetPinDialogFragment. */
     const val RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY = "ResetPinDialogFragment.arguments"
-    fun newInstance(profileId: Int, name: String): ResetPinDialogFragment {
-      val args = ResetPinDialogFragmentArguments.newBuilder().apply {
-        this.internalProfileId = profileId
-        this.name = name
-      }.build()
+
+    fun newInstance(
+      profileId: Int,
+      name: String,
+    ): ResetPinDialogFragment {
+      val args =
+        ResetPinDialogFragmentArguments
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileId
+            this.name = name
+          }.build()
       return ResetPinDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(
-            RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-            args
-          )
-        }
+        arguments =
+          Bundle().apply {
+            putProto(
+              RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+              args,
+            )
+          }
       }
     }
   }
@@ -40,10 +48,11 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val args = arguments?.getProto(
-      RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-      ResetPinDialogFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments?.getProto(
+        RESET_PIN_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        ResetPinDialogFragmentArguments.getDefaultInstance(),
+      )
 
     val profileId = args?.internalProfileId
     val name = args?.name
@@ -52,7 +61,7 @@ class ResetPinDialogFragment : InjectableDialogFragment() {
     return resetPinDialogFragmentPresenter.handleOnCreateDialog(
       activity as ProfileRouteDialogInterface,
       profileId,
-      name
+      name,
     )
   }
 }

@@ -70,11 +70,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = FeatureFlagsLoggerTest.TestApplication::class,
-  sdk = [Build.VERSION_CODES.O]
+  sdk = [Build.VERSION_CODES.O],
 )
 class FeatureFlagsLoggerTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   @field:[Inject EnableTestFeatureFlag]
@@ -83,6 +85,7 @@ class FeatureFlagsLoggerTest {
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   @Parameter var index: Int = Int.MIN_VALUE
+
   @Parameter lateinit var flagName: String
 
   @Before
@@ -116,7 +119,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlag_hasCorrectDefaultValues() {
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(TEST_FEATURE_FLAG to testFeatureFlag),
     )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
@@ -135,7 +138,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlagWithEnabledDefaults_hasCorrectDefaultValues() {
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault)
+      mapOf(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault),
     )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
@@ -169,19 +172,22 @@ class FeatureFlagsLoggerTest {
   @Iteration("extra_topic_tabs_ui", "index=1", "flagName=$EXTRA_TOPIC_TABS_UI")
   @Iteration("learner_study_analytics", "index=2", "flagName=$LEARNER_STUDY_ANALYTICS")
   @Iteration(
-    "fast_language_switching_in_lesson", "index=3",
-    "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON"
+    "fast_language_switching_in_lesson",
+    "index=3",
+    "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON",
   )
   @Iteration("logging_learner_study_ids", "index=4", "flagName=$LOGGING_LEARNER_STUDY_IDS")
   @Iteration("edit_accounts_options_ui", "index=5", "flagName=$EDIT_ACCOUNTS_OPTIONS_UI")
   @Iteration(
-    "enable_performance_metrics_collection", "index=6",
-    "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION"
+    "enable_performance_metrics_collection",
+    "index=6",
+    "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION",
   )
   @Iteration("spotlight_ui", "index=7", "flagName=$SPOTLIGHT_UI")
   @Iteration(
-    "interaction_config_change_state_retention", "index=8",
-    "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION"
+    "interaction_config_change_state_retention",
+    "index=8",
+    "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION",
   )
   @Iteration("app_and_os_deprecation", "index=9", "flagName=$APP_AND_OS_DEPRECATION")
   @Iteration("enable_nps_survey", "index=10", "flagName=$ENABLE_NPS_SURVEY")
@@ -213,9 +219,7 @@ class FeatureFlagsLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -251,24 +255,27 @@ class FeatureFlagsLoggerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
-    ]
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,
+    ],
   )
-
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(featureFlagLoggerTest: FeatureFlagsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFeatureFlagsLoggerTest_TestApplicationComponent.builder()
+      DaggerFeatureFlagsLoggerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

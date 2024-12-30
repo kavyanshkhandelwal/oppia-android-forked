@@ -15,7 +15,7 @@ class ItemSelectionInputModule {
   @StringKey("ContainsAtLeastOneOf")
   @ItemSelectionInputRules
   internal fun provideItemSelectionInputContainsAtLeastOneOfRuleClassifier(
-    classifierProvider: ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider
+    classifierProvider: ItemSelectionInputContainsAtLeastOneOfRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,7 +23,7 @@ class ItemSelectionInputModule {
   @StringKey("DoesNotContainAtLeastOneOf")
   @ItemSelectionInputRules
   internal fun provideItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifier(
-    classifierProvider: ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
+    classifierProvider: ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,7 +31,7 @@ class ItemSelectionInputModule {
   @StringKey("Equals")
   @ItemSelectionInputRules
   internal fun provideItemSelectionInputEqualsRuleClassifier(
-    classifierProvider: ItemSelectionInputEqualsRuleClassifierProvider
+    classifierProvider: ItemSelectionInputEqualsRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -39,6 +39,6 @@ class ItemSelectionInputModule {
   @StringKey("IsProperSubsetOf")
   @ItemSelectionInputRules
   internal fun provideItemSelectionInputIsProperSubsetOfRuleClassifier(
-    classifierProvider: ItemSelectionInputIsProperSubsetOfRuleClassifierProvider
+    classifierProvider: ItemSelectionInputIsProperSubsetOfRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

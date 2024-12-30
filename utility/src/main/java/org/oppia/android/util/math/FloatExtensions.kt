@@ -24,17 +24,13 @@ const val DOUBLE_EQUALITY_EPSILON: Double = 1e-13
  * Returns whether this float approximately equals another based on a consistent epsilon value
  * ([FLOAT_EQUALITY_EPSILON]).
  */
-fun Float.isApproximatelyEqualTo(other: Float): Boolean {
-  return abs(this - other) < FLOAT_EQUALITY_EPSILON
-}
+fun Float.isApproximatelyEqualTo(other: Float): Boolean = abs(this - other) < FLOAT_EQUALITY_EPSILON
 
 /**
  * Returns whether this double approximately equals another based on a consistent epsilon value
  * ([DOUBLE_EQUALITY_EPSILON]).
  */
-fun Double.isApproximatelyEqualTo(other: Double): Boolean {
-  return abs(this - other) < DOUBLE_EQUALITY_EPSILON
-}
+fun Double.isApproximatelyEqualTo(other: Double): Boolean = abs(this - other) < DOUBLE_EQUALITY_EPSILON
 
 /**
  * Returns a string representation of this [Double] that keeps the double in pure decimal and never

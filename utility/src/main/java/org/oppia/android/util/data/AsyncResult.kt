@@ -60,9 +60,7 @@ sealed class AsyncResult<T> {
    * Returns whether this result is newer than, or the same age as, the specified result of the same
    * type.
    */
-  fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean {
-    return resultTimeMillis >= otherResult.resultTimeMillis
-  }
+  fun <O> isNewerThanOrSameAgeAs(otherResult: AsyncResult<O>): Boolean = resultTimeMillis >= otherResult.resultTimeMillis
 
   /**
    * Returns whether this result has the same effective value as [other], that is, that the two can
@@ -72,13 +70,12 @@ sealed class AsyncResult<T> {
    * dependent on the age of the result (indicated by [resultTimeMillis]) which may affect functions
    * like [equals] and [hashCode].
    */
-  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): Boolean {
-    return when (val thisResult = this) {
+  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): Boolean =
+    when (val thisResult = this) {
       is Pending -> other is Pending // Two pending results are effectively equal.
       is Success -> if (other is Success) thisResult.isEffectivelyEqualTo(other) else false
       is Failure -> if (other is Failure) thisResult.isEffectivelyEqualTo(other) else false
     }
-  }
 
   /**
    * Returns a version of this result that retains its pending and failed states, but transforms its
@@ -91,9 +88,7 @@ sealed class AsyncResult<T> {
    * Note also that the specified transformation function should have no side effects, and be
    * non-blocking.
    */
-  fun <O> transform(transformFunction: (T) -> O): AsyncResult<O> {
-    return transformWithResult { value -> Success(transformFunction(value)) }
-  }
+  fun <O> transform(transformFunction: (T) -> O): AsyncResult<O> = transformWithResult { value -> Success(transformFunction(value)) }
 
   /**
    * Returns a transformed version of this result in the same way as [transform] except it supports
@@ -102,11 +97,10 @@ sealed class AsyncResult<T> {
    * Note that the transform function is only used if the current result is a success, at which case
    * the function's result becomes the new, transformed result.
    */
-  suspend fun <O> transformAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> {
-    return transformWithResultAsync { value ->
+  suspend fun <O> transformAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> =
+    transformWithResultAsync { value ->
       transformFunction(value)
     }
-  }
 
   /**
    * Returns a version of this result that retains its pending and failed states, but combines its
@@ -125,12 +119,11 @@ sealed class AsyncResult<T> {
    */
   fun <O, T2> combineWith(
     otherResult: AsyncResult<T2>,
-    combineFunction: (T, T2) -> O
-  ): AsyncResult<O> {
-    return transformWithResult { value1 ->
+    combineFunction: (T, T2) -> O,
+  ): AsyncResult<O> =
+    transformWithResult { value1 ->
       otherResult.transformWithResult { value2 -> Success(combineFunction(value1, value2)) }
     }
-  }
 
   /**
    * Returns a version of this result that is combined with another result in the same way as
@@ -142,64 +135,59 @@ sealed class AsyncResult<T> {
    */
   suspend fun <O, T2> combineWithAsync(
     otherResult: AsyncResult<T2>,
-    combineFunction: suspend (T, T2) -> AsyncResult<O>
-  ): AsyncResult<O> {
-    return transformWithResultAsync { value1 ->
+    combineFunction: suspend (T, T2) -> AsyncResult<O>,
+  ): AsyncResult<O> =
+    transformWithResultAsync { value1 ->
       otherResult.transformWithResultAsync { value2 ->
         combineFunction(value1, value2)
       }
     }
-  }
 
-  private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>): AsyncResult<O> {
-    return when (this) {
+  private fun <O> transformWithResult(transformFunction: (T) -> AsyncResult<O>): AsyncResult<O> =
+    when (this) {
       is Pending -> Pending()
       is Success -> transformFunction(value)
       is Failure -> Failure(ChainedFailureException(error))
     }
-  }
 
-  private suspend fun <O> transformWithResultAsync(
-    transformFunction: suspend (T) -> AsyncResult<O>
-  ): AsyncResult<O> {
-    return when (this) {
+  private suspend fun <O> transformWithResultAsync(transformFunction: suspend (T) -> AsyncResult<O>): AsyncResult<O> =
+    when (this) {
       is Pending -> Pending()
       is Success -> transformFunction(value)
       is Failure -> Failure(ChainedFailureException(error))
     }
-  }
 
   /** A chained exception to preserve failure stacktraces for [transform] and [transformAsync]. */
-  class ChainedFailureException(cause: Throwable) : Exception(cause)
+  class ChainedFailureException(
+    cause: Throwable,
+  ) : Exception(cause)
 
   /** [AsyncResult] representing an operation that may be completed in the future. */
   data class Pending<T>(
-    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis(),
   ) : AsyncResult<T>()
 
   /** [AsyncResult] representing an operation that succeeded with a specific [value]. */
   data class Success<T>(
     val value: T,
-    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis(),
   ) : AsyncResult<T>() {
     /**
      * Returns whether this [Success] is effectively equal to [otherResult] (i.e., has the same
      * [value], but not necessarily the same [resultTimeMillis]).
      */
-    internal fun <O> isEffectivelyEqualTo(otherResult: Success<O>): Boolean =
-      value == otherResult.value
+    internal fun <O> isEffectivelyEqualTo(otherResult: Success<O>): Boolean = value == otherResult.value
   }
 
   /** [AsyncResult] representing an operation that failed with a specific [error]. */
   data class Failure<T>(
     val error: Throwable,
-    override val resultTimeMillis: Long = SystemClock.uptimeMillis()
+    override val resultTimeMillis: Long = SystemClock.uptimeMillis(),
   ) : AsyncResult<T>() {
     /**
      * Returns whether this [Failure] is effectively equal to [otherResult] (i.e., has the same
      * [error], but not necessarily the same [resultTimeMillis]).
      */
-    internal fun <O> isEffectivelyEqualTo(otherResult: Failure<O>): Boolean =
-      error == otherResult.error
+    internal fun <O> isEffectivelyEqualTo(otherResult: Failure<O>): Boolean = error == otherResult.error
   }
 }

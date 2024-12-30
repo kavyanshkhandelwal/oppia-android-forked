@@ -14,16 +14,15 @@ class NumericInputRuleModule {
   @IntoMap
   @StringKey("Equals")
   @NumericInputRules
-  internal fun provideNumericInputEqualsRuleClassifier(
-    classifierProvider: NumericInputEqualsRuleClassifierProvider
-  ): RuleClassifier = classifierProvider.createRuleClassifier()
+  internal fun provideNumericInputEqualsRuleClassifier(classifierProvider: NumericInputEqualsRuleClassifierProvider): RuleClassifier =
+    classifierProvider.createRuleClassifier()
 
   @Provides
   @IntoMap
   @StringKey("IsGreaterThanOrEqualTo")
   @NumericInputRules
   internal fun provideNumericInputIsGreaterThanOrEqualToRuleClassifier(
-    classifierProvider: NumericInputIsGreaterThanOrEqualToRuleClassifierProvider
+    classifierProvider: NumericInputIsGreaterThanOrEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,7 +30,7 @@ class NumericInputRuleModule {
   @StringKey("IsGreaterThan")
   @NumericInputRules
   internal fun provideNumericInputIsGreaterThanRuleClassifier(
-    classifierProvider: NumericInputIsGreaterThanRuleClassifierProvider
+    classifierProvider: NumericInputIsGreaterThanRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -39,7 +38,7 @@ class NumericInputRuleModule {
   @StringKey("IsInclusivelyBetween")
   @NumericInputRules
   internal fun provideNumericInputIsInclusivelyBetweenRuleClassifier(
-    classifierProvider: NumericInputIsInclusivelyBetweenRuleClassifierProvider
+    classifierProvider: NumericInputIsInclusivelyBetweenRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -47,7 +46,7 @@ class NumericInputRuleModule {
   @StringKey("IsLessThanOrEqualTo")
   @NumericInputRules
   internal fun provideNumericInputIsLessThanOrEqualToRuleClassifier(
-    classifierProvider: NumericInputIsLessThanOrEqualToRuleClassifierProvider
+    classifierProvider: NumericInputIsLessThanOrEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -55,7 +54,7 @@ class NumericInputRuleModule {
   @StringKey("IsLessThan")
   @NumericInputRules
   internal fun provideNumericInputIsLessThanRuleClassifier(
-    classifierProvider: NumericInputIsLessThanRuleClassifierProvider
+    classifierProvider: NumericInputIsLessThanRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -63,6 +62,6 @@ class NumericInputRuleModule {
   @StringKey("IsWithinTolerance")
   @NumericInputRules
   internal fun provideNumericInputIsWithinToleranceRuleClassifier(
-    classifierProvider: NumericInputIsWithinToleranceRuleClassifierProvider
+    classifierProvider: NumericInputIsWithinToleranceRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

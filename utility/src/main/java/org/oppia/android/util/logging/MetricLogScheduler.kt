@@ -11,14 +11,17 @@ interface MetricLogScheduler {
    */
   fun enqueueWorkRequestForPeriodicBackgroundMetrics(
     workManager: WorkManager,
-    workRequest: PeriodicWorkRequest
+    workRequest: PeriodicWorkRequest,
   )
 
   /**
    * Enqueues a [workRequest] using the [workManager] for scheduling metric collection of storage
    * usage of the application on the current device.
    */
-  fun enqueueWorkRequestForStorageUsage(workManager: WorkManager, workRequest: PeriodicWorkRequest)
+  fun enqueueWorkRequestForStorageUsage(
+    workManager: WorkManager,
+    workRequest: PeriodicWorkRequest,
+  )
 
   /**
    * Enqueues a [workRequest] using the [workManager] for scheduling metric collection of periodic
@@ -26,6 +29,6 @@ interface MetricLogScheduler {
    */
   fun enqueueWorkRequestForPeriodicUiMetrics(
     workManager: WorkManager,
-    workRequest: PeriodicWorkRequest
+    workRequest: PeriodicWorkRequest,
   )
 }

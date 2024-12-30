@@ -43,190 +43,193 @@ import javax.inject.Inject
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
-class HomeFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val profileManagementController: ProfileManagementController,
-  private val topicListController: TopicListController,
-  private val oppiaLogger: OppiaLogger,
-  private val analyticsController: AnalyticsController,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil,
-  private val translationController: TranslationController,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
-  private val appStartupStateController: AppStartupStateController
-) {
-  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
-  private val exitProfileListener = activity as ExitProfileListener
+class HomeFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val profileManagementController: ProfileManagementController,
+    private val topicListController: TopicListController,
+    private val oppiaLogger: OppiaLogger,
+    private val analyticsController: AnalyticsController,
+    @TopicHtmlParserEntityType private val topicEntityType: String,
+    @StoryHtmlParserEntityType private val storyEntityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val dateTimeUtil: DateTimeUtil,
+    private val translationController: TranslationController,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    @EnableOnboardingFlowV2
+    private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+    private val appStartupStateController: AppStartupStateController,
+  ) {
+    private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+    private val exitProfileListener = activity as ExitProfileListener
 
-  private lateinit var binding: HomeFragmentBinding
-  private var internalProfileId: Int = -1
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+    private lateinit var binding: HomeFragmentBinding
+    private var internalProfileId: Int = -1
+    private var profileId: ProfileId = ProfileId.getDefaultInstance()
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-    // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
-    // data-bound view models.
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      binding = HomeFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+      // NB: Both the view model and lifecycle owner must be set in order to correctly bind LiveData elements to
+      // data-bound view models.
 
-    profileId = activity.intent.extractCurrentUserProfileId()
-    internalProfileId = profileId.internalId
+      profileId = activity.intent.extractCurrentUserProfileId()
+      internalProfileId = profileId.internalId
 
-    logHomeActivityEvent()
+      logHomeActivityEvent()
 
-    val homeViewModel = HomeViewModel(
-      activity,
-      fragment,
-      oppiaLogger,
-      internalProfileId,
-      profileManagementController,
-      topicListController,
-      topicEntityType,
-      storyEntityType,
-      resourceHandler,
-      dateTimeUtil,
-      translationController
-    )
+      val homeViewModel =
+        HomeViewModel(
+          activity,
+          fragment,
+          oppiaLogger,
+          internalProfileId,
+          profileManagementController,
+          topicListController,
+          topicEntityType,
+          storyEntityType,
+          resourceHandler,
+          dateTimeUtil,
+          translationController,
+        )
 
-    val homeAdapter = createRecyclerViewAdapter()
-    val spanCount = activity.resources.getInteger(R.integer.home_span_count)
-    val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
-    homeLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-      override fun getSpanSize(position: Int): Int {
-        return if (position < homeAdapter.itemCount &&
-          homeAdapter.getItemViewType(position) == ViewType.TOPIC_LIST.ordinal
-        ) 1
-        else spanCount
+      val homeAdapter = createRecyclerViewAdapter()
+      val spanCount = activity.resources.getInteger(R.integer.home_span_count)
+      val homeLayoutManager = GridLayoutManager(activity.applicationContext, spanCount)
+      homeLayoutManager.spanSizeLookup =
+        object : GridLayoutManager.SpanSizeLookup() {
+          override fun getSpanSize(position: Int): Int =
+            if (position < homeAdapter.itemCount &&
+              homeAdapter.getItemViewType(position) == ViewType.TOPIC_LIST.ordinal
+            ) {
+              1
+            } else {
+              spanCount
+            }
+        }
+      binding.homeRecyclerView.apply {
+        adapter = homeAdapter
+        layoutManager = homeLayoutManager
       }
-    }
-    binding.homeRecyclerView.apply {
-      adapter = homeAdapter
-      layoutManager = homeLayoutManager
-    }
 
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = homeViewModel
-    }
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = homeViewModel
+      }
 
-    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
-      processProfileResult(it)
+      profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+        processProfileResult(it)
+      }
+
+      return binding.root
     }
 
-    return binding.root
-  }
+    private fun processProfileResult(result: AsyncResult<Profile>) {
+      when (result) {
+        is AsyncResult.Success -> {
+          val profile = result.value
+          val profileType = profile.profileType
 
-  private fun processProfileResult(result: AsyncResult<Profile>) {
-    when (result) {
-      is AsyncResult.Success -> {
-        val profile = result.value
-        val profileType = profile.profileType
-
-        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
-          // These asynchronous API calls do not block or wait for their results. They execute in
-          // the background and have minimal chances of interfering with the synchronous
-          // `handleBackPress` call below.
-          profileManagementController.markProfileOnboardingEnded(profileId)
-          if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
-            appStartupStateController.markOnboardingFlowCompleted(profileId)
+          if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
+            // These asynchronous API calls do not block or wait for their results. They execute in
+            // the background and have minimal chances of interfering with the synchronous
+            // `handleBackPress` call below.
+            profileManagementController.markProfileOnboardingEnded(profileId)
+            if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
+              appStartupStateController.markOnboardingFlowCompleted(profileId)
+            }
           }
+
+          // This synchronous function call executes independently of the async calls above.
+          handleBackPress(profileType)
         }
-
-        // This synchronous function call executes independently of the async calls above.
-        handleBackPress(profileType)
-      }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> {
-        Profile.getDefaultInstance()
-      }
-    }
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> {
-    return multiTypeBuilderFactory.create<HomeItemViewModel, ViewType> { viewModel ->
-      when (viewModel) {
-        is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
-        is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
-        is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
-        is AllTopicsViewModel -> ViewType.ALL_TOPICS
-        is TopicSummaryViewModel -> ViewType.TOPIC_LIST
-        else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
-      }
-    }
-      .registerViewDataBinder(
-        viewType = ViewType.WELCOME_MESSAGE,
-        inflateDataBinding = WelcomeBinding::inflate,
-        setViewModel = WelcomeBinding::setViewModel,
-        transformViewModel = { it as WelcomeViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.PROMOTED_STORY_LIST,
-        inflateDataBinding = PromotedStoryListBinding::inflate,
-        setViewModel = PromotedStoryListBinding::setViewModel,
-        transformViewModel = { it as PromotedStoryListViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.COMING_SOON_TOPIC_LIST,
-        inflateDataBinding = ComingSoonTopicListBinding::inflate,
-        setViewModel = ComingSoonTopicListBinding::setViewModel,
-        transformViewModel = { it as ComingSoonTopicListViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.ALL_TOPICS,
-        inflateDataBinding = AllTopicsBinding::inflate,
-        setViewModel = AllTopicsBinding::setViewModel,
-        transformViewModel = { it as AllTopicsViewModel }
-      )
-      .registerViewDataBinder(
-        viewType = ViewType.TOPIC_LIST,
-        inflateDataBinding = TopicSummaryViewBinding::inflate,
-        setViewModel = TopicSummaryViewBinding::setViewModel,
-        transformViewModel = { it as TopicSummaryViewModel }
-      )
-      .build()
-  }
-
-  private enum class ViewType {
-    WELCOME_MESSAGE,
-    PROMOTED_STORY_LIST,
-    COMING_SOON_TOPIC_LIST,
-    ALL_TOPICS,
-    TOPIC_LIST
-  }
-
-  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicSummary.classroomId,
-      topicSummary.topicId,
-      topicSummary.firstStoryId
-    )
-  }
-
-  private fun logHomeActivityEvent() {
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenHomeContext(),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-    )
-  }
-
-  private fun handleBackPress(profileType: ProfileType) {
-    activity.onBackPressedDispatcher.addCallback(
-      fragment,
-      object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          exitProfileListener.exitProfile(profileType)
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
+        is AsyncResult.Failure -> {
+          oppiaLogger.e("HomeFragment", "Failed to fetch profile with id:$profileId", result.error)
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> {
+          Profile.getDefaultInstance()
         }
       }
-    )
+    }
+
+    private fun createRecyclerViewAdapter(): BindableAdapter<HomeItemViewModel> =
+      multiTypeBuilderFactory
+        .create<HomeItemViewModel, ViewType> { viewModel ->
+          when (viewModel) {
+            is WelcomeViewModel -> ViewType.WELCOME_MESSAGE
+            is PromotedStoryListViewModel -> ViewType.PROMOTED_STORY_LIST
+            is ComingSoonTopicListViewModel -> ViewType.COMING_SOON_TOPIC_LIST
+            is AllTopicsViewModel -> ViewType.ALL_TOPICS
+            is TopicSummaryViewModel -> ViewType.TOPIC_LIST
+            else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
+          }
+        }.registerViewDataBinder(
+          viewType = ViewType.WELCOME_MESSAGE,
+          inflateDataBinding = WelcomeBinding::inflate,
+          setViewModel = WelcomeBinding::setViewModel,
+          transformViewModel = { it as WelcomeViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.PROMOTED_STORY_LIST,
+          inflateDataBinding = PromotedStoryListBinding::inflate,
+          setViewModel = PromotedStoryListBinding::setViewModel,
+          transformViewModel = { it as PromotedStoryListViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.COMING_SOON_TOPIC_LIST,
+          inflateDataBinding = ComingSoonTopicListBinding::inflate,
+          setViewModel = ComingSoonTopicListBinding::setViewModel,
+          transformViewModel = { it as ComingSoonTopicListViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.ALL_TOPICS,
+          inflateDataBinding = AllTopicsBinding::inflate,
+          setViewModel = AllTopicsBinding::setViewModel,
+          transformViewModel = { it as AllTopicsViewModel },
+        ).registerViewDataBinder(
+          viewType = ViewType.TOPIC_LIST,
+          inflateDataBinding = TopicSummaryViewBinding::inflate,
+          setViewModel = TopicSummaryViewBinding::setViewModel,
+          transformViewModel = { it as TopicSummaryViewModel },
+        ).build()
+
+    private enum class ViewType {
+      WELCOME_MESSAGE,
+      PROMOTED_STORY_LIST,
+      COMING_SOON_TOPIC_LIST,
+      ALL_TOPICS,
+      TOPIC_LIST,
+    }
+
+    fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+      routeToTopicPlayStoryListener.routeToTopicPlayStory(
+        ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        topicSummary.classroomId,
+        topicSummary.topicId,
+        topicSummary.firstStoryId,
+      )
+    }
+
+    private fun logHomeActivityEvent() {
+      analyticsController.logImportantEvent(
+        oppiaLogger.createOpenHomeContext(),
+        ProfileId.newBuilder().apply { internalId = internalProfileId }.build(),
+      )
+    }
+
+    private fun handleBackPress(profileType: ProfileType) {
+      activity.onBackPressedDispatcher.addCallback(
+        fragment,
+        object : OnBackPressedCallback(true) {
+          override fun handleOnBackPressed() {
+            exitProfileListener.exitProfile(profileType)
+            // The dispatcher can hold a reference to the host
+            // so we need to null it out to prevent memory leaks.
+            this.remove()
+          }
+        },
+      )
+    }
   }
-}

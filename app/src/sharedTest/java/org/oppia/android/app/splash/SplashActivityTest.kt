@@ -158,21 +158,28 @@ class SplashActivityTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Parameter
   lateinit var firstOpen: String
+
   @Parameter
   lateinit var secondOpen: String
 
@@ -1076,9 +1083,11 @@ class SplashActivityTest {
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
     profileTestHelper.markProfileOnboardingStarted(profileId)
-    val params = IntroActivityParams.newBuilder()
-      .setProfileNickname("Admin")
-      .build()
+    val params =
+      IntroActivityParams
+        .newBuilder()
+        .setProfileNickname("Admin")
+        .build()
 
     launchSplashActivityPartially {
       intended(hasComponent(IntroActivity::class.java.name))
@@ -1097,14 +1106,14 @@ class SplashActivityTest {
 
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER),
     )
 
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.markProfileOnboardingStarted(profileId)
+      profileTestHelper.markProfileOnboardingStarted(profileId),
     )
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.markProfileOnboardingEnded(profileId)
+      profileTestHelper.markProfileOnboardingEnded(profileId),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1124,14 +1133,14 @@ class SplashActivityTest {
 
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+      profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER),
     )
 
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.markProfileOnboardingStarted(profileId)
+      profileTestHelper.markProfileOnboardingStarted(profileId),
     )
     monitorFactory.waitForNextSuccessfulResult(
-      profileTestHelper.markProfileOnboardingEnded(profileId)
+      profileTestHelper.markProfileOnboardingEnded(profileId),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -1175,10 +1184,11 @@ class SplashActivityTest {
   }
 
   private fun runInNewTestApplication(block: TestApplication.() -> Unit) {
-    val newApplication = Instrumentation.newApplication(
-      TestApplication::class.java,
-      InstrumentationRegistry.getInstrumentation().targetContext
-    ) as TestApplication
+    val newApplication =
+      Instrumentation.newApplication(
+        TestApplication::class.java,
+        InstrumentationRegistry.getInstrumentation().targetContext,
+      ) as TestApplication
     newApplication.testCoroutineDispatchers.registerIdlingResource()
     newApplication.block()
     newApplication.testCoroutineDispatchers.unregisterIdlingResource()
@@ -1259,10 +1269,11 @@ class SplashActivityTest {
   }
 
   private fun launchSplashActivity(testBlock: (ActivityScenario<SplashActivity>) -> Unit) {
-    val openFromLauncher = Intent(context, SplashActivity::class.java).also {
-      it.action = Intent.ACTION_MAIN
-      it.addCategory(Intent.CATEGORY_LAUNCHER)
-    }
+    val openFromLauncher =
+      Intent(context, SplashActivity::class.java).also {
+        it.action = Intent.ACTION_MAIN
+        it.addCategory(Intent.CATEGORY_LAUNCHER)
+      }
     ActivityScenario.launch<SplashActivity>(openFromLauncher).use(testBlock)
   }
 
@@ -1275,25 +1286,18 @@ class SplashActivityTest {
   }
 
   /** Returns a date string occurring before today. */
-  private fun dateStringBeforeToday(): String {
-    return computeDateString(Instant.now() - Duration.ofDays(1))
-  }
+  private fun dateStringBeforeToday(): String = computeDateString(Instant.now() - Duration.ofDays(1))
 
   /** Returns a date string occurring after today. */
-  private fun dateStringAfterToday(): String {
-    return computeDateString(Instant.now() + Duration.ofDays(1))
-  }
+  private fun dateStringAfterToday(): String = computeDateString(Instant.now() + Duration.ofDays(1))
 
-  private fun computeDateString(instant: Instant): String {
-    return computeDateString(Date.from(instant))
-  }
+  private fun computeDateString(instant: Instant): String = computeDateString(Date.from(instant))
 
-  private fun computeDateString(date: Date): String {
-    return expirationDateFormat.format(date)
-  }
+  private fun computeDateString(date: Date): String = expirationDateFormat.format(date)
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -1341,8 +1345,8 @@ class SplashActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1364,7 +1368,10 @@ class SplashActivityTest {
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private var component: TestApplicationComponent = createTestApplicationComponent()
 
     val appStartupStateController: AppStartupStateController
@@ -1380,9 +1387,12 @@ class SplashActivityTest {
       component.inject(splashActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
 
@@ -1390,11 +1400,11 @@ class SplashActivityTest {
       component = createTestApplicationComponent()
     }
 
-    private fun createTestApplicationComponent(): TestApplicationComponent {
-      return DaggerSplashActivityTest_TestApplicationComponent.builder()
+    private fun createTestApplicationComponent(): TestApplicationComponent =
+      DaggerSplashActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
-    }
   }
 
   private companion object {

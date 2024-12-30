@@ -25,32 +25,32 @@ private typealias ListOfContentIdSets1 = ListOfSetsOfTranslatableHtmlContentIds
  * https://github.com/oppia/oppia/blob/03f16147e513ad31cbbf3ce882867a1aac99d649/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L78
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class DragDropSortInputHasElementXAtPositionYClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfContentIdSets1, ContentId1, Int> {
+class DragDropSortInputHasElementXAtPositionYClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfContentIdSets1, ContentId1, Int> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createDoubleInputClassifier(
+        expectedAnswerObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+        expectedObjectType1 = TRANSLATABLE_HTML_CONTENT_ID,
+        firstInputParameterName = "x",
+        expectedObjectType2 = NON_NEGATIVE_INT,
+        secondInputParameterName = "y",
+        matcher = this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(
-      expectedAnswerObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-      expectedObjectType1 = TRANSLATABLE_HTML_CONTENT_ID,
-      firstInputParameterName = "x",
-      expectedObjectType2 = NON_NEGATIVE_INT,
-      secondInputParameterName = "y",
-      matcher = this
-    )
+    override fun matches(
+      answer: ListOfContentIdSets1,
+      firstInput: ContentId1,
+      secondInput: Int,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      // Note that the '1' returned here is to have consistency with the web platform: matched indexes
+      // start at 1 rather than 0 to make the indexes more human friendly.
+      return answer.contentIdListsList.indexOfFirst {
+        firstInput.contentId in it.getContentIdSet()
+      } + 1 == secondInput
+    }
   }
-
-  override fun matches(
-    answer: ListOfContentIdSets1,
-    firstInput: ContentId1,
-    secondInput: Int,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    // Note that the '1' returned here is to have consistency with the web platform: matched indexes
-    // start at 1 rather than 0 to make the indexes more human friendly.
-    return answer.contentIdListsList.indexOfFirst {
-      firstInput.contentId in it.getContentIdSet()
-    } + 1 == secondInput
-  }
-}

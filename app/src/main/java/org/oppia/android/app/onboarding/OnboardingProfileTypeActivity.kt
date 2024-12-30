@@ -26,10 +26,9 @@ class OnboardingProfileTypeActivity : InjectableAutoLocalizedAppCompatActivity()
 
   companion object {
     /** Returns a new [Intent] open a [OnboardingProfileTypeActivity] with the specified params. */
-    fun createOnboardingProfileTypeActivityIntent(context: Context): Intent {
-      return Intent(context, OnboardingProfileTypeActivity::class.java).apply {
+    fun createOnboardingProfileTypeActivityIntent(context: Context): Intent =
+      Intent(context, OnboardingProfileTypeActivity::class.java).apply {
         decorateWithScreenName(ONBOARDING_PROFILE_TYPE_ACTIVITY)
       }
-    }
   }
 }

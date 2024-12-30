@@ -41,7 +41,11 @@ class ExpressionToPolynomialConverterTest {
 
     val polynomial = expression.reduceToPolynomial()
 
-    assertThat(polynomial).isConstantThat().isIrrationalThat().isWithin(1e-5).of(3.14)
+    assertThat(polynomial)
+      .isConstantThat()
+      .isIrrationalThat()
+      .isWithin(1e-5)
+      .of(3.14)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("3.14")
   }
 
@@ -52,10 +56,22 @@ class ExpressionToPolynomialConverterTest {
     val polynomial = expression.reduceToPolynomial()
 
     assertThat(polynomial).hasTermCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).hasCoefficientThat().isIntegerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .hasCoefficientThat()
+      .isIntegerThat()
+      .isEqualTo(1)
     assertThat(polynomial).term(0).hasVariableCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).variable(0).hasNameThat().isEqualTo("x")
-    assertThat(polynomial).term(0).variable(0).hasPowerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasNameThat()
+      .isEqualTo("x")
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasPowerThat()
+      .isEqualTo(1)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("x")
   }
 
@@ -66,10 +82,22 @@ class ExpressionToPolynomialConverterTest {
     val polynomial = expression.reduceToPolynomial()
 
     assertThat(polynomial).hasTermCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).hasCoefficientThat().isIntegerThat().isEqualTo(7)
+    assertThat(polynomial)
+      .term(0)
+      .hasCoefficientThat()
+      .isIntegerThat()
+      .isEqualTo(7)
     assertThat(polynomial).term(0).hasVariableCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).variable(0).hasNameThat().isEqualTo("x")
-    assertThat(polynomial).term(0).variable(0).hasPowerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasNameThat()
+      .isEqualTo("x")
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasPowerThat()
+      .isEqualTo(1)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("7x")
   }
 
@@ -80,10 +108,23 @@ class ExpressionToPolynomialConverterTest {
     val polynomial = expression.reduceToPolynomial()
 
     assertThat(polynomial).hasTermCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).hasCoefficientThat().isIrrationalThat().isWithin(1e-5).of(-3.14)
+    assertThat(polynomial)
+      .term(0)
+      .hasCoefficientThat()
+      .isIrrationalThat()
+      .isWithin(1e-5)
+      .of(-3.14)
     assertThat(polynomial).term(0).hasVariableCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).variable(0).hasNameThat().isEqualTo("x")
-    assertThat(polynomial).term(0).variable(0).hasPowerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasNameThat()
+      .isEqualTo("x")
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasPowerThat()
+      .isEqualTo(1)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("-3.14x")
   }
 
@@ -94,10 +135,22 @@ class ExpressionToPolynomialConverterTest {
     val polynomial = expression.reduceToPolynomial()
 
     assertThat(polynomial).hasTermCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).hasCoefficientThat().isIntegerThat().isEqualTo(2)
+    assertThat(polynomial)
+      .term(0)
+      .hasCoefficientThat()
+      .isIntegerThat()
+      .isEqualTo(2)
     assertThat(polynomial).term(0).hasVariableCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).variable(0).hasNameThat().isEqualTo("x")
-    assertThat(polynomial).term(0).variable(0).hasPowerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasNameThat()
+      .isEqualTo("x")
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasPowerThat()
+      .isEqualTo(1)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("2x")
   }
 
@@ -131,10 +184,22 @@ class ExpressionToPolynomialConverterTest {
 
     // x+x is combined to 2x (like terms are combined).
     assertThat(polynomial).hasTermCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).hasCoefficientThat().isIntegerThat().isEqualTo(2)
+    assertThat(polynomial)
+      .term(0)
+      .hasCoefficientThat()
+      .isIntegerThat()
+      .isEqualTo(2)
     assertThat(polynomial).term(0).hasVariableCountThat().isEqualTo(1)
-    assertThat(polynomial).term(0).variable(0).hasNameThat().isEqualTo("x")
-    assertThat(polynomial).term(0).variable(0).hasPowerThat().isEqualTo(1)
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasNameThat()
+      .isEqualTo("x")
+    assertThat(polynomial)
+      .term(0)
+      .variable(0)
+      .hasPowerThat()
+      .isEqualTo(1)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("2x")
   }
 
@@ -692,7 +757,11 @@ class ExpressionToPolynomialConverterTest {
     val polynomial = expression.reduceToPolynomial()
 
     // Division of constants is actually computed.
-    assertThat(polynomial).isConstantThat().isIrrationalThat().isWithin(1e-5).of(1.57)
+    assertThat(polynomial)
+      .isConstantThat()
+      .isIrrationalThat()
+      .isWithin(1e-5)
+      .of(1.57)
     assertThat(polynomial).evaluatesToPlainTextThat().isEqualTo("1.57")
   }
 
@@ -2305,18 +2374,19 @@ class ExpressionToPolynomialConverterTest {
     assertThat(polynomial1).isEqualTo(polynomial2)
   }
 
-  private fun parsePolynomialFromAlgebraicExpression(expression: String) =
-    parseAlgebraicExpression(expression).reduceToPolynomial()
+  private fun parsePolynomialFromAlgebraicExpression(expression: String) = parseAlgebraicExpression(expression).reduceToPolynomial()
 
   private companion object {
     private fun parseAlgebraicExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables = listOf("x", "y", "z"), errorCheckingMode
-      ).getExpectedSuccess()
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      MathExpressionParser
+        .parseAlgebraicExpression(
+          expression,
+          allowedVariables = listOf("x", "y", "z"),
+          errorCheckingMode,
+        ).getExpectedSuccess()
 
     private inline fun <reified T> MathParsingResult<T>.getExpectedSuccess(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

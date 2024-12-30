@@ -21,12 +21,17 @@ val ONE: Real by lazy {
 
 /** Represents a rational fraction [Real] with value 1/2. */
 val ONE_HALF: Real by lazy {
-  Real.newBuilder().apply {
-    rational = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
+  Real
+    .newBuilder()
+    .apply {
+      rational =
+        Fraction
+          .newBuilder()
+          .apply {
+            numerator = 1
+            denominator = 2
+          }.build()
     }.build()
-  }.build()
 }
 
 /**
@@ -57,37 +62,33 @@ fun Real.isInteger(): Boolean = realTypeCase == INTEGER
  *
  * Note that this has the same limitations as [Fraction.isOnlyWholeNumber] for rational values.
  */
-fun Real.isWholeNumber(): Boolean {
-  return when (realTypeCase) {
+fun Real.isWholeNumber(): Boolean =
+  when (realTypeCase) {
     RATIONAL -> rational.isOnlyWholeNumber()
     INTEGER -> true
     IRRATIONAL, REALTYPE_NOT_SET, null -> false
   }
-}
 
 /** Returns whether this [Real] is negative. */
-fun Real.isNegative(): Boolean = when (realTypeCase) {
-  RATIONAL -> rational.isNegative
-  IRRATIONAL -> irrational < 0
-  INTEGER -> integer < 0
-  REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
-}
+fun Real.isNegative(): Boolean =
+  when (realTypeCase) {
+    RATIONAL -> rational.isNegative
+    IRRATIONAL -> irrational < 0
+    INTEGER -> integer < 0
+    REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
+  }
 
 /**
  * Returns whether this [Real] approximately equals another, that is, if they evaluate to
  * approximately the same value (see [Double.isApproximatelyEqualTo]).
  */
-fun Real.isApproximatelyEqualTo(other: Real): Boolean {
-  return this@isApproximatelyEqualTo.isApproximatelyEqualTo(other.toDouble())
-}
+fun Real.isApproximatelyEqualTo(other: Real): Boolean = this@isApproximatelyEqualTo.isApproximatelyEqualTo(other.toDouble())
 
 /**
  * Returns whether this [Real] is approximately equal to the specified [Double] per
  * [Double.isApproximatelyEqualTo].
  */
-fun Real.isApproximatelyEqualTo(value: Double): Boolean {
-  return toDouble().isApproximatelyEqualTo(value)
-}
+fun Real.isApproximatelyEqualTo(value: Double): Boolean = toDouble().isApproximatelyEqualTo(value)
 
 /** Returns whether this [Real] is approximately zero per [Double.isApproximatelyEqualTo]. */
 fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
@@ -98,14 +99,13 @@ fun Real.isApproximatelyZero(): Boolean = isApproximatelyEqualTo(0.0)
  *
  * This method throws an exception if this [Real] is invalid (such as a default proto instance).
  */
-fun Real.toDouble(): Double {
-  return when (realTypeCase) {
+fun Real.toDouble(): Double =
+  when (realTypeCase) {
     RATIONAL -> rational.toDouble()
     INTEGER -> integer.toDouble()
     IRRATIONAL -> irrational
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Returns the whole-number representation of this [Real], or null if there isn't one.
@@ -115,14 +115,13 @@ fun Real.toDouble(): Double {
  *
  * This method throws an exception if this [Real] is invalid (such as a default proto instance).
  */
-fun Real.asWholeNumber(): Int? {
-  return when (realTypeCase) {
+fun Real.asWholeNumber(): Int? =
+  when (realTypeCase) {
     RATIONAL -> if (rational.isOnlyWholeNumber()) rational.toWholeNumber() else null
     INTEGER -> integer
     IRRATIONAL -> null
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Returns a human-readable, plaintext representation of this [Real].
@@ -135,28 +134,28 @@ fun Real.asWholeNumber(): Int? {
  * Note that this will return an empty string if this [Real] doesn't represent an actual real value
  * (e.g. a default instance).
  */
-fun Real.toPlainText(): String = when (realTypeCase) {
-  // Note that the rational part is first converted to an improper fraction since mixed fractions
-  // can't be expressed as a single coefficient in typical polynomial syntax).
-  RATIONAL -> rational.toImproperForm().toAnswerString()
-  IRRATIONAL -> irrational.toPlainString()
-  INTEGER -> integer.toString()
-  // The Real type isn't valid, so rather than failing just return an empty string.
-  REALTYPE_NOT_SET, null -> ""
-}
+fun Real.toPlainText(): String =
+  when (realTypeCase) {
+    // Note that the rational part is first converted to an improper fraction since mixed fractions
+    // can't be expressed as a single coefficient in typical polynomial syntax).
+    RATIONAL -> rational.toImproperForm().toAnswerString()
+    IRRATIONAL -> irrational.toPlainString()
+    INTEGER -> integer.toString()
+    // The Real type isn't valid, so rather than failing just return an empty string.
+    REALTYPE_NOT_SET, null -> ""
+  }
 
 /**
  * Returns a negative version of this [Real] such that the original real plus the negative version
  * would result in zero.
  */
-operator fun Real.unaryMinus(): Real {
-  return when (realTypeCase) {
+operator fun Real.unaryMinus(): Real =
+  when (realTypeCase) {
     RATIONAL -> createRationalReal(-rational)
     IRRATIONAL -> createIrrationalReal(-irrational)
     INTEGER -> createIntegerReal(-integer)
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Adds this [Real] with another and returns the result.
@@ -180,29 +179,31 @@ operator fun Real.unaryMinus(): Real {
  * high level of error). While [Double]s don't perfectly capture precision, their error levels are
  * generally better than the rounding errors encountered from integer arithmetic.
  */
-operator fun Real.plus(rhs: Real): Real {
-  return when (realTypeCase) {
-    RATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(rational + rhs.rational)
-      IRRATIONAL -> createIrrationalReal(rational.toDouble() + rhs.irrational)
-      INTEGER -> createRationalReal(rational + rhs.integer.toWholeNumberFraction())
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    IRRATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createIrrationalReal(irrational + rhs.rational.toDouble())
-      IRRATIONAL -> createIrrationalReal(irrational + rhs.irrational)
-      INTEGER -> createIrrationalReal(irrational + rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    INTEGER -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(integer.toWholeNumberFraction() + rhs.rational)
-      IRRATIONAL -> createIrrationalReal(integer + rhs.irrational)
-      INTEGER -> createIntegerReal(integer + rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
+operator fun Real.plus(rhs: Real): Real =
+  when (realTypeCase) {
+    RATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(rational + rhs.rational)
+        IRRATIONAL -> createIrrationalReal(rational.toDouble() + rhs.irrational)
+        INTEGER -> createRationalReal(rational + rhs.integer.toWholeNumberFraction())
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    IRRATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createIrrationalReal(irrational + rhs.rational.toDouble())
+        IRRATIONAL -> createIrrationalReal(irrational + rhs.irrational)
+        INTEGER -> createIrrationalReal(irrational + rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    INTEGER ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(integer.toWholeNumberFraction() + rhs.rational)
+        IRRATIONAL -> createIrrationalReal(integer + rhs.irrational)
+        INTEGER -> createIntegerReal(integer + rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Subtracts this [Real] from another and returns the result.
@@ -213,29 +214,31 @@ operator fun Real.plus(rhs: Real): Real {
  * incomplete), but the type of [Real] that's returned depends on the constituent [Real]s being
  * subtracted. For reference, see [Real.plus] (the same type conversion is used).
  */
-operator fun Real.minus(rhs: Real): Real {
-  return when (realTypeCase) {
-    RATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(rational - rhs.rational)
-      IRRATIONAL -> createIrrationalReal(rational.toDouble() - rhs.irrational)
-      INTEGER -> createRationalReal(rational - rhs.integer.toWholeNumberFraction())
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    IRRATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createIrrationalReal(irrational - rhs.rational.toDouble())
-      IRRATIONAL -> createIrrationalReal(irrational - rhs.irrational)
-      INTEGER -> createIrrationalReal(irrational - rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    INTEGER -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(integer.toWholeNumberFraction() - rhs.rational)
-      IRRATIONAL -> createIrrationalReal(integer - rhs.irrational)
-      INTEGER -> createIntegerReal(integer - rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
+operator fun Real.minus(rhs: Real): Real =
+  when (realTypeCase) {
+    RATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(rational - rhs.rational)
+        IRRATIONAL -> createIrrationalReal(rational.toDouble() - rhs.irrational)
+        INTEGER -> createRationalReal(rational - rhs.integer.toWholeNumberFraction())
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    IRRATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createIrrationalReal(irrational - rhs.rational.toDouble())
+        IRRATIONAL -> createIrrationalReal(irrational - rhs.irrational)
+        INTEGER -> createIrrationalReal(irrational - rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    INTEGER ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(integer.toWholeNumberFraction() - rhs.rational)
+        IRRATIONAL -> createIrrationalReal(integer - rhs.irrational)
+        INTEGER -> createIntegerReal(integer - rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Multiplies this [Real] with another and returns the result.
@@ -249,29 +252,31 @@ operator fun Real.minus(rhs: Real): Real {
  * Note that effective divisions by zero (i.e. fractions with zero denominators) may result in
  * either an infinity being returned or an exception being thrown.
  */
-operator fun Real.times(rhs: Real): Real {
-  return when (realTypeCase) {
-    RATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(rational * rhs.rational)
-      IRRATIONAL -> createIrrationalReal(rational.toDouble() * rhs.irrational)
-      INTEGER -> createRationalReal(rational * rhs.integer.toWholeNumberFraction())
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    IRRATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createIrrationalReal(irrational * rhs.rational.toDouble())
-      IRRATIONAL -> createIrrationalReal(irrational * rhs.irrational)
-      INTEGER -> createIrrationalReal(irrational * rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    INTEGER -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(integer.toWholeNumberFraction() * rhs.rational)
-      IRRATIONAL -> createIrrationalReal(integer * rhs.irrational)
-      INTEGER -> createIntegerReal(integer * rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
+operator fun Real.times(rhs: Real): Real =
+  when (realTypeCase) {
+    RATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(rational * rhs.rational)
+        IRRATIONAL -> createIrrationalReal(rational.toDouble() * rhs.irrational)
+        INTEGER -> createRationalReal(rational * rhs.integer.toWholeNumberFraction())
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    IRRATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createIrrationalReal(irrational * rhs.rational.toDouble())
+        IRRATIONAL -> createIrrationalReal(irrational * rhs.irrational)
+        INTEGER -> createIrrationalReal(irrational * rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    INTEGER ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(integer.toWholeNumberFraction() * rhs.rational)
+        IRRATIONAL -> createIrrationalReal(integer * rhs.irrational)
+        INTEGER -> createIntegerReal(integer * rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Divides this [Real] by another and returns the result.
@@ -287,29 +292,31 @@ operator fun Real.times(rhs: Real): Real {
  * Note also that divisions by zero may result in either an exception being thrown, or an infinity
  * being returned.
  */
-operator fun Real.div(rhs: Real): Real {
-  return when (realTypeCase) {
-    RATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(rational / rhs.rational)
-      IRRATIONAL -> createIrrationalReal(rational.toDouble() / rhs.irrational)
-      INTEGER -> createRationalReal(rational / rhs.integer.toWholeNumberFraction())
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    IRRATIONAL -> when (rhs.realTypeCase) {
-      RATIONAL -> createIrrationalReal(irrational / rhs.rational.toDouble())
-      IRRATIONAL -> createIrrationalReal(irrational / rhs.irrational)
-      INTEGER -> createIrrationalReal(irrational / rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
-    INTEGER -> when (rhs.realTypeCase) {
-      RATIONAL -> createRationalReal(integer.toWholeNumberFraction() / rhs.rational)
-      IRRATIONAL -> createIrrationalReal(integer / rhs.irrational)
-      INTEGER -> integer.divide(rhs.integer)
-      REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
-    }
+operator fun Real.div(rhs: Real): Real =
+  when (realTypeCase) {
+    RATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(rational / rhs.rational)
+        IRRATIONAL -> createIrrationalReal(rational.toDouble() / rhs.irrational)
+        INTEGER -> createRationalReal(rational / rhs.integer.toWholeNumberFraction())
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    IRRATIONAL ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createIrrationalReal(irrational / rhs.rational.toDouble())
+        IRRATIONAL -> createIrrationalReal(irrational / rhs.irrational)
+        INTEGER -> createIrrationalReal(irrational / rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
+    INTEGER ->
+      when (rhs.realTypeCase) {
+        RATIONAL -> createRationalReal(integer.toWholeNumberFraction() / rhs.rational)
+        IRRATIONAL -> createIrrationalReal(integer / rhs.irrational)
+        INTEGER -> integer.divide(rhs.integer)
+        REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
+      }
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $this.")
   }
-}
 
 /**
  * Computes the power of this [Real] raised to [rhs] and returns the result.
@@ -360,9 +367,10 @@ infix fun Real.pow(rhs: Real): Real? {
       // Left-hand side is Fraction.
       when (rhs.realTypeCase) {
         // Anything raised by a fraction is pow'd by the numerator and rooted by the denominator.
-        RATIONAL -> rhs.rational.toImproperForm().let { power ->
-          (rational pow power.numerator).root(power.denominator, power.isNegative)
-        }
+        RATIONAL ->
+          rhs.rational.toImproperForm().let { power ->
+            (rational pow power.numerator).root(power.denominator, power.isNegative)
+          }
         IRRATIONAL -> createIrrationalReal(rational.toDouble().pow(rhs.irrational))
         INTEGER -> createRationalReal(rational pow rhs.integer)
         REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
@@ -382,11 +390,13 @@ infix fun Real.pow(rhs: Real): Real? {
       when (rhs.realTypeCase) {
         // An integer raised to a fraction can use the same approach as above (fraction raised to
         // fraction) by treating the integer as a whole number fraction.
-        RATIONAL -> rhs.rational.toImproperForm().let { power ->
-          (integer.toWholeNumberFraction() pow power.numerator).root(
-            power.denominator, power.isNegative
-          )
-        }
+        RATIONAL ->
+          rhs.rational.toImproperForm().let { power ->
+            (integer.toWholeNumberFraction() pow power.numerator).root(
+              power.denominator,
+              power.isNegative,
+            )
+          }
         IRRATIONAL -> createIrrationalReal(integer.toDouble().pow(rhs.irrational))
         INTEGER -> integer.pow(rhs.integer)
         REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $rhs.")
@@ -420,14 +430,13 @@ infix fun Real.pow(rhs: Real): Real? {
  * | irrational | irrational     | irrational       |
  * |------------------------------------------------|
  */
-fun sqrt(real: Real): Real? {
-  return when (real.realTypeCase) {
+fun sqrt(real: Real): Real? =
+  when (real.realTypeCase) {
     RATIONAL -> real.rational.root(base = 2, invert = false)
     IRRATIONAL -> createIrrationalReal(kotlin.math.sqrt(real.irrational))
     INTEGER -> root(real.integer, base = 2)
     REALTYPE_NOT_SET, null -> throw IllegalStateException("Invalid real: $real.")
   }
-}
 
 /**
  * Returns an absolute value of this [Real] (that is, a non-negative [Real]).
@@ -436,23 +445,30 @@ fun sqrt(real: Real): Real? {
  */
 fun abs(real: Real): Real = if (real.isNegative()) -real else real
 
-private fun Int.divide(rhs: Int): Real = Real.newBuilder().apply {
-  // If rhs divides this integer, retain the integer.
-  val lhs = this@divide
-  if ((lhs % rhs) == 0) {
-    integer = lhs / rhs
-  } else {
-    // Otherwise, keep precision by turning the division into a fraction.
-    rational = Fraction.newBuilder().apply {
-      isNegative = (lhs < 0) xor (rhs < 0)
-      numerator = kotlin.math.abs(lhs)
-      denominator = kotlin.math.abs(rhs)
-    }.build().toProperForm()
-  }
-}.build()
+private fun Int.divide(rhs: Int): Real =
+  Real
+    .newBuilder()
+    .apply {
+      // If rhs divides this integer, retain the integer.
+      val lhs = this@divide
+      if ((lhs % rhs) == 0) {
+        integer = lhs / rhs
+      } else {
+        // Otherwise, keep precision by turning the division into a fraction.
+        rational =
+          Fraction
+            .newBuilder()
+            .apply {
+              isNegative = (lhs < 0) xor (rhs < 0)
+              numerator = kotlin.math.abs(lhs)
+              denominator = kotlin.math.abs(rhs)
+            }.build()
+            .toProperForm()
+      }
+    }.build()
 
-private fun Int.pow(exp: Int): Real {
-  return when {
+private fun Int.pow(exp: Int): Real =
+  when {
     exp == 0 -> Real.newBuilder().apply { integer = 1 }.build()
     exp == 1 -> Real.newBuilder().apply { integer = this@pow }.build()
     exp < 0 -> Real.newBuilder().apply { rational = toWholeNumberFraction() pow exp }.build()
@@ -463,9 +479,11 @@ private fun Int.pow(exp: Int): Real {
       Real.newBuilder().apply { integer = computed }.build()
     }
   }
-}
 
-private fun Fraction.root(base: Int, invert: Boolean): Real? {
+private fun Fraction.root(
+  base: Int,
+  invert: Boolean,
+): Real? {
   check(base > 0) { "Expected base of 1 or higher, not: $base" }
 
   val adjustedFraction = toImproperForm()
@@ -477,34 +495,47 @@ private fun Fraction.root(base: Int, invert: Boolean): Real? {
   return when {
     rootedNumerator == null || rootedDenominator == null -> null
     rootedNumerator.isInteger() && rootedDenominator.isInteger() -> {
-      Real.newBuilder().apply {
-        rational = Fraction.newBuilder().apply {
-          isNegative = rootedNumerator.isNegative() || rootedDenominator.isNegative()
-          numerator = rootedNumerator.integer.absoluteValue
-          denominator = rootedDenominator.integer.absoluteValue
-        }.build().toProperForm()
-      }.build()
+      Real
+        .newBuilder()
+        .apply {
+          rational =
+            Fraction
+              .newBuilder()
+              .apply {
+                isNegative = rootedNumerator.isNegative() || rootedDenominator.isNegative()
+                numerator = rootedNumerator.integer.absoluteValue
+                denominator = rootedDenominator.integer.absoluteValue
+              }.build()
+              .toProperForm()
+        }.build()
     }
     else -> {
       // One or both of the components of the fraction can't be rooted, so compute an irrational
       // version.
-      Real.newBuilder().apply {
-        irrational = rootedNumerator.toDouble() / rootedDenominator.toDouble()
-      }.build()
+      Real
+        .newBuilder()
+        .apply {
+          irrational = rootedNumerator.toDouble() / rootedDenominator.toDouble()
+        }.build()
     }
   }
 }
 
-private fun root(int: Int, base: Int): Real? {
+private fun root(
+  int: Int,
+  base: Int,
+): Real? {
   // First, check if the integer is a root. Base reference for possible methods:
   // https://www.researchgate.net/post/How-to-decide-if-a-given-number-will-have-integer-square-root-or-not.
   if (int == 0 && base == 0) {
     // This is considered a conventional identity per https://stackoverflow.com/a/19955996 that
     // doesn't match mathematics definitions (but it does bring parity with the system's pow()
     // function).
-    return Real.newBuilder().apply {
-      integer = 1
-    }.build()
+    return Real
+      .newBuilder()
+      .apply {
+        integer = 1
+      }.build()
   }
 
   check(base > 0) { "Expected base of 1 or higher, not: $base" }
@@ -513,21 +544,27 @@ private fun root(int: Int, base: Int): Real? {
   when {
     int == 0 -> {
       // 0^x is always zero.
-      return Real.newBuilder().apply {
-        integer = 0
-      }.build()
+      return Real
+        .newBuilder()
+        .apply {
+          integer = 0
+        }.build()
     }
     int == 1 || int == 0 || base == 0 -> {
       // 1^x and x^0 are always 1.
-      return Real.newBuilder().apply {
-        integer = 1
-      }.build()
+      return Real
+        .newBuilder()
+        .apply {
+          integer = 1
+        }.build()
     }
     base == 1 -> {
       // x^1 is always x.
-      return Real.newBuilder().apply {
-        integer = int
-      }.build()
+      return Real
+        .newBuilder()
+        .apply {
+          integer = int
+        }.build()
     }
   }
 
@@ -542,29 +579,45 @@ private fun root(int: Int, base: Int): Real? {
       // Odd roots of negative numbers retain the negative.
       potentialRoot = -potentialRoot
     }
-    return Real.newBuilder().apply {
-      integer = potentialRoot
-    }.build()
+    return Real
+      .newBuilder()
+      .apply {
+        integer = potentialRoot
+      }.build()
   }
 
   // Otherwise, compute the irrational square root.
-  return Real.newBuilder().apply {
-    irrational = if (base == 2) {
-      kotlin.math.sqrt(int.toDouble())
-    } else int.toDouble().pow(1.0 / base.toDouble())
-  }.build()
+  return Real
+    .newBuilder()
+    .apply {
+      irrational =
+        if (base == 2) {
+          kotlin.math.sqrt(int.toDouble())
+        } else {
+          int.toDouble().pow(1.0 / base.toDouble())
+        }
+    }.build()
 }
 
 private fun Int.isOdd() = this % 2 == 1
 
-private fun createRationalReal(value: Fraction): Real = Real.newBuilder().apply {
-  rational = value
-}.build()
+private fun createRationalReal(value: Fraction): Real =
+  Real
+    .newBuilder()
+    .apply {
+      rational = value
+    }.build()
 
-private fun createIrrationalReal(value: Double): Real = Real.newBuilder().apply {
-  irrational = value
-}.build()
+private fun createIrrationalReal(value: Double): Real =
+  Real
+    .newBuilder()
+    .apply {
+      irrational = value
+    }.build()
 
-private fun createIntegerReal(value: Int): Real = Real.newBuilder().apply {
-  integer = value
-}.build()
+private fun createIntegerReal(value: Int): Real =
+  Real
+    .newBuilder()
+    .apply {
+      integer = value
+    }.build()

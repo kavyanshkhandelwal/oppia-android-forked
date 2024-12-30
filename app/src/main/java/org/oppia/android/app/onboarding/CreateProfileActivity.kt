@@ -22,20 +22,21 @@ class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent.extractCurrentUserProfileId()
-    val profileType = intent.getProtoExtra(
-      CREATE_PROFILE_PARAMS_KEY,
-      CreateProfileActivityParams.getDefaultInstance()
-    ).profileType
+    val profileType =
+      intent
+        .getProtoExtra(
+          CREATE_PROFILE_PARAMS_KEY,
+          CreateProfileActivityParams.getDefaultInstance(),
+        ).profileType
 
     learnerProfileActivityPresenter.handleOnCreate(profileId, profileType)
   }
 
   companion object {
     /** Returns a new [Intent] open a [CreateProfileActivity] with the specified params. */
-    fun createProfileActivityIntent(context: Context): Intent {
-      return Intent(context, CreateProfileActivity::class.java).apply {
+    fun createProfileActivityIntent(context: Context): Intent =
+      Intent(context, CreateProfileActivity::class.java).apply {
         decorateWithScreenName(CREATE_PROFILE_ACTIVITY)
       }
-    }
   }
 }

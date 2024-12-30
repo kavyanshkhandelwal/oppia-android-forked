@@ -95,7 +95,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileRenameActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileRenameActivityTest {
   @get:Rule
@@ -117,11 +117,14 @@ class ProfileRenameActivityTest {
   lateinit var editTextInputAction: EditTextInputAction
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(
-    ProfileRenameActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<ProfileRenameActivity> =
+    ActivityTestRule(
+      ProfileRenameActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Before
   fun setUp() {
@@ -141,10 +144,12 @@ class ProfileRenameActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = ProfileRenameActivity.createProfileRenameActivity(
-      context = this.context.applicationContext,
-      internalProfileId = 1
-    ).extractCurrentAppScreenName()
+    val currentScreenName =
+      ProfileRenameActivity
+        .createProfileRenameActivity(
+          context = this.context.applicationContext,
+          internalProfileId = 1,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RENAME_ACTIVITY)
   }
@@ -154,8 +159,8 @@ class ProfileRenameActivityTest {
     activityTestRule.launchActivity(
       ProfileRenameActivity.createProfileRenameActivity(
         context = this.context.applicationContext,
-        internalProfileId = 1
-      )
+        internalProfileId = 1,
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -192,8 +197,8 @@ class ProfileRenameActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -204,9 +209,13 @@ class ProfileRenameActivityTest {
     fun inject(profileRenameActivityTest: ProfileRenameActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileRenameActivityTest_TestApplicationComponent.builder()
+      DaggerProfileRenameActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -215,9 +224,12 @@ class ProfileRenameActivityTest {
       component.inject(profileRenameActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

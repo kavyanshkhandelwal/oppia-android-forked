@@ -29,7 +29,6 @@ class AudioFragment :
      * @return a new instance of [AudioFragment].
      */
     fun newInstance(internalProfileId: Int): AudioFragment {
-
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val audioFragment = AudioFragment()
       val args = Bundle()
@@ -47,7 +46,7 @@ class AudioFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
     val internalProfileId =
@@ -75,7 +74,8 @@ class AudioFragment :
 
   override fun enableAudioPlayback(contentId: String?) {
     audioFragmentPresenter.handleAudioClick(
-      shouldEnableAudioPlayback = true, feedbackId = contentId
+      shouldEnableAudioPlayback = true,
+      feedbackId = contentId,
     )
   }
 
@@ -83,26 +83,28 @@ class AudioFragment :
     audioFragmentPresenter.handleAudioClick(shouldEnableAudioPlayback = false, feedbackId = null)
   }
 
-  override fun setStateAndExplorationId(newState: State, explorationId: String) =
-    audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
+  override fun setStateAndExplorationId(
+    newState: State,
+    explorationId: String,
+  ) = audioFragmentPresenter.setStateAndExplorationId(newState, explorationId)
 
   override fun loadMainContentAudio(allowAutoPlay: Boolean) {
     // This function is only called for new states loading their audio.
     audioFragmentPresenter.loadMainContentAudio(allowAutoPlay, reloadingContent = true)
   }
 
-  override fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean) =
-    audioFragmentPresenter.loadFeedbackAudio(contentId, allowAutoPlay)
+  override fun loadFeedbackAudio(
+    contentId: String,
+    allowAutoPlay: Boolean,
+  ) = audioFragmentPresenter.loadFeedbackAudio(contentId, allowAutoPlay)
 
   override fun pauseAudio() {
     audioFragmentPresenter.pauseAudio()
   }
 
-  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) =
-    audioFragmentPresenter.handleEnableAudio(saveUserChoice)
+  override fun enableAudioWhileOnCellular(saveUserChoice: Boolean) = audioFragmentPresenter.handleEnableAudio(saveUserChoice)
 
-  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) =
-    audioFragmentPresenter.handleDisableAudio(saveUserChoice)
+  override fun disableAudioWhileOnCellular(saveUserChoice: Boolean) = audioFragmentPresenter.handleDisableAudio(saveUserChoice)
 
   /** Used in data binding to know if user is touching SeekBar. */
   override fun getUserIsSeeking() = audioFragmentPresenter.userIsSeeking

@@ -18,97 +18,97 @@ import javax.inject.Inject
  * [StorySummaryViewModel] which in turn display the story.
  */
 @FragmentScope
-class MarkChaptersCompletedViewModel @Inject constructor(
-  private val oppiaLogger: OppiaLogger,
-  private val modifyLessonProgressController: ModifyLessonProgressController,
-  private val translationController: TranslationController
-) : ObservableViewModel() {
+class MarkChaptersCompletedViewModel
+  @Inject
+  constructor(
+    private val oppiaLogger: OppiaLogger,
+    private val modifyLessonProgressController: ModifyLessonProgressController,
+    private val translationController: TranslationController,
+  ) : ObservableViewModel() {
+    private lateinit var profileId: ProfileId
 
-  private lateinit var profileId: ProfileId
+    private val itemList = mutableListOf<MarkChaptersCompletedItemViewModel>()
 
-  private val itemList = mutableListOf<MarkChaptersCompletedItemViewModel>()
-
-  /**
-   * List of [MarkChaptersCompletedItemViewModel] used to populate recyclerview of
-   * [MarkChaptersCompletedFragment] to display stories and chapters.
-   */
-  val storySummaryLiveData: LiveData<List<MarkChaptersCompletedItemViewModel>> by lazy {
-    Transformations.map(storyMapLiveData, ::processStoryMap)
-  }
-
-  private val storyMapLiveData: LiveData<Map<String, List<EphemeralStorySummary>>> by lazy {
-    getStoryMap()
-  }
-
-  private fun getStoryMap(): LiveData<Map<String, List<EphemeralStorySummary>>> {
-    return Transformations.map(storyMapResultLiveData, ::processStoryMapResult)
-  }
-
-  private val storyMapResultLiveData:
-    LiveData<AsyncResult<Map<String, List<EphemeralStorySummary>>>> by lazy {
-      modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
+    /**
+     * List of [MarkChaptersCompletedItemViewModel] used to populate recyclerview of
+     * [MarkChaptersCompletedFragment] to display stories and chapters.
+     */
+    val storySummaryLiveData: LiveData<List<MarkChaptersCompletedItemViewModel>> by lazy {
+      Transformations.map(storyMapLiveData, ::processStoryMap)
     }
 
-  private fun processStoryMapResult(
-    storyMap: AsyncResult<Map<String, List<EphemeralStorySummary>>>
-  ): Map<String, List<EphemeralStorySummary>> {
-    return when (storyMap) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "MarkChaptersCompletedFragment", "Failed to retrieve storyList", storyMap.error
-        )
-        mapOf()
+    private val storyMapLiveData: LiveData<Map<String, List<EphemeralStorySummary>>> by lazy {
+      getStoryMap()
+    }
+
+    private fun getStoryMap(): LiveData<Map<String, List<EphemeralStorySummary>>> =
+      Transformations.map(storyMapResultLiveData, ::processStoryMapResult)
+
+    private val storyMapResultLiveData:
+      LiveData<AsyncResult<Map<String, List<EphemeralStorySummary>>>> by lazy {
+        modifyLessonProgressController.getStoryMapWithProgress(profileId).toLiveData()
       }
-      is AsyncResult.Pending -> mapOf()
-      is AsyncResult.Success -> storyMap.value
-    }
-  }
 
-  private fun processStoryMap(
-    storyMap: Map<String, List<EphemeralStorySummary>>
-  ): List<MarkChaptersCompletedItemViewModel> {
-    itemList.clear()
-    var nextStoryIndex: Int
-    var chapterIndex = 0
-    storyMap.forEach { storyMapItem ->
-      storyMapItem.value.forEach { ephemeralStorySummary ->
-        val storySummary = ephemeralStorySummary.storySummary
-        val storyTitle =
-          translationController.extractString(
-            storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
+    private fun processStoryMapResult(
+      storyMap: AsyncResult<Map<String, List<EphemeralStorySummary>>>,
+    ): Map<String, List<EphemeralStorySummary>> =
+      when (storyMap) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "MarkChaptersCompletedFragment",
+            "Failed to retrieve storyList",
+            storyMap.error,
           )
-        itemList.add(StorySummaryViewModel(storyTitle))
-        chapterIndex++
-        nextStoryIndex = chapterIndex + storySummary.chapterCount
-        ephemeralStorySummary.chaptersList.forEach { ephemeralChapterSummary ->
-          itemList.add(
-            ChapterSummaryViewModel(
-              chapterIndex = chapterIndex,
-              ephemeralChapterSummary = ephemeralChapterSummary,
-              nextStoryIndex = nextStoryIndex,
-              storyId = storySummary.storyId,
-              topicId = storyMapItem.key,
-              translationController
+          mapOf()
+        }
+        is AsyncResult.Pending -> mapOf()
+        is AsyncResult.Success -> storyMap.value
+      }
+
+    private fun processStoryMap(storyMap: Map<String, List<EphemeralStorySummary>>): List<MarkChaptersCompletedItemViewModel> {
+      itemList.clear()
+      var nextStoryIndex: Int
+      var chapterIndex = 0
+      storyMap.forEach { storyMapItem ->
+        storyMapItem.value.forEach { ephemeralStorySummary ->
+          val storySummary = ephemeralStorySummary.storySummary
+          val storyTitle =
+            translationController.extractString(
+              storySummary.storyTitle,
+              ephemeralStorySummary.writtenTranslationContext,
             )
-          )
+          itemList.add(StorySummaryViewModel(storyTitle))
           chapterIndex++
+          nextStoryIndex = chapterIndex + storySummary.chapterCount
+          ephemeralStorySummary.chaptersList.forEach { ephemeralChapterSummary ->
+            itemList.add(
+              ChapterSummaryViewModel(
+                chapterIndex = chapterIndex,
+                ephemeralChapterSummary = ephemeralChapterSummary,
+                nextStoryIndex = nextStoryIndex,
+                storyId = storySummary.storyId,
+                topicId = storyMapItem.key,
+                translationController,
+              ),
+            )
+            chapterIndex++
+          }
         }
       }
+      return itemList
     }
-    return itemList
+
+    fun setProfileId(profileId: ProfileId) {
+      this.profileId = profileId
+    }
+
+    /** Returns a list of [MarkChaptersCompletedItemViewModel]s. */
+    fun getItemList(): List<MarkChaptersCompletedItemViewModel> = itemList.toList()
+
+    /** Returns a list of [ChapterSummaryViewModel]s mapped to corresponding exploration IDs. */
+    fun getChapterMap(): Map<String, Pair<String, String>> =
+      itemList.filterIsInstance<ChapterSummaryViewModel>().associateBy(
+        { it.chapterSummary.explorationId },
+        { Pair(it.storyId, it.topicId) },
+      )
   }
-
-  fun setProfileId(profileId: ProfileId) {
-    this.profileId = profileId
-  }
-
-  /** Returns a list of [MarkChaptersCompletedItemViewModel]s. */
-  fun getItemList(): List<MarkChaptersCompletedItemViewModel> = itemList.toList()
-
-  /** Returns a list of [ChapterSummaryViewModel]s mapped to corresponding exploration IDs. */
-  fun getChapterMap(): Map<String, Pair<String, String>> =
-    itemList.filterIsInstance<ChapterSummaryViewModel>().associateBy(
-      { it.chapterSummary.explorationId },
-      { Pair(it.storyId, it.topicId) }
-    )
-}

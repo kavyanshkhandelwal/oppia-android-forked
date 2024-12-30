@@ -15,6 +15,6 @@ class MultipleChoiceInputModule {
   @StringKey("Equals")
   @MultipleChoiceInputRules
   internal fun provideMultipleChoiceInputEqualsRuleClassifier(
-    classifierProvider: MultipleChoiceInputEqualsRuleClassifierProvider
+    classifierProvider: MultipleChoiceInputEqualsRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

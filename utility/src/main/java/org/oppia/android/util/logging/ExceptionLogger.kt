@@ -8,7 +8,6 @@ import java.lang.Exception
  * or log the exception to a file on disk.
  */
 interface ExceptionLogger {
-
   /**
    * Logs exceptions to remote services or log them to a file on disk.
    *

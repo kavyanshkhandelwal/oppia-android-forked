@@ -110,9 +110,10 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeMs_wallClockMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_WALL_CLOCK_TIME)
 
-    val exception = assertThrows<IllegalStateException>() {
-      fakeOppiaClock.setCurrentTimeMs(0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        fakeOppiaClock.setCurrentTimeMs(0)
+      }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
   }
 
@@ -128,9 +129,10 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeMs_uptimeMillisMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows<IllegalStateException>() {
-      fakeOppiaClock.setCurrentTimeMs(0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        fakeOppiaClock.setCurrentTimeMs(0)
+      }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
   }
 
@@ -226,9 +228,10 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeToSameDateTime_wallClockMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows<IllegalStateException>() {
-      fakeOppiaClock.setCurrentTimeToSameDateTime(0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        fakeOppiaClock.setCurrentTimeToSameDateTime(0)
+      }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
   }
 
@@ -258,9 +261,10 @@ class FakeOppiaClockTest {
   fun testSetCurrentTimeToSameDateTime_uptimeMillisMode_throwsException() {
     fakeOppiaClock.setFakeTimeMode(MODE_UPTIME_MILLIS)
 
-    val exception = assertThrows<IllegalStateException>() {
-      fakeOppiaClock.setCurrentTimeToSameDateTime(0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        fakeOppiaClock.setCurrentTimeToSameDateTime(0)
+      }
     assertThat(exception).hasMessageThat().contains("MODE_FIXED_FAKE_TIME")
   }
 
@@ -268,9 +272,7 @@ class FakeOppiaClockTest {
 
   private fun LongSubject.isWithin(range: LongRange) = isIn(range.toGuavaRange())
 
-  private fun <T : Comparable<T>> ClosedRange<T>.toGuavaRange(): Range<T> {
-    return Range.open(/* lower= */ start, /* upper= */ endInclusive)
-  }
+  private fun <T : Comparable<T>> ClosedRange<T>.toGuavaRange(): Range<T> = Range.open(/* lower= */ start, /* upper= */ endInclusive)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -281,9 +283,7 @@ class FakeOppiaClockTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -292,8 +292,8 @@ class FakeOppiaClockTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
-    ]
+      ImageParsingModule::class, CachingTestModule::class, LoggerModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -307,9 +307,12 @@ class FakeOppiaClockTest {
     fun inject(fakeOppiaClockTest: FakeOppiaClockTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeOppiaClockTest_TestApplicationComponent.builder()
+      DaggerFakeOppiaClockTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

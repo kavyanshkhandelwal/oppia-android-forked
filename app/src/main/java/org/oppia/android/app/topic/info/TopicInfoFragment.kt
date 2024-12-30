@@ -18,19 +18,22 @@ import javax.inject.Inject
 /** Fragment that contains info of Topic. */
 class TopicInfoFragment : InjectableFragment() {
   companion object {
-
     /** Arguments key for TopicInfoFragment. */
     const val TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY = "TopicInfoFragment.arguments"
 
     /** Returns a new [TopicInfoFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicInfoFragment {
+    fun newInstance(
+      profileId: ProfileId,
+      topicId: String,
+    ): TopicInfoFragment {
       val args = TopicInfoFragmentArguments.newBuilder().setTopicId(topicId).build()
 
       return TopicInfoFragment().apply {
-        arguments = Bundle().apply {
-          putProto(TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -46,23 +49,25 @@ class TopicInfoFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val args = arguments?.getProto(
-      TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY,
-      TopicInfoFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments?.getProto(
+        TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY,
+        TopicInfoFragmentArguments.getDefaultInstance(),
+      )
 
     val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
-    val topicId = checkNotNull(args?.topicId) {
-      "Expected topic ID to be included in arguments for TopicInfoFragment."
-    }
+    val topicId =
+      checkNotNull(args?.topicId) {
+        "Expected topic ID to be included in arguments for TopicInfoFragment."
+      }
     return topicInfoFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
-      topicId
+      topicId,
     )
   }
 }

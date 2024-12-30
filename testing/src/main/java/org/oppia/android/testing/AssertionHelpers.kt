@@ -20,18 +20,25 @@ package org.oppia.android.testing
  * @return the exception being thrown
  * @throws AssertionError if the specified exception is not thrown
  */
-inline fun <reified T : Throwable> assertThrows(noinline operation: () -> Unit): T {
-  return when (val result = try { operation() } catch (t: Throwable) { t }) {
+inline fun <reified T : Throwable> assertThrows(noinline operation: () -> Unit): T =
+  when (
+    val result =
+      try {
+        operation()
+      } catch (t: Throwable) {
+        t
+      }
+  ) {
     is T -> result
     is Throwable -> {
       throw AssertionError(
-        "Expected exception of type: ${T::class.java}, not: ${result::class.java}.", result
+        "Expected exception of type: ${T::class.java}, not: ${result::class.java}.",
+        result,
       )
     }
     else -> {
       throw AssertionError(
-        "Expected exception of type: ${T::class.java}. No exception was thrown."
+        "Expected exception of type: ${T::class.java}. No exception was thrown.",
       )
     }
   }
-}

@@ -13,42 +13,44 @@ import javax.inject.Inject
 
 /** The presenter for [LicenseListFragment]. */
 @FragmentScope
-class LicenseTextViewerFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
-  private lateinit var binding: LicenseTextViewerFragmentBinding
+class LicenseTextViewerFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    private lateinit var binding: LicenseTextViewerFragmentBinding
 
-  /** Handles onCreateView() method of the [LicenseTextViewerFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    dependencyIndex: Int,
-    licenseIndex: Int
-  ): View? {
-    val viewModel = getLicenseTextViewModel(activity, dependencyIndex, licenseIndex)
+    /** Handles onCreateView() method of the [LicenseTextViewerFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      dependencyIndex: Int,
+      licenseIndex: Int,
+    ): View? {
+      val viewModel = getLicenseTextViewModel(activity, dependencyIndex, licenseIndex)
 
-    binding = LicenseTextViewerFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+      binding =
+        LicenseTextViewerFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = viewModel
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = viewModel
+      }
+      binding.copyrightLicenseTextView.movementMethod = LinkMovementMethod.getInstance()
+
+      return binding.root
     }
-    binding.copyrightLicenseTextView.movementMethod = LinkMovementMethod.getInstance()
 
-    return binding.root
+    private fun getLicenseTextViewModel(
+      activity: AppCompatActivity,
+      dependencyIndex: Int,
+      licenseIndex: Int,
+    ): LicenseTextViewModel = LicenseTextViewModel(activity, dependencyIndex, licenseIndex, resourceHandler)
   }
-
-  private fun getLicenseTextViewModel(
-    activity: AppCompatActivity,
-    dependencyIndex: Int,
-    licenseIndex: Int
-  ): LicenseTextViewModel {
-    return LicenseTextViewModel(activity, dependencyIndex, licenseIndex, resourceHandler)
-  }
-}

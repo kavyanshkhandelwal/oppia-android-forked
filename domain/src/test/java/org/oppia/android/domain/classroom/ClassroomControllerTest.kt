@@ -314,9 +314,10 @@ class ClassroomControllerTest {
   private fun getClassroomList(profileId: ProfileId) =
     monitorFactory.waitForNextSuccessfulResult(classroomController.getClassroomList(profileId))
 
-  private fun retrieveTopicList(classroomId: String) = monitorFactory.waitForNextSuccessfulResult(
-    classroomController.getTopicList(profileId0, classroomId)
-  )
+  private fun retrieveTopicList(classroomId: String) =
+    monitorFactory.waitForNextSuccessfulResult(
+      classroomController.getTopicList(profileId0, classroomId),
+    )
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -327,30 +328,22 @@ class ClassroomControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @DefaultGcsPrefix
     @Singleton
-    fun provideDefaultGcsPrefix(): String {
-      return "https://storage.googleapis.com/"
-    }
+    fun provideDefaultGcsPrefix(): String = "https://storage.googleapis.com/"
 
     @Provides
     @DefaultResourceBucketName
     @Singleton
-    fun provideDefaultGcsResource(): String {
-      return "oppiaserver-resources/"
-    }
+    fun provideDefaultGcsResource(): String = "oppiaserver-resources/"
 
     @Provides
     @ImageDownloadUrlTemplate
     @Singleton
-    fun provideImageDownloadUrlTemplate(): String {
-      return "%s/%s/assets/image/%s"
-    }
+    fun provideImageDownloadUrlTemplate(): String = "%s/%s/assets/image/%s"
 
     @EnableConsoleLog
     @Provides
@@ -366,8 +359,7 @@ class ClassroomControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     fun provideFakeAssetRepository(fakeImpl: FakeAssetRepository): AssetRepository = fakeImpl
@@ -382,8 +374,8 @@ class ClassroomControllerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -397,9 +389,12 @@ class ClassroomControllerTest {
     fun inject(classroomControllerTest: ClassroomControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerClassroomControllerTest_TestApplicationComponent.builder()
+      DaggerClassroomControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

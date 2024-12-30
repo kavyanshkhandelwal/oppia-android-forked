@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericInputIsLessThanRuleClassifierProviderTest {
-
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
   private val POSITIVE_REAL_VALUE_3_5 =
@@ -63,7 +62,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -77,7 +76,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -91,7 +90,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -105,7 +104,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -119,7 +118,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -133,7 +132,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -147,7 +146,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -161,7 +160,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -175,7 +174,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -189,7 +188,7 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
       inputIsLessThanRuleClassifier.matches(
         answer = NEGATIVE_INT_VALUE_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -199,13 +198,14 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsLessThanRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsLessThanRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -216,13 +216,14 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsLessThanRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsLessThanRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -233,13 +234,14 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   fun testIntAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_INT_VALUE_1)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsLessThanRuleClassifier.matches(
-        answer = POSITIVE_INT_VALUE_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsLessThanRuleClassifier.matches(
+          answer = POSITIVE_INT_VALUE_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -250,13 +252,14 @@ class NumericInputIsLessThanRuleClassifierProviderTest {
   fun testIntAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsLessThanRuleClassifier.matches(
-        answer = NEGATIVE_INT_VALUE_1,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsLessThanRuleClassifier.matches(
+          answer = NEGATIVE_INT_VALUE_1,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()

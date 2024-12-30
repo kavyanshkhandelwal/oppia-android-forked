@@ -27,8 +27,6 @@ class ForceNetworkTypeFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return forceNetworkTypeFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = forceNetworkTypeFragmentPresenter.handleCreateView(inflater, container)
 }

@@ -15,7 +15,7 @@ class ParameterizedAndroidJunit4TestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
-  private val iterationName: String?
+  private val iterationName: String?,
 ) : AndroidJUnit4ClassRunner(testClass),
   OppiaParameterizedBaseRunner,
   ParameterizedRunnerOverrideMethods {
@@ -26,7 +26,7 @@ class ParameterizedAndroidJunit4TestRunner internal constructor(
       iterationName,
       // Method names need to be restricted since Espresso saves individual test results to a file
       // with the full method name used as the filename.
-      restrictMethodNamesForPaths = true
+      restrictMethodNamesForPaths = true,
     ).also { delegate ->
       delegate.fetchChildrenFromParent = { super.getChildren() }
       delegate.fetchTestNameFromParent = { method -> super.testName(method) }
@@ -38,6 +38,8 @@ class ParameterizedAndroidJunit4TestRunner internal constructor(
 
   override fun testName(method: FrameworkMethod?): String = delegate.testName(method)
 
-  override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement =
-    delegate.methodInvoker(method, test)
+  override fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Statement = delegate.methodInvoker(method, test)
 }

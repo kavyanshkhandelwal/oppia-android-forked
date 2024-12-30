@@ -18,62 +18,64 @@ import javax.inject.Inject
  * A custom [RecyclerView] for displaying a list of radio buttons that may be selected by a user as
  * a score for the nps score survey question.
  */
-class SurveyNpsItemOptionView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : RecyclerView(context, attrs, defStyleAttr) {
-  @Inject
-  lateinit var bindingInterface: ViewBindingShim
+class SurveyNpsItemOptionView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+  ) : RecyclerView(context, attrs, defStyleAttr) {
+    @Inject
+    lateinit var bindingInterface: ViewBindingShim
 
-  @Inject
-  lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-  private lateinit var dataList: ObservableList<MultipleChoiceOptionContentViewModel>
+    @Inject
+    lateinit var singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
+    private lateinit var dataList: ObservableList<MultipleChoiceOptionContentViewModel>
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
-    maybeInitializeAdapter()
-  }
-
-  /**
-   * Sets the view's RecyclerView [MultipleChoiceOptionContentViewModel] data list.
-   *
-   * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
-   * since this one takes into account initialization order with other binding properties.
-   */
-  fun setSelectionData(dataList: ObservableList<MultipleChoiceOptionContentViewModel>) {
-    this.dataList = dataList
-    maybeInitializeAdapter()
-  }
-
-  private fun maybeInitializeAdapter() {
-    if (::singleTypeBuilderFactory.isInitialized &&
-      ::dataList.isInitialized
-    ) {
-      adapter = createAdapter().also { it.setData(dataList) }
+    override fun onAttachedToWindow() {
+      super.onAttachedToWindow()
+      val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
+      maybeInitializeAdapter()
     }
-  }
 
-  private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> {
-    return singleTypeBuilderFactory.create<MultipleChoiceOptionContentViewModel>()
-      .registerViewBinder(
-        inflateView = { parent ->
-          bindingInterface.provideNpsItemsInflatedView(
-            LayoutInflater.from(parent.context),
-            parent,
-            /* attachToParent= */ false
-          )
-        },
-        bindView = { view, viewModel ->
-          bindingInterface.provideNpsItemsViewModel(
-            view,
-            viewModel
-          )
-        }
-      )
-      .build()
+    /**
+     * Sets the view's RecyclerView [MultipleChoiceOptionContentViewModel] data list.
+     *
+     * Note that this needs to be used instead of the generic RecyclerView 'data' binding adapter
+     * since this one takes into account initialization order with other binding properties.
+     */
+    fun setSelectionData(dataList: ObservableList<MultipleChoiceOptionContentViewModel>) {
+      this.dataList = dataList
+      maybeInitializeAdapter()
+    }
+
+    private fun maybeInitializeAdapter() {
+      if (::singleTypeBuilderFactory.isInitialized &&
+        ::dataList.isInitialized
+      ) {
+        adapter = createAdapter().also { it.setData(dataList) }
+      }
+    }
+
+    private fun createAdapter(): BindableAdapter<MultipleChoiceOptionContentViewModel> =
+      singleTypeBuilderFactory
+        .create<MultipleChoiceOptionContentViewModel>()
+        .registerViewBinder(
+          inflateView = { parent ->
+            bindingInterface.provideNpsItemsInflatedView(
+              LayoutInflater.from(parent.context),
+              parent,
+              // attachToParent=
+              false,
+            )
+          },
+          bindView = { view, viewModel ->
+            bindingInterface.provideNpsItemsViewModel(
+              view,
+              viewModel,
+            )
+          },
+        ).build()
   }
-}

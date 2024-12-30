@@ -19,7 +19,7 @@ class ClassroomSummaryViewModel(
   val title: String by lazy {
     translationController.extractString(
       ephemeralClassroomSummary.classroomSummary.classroomTitle,
-      ephemeralClassroomSummary.writtenTranslationContext
+      ephemeralClassroomSummary.writtenTranslationContext,
     )
   }
 
@@ -31,9 +31,7 @@ class ClassroomSummaryViewModel(
   // Overriding equals is needed so that DataProvider combine functions used in the
   // ClassroomListViewModel will only rebind when the actual data in the data list changes,
   // rather than when the ViewModel object changes.
-  override fun equals(other: Any?): Boolean {
-    return other is ClassroomSummaryViewModel
-  }
+  override fun equals(other: Any?): Boolean = other is ClassroomSummaryViewModel
 
   override fun hashCode() = Objects.hash()
 }

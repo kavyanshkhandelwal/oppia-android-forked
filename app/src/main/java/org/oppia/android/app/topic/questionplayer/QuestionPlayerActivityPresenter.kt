@@ -34,260 +34,274 @@ private const val TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER = "HINTS_AND_SOLUTION_
 
 /** The presenter for [QuestionPlayerActivity]. */
 @ActivityScope
-class QuestionPlayerActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val questionTrainingController: QuestionTrainingController,
-  private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
-) {
-  private lateinit var profileId: ProfileId
-  private lateinit var state: State
-  private lateinit var writtenTranslationContext: WrittenTranslationContext
-  private lateinit var readingTextSize: ReadingTextSize
-
-  fun handleOnCreate(profileId: ProfileId) {
-    this.profileId = profileId
-
-    val binding = DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
-      activity,
-      R.layout.question_player_activity
-    )
-
-    binding.apply {
-      lifecycleOwner = activity
-    }
-
-    activity.setSupportActionBar(binding.questionPlayerToolbar)
-
-    binding.questionPlayerToolbar.setNavigationOnClickListener {
-      activity.onBackPressedDispatcher.onBackPressed()
-    }
-
-    retrieveReadingTextSize().observe(
-      activity as QuestionPlayerActivity
-    ) { result ->
-      (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
-    }
-  }
-
-  private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
-    startTrainingSessionWithCallback {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.question_player_fragment_placeholder,
-        QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-        TAG_QUESTION_PLAYER_FRAGMENT
-      ).commitNow()
-    }
-  }
-
-  fun loadFragments(readingTextSize: ReadingTextSize) {
-    this.readingTextSize = readingTextSize
-    if (getQuestionPlayerFragment() == null) {
-      loadQuestionPlayerFragment(readingTextSize)
-    } else {
-      activity.supportFragmentManager.beginTransaction()
-        .remove(getQuestionPlayerFragment() as Fragment).commitNow()
-      loadQuestionPlayerFragment(readingTextSize)
-    }
-
-    if (getHintsAndSolutionExplorationManagerFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.question_player_fragment_placeholder,
-        HintsAndSolutionQuestionManagerFragment()
-      ).commitNow()
-    }
-  }
-
-  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processReadingTextSizeResult
-    )
-  }
-
-  private fun processReadingTextSizeResult(
-    profileResult: AsyncResult<Profile>
-  ): ReadingTextSize {
-    return when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "QuestionPlayerActivity",
-          "Failed to retrieve profile",
-          profileResult.error
-        )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> {
-        oppiaLogger.d(
-          "QuestionPlayerActivity",
-          "Result is pending"
-        )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Success -> profileResult.value
-    }.readingTextSize
-  }
-
-  private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? { // ktlint-disable max-line-length
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER
-    ) as HintsAndSolutionQuestionManagerFragment?
-  }
-
-  fun stopTrainingSession() {
-    stopTrainingSessionWithCallback {
-      activity.finish()
-    }
-  }
-
-  fun restartSession() {
-    stopTrainingSessionWithCallback {
-      getQuestionPlayerFragment()?.let { fragment ->
-        activity.supportFragmentManager.beginTransaction().remove(fragment).commitNow()
-      }
-      startTrainingSessionWithCallback {
-        // Re-add the player fragment when the new session is ready.
-        activity.supportFragmentManager.beginTransaction().add(
-          R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance(profileId, readingTextSize),
-          TAG_QUESTION_PLAYER_FRAGMENT
-        ).commitNow()
-      }
-    }
-  }
-
-  private fun startTrainingSessionWithCallback(callback: () -> Unit) {
-    val skillIds = checkNotNull(
-      ArrayList(
-        activity.intent.getProtoExtra(
-          QUESTION_PLAYER_ACTIVITY_PARAMS_KEY,
-          QuestionPlayerActivityParams.getDefaultInstance()
-        )
-          .skillIdsList
-      )
-    ) {
-      "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
-    }
-
-    val startDataProvider =
-      questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
-    startDataProvider.toLiveData().observe(
-      activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
-            callback()
-          }
-        }
-      }
-    )
-  }
-
-  private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
-    questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
-      activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
-            setReadingTextSizeNormal()
-            activity.finish() // Can't recover from the session failing to stop.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
-            setReadingTextSizeNormal()
-            callback()
-          }
-        }
-      }
-    )
-  }
-
-  fun onKeyboardAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      val questionPlayerFragment = activity
-        .supportFragmentManager
-        .findFragmentByTag(
-          TAG_QUESTION_PLAYER_FRAGMENT
-        ) as? QuestionPlayerFragment
-      questionPlayerFragment?.handleKeyboardAction()
-    }
-  }
-
-  private fun getQuestionPlayerFragment(): QuestionPlayerFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_QUESTION_PLAYER_FRAGMENT
-    ) as QuestionPlayerFragment?
-  }
-
-  fun loadQuestionState(state: State, writtenTranslationContext: WrittenTranslationContext) {
-    this.state = state
-    this.writtenTranslationContext = writtenTranslationContext
-  }
-
-  fun routeToHintsAndSolution(
-    questionId: String,
-    helpIndex: HelpIndex
+class QuestionPlayerActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val questionTrainingController: QuestionTrainingController,
+    private val oppiaLogger: OppiaLogger,
+    private val profileManagementController: ProfileManagementController,
+    private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
   ) {
-    if (getHintsAndSolutionDialogFragment() == null) {
-      val hintsAndSolutionDialogFragment =
-        HintsAndSolutionDialogFragment.newInstance(
-          questionId,
-          state,
-          helpIndex,
-          writtenTranslationContext
+    private lateinit var profileId: ProfileId
+    private lateinit var state: State
+    private lateinit var writtenTranslationContext: WrittenTranslationContext
+    private lateinit var readingTextSize: ReadingTextSize
+
+    fun handleOnCreate(profileId: ProfileId) {
+      this.profileId = profileId
+
+      val binding =
+        DataBindingUtil.setContentView<QuestionPlayerActivityBinding>(
+          activity,
+          R.layout.question_player_activity,
         )
-      hintsAndSolutionDialogFragment.showNow(
-        activity.supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG
+
+      binding.apply {
+        lifecycleOwner = activity
+      }
+
+      activity.setSupportActionBar(binding.questionPlayerToolbar)
+
+      binding.questionPlayerToolbar.setNavigationOnClickListener {
+        activity.onBackPressedDispatcher.onBackPressed()
+      }
+
+      retrieveReadingTextSize().observe(
+        activity as QuestionPlayerActivity,
+      ) { result ->
+        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+      }
+    }
+
+    private fun loadQuestionPlayerFragment(readingTextSize: ReadingTextSize) {
+      startTrainingSessionWithCallback {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.question_player_fragment_placeholder,
+            QuestionPlayerFragment.newInstance(profileId, readingTextSize),
+            TAG_QUESTION_PLAYER_FRAGMENT,
+          ).commitNow()
+      }
+    }
+
+    fun loadFragments(readingTextSize: ReadingTextSize) {
+      this.readingTextSize = readingTextSize
+      if (getQuestionPlayerFragment() == null) {
+        loadQuestionPlayerFragment(readingTextSize)
+      } else {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .remove(getQuestionPlayerFragment() as Fragment)
+          .commitNow()
+        loadQuestionPlayerFragment(readingTextSize)
+      }
+
+      if (getHintsAndSolutionExplorationManagerFragment() == null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.question_player_fragment_placeholder,
+            HintsAndSolutionQuestionManagerFragment(),
+          ).commitNow()
+      }
+    }
+
+    private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> =
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processReadingTextSizeResult,
+      )
+
+    private fun processReadingTextSizeResult(profileResult: AsyncResult<Profile>): ReadingTextSize =
+      when (profileResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "QuestionPlayerActivity",
+            "Failed to retrieve profile",
+            profileResult.error,
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> {
+          oppiaLogger.d(
+            "QuestionPlayerActivity",
+            "Result is pending",
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Success -> profileResult.value
+      }.readingTextSize
+
+    @Suppress("ktlint:standard:max-line-length")
+    private fun getHintsAndSolutionExplorationManagerFragment(): HintsAndSolutionQuestionManagerFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_QUESTION_MANAGER,
+      ) as HintsAndSolutionQuestionManagerFragment?
+
+    fun stopTrainingSession() {
+      stopTrainingSessionWithCallback {
+        activity.finish()
+      }
+    }
+
+    fun restartSession() {
+      stopTrainingSessionWithCallback {
+        getQuestionPlayerFragment()?.let { fragment ->
+          activity.supportFragmentManager
+            .beginTransaction()
+            .remove(fragment)
+            .commitNow()
+        }
+        startTrainingSessionWithCallback {
+          // Re-add the player fragment when the new session is ready.
+          activity.supportFragmentManager
+            .beginTransaction()
+            .add(
+              R.id.question_player_fragment_placeholder,
+              QuestionPlayerFragment.newInstance(profileId, readingTextSize),
+              TAG_QUESTION_PLAYER_FRAGMENT,
+            ).commitNow()
+        }
+      }
+    }
+
+    private fun startTrainingSessionWithCallback(callback: () -> Unit) {
+      val skillIds =
+        checkNotNull(
+          ArrayList(
+            activity.intent
+              .getProtoExtra(
+                QUESTION_PLAYER_ACTIVITY_PARAMS_KEY,
+                QuestionPlayerActivityParams.getDefaultInstance(),
+              ).skillIdsList,
+          ),
+        ) {
+          "Expected $QUESTION_PLAYER_ACTIVITY_SKILL_ID_LIST_ARGUMENT_KEY to be in intent extras."
+        }
+
+      val startDataProvider =
+        questionTrainingController.startQuestionTrainingSession(profileId, skillIds)
+      startDataProvider.toLiveData().observe(
+        activity,
+        {
+          when (it) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Starting training session")
+            is AsyncResult.Failure -> {
+              oppiaLogger.e("QuestionPlayerActivity", "Failed to start training session", it.error)
+              activity.finish() // Can't recover from the session failing to start.
+            }
+            is AsyncResult.Success -> {
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully started training session")
+              callback()
+            }
+          }
+        },
+      )
+    }
+
+    private fun stopTrainingSessionWithCallback(callback: () -> Unit) {
+      questionTrainingController.stopQuestionTrainingSession().toLiveData().observe(
+        activity,
+        {
+          when (it) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("QuestionPlayerActivity", "Stopping training session")
+            is AsyncResult.Failure -> {
+              oppiaLogger.e("QuestionPlayerActivity", "Failed to stop training session", it.error)
+              setReadingTextSizeNormal()
+              activity.finish() // Can't recover from the session failing to stop.
+            }
+            is AsyncResult.Success -> {
+              oppiaLogger.d("QuestionPlayerActivity", "Successfully stopped training session")
+              setReadingTextSizeNormal()
+              callback()
+            }
+          }
+        },
+      )
+    }
+
+    fun onKeyboardAction(actionCode: Int) {
+      if (actionCode == EditorInfo.IME_ACTION_DONE) {
+        val questionPlayerFragment =
+          activity
+            .supportFragmentManager
+            .findFragmentByTag(
+              TAG_QUESTION_PLAYER_FRAGMENT,
+            ) as? QuestionPlayerFragment
+        questionPlayerFragment?.handleKeyboardAction()
+      }
+    }
+
+    private fun getQuestionPlayerFragment(): QuestionPlayerFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_QUESTION_PLAYER_FRAGMENT,
+      ) as QuestionPlayerFragment?
+
+    fun loadQuestionState(
+      state: State,
+      writtenTranslationContext: WrittenTranslationContext,
+    ) {
+      this.state = state
+      this.writtenTranslationContext = writtenTranslationContext
+    }
+
+    fun routeToHintsAndSolution(
+      questionId: String,
+      helpIndex: HelpIndex,
+    ) {
+      if (getHintsAndSolutionDialogFragment() == null) {
+        val hintsAndSolutionDialogFragment =
+          HintsAndSolutionDialogFragment.newInstance(
+            questionId,
+            state,
+            helpIndex,
+            writtenTranslationContext,
+          )
+        hintsAndSolutionDialogFragment.showNow(
+          activity.supportFragmentManager,
+          TAG_HINTS_AND_SOLUTION_DIALOG,
+        )
+      }
+    }
+
+    fun revealHint(hintIndex: Int) {
+      val questionPlayerFragment =
+        activity.supportFragmentManager.findFragmentByTag(
+          TAG_QUESTION_PLAYER_FRAGMENT,
+        ) as QuestionPlayerFragment
+      questionPlayerFragment.revealHint(hintIndex)
+    }
+
+    fun revealSolution() {
+      val questionPlayerFragment =
+        activity.supportFragmentManager.findFragmentByTag(
+          TAG_QUESTION_PLAYER_FRAGMENT,
+        ) as QuestionPlayerFragment
+      questionPlayerFragment.revealSolution()
+    }
+
+    fun dismissHintsAndSolutionDialog() {
+      getHintsAndSolutionDialogFragment()?.dismiss()
+    }
+
+    fun dismissConceptCard() {
+      getHintsAndSolutionDialogFragment()?.dismissConceptCard()
+    }
+
+    private fun getHintsAndSolutionDialogFragment(): HintsAndSolutionDialogFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_HINTS_AND_SOLUTION_DIALOG,
+      ) as? HintsAndSolutionDialogFragment
+
+    /** Set reading text size to normal, which is the default. */
+    fun setReadingTextSizeNormal() {
+      fontScaleConfigurationUtil.adjustFontScale(
+        context = activity,
+        ReadingTextSize.MEDIUM_TEXT_SIZE,
       )
     }
   }
-
-  fun revealHint(hintIndex: Int) {
-    val questionPlayerFragment =
-      activity.supportFragmentManager.findFragmentByTag(
-        TAG_QUESTION_PLAYER_FRAGMENT
-      ) as QuestionPlayerFragment
-    questionPlayerFragment.revealHint(hintIndex)
-  }
-
-  fun revealSolution() {
-    val questionPlayerFragment =
-      activity.supportFragmentManager.findFragmentByTag(
-        TAG_QUESTION_PLAYER_FRAGMENT
-      ) as QuestionPlayerFragment
-    questionPlayerFragment.revealSolution()
-  }
-
-  fun dismissHintsAndSolutionDialog() {
-    getHintsAndSolutionDialogFragment()?.dismiss()
-  }
-
-  fun dismissConceptCard() {
-    getHintsAndSolutionDialogFragment()?.dismissConceptCard()
-  }
-
-  private fun getHintsAndSolutionDialogFragment(): HintsAndSolutionDialogFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
-    ) as? HintsAndSolutionDialogFragment
-  }
-
-  /** Set reading text size to normal, which is the default. */
-  fun setReadingTextSizeNormal() {
-    fontScaleConfigurationUtil.adjustFontScale(
-      context = activity,
-      ReadingTextSize.MEDIUM_TEXT_SIZE
-    )
-  }
-}

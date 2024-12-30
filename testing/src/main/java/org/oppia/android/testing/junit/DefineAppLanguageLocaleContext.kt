@@ -32,7 +32,7 @@ annotation class DefineAppLanguageLocaleContext(
   val appStringAndroidRegionId: String = DEFAULT_UNDEFINED_STRING_VALUE,
   val oppiaRegionEnumId: Int = DEFAULT_UNDEFINED_INT_VALUE,
   val regionLanguageEnumIds: IntArray = [],
-  val regionIetfTag: String = DEFAULT_UNDEFINED_STRING_VALUE
+  val regionIetfTag: String = DEFAULT_UNDEFINED_STRING_VALUE,
 ) {
   companion object {
     /**

@@ -29,16 +29,15 @@ class MavenDependenciesRetriever(
   private val rootPath: String,
   private val mavenArtifactPropertyFetcher: MavenArtifactPropertyFetcher,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutor: CommandExecutor,
 ) {
   private val bazelClient by lazy { BazelClient(File(rootPath), commandExecutor) }
 
   /** Returns the list of third-party dependency names per Bazel. */
-  fun retrieveThirdPartyMavenDependenciesList(): List<String> {
-    return bazelClient
+  fun retrieveThirdPartyMavenDependenciesList(): List<String> =
+    bazelClient
       .retrieveThirdPartyMavenDepsListForBinary("//:oppia")
       .map { it.removePrefix(MAVEN_PREFIX) }
-  }
 
   /**
    * Merges manual updates from the textproto file to the list of dependencies
@@ -51,25 +50,22 @@ class MavenDependenciesRetriever(
    */
   fun addChangesFromTextProto(
     dependencyListFromPom: List<MavenDependency>,
-    dependencyListFromProto: List<MavenDependency>
-  ): List<MavenDependency> {
-    return dependencyListFromPom.map { dependency ->
+    dependencyListFromProto: List<MavenDependency>,
+  ): List<MavenDependency> =
+    dependencyListFromPom.map { dependency ->
       dependencyListFromProto.find {
         it.artifactName == dependency.artifactName
       } ?: dependency
     }
-  }
 
   /** Returns the set of licenses whose `original_link` has been verified manually. */
-  fun retrieveManuallyUpdatedLicensesSet(
-    mavenDependenciesList: List<MavenDependency>
-  ): Set<License> {
-    return mavenDependenciesList.flatMap { dependency ->
-      dependency.licenseList.filter { license ->
-        license.verifiedLinkCase != License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET
-      }
-    }.toSet()
-  }
+  fun retrieveManuallyUpdatedLicensesSet(mavenDependenciesList: List<MavenDependency>): Set<License> =
+    mavenDependenciesList
+      .flatMap { dependency ->
+        dependency.licenseList.filter { license ->
+          license.verifiedLinkCase != License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET
+        }
+      }.toSet()
 
   /**
    * Helper function to update all dependencies' licenses that have been verified manually.
@@ -82,21 +78,23 @@ class MavenDependenciesRetriever(
    */
   fun updateMavenDependenciesList(
     latestDependenciesList: List<MavenDependency>,
-    manuallyUpdatedLicenses: Set<License>
-  ): List<MavenDependency> {
-    return latestDependenciesList.map { mavenDependency ->
-      val updatedLicenseList = mavenDependency.licenseList.map { license ->
-        manuallyUpdatedLicenses.find {
-          it.originalLink == license.originalLink && it.licenseName == license.licenseName
-        } ?: license
-      }
-      MavenDependency.newBuilder().apply {
-        this.artifactName = mavenDependency.artifactName
-        this.artifactVersion = mavenDependency.artifactVersion
-        this.addAllLicense(updatedLicenseList)
-      }.build()
+    manuallyUpdatedLicenses: Set<License>,
+  ): List<MavenDependency> =
+    latestDependenciesList.map { mavenDependency ->
+      val updatedLicenseList =
+        mavenDependency.licenseList.map { license ->
+          manuallyUpdatedLicenses.find {
+            it.originalLink == license.originalLink && it.licenseName == license.licenseName
+          } ?: license
+        }
+      MavenDependency
+        .newBuilder()
+        .apply {
+          this.artifactName = mavenDependency.artifactName
+          this.artifactVersion = mavenDependency.artifactVersion
+          this.addAllLicense(updatedLicenseList)
+        }.build()
     }
-  }
 
   /**
    * Writes the list of final list of dependencies to the maven_dependencies.textproto file.
@@ -106,7 +104,7 @@ class MavenDependenciesRetriever(
    */
   fun writeTextProto(
     pathToTextProto: String,
-    mavenDependencyList: MavenDependencyList
+    mavenDependencyList: MavenDependencyList,
   ) {
     File(pathToTextProto).outputStream().bufferedWriter().use { writer ->
       TextFormat.printer().print(mavenDependencyList, writer)
@@ -117,17 +115,16 @@ class MavenDependenciesRetriever(
    * Returns the set of licenses that do not have verified_link set and there original link is
    * not set to be invalid by the developers.
    */
-  fun getAllBrokenLicenses(
-    mavenDependenciesList: List<MavenDependency>
-  ): Set<License> {
+  fun getAllBrokenLicenses(mavenDependenciesList: List<MavenDependency>): Set<License> {
     // Here broken licenses are those licenses that do not have verified_link set and
     // there original link is not set to be invalid by the developers.
-    return mavenDependenciesList.flatMap { dependency ->
-      dependency.licenseList.filter { license ->
-        license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
-          !license.isOriginalLinkInvalid
-      }
-    }.toSet()
+    return mavenDependenciesList
+      .flatMap { dependency ->
+        dependency.licenseList.filter { license ->
+          license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
+            !license.isOriginalLinkInvalid
+        }
+      }.toSet()
   }
 
   /**
@@ -141,29 +138,28 @@ class MavenDependenciesRetriever(
    */
   fun findFirstDependenciesWithBrokenLicenses(
     mavenDependenciesList: List<MavenDependency>,
-    brokenLicenses: Set<License>
-  ): Map<License, String> {
-    return brokenLicenses.associateWith { license ->
+    brokenLicenses: Set<License>,
+  ): Map<License, String> =
+    brokenLicenses.associateWith { license ->
       mavenDependenciesList.first { dependency -> license in dependency.licenseList }.artifactName
     }
-  }
 
   /**
    * Returns the set of dependencies whose license list is empty or some of their license link was
    * found to be invalid.
    */
-  fun getDependenciesThatNeedIntervention(
-    mavenDependenciesList: List<MavenDependency>
-  ): Set<MavenDependency> {
+  fun getDependenciesThatNeedIntervention(mavenDependenciesList: List<MavenDependency>): Set<MavenDependency> {
     // The dependencies whose license list is empty or some of their license link was found to
     // be invalid need further intervention. In this case, the developer needs to manually fill in
     // the license links for each of these dependencies.
-    return mavenDependenciesList.filter { dependency ->
-      dependency.licenseList.isEmpty() || dependency.licenseList.any { license ->
-        license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
-          license.isOriginalLinkInvalid
-      }
-    }.toSet()
+    return mavenDependenciesList
+      .filter { dependency ->
+        dependency.licenseList.isEmpty() ||
+          dependency.licenseList.any { license ->
+            license.verifiedLinkCase.equals(License.VerifiedLinkCase.VERIFIEDLINK_NOT_SET) &&
+              license.isOriginalLinkInvalid
+          }
+      }.toSet()
   }
 
   /**
@@ -172,12 +168,11 @@ class MavenDependenciesRetriever(
    * @param pathToPbFile path to the pb file to be parsed
    * @return list of dependencies
    */
-  fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> {
-    return parseTextProto(
+  fun retrieveMavenDependencyList(pathToPbFile: String): List<MavenDependency> =
+    parseTextProto(
       pathToPbFile,
-      MavenDependencyList.getDefaultInstance()
+      MavenDependencyList.getDefaultInstance(),
     ).mavenDependencyList
-  }
 
   /**
    * Extracts the license names and license links of the dependencies from their corresponding POM
@@ -188,9 +183,7 @@ class MavenDependenciesRetriever(
    * @return a [Deferred] of a list of [MavenListDependency] that has dependencies with licenses
    *     extracted from their POM files
    */
-  fun retrieveDependencyListFromPomAsync(
-    finalDependenciesList: List<MavenListDependency>
-  ): Deferred<MavenDependencyList> {
+  fun retrieveDependencyListFromPomAsync(finalDependenciesList: List<MavenListDependency>): Deferred<MavenDependencyList> {
     return CoroutineScope(scriptBgDispatcher).async {
       val candidates = finalDependenciesList.map { MavenListDependencyPomCandidate(it) }
       val undoneCandidates = candidates.filterTo(mutableSetOf()) { it.latestPomFileText == null }
@@ -198,37 +191,44 @@ class MavenDependenciesRetriever(
       while (undoneCandidates.isNotEmpty() && attemptCount < 10) {
         println(
           "Attempt ${++attemptCount} to download POM files for" +
-            " ${undoneCandidates.size}/${candidates.size} Maven artifacts..."
+            " ${undoneCandidates.size}/${candidates.size} Maven artifacts...",
         )
-        undoneCandidates -= undoneCandidates.map { pomCandidate ->
-          CoroutineScope(scriptBgDispatcher).async {
-            // Run blocking I/O operations on the I/O thread pool.
-            withContext(Dispatchers.IO) {
-              pomCandidate to mavenArtifactPropertyFetcher.scrapeText(pomCandidate.pomFileUrl)
+        undoneCandidates -=
+          undoneCandidates
+            .map { pomCandidate ->
+              CoroutineScope(scriptBgDispatcher).async {
+                // Run blocking I/O operations on the I/O thread pool.
+                withContext(Dispatchers.IO) {
+                  pomCandidate to mavenArtifactPropertyFetcher.scrapeText(pomCandidate.pomFileUrl)
+                }
+              }
+            }.awaitAll()
+            .mapNotNullTo(mutableSetOf()) { (pomCandidate, pomFileText) ->
+              // Map back to the original failing candidate, and try to update its text.
+              pomCandidate.takeIf { pomFileText != null }?.also { it.latestPomFileText = pomFileText }
             }
-          }
-        }.awaitAll().mapNotNullTo(mutableSetOf()) { (pomCandidate, pomFileText) ->
-          // Map back to the original failing candidate, and try to update its text.
-          pomCandidate.takeIf { pomFileText != null }?.also { it.latestPomFileText = pomFileText }
-        }
       }
       check(undoneCandidates.isEmpty()) {
         "Failed to download ${undoneCandidates.size}/${candidates.size} POM files:" +
           " $undoneCandidates."
       }
-      return@async MavenDependencyList.newBuilder().apply {
-        this.addAllMavenDependency(
-          candidates.map { pomCandidate ->
-            MavenDependency.newBuilder().apply {
-              this.artifactName = pomCandidate.dep.coord.reducedCoordinateString
-              this.artifactVersion = pomCandidate.dep.coord.version
-              // NB: the '!!' is fine here since previous checks should ensure the POM file text is
-              // impossible to be null at this point.
-              this.addAllLicense(extractLicenseLinksFromPom(pomCandidate.latestPomFileText!!))
-            }.build()
-          }
-        )
-      }.build()
+      return@async MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            candidates.map { pomCandidate ->
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = pomCandidate.dep.coord.reducedCoordinateString
+                  this.artifactVersion = pomCandidate.dep.coord.version
+                  // NB: the '!!' is fine here since previous checks should ensure the POM file text is
+                  // impossible to be null at this point.
+                  this.addAllLicense(extractLicenseLinksFromPom(pomCandidate.latestPomFileText!!))
+                }.build()
+            },
+          )
+        }.build()
     }
   }
 
@@ -242,14 +242,13 @@ class MavenDependenciesRetriever(
    */
   suspend fun generateDependenciesListFromMavenInstallAsync(
     pathToMavenInstall: String,
-    bazelQueryDepsNames: List<String>
-  ): Deferred<List<MavenListDependency>> {
-    return CoroutineScope(scriptBgDispatcher).async {
+    bazelQueryDepsNames: List<String>,
+  ): Deferred<List<MavenListDependency>> =
+    CoroutineScope(scriptBgDispatcher).async {
       computeMavenDependencies(pathToMavenInstall).filter { dep ->
         dep.coord.bazelTarget in bazelQueryDepsNames
       }
     }
-  }
 
   /**
    * Parses the text proto file to a proto class.
@@ -260,16 +259,14 @@ class MavenDependenciesRetriever(
    */
   private fun parseTextProto(
     pathToPbFile: String,
-    proto: MavenDependencyList
-  ): MavenDependencyList {
-    return FileInputStream(File(pathToPbFile)).use {
-      proto.newBuilderForType().mergeFrom(it)
-    }.build() as MavenDependencyList
-  }
+    proto: MavenDependencyList,
+  ): MavenDependencyList =
+    FileInputStream(File(pathToPbFile))
+      .use {
+        proto.newBuilderForType().mergeFrom(it)
+      }.build() as MavenDependencyList
 
-  private fun extractLicenseLinksFromPom(
-    pomText: String
-  ): List<License> {
+  private fun extractLicenseLinksFromPom(pomText: String): List<License> {
     val licenseList = mutableListOf<License>()
     val builderFactory = DocumentBuilderFactory.newInstance()
     val docBuilder = builderFactory.newDocumentBuilder()
@@ -282,55 +279,62 @@ class MavenDependenciesRetriever(
         val licenseName = getNodeValue("name", element)
         val licenseLink = replaceHttpWithHttps(getNodeValue("url", element))
         licenseList.add(
-          License.newBuilder().apply {
-            this.licenseName = licenseName
-            this.originalLink = licenseLink
-          }.build()
+          License
+            .newBuilder()
+            .apply {
+              this.licenseName = licenseName
+              this.originalLink = licenseLink
+            }.build(),
         )
       }
     }
     return licenseList
   }
 
-  private suspend fun computeMavenDependencies(
-    pathToMavenInstall: String
-  ): List<MavenListDependency> {
+  private suspend fun computeMavenDependencies(pathToMavenInstall: String): List<MavenListDependency> {
     val mavenInstallJson = parseMavenInstallJson(pathToMavenInstall)
     val artifactPartialCoordToRepoUrls =
-      mavenInstallJson.repositories.entries.flatMap { (repoBaseUrl, arifactCoordStrs) ->
-        arifactCoordStrs.map { it to repoBaseUrl }
-      }.groupBy { (artifactCoordStr, _) ->
-        artifactCoordStr
-      }.mapValues { (_, coordUrlToRepoUrlPairs) -> coordUrlToRepoUrlPairs.map { it.second } }
+      mavenInstallJson.repositories.entries
+        .flatMap { (repoBaseUrl, arifactCoordStrs) ->
+          arifactCoordStrs.map { it to repoBaseUrl }
+        }.groupBy { (artifactCoordStr, _) ->
+          artifactCoordStr
+        }.mapValues { (_, coordUrlToRepoUrlPairs) -> coordUrlToRepoUrlPairs.map { it.second } }
 
-    val coordCandidates = mavenInstallJson.artifacts.map { (partialCoord, artifact) ->
-      val coord = MavenCoordinate.parseFrom("$partialCoord:${artifact.version}")
-      val repoUrls = artifactPartialCoordToRepoUrls.getValue(partialCoord)
-      val urlCandidates = repoUrls.map { repoUrl ->
-        ArtifactUrlCandidate(repoUrl, coord.computeArtifactUrl(repoUrl))
+    val coordCandidates =
+      mavenInstallJson.artifacts.map { (partialCoord, artifact) ->
+        val coord = MavenCoordinate.parseFrom("$partialCoord:${artifact.version}")
+        val repoUrls = artifactPartialCoordToRepoUrls.getValue(partialCoord)
+        val urlCandidates =
+          repoUrls.map { repoUrl ->
+            ArtifactUrlCandidate(repoUrl, coord.computeArtifactUrl(repoUrl))
+          }
+        return@map DownloadableCoordCandidate(coord, urlCandidates)
       }
-      return@map DownloadableCoordCandidate(coord, urlCandidates)
-    }
-    var remainingCandidates = coordCandidates.map {
-      it.computeUrlsToTry()
-    }.filter {
-      it.isNotEmpty()
-    }
+    var remainingCandidates =
+      coordCandidates
+        .map {
+          it.computeUrlsToTry()
+        }.filter {
+          it.isNotEmpty()
+        }
     var urlsToTry = remainingCandidates.flatten()
     var attemptCount = 0
     while (urlsToTry.isNotEmpty()) {
       println(
         "Attempt ${++attemptCount} to resolve ${remainingCandidates.size}/${coordCandidates.size}" +
-          " Maven coordinates with ${urlsToTry.size} possible download URLs..."
+          " Maven coordinates with ${urlsToTry.size} possible download URLs...",
       )
-      val urlResolutions = urlsToTry.map { urlCandidate ->
-        CoroutineScope(scriptBgDispatcher).async {
-          // Run blocking I/O operations on the I/O thread pool.
-          urlCandidate to withContext(Dispatchers.IO) {
-            mavenArtifactPropertyFetcher.isValidArtifactFileUrl(urlCandidate.artifactUrl)
+      val urlResolutions =
+        urlsToTry.map { urlCandidate ->
+          CoroutineScope(scriptBgDispatcher).async {
+            // Run blocking I/O operations on the I/O thread pool.
+            urlCandidate to
+              withContext(Dispatchers.IO) {
+                mavenArtifactPropertyFetcher.isValidArtifactFileUrl(urlCandidate.artifactUrl)
+              }
           }
         }
-      }
       // Process all remaining repo URL checks parallely.
       urlResolutions.awaitAll().forEach { (urlCandidate, status) ->
         urlCandidate.checkAttemptCount++
@@ -358,7 +362,10 @@ class MavenDependenciesRetriever(
     return adapter.fromJson(mavenInstallJsonText) ?: error("Failed to parse $pathToMavenInstall.")
   }
 
-  private fun getNodeValue(tag: String, element: Element): String {
+  private fun getNodeValue(
+    tag: String,
+    element: Element,
+  ): String {
     val nodeList = element.getElementsByTagName(tag)
     val node = nodeList.item(0)
     if (node != null) {
@@ -391,7 +398,7 @@ class MavenDependenciesRetriever(
     val artifactId: String,
     val version: String,
     val classifier: String? = null,
-    val extension: String? = null
+    val extension: String? = null,
   ) {
     /**
      * A reduced string representation of this coordinate that ignores any specified [classifier] or
@@ -416,8 +423,7 @@ class MavenDependenciesRetriever(
      * Note that per https://maven.apache.org/repositories/artifacts.html the extension will assumed
      * to be 'jar' if an [extension] hasn't been provided.
      */
-    fun computeArtifactUrl(baseRepoUrl: String): String =
-      computeArtifactFileUrl(baseRepoUrl, extension ?: "jar")
+    fun computeArtifactUrl(baseRepoUrl: String): String = computeArtifactFileUrl(baseRepoUrl, extension ?: "jar")
 
     /**
      * Returns the downloadable URL for the POM file corresponding to the artifact represented by
@@ -426,13 +432,14 @@ class MavenDependenciesRetriever(
      * See https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#what-is-a-pom
      * for more context on POM files.
      */
-    fun computePomUrl(baseRepoUrl: String): String =
-      computeArtifactFileUrl(baseRepoUrl, extension = "pom")
+    fun computePomUrl(baseRepoUrl: String): String = computeArtifactFileUrl(baseRepoUrl, extension = "pom")
 
-    private fun computeArtifactFileUrl(baseRepoUrl: String, extension: String): String {
-      return "${baseRepoUrl.removeSuffix("/")}/${groupId.replace('.', '/')}/$artifactId/$version" +
+    private fun computeArtifactFileUrl(
+      baseRepoUrl: String,
+      extension: String,
+    ): String =
+      "${baseRepoUrl.removeSuffix("/")}/${groupId.replace('.', '/')}/$artifactId/$version" +
         "/$artifactId-$version$delimitedClassifierUrlFragment.$extension"
-    }
 
     companion object {
       /**
@@ -472,14 +479,18 @@ class MavenDependenciesRetriever(
    * @property repoUrls a list of Maven repository URLs from which the dependency may be downloaded.
    *     Note that these repositories have been confirmed to include this specific dependency.
    */
-  data class MavenListDependency(val coord: MavenCoordinate, val repoUrls: List<String>)
+  data class MavenListDependency(
+    val coord: MavenCoordinate,
+    val repoUrls: List<String>,
+  )
 
   private data class MavenListDependencyPomCandidate(
     val dep: MavenListDependency,
-    var latestPomFileText: String? = null
+    var latestPomFileText: String? = null,
   ) {
     private val repoBaseUrl: String
       get() = dep.repoUrls.firstOrNull() ?: error("No repo URL found for artifact: $dep.")
+
     /** The URL to the .pom file corresponding to the Maven artifact represented by this object. */
     val pomFileUrl: String by lazy { dep.coord.computePomUrl(repoBaseUrl) }
   }
@@ -488,17 +499,15 @@ class MavenDependenciesRetriever(
     val repoUrl: String,
     val artifactUrl: String,
     var latestDownloadStatus: Boolean = false,
-    var checkAttemptCount: Int = 0
+    var checkAttemptCount: Int = 0,
   )
 
   private data class DownloadableCoordCandidate(
     val coord: MavenCoordinate,
-    val urlCandidates: List<ArtifactUrlCandidate>
+    val urlCandidates: List<ArtifactUrlCandidate>,
   ) {
     /** Return the set of [ArtifactUrlCandidate]s that have been successfully resolved. */
-    fun computeSuccessfulUrls(): Set<ArtifactUrlCandidate> {
-      return urlCandidates.filterTo(mutableSetOf()) { it.latestDownloadStatus }
-    }
+    fun computeSuccessfulUrls(): Set<ArtifactUrlCandidate> = urlCandidates.filterTo(mutableSetOf()) { it.latestDownloadStatus }
 
     /**
      * Returns the set of [ArtifactUrlCandidate]s that need to yet be attempted (or reattempted) to

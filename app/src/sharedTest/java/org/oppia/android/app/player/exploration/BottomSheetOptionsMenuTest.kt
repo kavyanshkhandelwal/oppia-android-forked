@@ -98,7 +98,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = BottomSheetOptionsMenuTest.TestApplication::class)
 class BottomSheetOptionsMenuTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -193,8 +192,8 @@ class BottomSheetOptionsMenuTest {
       CachingTestModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -208,19 +207,25 @@ class BottomSheetOptionsMenuTest {
     fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerBottomSheetOptionsMenuTest_TestApplicationComponent.builder()
+      DaggerBottomSheetOptionsMenuTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) =
-      component.inject(bottomSheetOptionsMenuTest)
+    fun inject(bottomSheetOptionsMenuTest: BottomSheetOptionsMenuTest) = component.inject(bottomSheetOptionsMenuTest)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

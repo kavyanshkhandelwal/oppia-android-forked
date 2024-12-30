@@ -56,9 +56,10 @@ abstract class SyncStatusManagerTestBase {
   fun testInitializeEventLogStore_twice_throwsException() {
     impl.initializeEventLogStore(logsCacheStore)
 
-    val error = assertThrows<IllegalStateException>() {
-      impl.initializeEventLogStore(logsCacheStore)
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        impl.initializeEventLogStore(logsCacheStore)
+      }
 
     assertThat(error)
       .hasMessageThat()
@@ -277,39 +278,46 @@ abstract class SyncStatusManagerTestBase {
     assertThat(syncStatus).isEqualTo(SyncStatus.UPLOAD_ERROR)
   }
 
-  private fun createPrimedLogStore(): PersistentCacheStore<OppiaEventLogs> {
-    return persistentCacheStoreFactory.create(
-      "test_cache_logs", OppiaEventLogs.getDefaultInstance()
-    ).also {
-      // Priming the log store ahead of time is, strictly speaking, not necessary for the tests.
-      // However, it's closer to how the log store would likely behave in production so this can
-      // help minimize some potential behavioral skew.
-      it.primeInMemoryAndDiskCacheAsync(
-        UPDATE_ALWAYS, PUBLISH_TO_IN_MEMORY_CACHE
-      ).waitForSuccessfulResult()
-    }
-  }
+  private fun createPrimedLogStore(): PersistentCacheStore<OppiaEventLogs> =
+    persistentCacheStoreFactory
+      .create(
+        "test_cache_logs",
+        OppiaEventLogs.getDefaultInstance(),
+      ).also {
+        // Priming the log store ahead of time is, strictly speaking, not necessary for the tests.
+        // However, it's closer to how the log store would likely behave in production so this can
+        // help minimize some potential behavioral skew.
+        it
+          .primeInMemoryAndDiskCacheAsync(
+            UPDATE_ALWAYS,
+            PUBLISH_TO_IN_MEMORY_CACHE,
+          ).waitForSuccessfulResult()
+      }
 
   protected fun queueEventLogForUploading(eventLog: EventLog) {
-    logsCacheStore.storeDataAsync { eventLogs ->
-      eventLogs.toBuilder().apply { addEventLogsToUpload(eventLog) }.build()
-    }.waitForSuccessfulResult()
+    logsCacheStore
+      .storeDataAsync { eventLogs ->
+        eventLogs.toBuilder().apply { addEventLogsToUpload(eventLog) }.build()
+      }.waitForSuccessfulResult()
   }
 
   protected fun moveEventLogToUploaded(eventLog: EventLog) {
-    logsCacheStore.storeDataAsync { eventLogs ->
-      eventLogs.toBuilder().apply {
-        removeEventLogsToUpload(eventLogsToUploadList.indexOf(eventLog))
-        addUploadedEventLogs(eventLog)
-      }.build()
-    }.waitForSuccessfulResult()
+    logsCacheStore
+      .storeDataAsync { eventLogs ->
+        eventLogs
+          .toBuilder()
+          .apply {
+            removeEventLogsToUpload(eventLogsToUploadList.indexOf(eventLog))
+            addUploadedEventLogs(eventLog)
+          }.build()
+      }.waitForSuccessfulResult()
   }
 
   @Suppress("DEPRECATION") // Robolectric Shadow API requires interacting with deprecated fields.
   protected fun disconnectNetwork() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = android.net.NetworkInfo.State.DISCONNECTED
+      networkState = android.net.NetworkInfo.State.DISCONNECTED,
     )
   }
 
@@ -317,48 +325,55 @@ abstract class SyncStatusManagerTestBase {
   protected fun connectNetwork() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = android.net.NetworkInfo.State.CONNECTED
+      networkState = android.net.NetworkInfo.State.CONNECTED,
     )
   }
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult() {
-    return when (val result = waitForResult()) {
+  private fun <T> Deferred<T>.waitForSuccessfulResult() =
+    when (val result = waitForResult()) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> {} // Nothing to do; the result succeeded.
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
-  }
 
   private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      backgroundDispatcherScope.async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      backgroundDispatcherScope
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
+  private fun <T> StateFlow<T>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.value
 
   private companion object {
     private const val EVENT_LOG_TIMESTAMP_0 = 1556061720000
     private const val EVENT_LOG_TIMESTAMP_1 = 1556094120000
 
-    private val OPEN_HOME_CONTEXT = EventLog.Context.newBuilder().apply { openHome = true }.build()
+    private val OPEN_HOME_CONTEXT =
+      EventLog.Context
+        .newBuilder()
+        .apply { openHome = true }
+        .build()
     private val EVENT_LOG_0 = createEventLog(EVENT_LOG_TIMESTAMP_0, OPEN_HOME_CONTEXT)
     private val EVENT_LOG_1 = createEventLog(EVENT_LOG_TIMESTAMP_1, OPEN_HOME_CONTEXT)
 
-    private fun createEventLog(timestamp: Long, context: EventLog.Context): EventLog {
-      return EventLog.newBuilder().apply {
-        this.timestamp = timestamp
-        this.priority = EventLog.Priority.ESSENTIAL
-        this.context = context
-      }.build()
-    }
+    private fun createEventLog(
+      timestamp: Long,
+      context: EventLog.Context,
+    ): EventLog =
+      EventLog
+        .newBuilder()
+        .apply {
+          this.timestamp = timestamp
+          this.priority = EventLog.Priority.ESSENTIAL
+          this.context = context
+        }.build()
   }
 }

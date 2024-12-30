@@ -86,7 +86,7 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
    */
   abstract fun runCurrent(
     timeout: Long = DEFAULT_TIMEOUT_SECONDS,
-    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT
+    timeoutUnit: TimeUnit = DEFAULT_TIMEOUT_UNIT,
   )
 
   /**
@@ -130,25 +130,20 @@ abstract class TestCoroutineDispatcher : CoroutineDispatcher() {
       }
     }
 
-    private fun isDebuggerAttached(): Boolean {
-      return if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+    private fun isDebuggerAttached(): Boolean =
+      if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
         isIntelliJDebuggerAttachedWithRobolectric()
       } else {
         isDebuggerAttachedWithEspresso()
       }
-    }
 
     /**
      * Returns whether there's an IntelliJ debugger attached. This only needed for Robolectric tests
      * since [android.os.Debug.isDebuggerConnected] doesn't work in Robolectric. This approach only
      * works for Android Studio, unfortunately.
      */
-    private fun isIntelliJDebuggerAttachedWithRobolectric(): Boolean {
-      return System.getProperty("intellij.debug.agent")?.toBoolean() ?: false
-    }
+    private fun isIntelliJDebuggerAttachedWithRobolectric(): Boolean = System.getProperty("intellij.debug.agent")?.toBoolean() ?: false
 
-    private fun isDebuggerAttachedWithEspresso(): Boolean {
-      return android.os.Debug.isDebuggerConnected()
-    }
+    private fun isDebuggerAttachedWithEspresso(): Boolean = android.os.Debug.isDebuggerConnected()
   }
 }

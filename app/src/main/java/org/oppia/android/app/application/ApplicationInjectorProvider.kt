@@ -25,8 +25,7 @@ interface ApplicationInjectorProvider :
 
   override fun getDataProvidersInjector(): DataProvidersInjector = getApplicationInjector()
 
-  override fun getAppLanguageApplicationInjector(): AppLanguageApplicationInjector =
-    getApplicationInjector()
+  override fun getAppLanguageApplicationInjector(): AppLanguageApplicationInjector = getApplicationInjector()
 
   override fun getOppiaClockInjector(): OppiaClockInjector = getApplicationInjector()
 

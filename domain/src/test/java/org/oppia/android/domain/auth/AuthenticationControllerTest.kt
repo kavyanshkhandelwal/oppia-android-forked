@@ -47,12 +47,16 @@ class AuthenticationControllerTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
+
   @Inject lateinit var fakeFirebaseAuthWrapperImpl: FakeFirebaseAuthWrapperImpl
+
   @Inject lateinit var authenticationController: AuthenticationController
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
 
   @Mock lateinit var mockFakeSuccessCallback: FakeSuccessCallback
+
   @Mock lateinit var mockFakeFailureCallback: FakeFailureCallback
+
   @Captor lateinit var throwableCaptor: ArgumentCaptor<Throwable>
 
   @Before
@@ -66,7 +70,7 @@ class AuthenticationControllerTest {
 
     firebaseAuthWrapper.signInAnonymously(
       onSuccess = mockFakeSuccessCallback::onSuccess,
-      onFailure = mockFakeFailureCallback::onFailure
+      onFailure = mockFakeFailureCallback::onFailure,
     )
 
     // onSuccess should be called.
@@ -80,7 +84,7 @@ class AuthenticationControllerTest {
 
     firebaseAuthWrapper.signInAnonymously(
       onSuccess = mockFakeSuccessCallback::onSuccess,
-      onFailure = mockFakeFailureCallback::onFailure
+      onFailure = mockFakeFailureCallback::onFailure,
     )
 
     // onFailure should be called with the failure details.
@@ -94,7 +98,7 @@ class AuthenticationControllerTest {
     fakeFirebaseAuthWrapperImpl.simulateSignInSuccess()
     firebaseAuthWrapper.signInAnonymously(
       onSuccess = mockFakeSuccessCallback::onSuccess,
-      onFailure = mockFakeFailureCallback::onFailure
+      onFailure = mockFakeFailureCallback::onFailure,
     )
 
     val user = authenticationController.currentFirebaseUser
@@ -110,9 +114,7 @@ class AuthenticationControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -122,7 +124,7 @@ class AuthenticationControllerTest {
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherModule::class,
       TestLogReportingModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -136,9 +138,12 @@ class AuthenticationControllerTest {
     fun inject(test: AuthenticationControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAuthenticationControllerTest_TestApplicationComponent.builder()
+      DaggerAuthenticationControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -150,7 +155,11 @@ class AuthenticationControllerTest {
     override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 
-  interface FakeSuccessCallback { fun onSuccess() }
+  interface FakeSuccessCallback {
+    fun onSuccess()
+  }
 
-  interface FakeFailureCallback { fun onFailure(failure: Throwable) }
+  interface FakeFailureCallback {
+    fun onFailure(failure: Throwable)
+  }
 }

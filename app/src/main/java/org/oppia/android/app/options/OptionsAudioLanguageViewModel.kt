@@ -7,7 +7,7 @@ class OptionsAudioLanguageViewModel(
   private val routeToAudioLanguageListListener: RouteToAudioLanguageListListener,
   private val loadAudioLanguageListListener: LoadAudioLanguageListListener,
   private val audioLanguage: AudioLanguage,
-  val audioLanguageDisplayName: String
+  val audioLanguageDisplayName: String,
 ) : OptionsItemViewModel() {
   /**
    * Handles when the user wishes to change their default audio language and clicks on the button to

@@ -169,7 +169,7 @@ class SurveyProgressControllerTest {
 
     val result =
       surveyProgressController.submitAnswer(
-        createMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED)
+        createMarketFitAnswer(MarketFitAnswer.VERY_DISAPPOINTED),
       )
     monitorFactory.waitForNextSuccessfulResult(result)
   }
@@ -198,8 +198,8 @@ class SurveyProgressControllerTest {
       surveyProgressController.submitAnswer(
         createTextInputAnswer(
           SurveyQuestionName.PASSIVE_FEEDBACK,
-          TEXT_ANSWER
-        )
+          TEXT_ANSWER,
+        ),
       )
 
     monitorFactory.waitForNextSuccessfulResult(result)
@@ -284,7 +284,8 @@ class SurveyProgressControllerTest {
     val result = monitorFactory.waitForNextFailureResult(moveTolPreviousProvider)
 
     assertThat(result).isInstanceOf(IllegalStateException::class.java)
-    assertThat(result).hasMessageThat()
+    assertThat(result)
+      .hasMessageThat()
       .contains("Cannot navigate to previous question; at initial question.")
   }
 
@@ -430,87 +431,75 @@ class SurveyProgressControllerTest {
 
   private fun startSuccessfulSurveySession() {
     monitorFactory.waitForNextSuccessfulResult(
-      surveyController.startSurveySession(questions, profileId = profileId)
+      surveyController.startSurveySession(questions, profileId = profileId),
     )
   }
 
-  private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralSurveyQuestion {
-    return monitorFactory.waitForNextSuccessfulResult(
-      surveyProgressController.getCurrentQuestion()
+  private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralSurveyQuestion =
+    monitorFactory.waitForNextSuccessfulResult(
+      surveyProgressController.getCurrentQuestion(),
     )
-  }
 
   private fun moveToPreviousQuestion(): EphemeralSurveyQuestion {
     // This operation might fail for some tests.
     monitorFactory.ensureDataProviderExecutes(
-      surveyProgressController.moveToPreviousQuestion()
+      surveyProgressController.moveToPreviousQuestion(),
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
   private fun submitAnswer(answer: SurveySelectedAnswer): EphemeralSurveyQuestion {
     monitorFactory.waitForNextSuccessfulResult(
-      surveyProgressController.submitAnswer(answer)
+      surveyProgressController.submitAnswer(answer),
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
 
-  private fun submitUserTypeAnswer(answer: UserTypeAnswer): EphemeralSurveyQuestion {
-    return submitAnswer(createUserTypeAnswer(answer))
-  }
+  private fun submitUserTypeAnswer(answer: UserTypeAnswer): EphemeralSurveyQuestion = submitAnswer(createUserTypeAnswer(answer))
 
-  private fun createUserTypeAnswer(
-    answer: UserTypeAnswer
-  ): SurveySelectedAnswer {
-    return SurveySelectedAnswer.newBuilder()
+  private fun createUserTypeAnswer(answer: UserTypeAnswer): SurveySelectedAnswer =
+    SurveySelectedAnswer
+      .newBuilder()
       .setQuestionName(SurveyQuestionName.USER_TYPE)
       .setUserType(answer)
       .build()
-  }
 
-  private fun submitMarketFitAnswer(answer: MarketFitAnswer): EphemeralSurveyQuestion {
-    return submitAnswer(createMarketFitAnswer(answer))
-  }
+  private fun submitMarketFitAnswer(answer: MarketFitAnswer): EphemeralSurveyQuestion = submitAnswer(createMarketFitAnswer(answer))
 
-  private fun createMarketFitAnswer(
-    answer: MarketFitAnswer
-  ): SurveySelectedAnswer {
-    return SurveySelectedAnswer.newBuilder()
+  private fun createMarketFitAnswer(answer: MarketFitAnswer): SurveySelectedAnswer =
+    SurveySelectedAnswer
+      .newBuilder()
       .setQuestionName(SurveyQuestionName.MARKET_FIT)
       .setMarketFit(answer)
       .build()
-  }
 
-  private fun submitNpsAnswer(answer: Int): EphemeralSurveyQuestion {
-    return submitAnswer(createNpsAnswer(answer))
-  }
+  private fun submitNpsAnswer(answer: Int): EphemeralSurveyQuestion = submitAnswer(createNpsAnswer(answer))
 
-  private fun createNpsAnswer(
-    answer: Int
-  ): SurveySelectedAnswer {
-    return SurveySelectedAnswer.newBuilder()
+  private fun createNpsAnswer(answer: Int): SurveySelectedAnswer =
+    SurveySelectedAnswer
+      .newBuilder()
       .setQuestionName(SurveyQuestionName.NPS)
       .setNpsScore(answer)
       .build()
-  }
 
   private fun submitTextInputAnswer(
     questionName: SurveyQuestionName,
-    textAnswer: String
+    textAnswer: String,
   ): EphemeralSurveyQuestion = submitAnswer(createTextInputAnswer(questionName, textAnswer))
 
   private fun createTextInputAnswer(
     questionName: SurveyQuestionName,
-    textAnswer: String
-  ): SurveySelectedAnswer {
-    return SurveySelectedAnswer.newBuilder()
+    textAnswer: String,
+  ): SurveySelectedAnswer =
+    SurveySelectedAnswer
+      .newBuilder()
       .setQuestionName(questionName)
       .setFreeFormAnswer(textAnswer)
       .build()
-  }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -522,9 +511,7 @@ class SurveyProgressControllerTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     @EnableConsoleLog
@@ -567,9 +554,8 @@ class SurveyProgressControllerTest {
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
-
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
@@ -582,9 +568,12 @@ class SurveyProgressControllerTest {
     fun inject(surveyProgressControllerTest: SurveyProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyProgressControllerTest_TestApplicationComponent.builder()
+      DaggerSurveyProgressControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -598,10 +587,11 @@ class SurveyProgressControllerTest {
 
   companion object {
     private const val TEXT_ANSWER = "Some text answer"
-    private val questions = listOf(
-      SurveyQuestionName.USER_TYPE,
-      SurveyQuestionName.MARKET_FIT,
-      SurveyQuestionName.NPS
-    )
+    private val questions =
+      listOf(
+        SurveyQuestionName.USER_TYPE,
+        SurveyQuestionName.MARKET_FIT,
+        SurveyQuestionName.NPS,
+      )
   }
 }

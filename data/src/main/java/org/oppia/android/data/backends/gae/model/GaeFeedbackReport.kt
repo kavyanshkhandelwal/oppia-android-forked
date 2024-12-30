@@ -7,7 +7,6 @@ import com.squareup.moshi.JsonClass
 // TODO(#3016): Link backend domain model
 @JsonClass(generateAdapter = true)
 data class GaeFeedbackReport(
-
   /** The current version of the feedback report used. */
   @Json(name = "android_report_info_schema_version") val schemaVersion: Int,
   /** The date and time in ms that the report was created. */
@@ -19,6 +18,5 @@ data class GaeFeedbackReport(
   /** Information collected about the user's physical device build. */
   @Json(name = "device_context") val deviceContext: GaeFeedbackReportingDeviceContext,
   /** Information collected about the user's specific app experience. */
-  @Json(name = "app_context") val appContext: GaeFeedbackReportingAppContext
-
+  @Json(name = "app_context") val appContext: GaeFeedbackReportingAppContext,
 )

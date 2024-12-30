@@ -33,9 +33,10 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToComparableOperationConverterTest {
   @Parameter lateinit var op1: String
+
   @Parameter lateinit var op2: String
 
-  /* Operation creation tests */
+  // Operation creation tests
 
   @Test
   fun testConvert_integerConstantExpression_returnsConstantOperation() {
@@ -1655,7 +1656,7 @@ class ExpressionToComparableOperationConverterTest {
     }
   }
 
-  /* Non-commutative sorting */
+  // Non-commutative sorting
 
   @Test
   @Iteration(name = "(2^3)+sqrt(2)", "op1=(2^3)", "op2=sqrt(2)")
@@ -1758,7 +1759,7 @@ class ExpressionToComparableOperationConverterTest {
       parseAlgebraicExpression(
         "($op1)+($op2)",
         allowedVariables = listOf("u", "v", "x", "y"),
-        errorCheckingMode = REQUIRED_ONLY
+        errorCheckingMode = REQUIRED_ONLY,
       )
 
     val comparable = expression.convertToComparableOperation()
@@ -1896,7 +1897,7 @@ class ExpressionToComparableOperationConverterTest {
     }
   }
 
-  /* Constant & variable sorting */
+  // Constant & variable sorting
 
   @Test
   @Iteration(name = "2+3", "op1=2", "op2=3")
@@ -2142,7 +2143,7 @@ class ExpressionToComparableOperationConverterTest {
     }
   }
 
-  /* Combined operations */
+  // Combined operations
 
   @Test
   fun testConvert_allOperations_withNestedGroups_returnsCorrectlyStructuredAndOrderedOperation() {
@@ -2695,30 +2696,31 @@ class ExpressionToComparableOperationConverterTest {
 
   private fun parseNumericExpressionAsComparableOperation(
     expression: String,
-    errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-  ): ComparableOperation {
-    return parseNumericExpression(expression, errorCheckingMode).convertToComparableOperation()
-  }
+    errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+  ): ComparableOperation = parseNumericExpression(expression, errorCheckingMode).convertToComparableOperation()
 
   private companion object {
     private fun parseNumericExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return MathExpressionParser.parseNumericExpression(
-        expression, errorCheckingMode
-      ).retrieveExpectedSuccessfulResult()
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      MathExpressionParser
+        .parseNumericExpression(
+          expression,
+          errorCheckingMode,
+        ).retrieveExpectedSuccessfulResult()
 
     private fun parseAlgebraicExpression(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z"),
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables, errorCheckingMode
-      ).retrieveExpectedSuccessfulResult()
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      MathExpressionParser
+        .parseAlgebraicExpression(
+          expression,
+          allowedVariables,
+          errorCheckingMode,
+        ).retrieveExpectedSuccessfulResult()
 
     private fun <T> MathParsingResult<T>.retrieveExpectedSuccessfulResult(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

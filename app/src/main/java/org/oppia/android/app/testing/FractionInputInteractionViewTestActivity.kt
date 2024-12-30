@@ -48,25 +48,28 @@ class FractionInputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityFractionInputInteractionViewTestBinding>(
-      this, R.layout.activity_fraction_input_interaction_view_test
-    )
+    binding =
+      DataBindingUtil.setContentView<ActivityFractionInputInteractionViewTestBinding>(
+        this,
+        R.layout.activity_fraction_input_interaction_view_test,
+      )
 
     val params =
       intent.getProtoExtra(
         TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
-        InputInteractionViewTestActivityParams.getDefaultInstance()
+        InputInteractionViewTestActivityParams.getDefaultInstance(),
       )
     writtenTranslationContext = params.writtenTranslationContext
     binding.fractionInteractionViewModel = fractionInteractionViewModel
-    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    }
+    binding.getPendingAnswerErrorOnSubmitClick =
+      Runnable {
+        fractionInteractionViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {
   }
 
@@ -77,9 +80,9 @@ class FractionInputInteractionViewTestActivity :
   }
 
   private inline fun <reified T : StateItemViewModel> InteractionItemFactory.create(
-    interaction: Interaction = Interaction.getDefaultInstance()
-  ): T {
-    return create(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+  ): T =
+    create(
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
@@ -88,9 +91,8 @@ class FractionInputInteractionViewTestActivity :
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs = null
+      timeToStartNoticeAnimationMs = null,
     ) as T
-  }
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY =
@@ -99,11 +101,10 @@ class FractionInputInteractionViewTestActivity :
     /** Creates an intent to open this activity. */
     fun createIntent(
       context: Context,
-      extras: InputInteractionViewTestActivityParams
-    ): Intent {
-      return Intent(context, FractionInputInteractionViewTestActivity::class.java).also {
+      extras: InputInteractionViewTestActivityParams,
+    ): Intent =
+      Intent(context, FractionInputInteractionViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
-    }
   }
 }

@@ -96,10 +96,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = DrawableBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class DrawableBindingAdaptersTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -108,8 +107,8 @@ class DrawableBindingAdaptersTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        DrawableBindingAdaptersTestActivity::class.java
-      )
+        DrawableBindingAdaptersTestActivity::class.java,
+      ),
     )
 
   @Before
@@ -152,9 +151,7 @@ class DrawableBindingAdaptersTest {
     }
   }
 
-  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
-    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
-  }
+  private fun getView(it: DrawableBindingAdaptersTestActivity): View = it.findViewById(R.id.view_for_drawable_binding_adapters_test)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -189,8 +186,8 @@ class DrawableBindingAdaptersTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -201,9 +198,13 @@ class DrawableBindingAdaptersTest {
     fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerDrawableBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -212,9 +213,12 @@ class DrawableBindingAdaptersTest {
       component.inject(drawableBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

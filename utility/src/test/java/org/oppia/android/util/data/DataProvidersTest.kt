@@ -76,10 +76,15 @@ class DataProvidersTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var application: Application
+
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Inject
@@ -87,8 +92,11 @@ class DataProvidersTest {
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
 
   @Mock lateinit var mockStringLiveDataObserver: Observer<AsyncResult<String>>
+
   @Mock lateinit var mockIntLiveDataObserver: Observer<AsyncResult<Int>>
+
   @Captor lateinit var stringResultCaptor: ArgumentCaptor<AsyncResult<String>>
+
   @Captor lateinit var intResultCaptor: ArgumentCaptor<AsyncResult<Int>>
 
   @Inject
@@ -112,16 +120,17 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_fakeDataProvider_noObserver_doesNotCallRetrieve() {
-    val fakeDataProvider = object : DataProvider<Int>(application) {
-      var hasRetrieveBeenCalled = false
+    val fakeDataProvider =
+      object : DataProvider<Int>(application) {
+        var hasRetrieveBeenCalled = false
 
-      override fun getId(): Any = "fake_data_provider"
+        override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
-        hasRetrieveBeenCalled = true
-        return AsyncResult.Pending()
+        override suspend fun retrieveData(): AsyncResult<Int> {
+          hasRetrieveBeenCalled = true
+          return AsyncResult.Pending()
+        }
       }
-    }
 
     fakeDataProvider.toLiveData()
     testCoroutineDispatchers.advanceUntilIdle()
@@ -131,16 +140,17 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_fakeDataProvider_withObserver_callsRetrieve() {
-    val fakeDataProvider = object : DataProvider<Int>(application) {
-      var hasRetrieveBeenCalled = false
+    val fakeDataProvider =
+      object : DataProvider<Int>(application) {
+        var hasRetrieveBeenCalled = false
 
-      override fun getId(): Any = "fake_data_provider"
+        override fun getId(): Any = "fake_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
-        hasRetrieveBeenCalled = true
-        return AsyncResult.Pending()
+        override suspend fun retrieveData(): AsyncResult<Int> {
+          hasRetrieveBeenCalled = true
+          return AsyncResult.Pending()
+        }
       }
-    }
 
     fakeDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -150,11 +160,12 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_trivialDataProvider_withObserver_observerReceivesValue() {
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      override fun getId(): Any = "simple_data_provider"
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
-    }
+        override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
+      }
 
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -166,11 +177,12 @@ class DataProvidersTest {
   @Test
   fun testConvertToLiveData_dataProviderChanges_withObserver_observerReceivesUpdatedValue() {
     var providerValue = 123
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      override fun getId(): Any = "simple_data_provider"
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
-    }
+        override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
+      }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
     providerValue = 456
@@ -184,11 +196,12 @@ class DataProvidersTest {
   @Test
   fun testConvertToLiveData_providerChanges_withoutObserver_newObserver_newObserverReceivesValue() {
     var providerValue = 123
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      override fun getId(): Any = "simple_data_provider"
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
-    }
+        override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(providerValue)
+      }
     providerValue = 456
     asyncDataSubscriptionManager.notifyChangeAsync(simpleDataProvider.getId())
     testCoroutineDispatchers.advanceUntilIdle()
@@ -204,11 +217,12 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_dataProviderNotified_sameValue_withObserver_observerNotCalledAgain() {
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      override fun getId(): Any = "simple_data_provider"
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
-    }
+        override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Success(123)
+      }
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -226,23 +240,24 @@ class DataProvidersTest {
     val providerOldResult = AsyncResult.Success(123)
     testCoroutineDispatchers.advanceTimeBy(10)
     val providerNewResult = AsyncResult.Success(456)
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      var callCount = 0
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        var callCount = 0
 
-      override fun getId(): Any = "simple_data_provider"
+        override fun getId(): Any = "simple_data_provider"
 
-      override suspend fun retrieveData(): AsyncResult<Int> {
-        // Note that while this behavior is a bit contrived, it's actually representing a real
-        // possibility that many different calls to retrieveData() race against each other and could
-        // yield results from different times, resulting in out-of-order delivery. The oldest result
-        // is assumed to be the correct to help encourage eventual consistency.
-        return when (++callCount) {
-          1 -> providerNewResult
-          2 -> providerOldResult
-          else -> AsyncResult.Failure(AssertionError("Invalid test case"))
+        override suspend fun retrieveData(): AsyncResult<Int> {
+          // Note that while this behavior is a bit contrived, it's actually representing a real
+          // possibility that many different calls to retrieveData() race against each other and could
+          // yield results from different times, resulting in out-of-order delivery. The oldest result
+          // is assumed to be the correct to help encourage eventual consistency.
+          return when (++callCount) {
+            1 -> providerNewResult
+            2 -> providerOldResult
+            else -> AsyncResult.Failure(AssertionError("Invalid test case"))
+          }
         }
       }
-    }
     // Ensure the initial value is retrieved to ensure multiple retrievals occur.
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -258,12 +273,13 @@ class DataProvidersTest {
 
   @Test
   fun testConvertToLiveData_dataProvider_providesPendingResultTwice_doesNotRedeliver() {
-    val simpleDataProvider = object : DataProvider<Int>(application) {
-      override fun getId(): Any = "simple_data_provider"
+    val simpleDataProvider =
+      object : DataProvider<Int>(application) {
+        override fun getId(): Any = "simple_data_provider"
 
-      // Return a new pending result for each call.
-      override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Pending()
-    }
+        // Return a new pending result for each call.
+        override suspend fun retrieveData(): AsyncResult<Int> = AsyncResult.Pending()
+      }
     // Ensure the initial value is retrieved.
     simpleDataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -420,9 +436,10 @@ class DataProvidersTest {
 
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_deliversInMemoryValue() {
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(STR_VALUE_0)
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(STR_VALUE_0)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -434,9 +451,10 @@ class DataProvidersTest {
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_beforeReg_deliversSecondValue() {
     inMemoryCachedStr = STR_VALUE_0
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(inMemoryCachedStr!!)
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(inMemoryCachedStr!!)
+      }
 
     inMemoryCachedStr = STR_VALUE_1
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -449,9 +467,10 @@ class DataProvidersTest {
   @Test
   fun testAsyncInMemoryDataProvider_toLiveData_withChangedValue_afterReg_deliversFirstValue() {
     inMemoryCachedStr = STR_VALUE_0
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(inMemoryCachedStr!!)
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(inMemoryCachedStr!!)
+      }
 
     // Ensure the initial state is sent before changing the cache.
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -467,9 +486,10 @@ class DataProvidersTest {
   @Test
   fun testAsyncInMemoryDataProvider_changedValueAfterReg_notified_deliversValueTwo() {
     inMemoryCachedStr = STR_VALUE_0
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(inMemoryCachedStr!!)
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(inMemoryCachedStr!!)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_1
@@ -484,9 +504,10 @@ class DataProvidersTest {
   fun testAsyncInMemoryDataProvider_blockingFunction_doesNotDeliver() {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(blockingOperation.await())
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(blockingOperation.await())
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
 
@@ -498,9 +519,10 @@ class DataProvidersTest {
   fun testAsyncInMemoryDataProvider_blockingFunctionCompleted_deliversValue() {
     // Ensure the suspend operation is initially blocked.
     val blockingOperation = backgroundCoroutineScope.async { STR_VALUE_0 }
-    val dataProvider = dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
-      AsyncResult.Success(blockingOperation.await())
-    }
+    val dataProvider =
+      dataProviders.createInMemoryDataProviderAsync(BASE_PROVIDER_ID_0) {
+        AsyncResult.Success(blockingOperation.await())
+      }
 
     // Start observing the provider, then complete its suspend function.
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -760,9 +782,10 @@ class DataProvidersTest {
   @Test
   fun testTransform_toLiveData_throwsException_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transform<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      throw IllegalStateException("Transform failure")
-    }
+    val dataProvider =
+      baseProvider.transform<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        throw IllegalStateException("Transform failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -796,9 +819,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_deliversTransformedValue() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -812,9 +836,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_1
@@ -831,9 +856,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_1
@@ -850,9 +876,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -871,9 +898,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Ensure the initial state is sent before changing the cache.
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -894,9 +922,10 @@ class DataProvidersTest {
   fun testTransformAsync_toLiveData_blockingFunction_doesNotDeliverValue() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
@@ -908,9 +937,10 @@ class DataProvidersTest {
   fun testTransformAsync_toLiveData_blockingFunction_completed_deliversXformedVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle() // Run transformStringAsync()
@@ -924,9 +954,10 @@ class DataProvidersTest {
   fun testTransformAsync_toLiveData_blockingFunction_baseObserved_deliversFirstVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Observe the base provider & let it complete, but don't complete the derived data provider.
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -942,9 +973,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.Pending()
-    }
+    val dataProvider =
+      baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        AsyncResult.Pending()
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -957,9 +989,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.Failure(IllegalStateException("Transform failure"))
-    }
+    val dataProvider =
+      baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        AsyncResult.Failure(IllegalStateException("Transform failure"))
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -976,9 +1009,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_throwsException_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      throw IllegalStateException("Transform failure")
-    }
+    val dataProvider =
+      baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        throw IllegalStateException("Transform failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -995,9 +1029,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_throwsException_deliversFailure_logsException() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      throw IllegalStateException("Transform failure")
-    }
+    val dataProvider =
+      baseProvider.transformAsync<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        throw IllegalStateException("Transform failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1010,9 +1045,10 @@ class DataProvidersTest {
   @Test
   fun testTransformAsync_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1026,9 +1062,10 @@ class DataProvidersTest {
   fun testTransformAsync_toLiveData_baseFailure_deliversFailure() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
-    val dataProvider = baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformAsync(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1116,9 +1153,10 @@ class DataProvidersTest {
   fun testCombine_toLiveData_deliversCombinedValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1133,9 +1171,10 @@ class DataProvidersTest {
     val baseProvider1 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_2
@@ -1154,9 +1193,10 @@ class DataProvidersTest {
     val baseProvider1 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_2
@@ -1219,9 +1259,10 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_2
@@ -1240,9 +1281,10 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_2
@@ -1303,9 +1345,10 @@ class DataProvidersTest {
   fun testCombine_firstProviderPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1318,9 +1361,10 @@ class DataProvidersTest {
   fun testCombine_secondProviderPending_deliversPending() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1333,9 +1377,10 @@ class DataProvidersTest {
   fun testCombine_bothProvidersPending_deliversPending() {
     val baseProvider1 = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
     val baseProvider2 = createPendingDataProvider<String>(BASE_PROVIDER_ID_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1349,9 +1394,10 @@ class DataProvidersTest {
     val baseProvider1 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1368,9 +1414,10 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_1, IllegalStateException("Base 2 failure"))
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1388,9 +1435,10 @@ class DataProvidersTest {
       createFailingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base 1 failure"))
     val baseProvider2 =
       createFailingDataProvider<String>(BASE_PROVIDER_ID_1, IllegalStateException("Base 2 failure"))
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1548,14 +1596,16 @@ class DataProvidersTest {
 
   @Test
   fun testCombine_firstProviderThrowsException_deliversFailure() {
-    val baseProvider1 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_0,
-      IllegalStateException("Base 1 failure")
-    )
+    val baseProvider1 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_0,
+        IllegalStateException("Base 1 failure"),
+      )
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1570,13 +1620,15 @@ class DataProvidersTest {
   @Test
   fun testCombine_secondProviderThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val baseProvider2 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_1,
-      IllegalStateException("Base 2 failure")
-    )
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val baseProvider2 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_1,
+        IllegalStateException("Base 2 failure"),
+      )
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1590,17 +1642,20 @@ class DataProvidersTest {
 
   @Test
   fun testCombine_bothProvidersThrowExceptions_deliversFailure() {
-    val baseProvider1 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_0,
-      IllegalStateException("Base 1 failure")
-    )
-    val baseProvider2 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_1,
-      IllegalStateException("Base 2 failure")
-    )
-    val dataProvider = baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
-      combineStrings(v1, v2)
-    }
+    val baseProvider1 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_0,
+        IllegalStateException("Base 1 failure"),
+      )
+    val baseProvider2 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_1,
+        IllegalStateException("Base 2 failure"),
+      )
+    val dataProvider =
+      baseProvider1.combineWith(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
+        combineStrings(v1, v2)
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -1616,12 +1671,13 @@ class DataProvidersTest {
   fun testCombine_combinerThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith<String, String, String>(
-      baseProvider2,
-      COMBINED_PROVIDER_ID
-    ) { _: String, _: String ->
-      throw IllegalStateException("Combine failure")
-    }
+    val dataProvider =
+      baseProvider1.combineWith<String, String, String>(
+        baseProvider2,
+        COMBINED_PROVIDER_ID,
+      ) { _: String, _: String ->
+        throw IllegalStateException("Combine failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2079,10 +2135,11 @@ class DataProvidersTest {
 
   @Test
   fun testCombineAsync_firstProviderThrowsException_deliversFailure() {
-    val baseProvider1 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_0,
-      IllegalStateException("Base 1 failure")
-    )
+    val baseProvider1 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_0,
+        IllegalStateException("Base 1 failure"),
+      )
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
     val dataProvider =
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
@@ -2102,10 +2159,11 @@ class DataProvidersTest {
   @Test
   fun testCombineAsync_secondProviderThrowsException_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val baseProvider2 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_1,
-      IllegalStateException("Base 2 failure")
-    )
+    val baseProvider2 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_1,
+        IllegalStateException("Base 2 failure"),
+      )
     val dataProvider =
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         combineStringsAsync(v1, v2)
@@ -2123,14 +2181,16 @@ class DataProvidersTest {
 
   @Test
   fun testCombineAsync_bothProvidersThrowExceptions_deliversFailure() {
-    val baseProvider1 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_0,
-      IllegalStateException("Base 1 failure")
-    )
-    val baseProvider2 = createThrowingDataProvider<String>(
-      BASE_PROVIDER_ID_1,
-      IllegalStateException("Base 2 failure")
-    )
+    val baseProvider1 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_0,
+        IllegalStateException("Base 1 failure"),
+      )
+    val baseProvider2 =
+      createThrowingDataProvider<String>(
+        BASE_PROVIDER_ID_1,
+        IllegalStateException("Base 2 failure"),
+      )
     val dataProvider =
       baseProvider1.combineWithAsync(baseProvider2, COMBINED_PROVIDER_ID) { v1, v2 ->
         combineStringsAsync(v1, v2)
@@ -2263,12 +2323,13 @@ class DataProvidersTest {
   fun testCombineAsync_combineReturnsPending_deliversPending() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWithAsync<String, String, String>(
-      baseProvider2,
-      COMBINED_PROVIDER_ID
-    ) { _: String, _: String ->
-      AsyncResult.Pending()
-    }
+    val dataProvider =
+      baseProvider1.combineWithAsync<String, String, String>(
+        baseProvider2,
+        COMBINED_PROVIDER_ID,
+      ) { _: String, _: String ->
+        AsyncResult.Pending()
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2281,12 +2342,13 @@ class DataProvidersTest {
   fun testCombineAsync_combineReturnsFailure_deliversFailure() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWithAsync<String, String, String>(
-      baseProvider2,
-      COMBINED_PROVIDER_ID
-    ) { _: String, _: String ->
-      AsyncResult.Failure(IllegalStateException("Combine failure"))
-    }
+    val dataProvider =
+      baseProvider1.combineWithAsync<String, String, String>(
+        baseProvider2,
+        COMBINED_PROVIDER_ID,
+      ) { _: String, _: String ->
+        AsyncResult.Failure(IllegalStateException("Combine failure"))
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2300,9 +2362,10 @@ class DataProvidersTest {
   @Test
   fun testNestedXformedProvider_toLiveData_deliversTransformedValue() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2316,9 +2379,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_1
@@ -2335,9 +2399,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     inMemoryCachedStr = STR_VALUE_1
@@ -2354,9 +2419,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
@@ -2375,9 +2441,10 @@ class DataProvidersTest {
     inMemoryCachedStr = STR_VALUE_0
     val baseProvider =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Ensure the initial state is sent before changing the cache.
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2398,9 +2465,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_blockingFunction_doesNotDeliverValue() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
 
@@ -2412,9 +2480,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_blockingFunction_completed_deliversXformedVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle() // Run transformStringAsync()
@@ -2428,9 +2497,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_blockingFunction_baseObserved_deliversFirstVal() {
     // Block transformStringAsync().
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Observe the base provider & let it complete, but don't complete the derived data provider.
     baseProvider.toLiveData().observeForever(mockStringLiveDataObserver)
@@ -2446,9 +2516,10 @@ class DataProvidersTest {
   @Test
   fun testNestedXformedProvider_toLiveData_transformedPending_deliversPending() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.Pending()
-    }
+    val dataProvider =
+      baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        AsyncResult.Pending()
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2461,9 +2532,10 @@ class DataProvidersTest {
   @Test
   fun testNestedXformedProvider_toLiveData_transformedFailure_deliversFailure() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      AsyncResult.Failure(IllegalStateException("Transform failure"))
-    }
+    val dataProvider =
+      baseProvider.transformNested<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        AsyncResult.Failure(IllegalStateException("Transform failure"))
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2480,9 +2552,10 @@ class DataProvidersTest {
   @Test
   fun testNestedXformedProvider_toLiveData_basePending_deliversPending() {
     val baseProvider = createPendingDataProvider<String>(BASE_PROVIDER_ID_0)
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2496,9 +2569,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_baseFailure_deliversFailure() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2586,9 +2660,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_newBaseProvider_newObserver_receivesLatestValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Replace the base data provider with something new, then register an observer.
     dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
@@ -2604,9 +2679,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_newBaseAndTransform_newObserver_receivesLatestValue() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_0)
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     // Replace the base data provider with something new, then register an observer.
     dataProvider.setBaseDataProvider(baseProvider2) { transformStringDoubledAsync(it) }
@@ -2622,9 +2698,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_newBaseProvider_notifiesObservers() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -2642,9 +2719,10 @@ class DataProvidersTest {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr!! }
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2665,9 +2743,10 @@ class DataProvidersTest {
     val baseProvider1 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_2)
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2690,9 +2769,10 @@ class DataProvidersTest {
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_0) { inMemoryCachedStr!! }
     val baseProvider2 =
       dataProviders.createInMemoryDataProvider(BASE_PROVIDER_ID_1) { inMemoryCachedStr2!! }
-    val dataProvider = baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider1.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     dataProvider.setBaseDataProvider(baseProvider2) { transformStringAsync(it) }
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2712,9 +2792,10 @@ class DataProvidersTest {
   fun testNestedXformedProvider_toLiveData_baseFailure_logsException() {
     val baseProvider =
       createThrowingDataProvider<String>(BASE_PROVIDER_ID_0, IllegalStateException("Base failure"))
-    val dataProvider = baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
-      transformStringAsync(it)
-    }
+    val dataProvider =
+      baseProvider.transformNested(TRANSFORMED_PROVIDER_ID) {
+        transformStringAsync(it)
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2727,9 +2808,10 @@ class DataProvidersTest {
   @Test
   fun testTransform_toLiveData_throwsException_deliversFailure_logsException() {
     val baseProvider = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
-    val dataProvider = baseProvider.transform<String, Int>(TRANSFORMED_PROVIDER_ID) {
-      throw IllegalStateException("Transform failure")
-    }
+    val dataProvider =
+      baseProvider.transform<String, Int>(TRANSFORMED_PROVIDER_ID) {
+        throw IllegalStateException("Transform failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockIntLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2743,12 +2825,13 @@ class DataProvidersTest {
   fun testCombine_combinerThrowsException_deliversFailure_logsException() {
     val baseProvider1 = createSuccessfulDataProvider(BASE_PROVIDER_ID_0, STR_VALUE_0)
     val baseProvider2 = createSuccessfulDataProvider(BASE_PROVIDER_ID_1, STR_VALUE_1)
-    val dataProvider = baseProvider1.combineWith<String, String, String>(
-      baseProvider2,
-      COMBINED_PROVIDER_ID
-    ) { _: String, _: String ->
-      throw IllegalStateException("Combine failure")
-    }
+    val dataProvider =
+      baseProvider1.combineWith<String, String, String>(
+        baseProvider2,
+        COMBINED_PROVIDER_ID,
+      ) { _: String, _: String ->
+        throw IllegalStateException("Combine failure")
+      }
 
     dataProvider.toLiveData().observeForever(mockStringLiveDataObserver)
     testCoroutineDispatchers.advanceUntilIdle()
@@ -2762,9 +2845,10 @@ class DataProvidersTest {
   fun testConvertToSimpleDataProvider_singletonFlow_providerReturnsFlowValue() {
     val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
     assertThat(result).isEqualTo("test str")
@@ -2773,9 +2857,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
     val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2788,9 +2873,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
     val mutableFlow = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2803,9 +2889,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToSimpleDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
     val mutableFlow = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2822,9 +2909,10 @@ class DataProvidersTest {
   fun testConvertAsyncToSimpleDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
     val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     val result = monitor.waitForNextResult()
@@ -2836,9 +2924,10 @@ class DataProvidersTest {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Success("test str"))
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
     assertThat(result).isEqualTo("test str")
@@ -2849,9 +2938,10 @@ class DataProvidersTest {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val error = monitorFactory.waitForNextFailureResult(dataProvider)
     assertThat(error).isInstanceOf(IllegalStateException::class.java)
@@ -2862,9 +2952,10 @@ class DataProvidersTest {
   fun testConvertAsyncToSimpleDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2877,9 +2968,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_providerNotChanged() {
     val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2892,9 +2984,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_mutableFlow_flowChanges_notifyProv_providerChanged() {
     val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2910,9 +3003,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToSuccess_andNotify_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2928,9 +3022,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_changeFlowPendingToFailure_andNotify_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2947,9 +3042,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToPending_andNotify_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2965,11 +3061,12 @@ class DataProvidersTest {
   fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToPending_andNotify_providerChanged() {
     val mutableFlow =
       MutableStateFlow<AsyncResult<String>>(
-        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+        AsyncResult.Failure(IllegalStateException("Some internal failure")),
       )
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -2984,9 +3081,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToSimpleDataProvider_changeFlowSuccessToFailure_andNotify_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3004,11 +3102,12 @@ class DataProvidersTest {
   fun testConvertAsyncToSimpleDataProvider_changeFlowFailureToSuccess_andNotify_providerChanged() {
     val mutableFlow =
       MutableStateFlow<AsyncResult<String>>(
-        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+        AsyncResult.Failure(IllegalStateException("Some internal failure")),
       )
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToSimpleDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3025,9 +3124,10 @@ class DataProvidersTest {
   fun testConvertToAutomaticDataProvider_singletonFlow_providerReturnsFlowValue() {
     val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
     assertThat(result).isEqualTo("test str")
@@ -3036,9 +3136,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToAutomaticDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
     val singletonFlow: StateFlow<String> = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3051,9 +3152,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_providerChanged() {
     val mutableFlow = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3067,9 +3169,10 @@ class DataProvidersTest {
   @Test
   fun testConvertToAutomaticDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
     val mutableFlow = MutableStateFlow("test str")
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3086,9 +3189,10 @@ class DataProvidersTest {
   fun testConvertAsyncToAutoDataProvider_singletonFlow_pending_providerReturnsFlowValue() {
     val singletonFlow: StateFlow<AsyncResult<String>> = MutableStateFlow(AsyncResult.Pending())
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
 
     val result = monitor.waitForNextResult()
@@ -3100,9 +3204,10 @@ class DataProvidersTest {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Success("test str"))
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val result = monitorFactory.waitForNextSuccessfulResult(dataProvider)
     assertThat(result).isEqualTo("test str")
@@ -3113,9 +3218,10 @@ class DataProvidersTest {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Failure(IllegalStateException("Some internal failure")))
 
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
 
     val error = monitorFactory.waitForNextFailureResult(dataProvider)
     assertThat(error).isInstanceOf(IllegalStateException::class.java)
@@ -3126,9 +3232,10 @@ class DataProvidersTest {
   fun testConvertAsyncToAutoDataProvider_singletonFlow_notifyProvider_providerNotChanged() {
     val singletonFlow: StateFlow<AsyncResult<String>> =
       MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        singletonFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3141,9 +3248,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_providerChanged() {
     val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3157,9 +3265,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_mutableFlow_flowChanges_notifyProvider_providerChanged() {
     val mutableFlow = MutableStateFlow(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3175,9 +3284,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_changeFlowPendingToSuccess_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3191,9 +3301,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_changeFlowPendingToFailure_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Pending())
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3208,9 +3319,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToPending_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3225,11 +3337,12 @@ class DataProvidersTest {
   fun testConvertAsyncToAutoDataProvider_changeFlowFailureToPending_providerChanged() {
     val mutableFlow =
       MutableStateFlow<AsyncResult<String>>(
-        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+        AsyncResult.Failure(IllegalStateException("Some internal failure")),
       )
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3243,9 +3356,10 @@ class DataProvidersTest {
   @Test
   fun testConvertAsyncToAutoDataProvider_changeFlowSuccessToFailure_providerChanged() {
     val mutableFlow = MutableStateFlow<AsyncResult<String>>(AsyncResult.Success("test str"))
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3261,11 +3375,12 @@ class DataProvidersTest {
   fun testConvertAsyncToAutoDataProvider_changeFlowFailureToSuccess_providerChanged() {
     val mutableFlow =
       MutableStateFlow<AsyncResult<String>>(
-        AsyncResult.Failure(IllegalStateException("Some internal failure"))
+        AsyncResult.Failure(IllegalStateException("Some internal failure")),
       )
-    val dataProvider = dataProviders.run {
-      mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
-    }
+    val dataProvider =
+      dataProviders.run {
+        mutableFlow.convertAsyncToAutomaticDataProvider(BASE_PROVIDER_ID_0)
+      }
     val monitor = monitorFactory.createMonitor(dataProvider)
     monitor.waitForNextResult()
 
@@ -3300,52 +3415,66 @@ class DataProvidersTest {
     return AsyncResult.Success(deferred.getCompleted())
   }
 
-  private fun combineStrings(str1: String, str2: String): String = "$str1 $str2"
+  private fun combineStrings(
+    str1: String,
+    str2: String,
+  ): String = "$str1 $str2"
 
   /**
    * Combines the specified strings into a new string in the same way as [combineStrings], except in
    * a blocking context using [backgroundCoroutineDispatcher].
    */
   @OptIn(ExperimentalCoroutinesApi::class)
-  private suspend fun combineStringsAsync(str1: String, str2: String): AsyncResult<String> {
+  private suspend fun combineStringsAsync(
+    str1: String,
+    str2: String,
+  ): AsyncResult<String> {
     val deferred = backgroundCoroutineScope.async { combineStrings(str1, str2) }
     deferred.await()
     return AsyncResult.Success(deferred.getCompleted())
   }
 
-  private fun <T> createSuccessfulDataProvider(id: Any, value: T): DataProvider<T> {
-    return dataProviders.createInMemoryDataProvider(id) { value }
-  }
+  private fun <T> createSuccessfulDataProvider(
+    id: Any,
+    value: T,
+  ): DataProvider<T> = dataProviders.createInMemoryDataProvider(id) { value }
 
-  private fun <T> createPendingDataProvider(id: Any): DataProvider<T> {
-    return dataProviders.createInMemoryDataProviderAsync(id) {
+  private fun <T> createPendingDataProvider(id: Any): DataProvider<T> =
+    dataProviders.createInMemoryDataProviderAsync(id) {
       // Android Studio incorrectly suggests to remove the explicit argument.
       @Suppress("RemoveExplicitTypeArguments")
       (AsyncResult.Pending())
     }
-  }
 
-  private fun <T> createFailingDataProvider(id: Any, failure: Exception): DataProvider<T> {
-    return dataProviders.createInMemoryDataProviderAsync(id) {
+  private fun <T> createFailingDataProvider(
+    id: Any,
+    failure: Exception,
+  ): DataProvider<T> =
+    dataProviders.createInMemoryDataProviderAsync(id) {
       // Android Studio incorrectly suggests to remove the explicit argument.
       @Suppress("RemoveExplicitTypeArguments")
       (AsyncResult.Failure(failure))
     }
-  }
 
-  private fun <T> createThrowingDataProvider(id: Any, failure: Exception): DataProvider<T> {
-    return dataProviders.createInMemoryDataProvider(id) { throw failure }
-  }
+  private fun <T> createThrowingDataProvider(
+    id: Any,
+    failure: Exception,
+  ): DataProvider<T> =
+    dataProviders.createInMemoryDataProvider(id) {
+      throw failure
+    }
 
   /** Returns a successful [DataProvider] that uses a background thread to return the value. */
   @OptIn(ExperimentalCoroutinesApi::class)
-  private fun <T> createBlockingDataProvider(id: Any, value: T): DataProvider<T> {
-    return dataProviders.createInMemoryDataProviderAsync(id) {
+  private fun <T> createBlockingDataProvider(
+    id: Any,
+    value: T,
+  ): DataProvider<T> =
+    dataProviders.createInMemoryDataProviderAsync(id) {
       val deferred = backgroundCoroutineScope.async { value }
       deferred.await()
       AsyncResult.Success(deferred.getCompleted())
     }
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -3356,9 +3485,7 @@ class DataProvidersTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -3366,23 +3493,27 @@ class DataProvidersTest {
   @Component(
     modules = [
       TestDispatcherModule::class, TestModule::class,
-      TestLogReportingModule::class, RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      TestLogReportingModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(dataProvidersTest: DataProvidersTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDataProvidersTest_TestApplicationComponent.builder()
+      DaggerDataProvidersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

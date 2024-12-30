@@ -20,9 +20,7 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
      *
      * @return [UnsavedExplorationDialogFragment]: DialogFragment
      */
-    fun newInstance(): UnsavedExplorationDialogFragment {
-      return UnsavedExplorationDialogFragment()
-    }
+    fun newInstance(): UnsavedExplorationDialogFragment = UnsavedExplorationDialogFragment()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +31,7 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val stopStatePlayingSessionWithSavedProgressListener:
       StopStatePlayingSessionWithSavedProgressListener =
-        activity as StopStatePlayingSessionWithSavedProgressListener
+      activity as StopStatePlayingSessionWithSavedProgressListener
 
     return AlertDialog
       .Builder(ContextThemeWrapper(activity as Context, R.style.OppiaDialogFragmentTheme))
@@ -43,10 +41,8 @@ class UnsavedExplorationDialogFragment : InjectableDialogFragment() {
         stopStatePlayingSessionWithSavedProgressListener
           .deleteCurrentProgressAndStopSession(isCompletion = false)
         dismiss()
-      }
-      .setNegativeButton(R.string.unsaved_exploration_dialog_cancel_button) { _, _ ->
+      }.setNegativeButton(R.string.unsaved_exploration_dialog_cancel_button) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

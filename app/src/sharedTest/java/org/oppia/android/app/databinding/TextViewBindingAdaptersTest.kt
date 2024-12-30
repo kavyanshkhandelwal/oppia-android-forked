@@ -99,7 +99,7 @@ private const val TIMESTAMP = 1556094120000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TextViewBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TextViewBindingAdaptersTest {
   @get:Rule
@@ -110,8 +110,8 @@ class TextViewBindingAdaptersTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        TextViewBindingAdaptersTestActivity::class.java
-      )
+        TextViewBindingAdaptersTestActivity::class.java,
+      ),
     )
 
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
@@ -242,7 +242,8 @@ class TextViewBindingAdaptersTest {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* timestamp = */ 0
+        // timestamp =
+        0,
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -256,7 +257,8 @@ class TextViewBindingAdaptersTest {
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setProfileLastVisitedText(
         textView,
-        /* timestamp = */ -1
+        // timestamp =
+        -1,
       )
       assertThat(textView.text.toString()).isEqualTo("Last used recently")
     }
@@ -265,14 +267,16 @@ class TextViewBindingAdaptersTest {
   @Test
   fun testTextViewBindingAdapters_drawableEndCompactIsCorrect() {
     activityRule.scenario.onActivity {
-      val drawable = ContextCompat.getDrawable(
-        it,
-        R.drawable.ic_add_profile
-      )
+      val drawable =
+        ContextCompat.getDrawable(
+          it,
+          R.drawable.ic_add_profile,
+        )
       val textView: TextView = it.findViewById(R.id.test_text_view)
       setDrawableEndCompat(
         textView,
-        /* drawable = */ drawable
+        // drawable =
+        drawable,
       )
       assertThat(textView.compoundDrawablesRelative[2]).isEqualTo(drawable)
     }
@@ -311,8 +315,8 @@ class TextViewBindingAdaptersTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -323,9 +327,13 @@ class TextViewBindingAdaptersTest {
     fun inject(textViewBindingAdaptersTest: TextViewBindingAdaptersTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTextViewBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerTextViewBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -334,9 +342,12 @@ class TextViewBindingAdaptersTest {
       component.inject(textViewBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

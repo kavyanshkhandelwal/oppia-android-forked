@@ -97,7 +97,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MarkTopicsCompletedActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MarkTopicsCompletedActivityTest {
   @get:Rule
@@ -109,11 +109,14 @@ class MarkTopicsCompletedActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkTopicsCompletedActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      MarkTopicsCompletedActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -148,10 +151,10 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+      createMarkTopicsCompletedActivityIntent(internalProfileId),
     ).use {
       onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -159,20 +162,20 @@ class MarkTopicsCompletedActivityTest {
   @Test
   fun testMarkTopicsCompletedActivity_configChange_markTopicsCompletedFragmentIsDisplayed() {
     launch<MarkTopicsCompletedActivity>(
-      createMarkTopicsCompletedActivityIntent(internalProfileId)
+      createMarkTopicsCompletedActivityIntent(internalProfileId),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.mark_topics_completed_fragment_root_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
 
-  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent {
-    return MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
-      context, internalProfileId
+  private fun createMarkTopicsCompletedActivityIntent(internalProfileId: Int): Intent =
+    MarkTopicsCompletedActivity.createMarkTopicsCompletedIntent(
+      context,
+      internalProfileId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -203,8 +206,8 @@ class MarkTopicsCompletedActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -215,9 +218,13 @@ class MarkTopicsCompletedActivityTest {
     fun inject(markTopicsCompletedActivityTest: MarkTopicsCompletedActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkTopicsCompletedActivityTest_TestApplicationComponent.builder()
+      DaggerMarkTopicsCompletedActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -226,9 +233,12 @@ class MarkTopicsCompletedActivityTest {
       component.inject(markTopicsCompletedActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

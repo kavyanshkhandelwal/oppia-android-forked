@@ -48,9 +48,10 @@ class FakeCommandExecutorTest {
   fun testExecuteCommand_unregisteredCommand_throwsIoException() {
     val commandExecutor = FakeCommandExecutor()
 
-    val exception = assertThrows<IOException>() {
-      commandExecutor.executeCommand(tempFolder.root, "test")
-    }
+    val exception =
+      assertThrows<IOException> {
+        commandExecutor.executeCommand(tempFolder.root, "test")
+      }
 
     assertThat(exception).hasMessageThat().contains("Command doesn't exist.")
   }
@@ -60,9 +61,10 @@ class FakeCommandExecutorTest {
     val commandExecutor = FakeCommandExecutor()
     commandExecutor.registerHandler("test") { _, _, _, _ -> 0 }
 
-    val exception = assertThrows<IOException>() {
-      commandExecutor.executeCommand(tempFolder.root, "TEST")
-    }
+    val exception =
+      assertThrows<IOException> {
+        commandExecutor.executeCommand(tempFolder.root, "TEST")
+      }
 
     // Commands are case-sensitive.
     assertThat(exception).hasMessageThat().contains("Command doesn't exist.")

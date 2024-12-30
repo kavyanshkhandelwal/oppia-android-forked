@@ -22,9 +22,10 @@ class GenericViewMatchers {
      * to have a [GradientDrawable] background.
      */
     @RequiresApi(Build.VERSION_CODES.N)
-    fun withOpaqueBackground(): Matcher<View> = withColorBackgroundMatching(
-      descriptionSuffix = "an opaque background"
-    ) { color -> color?.extractAlpha() == 0xff }
+    fun withOpaqueBackground(): Matcher<View> =
+      withColorBackgroundMatching(
+        descriptionSuffix = "an opaque background",
+      ) { color -> color?.extractAlpha() == 0xff }
 
     /**
      * Returns a [Matcher] with the specified description suffix and color matcher, matching against
@@ -33,7 +34,7 @@ class GenericViewMatchers {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun withColorBackgroundMatching(
       @Suppress("SameParameterValue") descriptionSuffix: String,
-      colorMatcher: (Long?) -> Boolean
+      colorMatcher: (Long?) -> Boolean,
     ): Matcher<View> {
       return object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
@@ -52,9 +53,7 @@ class GenericViewMatchers {
       }
     }
 
-    private fun Long.extractAlpha(): Int {
-      return (this ushr 24).toInt()
-    }
+    private fun Long.extractAlpha(): Int = (this ushr 24).toInt()
 
     /**
      * Returns a [Long] representation of this integer without a sign bit carried over from the

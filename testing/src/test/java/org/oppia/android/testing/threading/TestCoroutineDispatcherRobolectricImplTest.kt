@@ -38,15 +38,16 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TestCoroutineDispatcherRobolectricImplTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
-class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBase(
-  shortTaskDelayMillis = 100L,
-  longTaskDelayMillis = 100L,
-  // Exact matching isn't essential for correctness, and a nonzero value avoids an invalid range
-  // issue in the base tests.
-  longTaskDelayDeltaCheckMillis = 1L
-) {
+class TestCoroutineDispatcherRobolectricImplTest :
+  TestCoroutineDispatcherTestBase(
+    shortTaskDelayMillis = 100L,
+    longTaskDelayMillis = 100L,
+    // Exact matching isn't essential for correctness, and a nonzero value avoids an invalid range
+    // issue in the base tests.
+    longTaskDelayDeltaCheckMillis = 1L,
+  ) {
   @Inject
   lateinit var fakeSystemClock: FakeSystemClock
 
@@ -343,9 +344,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -372,23 +371,27 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     modules = [
       TestDispatcherModule::class,
       TestModule::class,
-      TestLogReportingModule::class
-    ]
+      TestLogReportingModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: TestCoroutineDispatcherRobolectricImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestCoroutineDispatcherRobolectricImplTest_TestApplicationComponent.builder()
+      DaggerTestCoroutineDispatcherRobolectricImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -6,11 +6,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.assertThrows
@@ -55,7 +55,7 @@ class PeekableIteratorTest {
     val sequence = sequenceOf<String>()
     val iterator = sequence.toPeekableIterator()
 
-    assertThrows<NoSuchElementException>() { iterator.next() }
+    assertThrows<NoSuchElementException> { iterator.next() }
   }
 
   @Test
@@ -590,10 +590,9 @@ class PeekableIteratorTest {
      * Returns a [List] that contains all elements from the [Iterator] (i.e. the iterator is fully
      * consumed).
      */
-    private fun <T> Iterator<T>.toList(): List<T> {
-      return mutableListOf<T>().apply {
+    private fun <T> Iterator<T>.toList(): List<T> =
+      mutableListOf<T>().apply {
         this@toList.forEach(this::add)
       }
-    }
   }
 }

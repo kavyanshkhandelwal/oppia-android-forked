@@ -74,9 +74,7 @@ class TestActivityRecreatorTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -84,8 +82,8 @@ class TestActivityRecreatorTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class
-    ]
+      RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -99,9 +97,12 @@ class TestActivityRecreatorTest {
     fun inject(testActivityRecreatorTest: TestActivityRecreatorTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestActivityRecreatorTest_TestApplicationComponent.builder()
+      DaggerTestActivityRecreatorTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

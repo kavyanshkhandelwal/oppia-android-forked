@@ -10,7 +10,11 @@ import com.bumptech.glide.request.target.CustomTarget
 sealed class ImageTarget<T>
 
 /** A type of [ImageTarget] that has a [CustomTarget] set up to process the loaded image. */
-data class CustomImageTarget<T>(val customTarget: CustomTarget<T>) : ImageTarget<T>()
+data class CustomImageTarget<T>(
+  val customTarget: CustomTarget<T>,
+) : ImageTarget<T>()
 
 /** A type of [ImageTarget] that loads images into an [ImageView]. */
-data class ImageViewTarget<T>(val imageView: ImageView) : ImageTarget<T>()
+data class ImageViewTarget<T>(
+  val imageView: ImageView,
+) : ImageTarget<T>()

@@ -28,7 +28,6 @@ class LanguageDialogFragment : InjectableDialogFragment() {
   lateinit var machineLocale: OppiaLocale.MachineLocale
 
   companion object {
-
     /** Arguments key for LanguageDialogFragment. */
     const val LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY = "LanguageDialogFragment.arguments"
 
@@ -41,18 +40,22 @@ class LanguageDialogFragment : InjectableDialogFragment() {
      */
     fun newInstance(
       languageArrayList: ArrayList<String>,
-      currentLanguageCode: String
+      currentLanguageCode: String,
     ): LanguageDialogFragment {
       val selectedIndex = languageArrayList.indexOf(currentLanguageCode)
 
-      val args = LanguageDialogFragmentArguments.newBuilder().apply {
-        this.addAllLanguages(languageArrayList)
-        this.selectedIndex = selectedIndex
-      }.build()
+      val args =
+        LanguageDialogFragmentArguments
+          .newBuilder()
+          .apply {
+            this.addAllLanguages(languageArrayList)
+            this.selectedIndex = selectedIndex
+          }.build()
       return LanguageDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -66,30 +69,33 @@ class LanguageDialogFragment : InjectableDialogFragment() {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be pass to LanguageDialogFragment" }
 
-    val args = arguments.getProto(
-      LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-      LanguageDialogFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        LANGUAGE_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        LanguageDialogFragmentArguments.getDefaultInstance(),
+      )
     var selectedIndex = args?.selectedIndex ?: 0
-    val languageCodeArrayList: ArrayList<String> = checkNotNull(
-      args?.languagesList?.let { ArrayList(it) }
-    )
+    val languageCodeArrayList: ArrayList<String> =
+      checkNotNull(
+        args?.languagesList?.let { ArrayList(it) },
+      )
 
     val languageNameArrayList = ArrayList<String>()
 
     for (languageCode in languageCodeArrayList) {
-      val audioLanguage = when (machineLocale.run { languageCode.toMachineLowerCase() }) {
-        "hi" -> AudioLanguage.HINDI_AUDIO_LANGUAGE
-        "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
-        "ar" -> AudioLanguage.ARABIC_LANGUAGE
-        "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
-        else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      }
+      val audioLanguage =
+        when (machineLocale.run { languageCode.toMachineLowerCase() }) {
+          "hi" -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+          "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+          "ar" -> AudioLanguage.ARABIC_LANGUAGE
+          "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+          else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        }
       if (languageCode == "hi-en") {
         languageNameArrayList.add("Hinglish")
       } else {
         languageNameArrayList.add(
-          appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage)
+          appLanguageResourceHandler.computeLocalizedDisplayName(audioLanguage),
         )
       }
     }
@@ -103,16 +109,13 @@ class LanguageDialogFragment : InjectableDialogFragment() {
       .setTitle(R.string.audio_language_select_dialog_title)
       .setSingleChoiceItems(options, selectedIndex) { _, which ->
         selectedIndex = which
-      }
-      .setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
+      }.setPositiveButton(R.string.audio_language_select_dialog_okay_button) { _, _ ->
         if (selectedIndex != -1) {
           languageInterface.onLanguageSelected(languageCodeArrayList[selectedIndex])
         }
         dismiss()
-      }
-      .setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { _, _ ->
+      }.setNegativeButton(R.string.audio_language_select_dialog_cancel_button) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

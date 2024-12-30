@@ -64,7 +64,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogReportWorkManagerInitializerTest.TestApplication::class)
 class LogReportWorkManagerInitializerTest {
-
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
 
@@ -109,10 +108,12 @@ class LogReportWorkManagerInitializerTest {
     delegatingWorkerFactory.addFactory(logUploadWorkerFactory)
     delegatingWorkerFactory.addFactory(metricLogSchedulingWorkerFactory)
 
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(delegatingWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(delegatingWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -138,31 +139,33 @@ class LogReportWorkManagerInitializerTest {
 
     assertThat(fakeLogUploader.getMostRecentEventRequestId()).isEqualTo(enqueuedEventWorkRequestId)
     assertThat(fakeLogUploader.getMostRecentExceptionRequestId()).isEqualTo(
-      enqueuedExceptionWorkRequestId
+      enqueuedExceptionWorkRequestId,
     )
     assertThat(fakeLogUploader.getMostRecentPerformanceMetricsRequestId()).isEqualTo(
-      enqueuedPerformanceMetricsWorkRequestId
+      enqueuedPerformanceMetricsWorkRequestId,
     )
     assertThat(fakeLogScheduler.getMostRecentStorageUsageMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingStorageUsageMetricWorkRequestId
+      enqueuedSchedulingStorageUsageMetricWorkRequestId,
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicUiMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingPeriodicUiMetricWorkRequestId
+      enqueuedSchedulingPeriodicUiMetricWorkRequestId,
     )
     assertThat(fakeLogScheduler.getMostRecentPeriodicBackgroundMetricLoggingRequestId()).isEqualTo(
-      enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId
+      enqueuedSchedulingPeriodicBackgroundPerformanceMetricWorkRequestId,
     )
     assertThat(fakeLogUploader.getMostRecentFirestoreRequestId()).isEqualTo(
-      enqueuedFirestoreWorkRequestId
+      enqueuedFirestoreWorkRequestId,
     )
   }
 
   @Test
   fun testWorkRequest_verifyWorkerConstraints() {
-    val workerConstraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build()
+    val workerConstraints =
+      Constraints
+        .Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresBatteryNotLow(true)
+        .build()
 
     val logUploadingWorkRequestConstraints =
       logReportWorkManagerInitializer.getLogReportWorkerConstraints()
@@ -172,100 +175,107 @@ class LogReportWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_verifyWorkRequestDataForEvents() {
-    val workerCaseForUploadingEvents: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.EVENT_WORKER
-      )
-      .build()
+    val workerCaseForUploadingEvents: Data =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
     assertThat(logReportWorkManagerInitializer.getWorkRequestDataForEvents()).isEqualTo(
-      workerCaseForUploadingEvents
+      workerCaseForUploadingEvents,
     )
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestDataForExceptions() {
-    val workerCaseForUploadingExceptions: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.EXCEPTION_WORKER
-      )
-      .build()
+    val workerCaseForUploadingExceptions: Data =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EXCEPTION_WORKER,
+        ).build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForExceptions()
+      logReportWorkManagerInitializer.getWorkRequestDataForExceptions(),
     ).isEqualTo(workerCaseForUploadingExceptions)
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestDataForPerformanceMetrics() {
-    val workerCaseForUploadingPerformanceMetrics: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.PERFORMANCE_METRICS_WORKER
-      )
-      .build()
+    val workerCaseForUploadingPerformanceMetrics: Data =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.PERFORMANCE_METRICS_WORKER,
+        ).build()
 
     assertThat(logReportWorkManagerInitializer.getWorkRequestDataForPerformanceMetrics()).isEqualTo(
-      workerCaseForUploadingPerformanceMetrics
+      workerCaseForUploadingPerformanceMetrics,
     )
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestData_forSchedulingStorageUsageMetricLogs() {
-    val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-      )
-      .build()
+    val workerCaseForSchedulingStorageUsageMetricLogs: Data =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.STORAGE_USAGE_WORKER,
+        ).build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingStorageUsageMetricLogs(),
     ).isEqualTo(workerCaseForSchedulingStorageUsageMetricLogs)
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicBackgroundPerformanceMetricLogs() {
-    val workerCaseForSchedulingPeriodicPerformanceMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-      )
-      .build()
+    val workerCaseForSchedulingPeriodicPerformanceMetricLogs: Data =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER,
+        ).build()
 
     assertThat(
       logReportWorkManagerInitializer
-        .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs()
+        .getWorkRequestDataForSchedulingPeriodicBackgroundPerformanceMetricLogs(),
     ).isEqualTo(workerCaseForSchedulingPeriodicPerformanceMetricLogs)
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestData_forSchedulingPeriodicUiMetricLogs() {
-    val workerCaseForSchedulingMemoryUsageMetricLogs: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-      )
-      .build()
+    val workerCaseForSchedulingMemoryUsageMetricLogs: Data =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER,
+        ).build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicUiMetricLogs()
+      logReportWorkManagerInitializer.getWorkRequestDataForSchedulingPeriodicUiMetricLogs(),
     ).isEqualTo(workerCaseForSchedulingMemoryUsageMetricLogs)
   }
 
   @Test
   fun testWorkRequest_verifyWorkRequestData_forSchedulingFirestoreUpload() {
-    val workerCaseForUploadingFirestoreData: Data = Data.Builder()
-      .putString(
-        LogUploadWorker.WORKER_CASE_KEY,
-        LogUploadWorker.FIRESTORE_WORKER
-      )
-      .build()
+    val workerCaseForUploadingFirestoreData: Data =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.FIRESTORE_WORKER,
+        ).build()
 
     assertThat(
-      logReportWorkManagerInitializer.getWorkRequestDataForFirestore()
+      logReportWorkManagerInitializer.getWorkRequestDataForFirestore(),
     ).isEqualTo(workerCaseForUploadingFirestoreData)
   }
 
@@ -278,14 +288,11 @@ class LogReportWorkManagerInitializerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -305,7 +312,6 @@ class LogReportWorkManagerInitializerTest {
 
   @Module
   interface TestFirebaseLogUploaderModule {
-
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
 
@@ -325,22 +331,26 @@ class LogReportWorkManagerInitializerTest {
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
+      DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

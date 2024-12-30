@@ -77,252 +77,270 @@ import javax.inject.Inject
 const val CLASSROOM_LIST_SCREEN_TEST_TAG = "TEST_TAG.classroom_list_screen"
 
 /** The presenter for [ClassroomListFragment]. */
-class ClassroomListFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val profileManagementController: ProfileManagementController,
-  private val topicListController: TopicListController,
-  private val classroomController: ClassroomController,
-  private val oppiaLogger: OppiaLogger,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val dateTimeUtil: DateTimeUtil,
-  private val translationController: TranslationController,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val analyticsController: AnalyticsController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
-  private val appStartupStateController: AppStartupStateController
-) {
-  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
-  private val exitProfileListener = activity as ExitProfileListener
-  private lateinit var binding: ClassroomListFragmentBinding
-  private lateinit var classroomListViewModel: ClassroomListViewModel
-  private val profileId = activity.intent.extractCurrentUserProfileId()
-  private var onBackPressedCallback: OnBackPressedCallback? = null
+class ClassroomListFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val profileManagementController: ProfileManagementController,
+    private val topicListController: TopicListController,
+    private val classroomController: ClassroomController,
+    private val oppiaLogger: OppiaLogger,
+    @TopicHtmlParserEntityType private val topicEntityType: String,
+    @StoryHtmlParserEntityType private val storyEntityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val dateTimeUtil: DateTimeUtil,
+    private val translationController: TranslationController,
+    private val machineLocale: OppiaLocale.MachineLocale,
+    private val analyticsController: AnalyticsController,
+    @EnableOnboardingFlowV2
+    private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+    private val appStartupStateController: AppStartupStateController,
+  ) {
+    private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+    private val exitProfileListener = activity as ExitProfileListener
+    private lateinit var binding: ClassroomListFragmentBinding
+    private lateinit var classroomListViewModel: ClassroomListViewModel
+    private val profileId = activity.intent.extractCurrentUserProfileId()
+    private var onBackPressedCallback: OnBackPressedCallback? = null
 
-  /** Creates and returns the view for the [ClassroomListFragment]. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding = ClassroomListFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-
-    logHomeActivityEvent()
-
-    classroomListViewModel = ClassroomListViewModel(
-      activity,
-      fragment,
-      oppiaLogger,
-      profileId,
-      profileManagementController,
-      topicListController,
-      classroomController,
-      topicEntityType,
-      storyEntityType,
-      resourceHandler,
-      dateTimeUtil,
-      translationController
-    )
-
-    classroomListViewModel.homeItemViewModelListLiveData.observe(activity) {
-      refreshComposeView()
-    }
-
-    classroomListViewModel.topicList.addOnListChangedCallback(
-      object : ObservableList.OnListChangedCallback<ObservableList<HomeItemViewModel>>() {
-        override fun onChanged(sender: ObservableList<HomeItemViewModel>) {}
-
-        override fun onItemRangeChanged(
-          sender: ObservableList<HomeItemViewModel>,
-          positionStart: Int,
-          itemCount: Int
-        ) {}
-
-        override fun onItemRangeInserted(
-          sender: ObservableList<HomeItemViewModel>,
-          positionStart: Int,
-          itemCount: Int
-        ) {
-          refreshComposeView()
-        }
-
-        override fun onItemRangeMoved(
-          sender: ObservableList<HomeItemViewModel>,
-          fromPosition: Int,
-          toPosition: Int,
-          itemCount: Int
-        ) {}
-
-        override fun onItemRangeRemoved(
-          sender: ObservableList<HomeItemViewModel>,
-          positionStart: Int,
-          itemCount: Int
-        ) {}
-      }
-    )
-
-    profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
-      processProfileResult(it)
-    }
-
-    return binding.root
-  }
-
-  /** Routes to the play story view for the first story in the given topic summary. */
-  fun onTopicSummaryClicked(topicSummary: TopicSummary) {
-    routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      profileId,
-      topicSummary.classroomId,
-      topicSummary.topicId,
-      topicSummary.firstStoryId
-    )
-  }
-
-  /** Triggers the view model to update the topic list. */
-  fun onClassroomSummaryClicked(classroomSummary: ClassroomSummary) {
-    val classroomId = classroomSummary.classroomId
-    profileManagementController.updateLastSelectedClassroomId(profileId, classroomId)
-    classroomListViewModel.fetchAndUpdateTopicList(classroomId)
-  }
-
-  private fun refreshComposeView() {
-    binding.composeView.apply {
-      setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-      setContent {
-        MaterialTheme {
-          ClassroomListScreen()
-        }
-      }
-    }
-  }
-
-  /** Display a list of classroom-related items grouped by their types. */
-  @OptIn(ExperimentalFoundationApi::class)
-  @Composable
-  fun ClassroomListScreen() {
-    val groupedItems = (
-      classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty() +
-        classroomListViewModel.topicList
-      )
-      .groupBy { it::class }
-    val topicListSpanCount = integerResource(id = R.integer.home_span_count)
-    val listState = rememberLazyListState()
-    val classroomListIndex = groupedItems
-      .flatMap { (type, items) -> items.map { type to it } }
-      .indexOfFirst { it.first == AllClassroomsViewModel::class }
-
-    LazyColumn(
-      modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
-      state = listState
-    ) {
-      groupedItems.forEach { (type, items) ->
-        when (type) {
-          WelcomeViewModel::class -> items.forEach { item ->
-            item { WelcomeText(welcomeViewModel = item as WelcomeViewModel) }
-          }
-          PromotedStoryListViewModel::class -> items.forEach { item ->
-            item {
-              PromotedStoryList(
-                promotedStoryListViewModel = item as PromotedStoryListViewModel,
-                machineLocale = machineLocale
-              )
-            }
-          }
-          ComingSoonTopicListViewModel::class -> items.forEach { item ->
-            item {
-              ComingSoonTopicList(
-                comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
-                machineLocale = machineLocale
-              )
-            }
-          }
-          AllClassroomsViewModel::class -> items.forEach { _ ->
-            item { AllClassroomsHeaderText() }
-          }
-          ClassroomSummaryViewModel::class -> stickyHeader {
-            ClassroomList(
-              classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
-              selectedClassroomId = classroomListViewModel.selectedClassroomId.get().orEmpty(),
-              isSticky = listState.firstVisibleItemIndex >= classroomListIndex
-            )
-          }
-          AllTopicsViewModel::class -> items.forEach { _ ->
-            item { AllTopicsHeaderText() }
-          }
-          TopicSummaryViewModel::class -> {
-            gridItems(
-              data = items.map { it as TopicSummaryViewModel },
-              columnCount = topicListSpanCount,
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-              modifier = Modifier
-            ) { itemData ->
-              TopicCard(topicSummaryViewModel = itemData)
-            }
-          }
-        }
-      }
-    }
-  }
-
-  private fun processProfileResult(result: AsyncResult<Profile>) {
-    when (result) {
-      is AsyncResult.Success -> {
-        val profile = result.value
-        val profileType = profile.profileType
-
-        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
-          // These asynchronous API calls do not block or wait for their results. They execute in
-          // the background and have minimal chances of interfering with the synchronous
-          // `handleBackPress` call below.
-          profileManagementController.markProfileOnboardingEnded(profileId)
-          if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
-            appStartupStateController.markOnboardingFlowCompleted(profileId)
-          }
-        }
-
-        // This synchronous function call executes independently of the async calls above.
-        handleBackPress(profileType)
-      }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ClassroomListFragment", "Failed to fetch profile with id:$profileId", result.error
+    /** Creates and returns the view for the [ClassroomListFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      binding =
+        ClassroomListFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
         )
-        Profile.getDefaultInstance()
+
+      logHomeActivityEvent()
+
+      classroomListViewModel =
+        ClassroomListViewModel(
+          activity,
+          fragment,
+          oppiaLogger,
+          profileId,
+          profileManagementController,
+          topicListController,
+          classroomController,
+          topicEntityType,
+          storyEntityType,
+          resourceHandler,
+          dateTimeUtil,
+          translationController,
+        )
+
+      classroomListViewModel.homeItemViewModelListLiveData.observe(activity) {
+        refreshComposeView()
       }
-      is AsyncResult.Pending -> {
-        Profile.getDefaultInstance()
+
+      classroomListViewModel.topicList.addOnListChangedCallback(
+        object : ObservableList.OnListChangedCallback<ObservableList<HomeItemViewModel>>() {
+          override fun onChanged(sender: ObservableList<HomeItemViewModel>) {}
+
+          override fun onItemRangeChanged(
+            sender: ObservableList<HomeItemViewModel>,
+            positionStart: Int,
+            itemCount: Int,
+          ) {}
+
+          override fun onItemRangeInserted(
+            sender: ObservableList<HomeItemViewModel>,
+            positionStart: Int,
+            itemCount: Int,
+          ) {
+            refreshComposeView()
+          }
+
+          override fun onItemRangeMoved(
+            sender: ObservableList<HomeItemViewModel>,
+            fromPosition: Int,
+            toPosition: Int,
+            itemCount: Int,
+          ) {}
+
+          override fun onItemRangeRemoved(
+            sender: ObservableList<HomeItemViewModel>,
+            positionStart: Int,
+            itemCount: Int,
+          ) {}
+        },
+      )
+
+      profileManagementController.getProfile(profileId).toLiveData().observe(fragment) {
+        processProfileResult(it)
+      }
+
+      return binding.root
+    }
+
+    /** Routes to the play story view for the first story in the given topic summary. */
+    fun onTopicSummaryClicked(topicSummary: TopicSummary) {
+      routeToTopicPlayStoryListener.routeToTopicPlayStory(
+        profileId,
+        topicSummary.classroomId,
+        topicSummary.topicId,
+        topicSummary.firstStoryId,
+      )
+    }
+
+    /** Triggers the view model to update the topic list. */
+    fun onClassroomSummaryClicked(classroomSummary: ClassroomSummary) {
+      val classroomId = classroomSummary.classroomId
+      profileManagementController.updateLastSelectedClassroomId(profileId, classroomId)
+      classroomListViewModel.fetchAndUpdateTopicList(classroomId)
+    }
+
+    private fun refreshComposeView() {
+      binding.composeView.apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent {
+          MaterialTheme {
+            ClassroomListScreen()
+          }
+        }
+      }
+    }
+
+    /** Display a list of classroom-related items grouped by their types. */
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun ClassroomListScreen() {
+      val groupedItems =
+        (
+          classroomListViewModel.homeItemViewModelListLiveData.value.orEmpty() +
+            classroomListViewModel.topicList
+        ).groupBy { it::class }
+      val topicListSpanCount = integerResource(id = R.integer.home_span_count)
+      val listState = rememberLazyListState()
+      val classroomListIndex =
+        groupedItems
+          .flatMap { (type, items) -> items.map { type to it } }
+          .indexOfFirst { it.first == AllClassroomsViewModel::class }
+
+      LazyColumn(
+        modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
+        state = listState,
+      ) {
+        groupedItems.forEach { (type, items) ->
+          when (type) {
+            WelcomeViewModel::class ->
+              items.forEach { item ->
+                item { WelcomeText(welcomeViewModel = item as WelcomeViewModel) }
+              }
+            PromotedStoryListViewModel::class ->
+              items.forEach { item ->
+                item {
+                  PromotedStoryList(
+                    promotedStoryListViewModel = item as PromotedStoryListViewModel,
+                    machineLocale = machineLocale,
+                  )
+                }
+              }
+            ComingSoonTopicListViewModel::class ->
+              items.forEach { item ->
+                item {
+                  ComingSoonTopicList(
+                    comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
+                    machineLocale = machineLocale,
+                  )
+                }
+              }
+            AllClassroomsViewModel::class ->
+              items.forEach { _ ->
+                item { AllClassroomsHeaderText() }
+              }
+            ClassroomSummaryViewModel::class ->
+              stickyHeader {
+                ClassroomList(
+                  classroomSummaryList = items.map { it as ClassroomSummaryViewModel },
+                  selectedClassroomId = classroomListViewModel.selectedClassroomId.get().orEmpty(),
+                  isSticky = listState.firstVisibleItemIndex >= classroomListIndex,
+                )
+              }
+            AllTopicsViewModel::class ->
+              items.forEach { _ ->
+                item { AllTopicsHeaderText() }
+              }
+            TopicSummaryViewModel::class -> {
+              gridItems(
+                data = items.map { it as TopicSummaryViewModel },
+                columnCount = topicListSpanCount,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier,
+              ) { itemData ->
+                TopicCard(topicSummaryViewModel = itemData)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    private fun processProfileResult(result: AsyncResult<Profile>) {
+      when (result) {
+        is AsyncResult.Success -> {
+          val profile = result.value
+          val profileType = profile.profileType
+
+          if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
+            // These asynchronous API calls do not block or wait for their results. They execute in
+            // the background and have minimal chances of interfering with the synchronous
+            // `handleBackPress` call below.
+            profileManagementController.markProfileOnboardingEnded(profileId)
+            if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
+              appStartupStateController.markOnboardingFlowCompleted(profileId)
+            }
+          }
+
+          // This synchronous function call executes independently of the async calls above.
+          handleBackPress(profileType)
+        }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ClassroomListFragment",
+            "Failed to fetch profile with id:$profileId",
+            result.error,
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> {
+          Profile.getDefaultInstance()
+        }
+      }
+    }
+
+    private fun logHomeActivityEvent() {
+      analyticsController.logImportantEvent(
+        oppiaLogger.createOpenHomeContext(),
+        profileId,
+      )
+    }
+
+    private fun handleBackPress(profileType: ProfileType) {
+      onBackPressedCallback?.remove()
+
+      onBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+          override fun handleOnBackPressed() {
+            exitProfileListener.exitProfile(profileType)
+            // The dispatcher can hold a reference to the host
+            // so we need to null it out to prevent memory leaks.
+            this.remove()
+            onBackPressedCallback = null
+          }
+        }
+
+      onBackPressedCallback?.let { callback ->
+        activity.onBackPressedDispatcher.addCallback(fragment, callback)
       }
     }
   }
-
-  private fun logHomeActivityEvent() {
-    analyticsController.logImportantEvent(
-      oppiaLogger.createOpenHomeContext(),
-      profileId
-    )
-  }
-
-  private fun handleBackPress(profileType: ProfileType) {
-    onBackPressedCallback?.remove()
-
-    onBackPressedCallback = object : OnBackPressedCallback(true) {
-      override fun handleOnBackPressed() {
-        exitProfileListener.exitProfile(profileType)
-        // The dispatcher can hold a reference to the host
-        // so we need to null it out to prevent memory leaks.
-        this.remove()
-        onBackPressedCallback = null
-      }
-    }
-
-    onBackPressedCallback?.let { callback ->
-      activity.onBackPressedDispatcher.addCallback(fragment, callback)
-    }
-  }
-}
 
 /** Adds a grid of items to a LazyListScope with specified arrangement and item content. */
 fun <T> LazyListScope.gridItems(
@@ -341,14 +359,14 @@ fun <T> LazyListScope.gridItems(
     // Create a row with the specified horizontal arrangement and padding.
     Row(
       horizontalArrangement = horizontalArrangement,
-      modifier = modifier
-        .background(
-          colorResource(id = R.color.component_color_classroom_topic_list_background_color)
-        )
-        .padding(
-          horizontal = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-          vertical = 10.dp
-        )
+      modifier =
+        modifier
+          .background(
+            colorResource(id = R.color.component_color_classroom_topic_list_background_color),
+          ).padding(
+            horizontal = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+            vertical = 10.dp,
+          ),
     ) {
       // Populate the row with columns.
       for (columnIndex in 0 until columnCount) {
@@ -356,7 +374,7 @@ fun <T> LazyListScope.gridItems(
         if (itemIndex < size) {
           Box(
             modifier = Modifier.weight(1F, fill = true),
-            propagateMinConstraints = true
+            propagateMinConstraints = true,
           ) {
             itemContent(data[itemIndex]) // Provide content for each item.
           }
@@ -369,20 +387,21 @@ fun <T> LazyListScope.gridItems(
     // Add bottom padding if it's the last row.
     if (rowIndex == rows - 1) {
       Spacer(
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(dimensionResource(id = R.dimen.home_fragment_padding_bottom))
-          .background(
-            colorResource(id = R.color.component_color_classroom_topic_list_background_color)
-          )
+        modifier =
+          Modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.home_fragment_padding_bottom))
+            .background(
+              colorResource(id = R.color.component_color_classroom_topic_list_background_color),
+            ),
       )
     }
   }
 }
 
 /** Retrieves the drawable resource ID for the lesson thumbnail based on its graphic type. */
-fun LessonThumbnail.getDrawableResource(): Int {
-  return when (thumbnailGraphic) {
+fun LessonThumbnail.getDrawableResource(): Int =
+  when (thumbnailGraphic) {
     LessonThumbnailGraphic.BAKER ->
       R.drawable.lesson_thumbnail_graphic_baker
     LessonThumbnailGraphic.CHILD_WITH_BOOK ->
@@ -430,4 +449,3 @@ fun LessonThumbnail.getDrawableResource(): Int {
     else ->
       R.drawable.topic_fractions_01
   }
-}

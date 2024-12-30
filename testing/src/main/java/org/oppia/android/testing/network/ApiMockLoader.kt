@@ -7,15 +7,12 @@ import java.io.InputStream
 
 /** Utility for loading mock data for tests. */
 class ApiMockLoader {
-
   companion object {
     private const val GRADLE_ASSET_PATH = "../data/src/test/assets/api_mocks"
     private const val BAZEL_ASSET_PATH = "api_mocks"
 
     /** Returns the JSON content for the API mock data corresponding to the specified path. */
-    fun getFakeJson(jsonPath: String): String {
-      return openAssetInputStream(jsonPath).bufferedReader().use { it.readText() }
-    }
+    fun getFakeJson(jsonPath: String): String = openAssetInputStream(jsonPath).bufferedReader().use { it.readText() }
 
     private fun openAssetInputStream(jsonPath: String): InputStream {
       // TODO(#59): Only use Bazel path instead of checking.

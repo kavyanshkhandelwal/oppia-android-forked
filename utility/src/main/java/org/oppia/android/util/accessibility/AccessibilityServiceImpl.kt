@@ -6,18 +6,21 @@ import android.view.accessibility.AccessibilityManager
 import javax.inject.Inject
 
 /** Implementation of [AccessibilityService]. */
-class AccessibilityServiceImpl @Inject constructor(
-  private val context: Context
-) : AccessibilityService {
-  private val accessibilityManager by lazy {
-    context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-  }
+class AccessibilityServiceImpl
+  @Inject
+  constructor(
+    private val context: Context,
+  ) : AccessibilityService {
+    private val accessibilityManager by lazy {
+      context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    }
 
-  override fun isScreenReaderEnabled(): Boolean {
-    return accessibilityManager.isEnabled
-  }
+    override fun isScreenReaderEnabled(): Boolean = accessibilityManager.isEnabled
 
-  override fun announceForAccessibilityForView(view: View, text: CharSequence) {
-    view.announceForAccessibility(text)
+    override fun announceForAccessibilityForView(
+      view: View,
+      text: CharSequence,
+    ) {
+      view.announceForAccessibility(text)
+    }
   }
-}

@@ -14,7 +14,7 @@ class ComingSoonTopicsViewModel(
   val topicSummary: UpcomingTopic,
   val entityType: String,
   val comingSoonTopicList: ComingSoonTopicList,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : HomeItemViewModel() {
   val topicTitle: String by lazy {
     translationController.extractString(topicSummary.title, topicSummary.writtenTranslationContext)
@@ -23,17 +23,15 @@ class ComingSoonTopicsViewModel(
   /**
    * Returns the padding placed at the start of the coming soon topics list.
    */
-  private fun getStartPadding(): Int =
-    activity.resources.getDimensionPixelSize(R.dimen.coming_soon_padding_start)
+  private fun getStartPadding(): Int = activity.resources.getDimensionPixelSize(R.dimen.coming_soon_padding_start)
 
   /**
    * Returns the padding placed at the end of the coming soon topics list based on the number of coming soon topics.
    */
-  fun getEndMargin(): Int {
-    return if (comingSoonTopicList.upcomingTopicCount > 2) {
+  fun getEndMargin(): Int =
+    if (comingSoonTopicList.upcomingTopicCount > 2) {
       activity.resources.getDimensionPixelSize(R.dimen.coming_soon_padding_end)
     } else {
       getStartPadding()
     }
-  }
 }

@@ -122,7 +122,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicPracticeFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicPracticeFragmentTest {
   @get:Rule
@@ -172,14 +172,14 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 0,
-          targetViewId = R.id.master_skills_text_view
-        )
+          targetViewId = R.id.master_skills_text_view,
+        ),
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
-          )
-        )
+            R.string.topic_practice_master_these_skills,
+          ),
+        ),
       )
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 5)
@@ -187,15 +187,15 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(isCompletelyDisplayed()))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
@@ -209,16 +209,16 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 1,
-          targetViewId = R.id.subtopic_check_box
-        )
+          targetViewId = R.id.subtopic_check_box,
+        ),
       ).check(matches(isChecked()))
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 2,
-          targetViewId = R.id.subtopic_check_box
-        )
+          targetViewId = R.id.subtopic_check_box,
+        ),
       ).check(matches(isChecked()))
     }
   }
@@ -234,8 +234,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(isClickable()))
     }
   }
@@ -250,8 +250,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 1,
-          targetViewId = R.id.subtopic_check_box
-        )
+          targetViewId = R.id.subtopic_check_box,
+        ),
       ).check(matches(not(isChecked())))
     }
   }
@@ -268,14 +268,15 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() { // ktlint-disable max-line-length
+  fun testTopicPracticeFragment_loadFragment_selectSubtopics_clickStartButton_skillListTransferSuccessfully() {
     testCoroutineDispatchers.unregisterIdlingResource()
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       clickPracticeTab()
@@ -299,8 +300,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 1,
-          targetViewId = R.id.subtopic_check_box
-        )
+          targetViewId = R.id.subtopic_check_box,
+        ),
       ).check(matches(isChecked()))
     }
   }
@@ -315,8 +316,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(not(isClickable())))
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 5)
@@ -324,8 +325,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
@@ -342,8 +343,8 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 5,
-          targetViewId = R.id.topic_practice_start_button
-        )
+          targetViewId = R.id.topic_practice_start_button,
+        ),
       ).check(matches(isClickable()))
     }
   }
@@ -356,28 +357,28 @@ class TopicPracticeFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 0,
-          targetViewId = R.id.master_skills_text_view
-        )
+          targetViewId = R.id.master_skills_text_view,
+        ),
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
-          )
-        )
+            R.string.topic_practice_master_these_skills,
+          ),
+        ),
       )
       onView(isRoot()).perform(orientationLandscape())
       onView(
         atPositionOnView(
           recyclerViewId = R.id.topic_practice_skill_list,
           position = 0,
-          targetViewId = R.id.master_skills_text_view
-        )
+          targetViewId = R.id.master_skills_text_view,
+        ),
       ).check(
         matches(
           withText(
-            R.string.topic_practice_master_these_skills
-          )
-        )
+            R.string.topic_practice_master_these_skills,
+          ),
+        ),
       )
     }
   }
@@ -385,14 +386,14 @@ class TopicPracticeFragmentTest {
   private fun launchTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
+    topicId: String,
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
         profileId,
         classroomId,
-        topicId
+        topicId,
       )
     return ActivityScenario.launch(intent)
   }
@@ -402,8 +403,8 @@ class TopicPracticeFragmentTest {
     onView(
       allOf(
         withText(TopicTab.getTabForPosition(position = 2, enableExtraTopicTabsUiValue.value).name),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
+        isDescendantOfA(withId(R.id.topic_tabs_container)),
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -411,19 +412,22 @@ class TopicPracticeFragmentTest {
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.topic_practice_skill_list)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickPracticeItem(position: Int, targetViewId: Int) {
+  private fun clickPracticeItem(
+    position: Int,
+    targetViewId: Int,
+  ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.topic_practice_skill_list,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -466,8 +470,8 @@ class TopicPracticeFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -478,9 +482,13 @@ class TopicPracticeFragmentTest {
     fun inject(topicPracticeFragmentTest: TopicPracticeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicPracticeFragmentTest_TestApplicationComponent.builder()
+      DaggerTopicPracticeFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -489,9 +497,12 @@ class TopicPracticeFragmentTest {
       component.inject(topicPracticeFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

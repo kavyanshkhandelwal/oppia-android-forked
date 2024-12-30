@@ -65,9 +65,10 @@ class TestGitRepositoryTest {
   fun testSetUser_noGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
+      }
 
     assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
@@ -98,9 +99,10 @@ class TestGitRepositoryTest {
   fun testCheckOutNewBranch_notGitRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.checkoutNewBranch("develop")
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.checkoutNewBranch("develop")
+      }
 
     assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
@@ -122,9 +124,10 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.stageFileForCommit(File(tempFolder.root, "fake_file"))
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.stageFileForCommit(File(tempFolder.root, "fake_file"))
+      }
 
     assertThat(error).hasMessageThat().contains("did not match any files")
   }
@@ -177,8 +180,8 @@ class TestGitRepositoryTest {
       listOf(
         tempFolder.newFile("new_file1"),
         tempFolder.newFile("new_file2"),
-        tempFolder.newFile("new_file3")
-      )
+        tempFolder.newFile("new_file3"),
+      ),
     )
 
     val status = executeGitCommand("status").getOutputAsJoinedString()
@@ -194,15 +197,16 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.stageFilesForCommit(
-        listOf(
-          tempFolder.newFile("new_file1"),
-          File(tempFolder.root, "nonexistent_file"),
-          tempFolder.newFile("new_file2")
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.stageFilesForCommit(
+          listOf(
+            tempFolder.newFile("new_file1"),
+            File(tempFolder.root, "nonexistent_file"),
+            tempFolder.newFile("new_file2"),
+          ),
         )
-      )
-    }
+      }
 
     assertThat(error).hasMessageThat().contains("did not match any files")
   }
@@ -213,9 +217,10 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.removeFileForCommit(File(tempFolder.root, "nonexistent_file"))
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.removeFileForCommit(File(tempFolder.root, "nonexistent_file"))
+      }
 
     assertThat(error).hasMessageThat().contains("did not match any files")
   }
@@ -227,9 +232,10 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.removeFileForCommit(File(tempFolder.root, "untracked_file"))
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.removeFileForCommit(File(tempFolder.root, "untracked_file"))
+      }
 
     assertThat(error).hasMessageThat().contains("did not match any files")
   }
@@ -256,11 +262,13 @@ class TestGitRepositoryTest {
     testGitRepository.init()
     testGitRepository.checkoutNewBranch("develop")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.moveFileForCommit(
-        File(tempFolder.root, "nonexistent_file"), File(tempFolder.root, "new_file")
-      )
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.moveFileForCommit(
+          File(tempFolder.root, "nonexistent_file"),
+          File(tempFolder.root, "new_file"),
+        )
+      }
 
     assertThat(error).hasMessageThat().contains("bad source")
   }
@@ -272,11 +280,13 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     tempFolder.newFile("untracked_file")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.moveFileForCommit(
-        File(tempFolder.root, "untracked_file"), File(tempFolder.root, "new_file")
-      )
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.moveFileForCommit(
+          File(tempFolder.root, "untracked_file"),
+          File(tempFolder.root, "new_file"),
+        )
+      }
 
     assertThat(error).hasMessageThat().contains("not under version control")
   }
@@ -291,7 +301,8 @@ class TestGitRepositoryTest {
     testGitRepository.commit("Commit new file.")
 
     testGitRepository.moveFileForCommit(
-      File(tempFolder.root, "committed_file"), File(tempFolder.root, "moved_file")
+      File(tempFolder.root, "committed_file"),
+      File(tempFolder.root, "moved_file"),
     )
 
     // Verify that the moved file was actually moved, and verify via Git status.
@@ -322,9 +333,10 @@ class TestGitRepositoryTest {
     testGitRepository.checkoutNewBranch("develop")
     testGitRepository.setUser(email = "test@oppia.org", name = "Test User")
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.commit("Attempting empty commit.", allowEmpty = false)
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.commit("Attempting empty commit.", allowEmpty = false)
+      }
 
     assertThat(error).hasMessageThat().contains("nothing to commit")
   }
@@ -373,9 +385,10 @@ class TestGitRepositoryTest {
   fun testStatus_noGitRepository_checkForRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows<AssertionError>() {
-      testGitRepository.status(checkForGitRepository = true)
-    }
+    val error =
+      assertThrows<AssertionError> {
+        testGitRepository.status(checkForGitRepository = true)
+      }
 
     assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
@@ -384,7 +397,7 @@ class TestGitRepositoryTest {
   fun testStatus_noGitRepository_defaultCheckForRepository_throwsAssertionError() {
     val testGitRepository = TestGitRepository(tempFolder, commandExecutorInterceptor)
 
-    val error = assertThrows<AssertionError>() { testGitRepository.status() }
+    val error = assertThrows<AssertionError> { testGitRepository.status() }
 
     assertThat(error).hasMessageThat().contains("Not operating in an initialized Git repository.")
   }
@@ -437,7 +450,8 @@ class TestGitRepositoryTest {
     testGitRepository.stageFileForCommit(tempFolder.newFile("committed_file"))
     testGitRepository.commit("Commit new file.")
     testGitRepository.moveFileForCommit(
-      File(tempFolder.root, "committed_file"), File(tempFolder.root, "moved_file")
+      File(tempFolder.root, "committed_file"),
+      File(tempFolder.root, "moved_file"),
     )
 
     val status = testGitRepository.status()
@@ -460,7 +474,8 @@ class TestGitRepositoryTest {
     testGitRepository.stageFileForCommit(generateFileWithRandomContent("staged_file"))
     testGitRepository.removeFileForCommit(File(tempFolder.root, "file_to_remove"))
     testGitRepository.moveFileForCommit(
-      File(tempFolder.root, "committed_file"), File(tempFolder.root, "moved_file")
+      File(tempFolder.root, "committed_file"),
+      File(tempFolder.root, "moved_file"),
     )
 
     val status = testGitRepository.status()
@@ -491,8 +506,7 @@ class TestGitRepositoryTest {
 
   private fun CommandResult.getOnlyOutputLine(): String = output.single()
 
-  private fun CommandResult.getOutputAsJoinedString(): String =
-    output.joinToString(separator = "\n")
+  private fun CommandResult.getOutputAsJoinedString(): String = output.joinToString(separator = "\n")
 
   private fun generateFileWithRandomContent(name: String): File {
     val file = tempFolder.newFile(name)
@@ -501,7 +515,7 @@ class TestGitRepositoryTest {
   }
 
   private class CommandExecutorInterceptor(
-    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
+    scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   ) : CommandExecutor {
     private val commandResults = mutableListOf<CommandResult>()
     private val realCommandExecutor by lazy { CommandExecutorImpl(scriptBgDispatcher) }
@@ -510,14 +524,14 @@ class TestGitRepositoryTest {
       workingDir: File,
       command: String,
       vararg arguments: String,
-      includeErrorOutput: Boolean
+      includeErrorOutput: Boolean,
     ): CommandResult {
       val result =
         realCommandExecutor.executeCommand(
           workingDir,
           command,
           *arguments,
-          includeErrorOutput = includeErrorOutput
+          includeErrorOutput = includeErrorOutput,
         )
       commandResults += result
       return result

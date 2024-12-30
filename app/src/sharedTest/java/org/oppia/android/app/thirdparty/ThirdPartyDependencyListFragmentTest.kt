@@ -110,7 +110,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ThirdPartyDependencyListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ThirdPartyDependencyListFragmentTest {
   @get:Rule
@@ -141,13 +141,13 @@ class ThirdPartyDependencyListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(ViewActions.click())
       intended(
         allOf(
-          hasComponent(LicenseListActivity::class.java.name)
-        )
+          hasComponent(LicenseListActivity::class.java.name),
+        ),
       )
     }
   }
@@ -159,13 +159,13 @@ class ThirdPartyDependencyListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(ViewActions.click())
       intended(
         allOf(
-          hasComponent(LicenseListActivity::class.java.name)
-        )
+          hasComponent(LicenseListActivity::class.java.name),
+        ),
       )
     }
   }
@@ -174,14 +174,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem0_displaysCorrectDepName() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       val dependencyName0 = retrieveDependencyName(R.string.third_party_dependency_name_0)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 0,
-        )
+        ),
       ).check(matches(hasDescendant(withText(dependencyName0))))
       onView(withText(dependencyName0)).check(matches(isCompletelyDisplayed()))
     }
@@ -191,14 +191,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem1_displaysCorrectDepName() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       val dependencyName1 = retrieveDependencyName(R.string.third_party_dependency_name_1)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName1))))
       onView(withText(dependencyName1)).check(matches(isCompletelyDisplayed()))
     }
@@ -208,14 +208,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem2_displaysCorrectDepName() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
+        scrollToPosition<RecyclerView.ViewHolder>(2),
       )
       val dependencyName2 = retrieveDependencyName(R.string.third_party_dependency_name_2)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName2))))
       onView(withText(dependencyName2)).check(matches(isCompletelyDisplayed()))
     }
@@ -225,14 +225,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem3_displaysCorrectDepName() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+        scrollToPosition<RecyclerView.ViewHolder>(3),
       )
       val dependencyName3 = retrieveDependencyName(R.string.third_party_dependency_name_3)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName3))))
       onView(withText(dependencyName3)).check(matches(isCompletelyDisplayed()))
     }
@@ -243,14 +243,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       val dependencyName0 = retrieveDependencyName(R.string.third_party_dependency_name_0)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 0,
-        )
+        ),
       ).check(matches(hasDescendant(withText(dependencyName0))))
       onView(withText(dependencyName0)).check(matches(isCompletelyDisplayed()))
     }
@@ -261,14 +261,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       val dependencyName1 = retrieveDependencyName(R.string.third_party_dependency_name_1)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName1))))
       onView(withText(dependencyName1)).check(matches(isCompletelyDisplayed()))
     }
@@ -279,14 +279,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
+        scrollToPosition<RecyclerView.ViewHolder>(2),
       )
       val dependencyName2 = retrieveDependencyName(R.string.third_party_dependency_name_2)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName2))))
       onView(withText(dependencyName2)).check(matches(isCompletelyDisplayed()))
     }
@@ -297,14 +297,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+        scrollToPosition<RecyclerView.ViewHolder>(3),
       )
       val dependencyName3 = retrieveDependencyName(R.string.third_party_dependency_name_3)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).check(matches(hasDescendant(withText(dependencyName3))))
       onView(withText(dependencyName3)).check(matches(isCompletelyDisplayed()))
     }
@@ -314,14 +314,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem0_displaysCorrectDepVersion() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       val version0 = retrieveDependencyVersion(R.string.third_party_dependency_version_0)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 0,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version0))))
       onView(withText(version0)).check(matches(isCompletelyDisplayed()))
     }
@@ -331,14 +331,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem1_displaysCorrectDepVersion() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       val version1 = retrieveDependencyVersion(R.string.third_party_dependency_version_1)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 1,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version1))))
       onView(withText(version1)).check(matches(isCompletelyDisplayed()))
     }
@@ -348,14 +348,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem2_displaysCorrectDepVersion() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
+        scrollToPosition<RecyclerView.ViewHolder>(2),
       )
       val version2 = retrieveDependencyVersion(R.string.third_party_dependency_version_2)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 2,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version2))))
       onView(withText(version2)).check(matches(isCompletelyDisplayed()))
     }
@@ -365,14 +365,14 @@ class ThirdPartyDependencyListFragmentTest {
   fun openThirdPartyDepsListActivity_recyclerviewItem3_displaysCorrectDepVersion() {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+        scrollToPosition<RecyclerView.ViewHolder>(3),
       )
       val version3 = retrieveDependencyVersion(R.string.third_party_dependency_version_3)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 3,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version3))))
       onView(withText(version3)).check(matches(isCompletelyDisplayed()))
     }
@@ -383,14 +383,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       val version0 = retrieveDependencyVersion(R.string.third_party_dependency_version_0)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 0,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version0))))
       onView(withText(version0)).check(matches(isCompletelyDisplayed()))
     }
@@ -401,14 +401,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       val version1 = retrieveDependencyVersion(R.string.third_party_dependency_version_1)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 1,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version1))))
       onView(withText(version1)).check(matches(isCompletelyDisplayed()))
     }
@@ -419,14 +419,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
+        scrollToPosition<RecyclerView.ViewHolder>(2),
       )
       val version2 = retrieveDependencyVersion(R.string.third_party_dependency_version_2)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 2,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version2))))
       onView(withText(version2)).check(matches(isCompletelyDisplayed()))
     }
@@ -437,14 +437,14 @@ class ThirdPartyDependencyListFragmentTest {
     launch(ThirdPartyDependencyListActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(3)
+        scrollToPosition<RecyclerView.ViewHolder>(3),
       )
       val version3 = retrieveDependencyVersion(R.string.third_party_dependency_version_3)
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
           position = 3,
-        )
+        ),
       ).check(matches(hasDescendant(withText(version3))))
       onView(withText(version3)).check(matches(isCompletelyDisplayed()))
     }
@@ -456,17 +456,20 @@ class ThirdPartyDependencyListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val thirdPartyDependencyListFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder)
-          as ThirdPartyDependencyListFragment
+        val thirdPartyDependencyListFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder)
+            as ThirdPartyDependencyListFragment
 
-        val arguments = checkNotNull(thirdPartyDependencyListFragment.arguments) {
-          "Expected arguments to be passed to ThirdPartyDependencyListFragment"
-        }
-        val args = arguments.getProto(
-          "ThirdPartyDependencyListFragment.arguments",
-          ThirdPartyDependencyListFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(thirdPartyDependencyListFragment.arguments) {
+            "Expected arguments to be passed to ThirdPartyDependencyListFragment"
+          }
+        val args =
+          arguments.getProto(
+            "ThirdPartyDependencyListFragment.arguments",
+            ThirdPartyDependencyListFragmentArguments.getDefaultInstance(),
+          )
         val receivedIsMultipane = args?.isMultipane ?: false
 
         assertThat(receivedIsMultipane).isEqualTo(false)
@@ -474,10 +477,11 @@ class ThirdPartyDependencyListFragmentTest {
     }
   }
 
-  private fun retrieveDependencyName(id: Int): String {
-    return ApplicationProvider.getApplicationContext<TestApplication>()
-      .resources.getString(id)
-  }
+  private fun retrieveDependencyName(id: Int): String =
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
+      .resources
+      .getString(id)
 
   private fun retrieveDependencyVersion(id: Int): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
@@ -517,12 +521,10 @@ class ThirdPartyDependencyListFragmentTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -531,9 +533,13 @@ class ThirdPartyDependencyListFragmentTest {
     fun inject(thirdPartyDependencyListFragmentTest: ThirdPartyDependencyListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerThirdPartyDependencyListFragmentTest_TestApplicationComponent.builder()
+      DaggerThirdPartyDependencyListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -542,9 +548,12 @@ class ThirdPartyDependencyListFragmentTest {
       component.inject(thirdPartyDependencyListFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -16,83 +16,88 @@ import javax.inject.Inject
 
 /** The presenter for [AdminSettingsDialogFragment]. */
 @FragmentScope
-class AdminSettingsDialogFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val adminViewModel: AdminSettingsViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
-  fun handleOnCreateDialog(
-    routeDialogInterface: ProfileRouteDialogInterface,
-    adminPin: String?
-  ): Dialog {
-    val binding: AdminSettingsDialogBinding =
-      DataBindingUtil.inflate(
-        activity.layoutInflater,
-        R.layout.admin_settings_dialog,
-        /* parent= */ null,
-        /* attachToParent= */ false
-      )
-    binding.apply {
-      lifecycleOwner = fragment
-      viewModel = adminViewModel
-    }
+class AdminSettingsDialogFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val adminViewModel: AdminSettingsViewModel,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    fun handleOnCreateDialog(
+      routeDialogInterface: ProfileRouteDialogInterface,
+      adminPin: String?,
+    ): Dialog {
+      val binding: AdminSettingsDialogBinding =
+        DataBindingUtil.inflate(
+          activity.layoutInflater,
+          R.layout.admin_settings_dialog,
+          // parent=
+          null,
+          // attachToParent=
+          false,
+        )
+      binding.apply {
+        lifecycleOwner = fragment
+        viewModel = adminViewModel
+      }
 
-    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
-      confirmPin?.let {
-        if (
-          adminViewModel.errorMessage.get()?.isNotEmpty()!! && adminViewModel.inputPin.get() == it
+      // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+      binding.adminSettingsInputPinEditText.onTextChanged { confirmPin ->
+        confirmPin?.let {
+          if (
+            adminViewModel.errorMessage.get()?.isNotEmpty()!! && adminViewModel.inputPin.get() == it
+          ) {
+            adminViewModel.inputPin.set(it)
+          } else {
+            adminViewModel.inputPin.set(it)
+            adminViewModel.errorMessage.set("")
+          }
+        }
+      }
+
+      val dialog =
+        AlertDialog
+          .Builder(activity, R.style.OppiaAlertDialogTheme)
+          .setTitle(R.string.admin_settings_heading)
+          .setView(binding.root)
+          .setMessage(R.string.admin_settings_sub)
+          .setPositiveButton(R.string.admin_settings_submit, null)
+          .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+            dialog.dismiss()
+          }.create()
+
+      binding.adminSettingsInputPinEditText.setOnEditorActionListener { _, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_DONE ||
+          (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
         ) {
-          adminViewModel.inputPin.set(it)
-        } else {
-          adminViewModel.inputPin.set(it)
-          adminViewModel.errorMessage.set("")
+          dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
         }
+        false
       }
-    }
 
-    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.admin_settings_heading)
-      .setView(binding.root)
-      .setMessage(R.string.admin_settings_sub)
-      .setPositiveButton(R.string.admin_settings_submit, null)
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
-        dialog.dismiss()
-      }
-      .create()
-
-    binding.adminSettingsInputPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
-      }
-      false
-    }
-
-    // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
-    dialog.setOnShowListener {
-      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
-          adminViewModel.errorMessage.set(
-            resourceHandler.getStringInLocale(
-              R.string.admin_auth_null
+      // This logic prevents the dialog from being dismissed. https://stackoverflow.com/a/7636468.
+      dialog.setOnShowListener {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+          if (binding.adminSettingsInputPinEditText.text?.isEmpty()!!) {
+            adminViewModel.errorMessage.set(
+              resourceHandler.getStringInLocale(
+                R.string.admin_auth_null,
+              ),
             )
-          )
-          return@setOnClickListener
-        }
-        if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
-          routeDialogInterface.routeToResetPinDialog()
-        } else {
-          adminViewModel.errorMessage.set(
-            resourceHandler.getStringInLocale(
-              R.string.admin_settings_incorrect
+            return@setOnClickListener
+          }
+          if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
+            routeDialogInterface.routeToResetPinDialog()
+          } else {
+            adminViewModel.errorMessage.set(
+              resourceHandler.getStringInLocale(
+                R.string.admin_settings_incorrect,
+              ),
             )
-          )
+          }
         }
       }
+      return dialog
     }
-    return dialog
   }
-}

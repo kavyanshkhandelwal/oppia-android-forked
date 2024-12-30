@@ -4,7 +4,6 @@ import org.oppia.android.app.model.PlatformParameter
 
 /** Singleton which helps in storing and providing Platform Parameters at runtime. */
 interface PlatformParameterSingleton {
-
   /**
    * Gets the current platformParameterMap.
    *

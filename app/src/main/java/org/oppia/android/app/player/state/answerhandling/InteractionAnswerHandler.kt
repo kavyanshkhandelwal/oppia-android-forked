@@ -20,19 +20,13 @@ interface InteractionAnswerHandler {
   fun isAutoNavigating(): Boolean = false
 
   /** Return the current answer's error messages  if not valid else return null. */
-  fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
-    return null
-  }
+  fun checkPendingAnswerError(category: AnswerErrorCategory): String? = null
 
   /** Return the current answer that is ready for handling. */
-  fun getPendingAnswer(): UserAnswer? {
-    return null
-  }
+  fun getPendingAnswer(): UserAnswer? = null
 
   /** Returns the current pending answer. */
-  fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.getDefaultInstance()
-  }
+  fun getUserAnswerState(): UserAnswerState = UserAnswerState.getDefaultInstance()
 }
 
 /**

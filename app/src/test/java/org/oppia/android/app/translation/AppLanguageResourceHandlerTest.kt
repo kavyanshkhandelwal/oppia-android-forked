@@ -117,16 +117,21 @@ class AppLanguageResourceHandlerTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
+
   @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Parameter lateinit var lang: String
+
   @Parameter lateinit var expectedDisplayText: String
 
   private val audioLanguage by lazy { AudioLanguage.valueOf(lang) }
@@ -239,7 +244,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
+    assertThrows<Resources.NotFoundException> { handler.getStringInLocale(-1) }
   }
 
   @Test
@@ -247,9 +252,11 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageToSystem(HEBREW_LOCALE)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val str = handler.getStringInLocaleWithWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+    val str =
+      handler.getStringInLocaleWithWrapping(
+        R.string.test_string_with_arg_hebrew,
+        "123 Some Street, Mountain View, CA",
+      )
 
     // This is based on the example here:
     // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
@@ -263,7 +270,8 @@ class AppLanguageResourceHandlerTest {
     val handler = retrieveAppLanguageResourceHandler()
 
     handler.getStringInLocaleWithWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+      R.string.test_string_with_arg_hebrew,
+      "123 Some Street, Mountain View, CA",
     )
 
     // Verify that the argument was wrapped.
@@ -276,7 +284,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
+    assertThrows<Resources.NotFoundException> { handler.getStringInLocaleWithWrapping(-1) }
   }
 
   @Test
@@ -284,9 +292,11 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageToSystem(HEBREW_LOCALE)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val str = handler.getStringInLocaleWithoutWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+    val str =
+      handler.getStringInLocaleWithoutWrapping(
+        R.string.test_string_with_arg_hebrew,
+        "123 Some Street, Mountain View, CA",
+      )
 
     // This is based on the example here:
     // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
@@ -301,7 +311,8 @@ class AppLanguageResourceHandlerTest {
     val handler = retrieveAppLanguageResourceHandler()
 
     handler.getStringInLocaleWithoutWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+      R.string.test_string_with_arg_hebrew,
+      "123 Some Street, Mountain View, CA",
     )
 
     // Verify that no arguments were wrapped.
@@ -313,7 +324,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       handler.getStringInLocaleWithoutWrapping(-1)
     }
   }
@@ -333,7 +344,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
+    assertThrows<Resources.NotFoundException> { handler.getStringArrayInLocale(-1) }
   }
 
   @Test
@@ -363,7 +374,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() { handler.getQuantityStringInLocale(-1, 0) }
+    assertThrows<Resources.NotFoundException> { handler.getQuantityStringInLocale(-1, 0) }
   }
 
   @Test
@@ -371,9 +382,12 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val str = handler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
-    )
+    val str =
+      handler.getQuantityStringInLocaleWithWrapping(
+        R.plurals.test_plural_string_with_args,
+        2,
+        "Two",
+      )
 
     assertThat(str).isEqualTo("Two items")
   }
@@ -394,7 +408,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       handler.getQuantityStringInLocaleWithWrapping(-1, 0)
     }
   }
@@ -404,9 +418,12 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    val str = handler.getQuantityStringInLocaleWithoutWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
-    )
+    val str =
+      handler.getQuantityStringInLocaleWithoutWrapping(
+        R.plurals.test_plural_string_with_args,
+        2,
+        "Two",
+      )
 
     assertThat(str).isEqualTo("Two items")
   }
@@ -417,7 +434,9 @@ class AppLanguageResourceHandlerTest {
     val handler = retrieveAppLanguageResourceHandler()
 
     handler.getQuantityStringInLocaleWithoutWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
+      R.plurals.test_plural_string_with_args,
+      2,
+      "Two",
     )
 
     // Verify that no arguments were wrapped.
@@ -429,7 +448,7 @@ class AppLanguageResourceHandlerTest {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
     val handler = retrieveAppLanguageResourceHandler()
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
     }
   }
@@ -542,23 +561,28 @@ class AppLanguageResourceHandlerTest {
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
     updateAndSetAppLanguage(
-      AppLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = language
+        }.build(),
     )
   }
 
   private fun updateAppLanguageToSystem(locale: Locale) {
     forceDefaultLocale(locale)
     updateAndSetAppLanguage(
-      AppLanguageSelection.newBuilder().apply {
-        useSystemLanguageOrAppDefault = true
-      }.build()
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          useSystemLanguageOrAppDefault = true
+        }.build(),
     )
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -616,8 +640,8 @@ class AppLanguageResourceHandlerTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -631,9 +655,13 @@ class AppLanguageResourceHandlerTest {
     fun inject(appLanguageResourceHandlerTest: AppLanguageResourceHandlerTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppLanguageResourceHandlerTest_TestApplicationComponent.builder()
+      DaggerAppLanguageResourceHandlerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -642,9 +670,12 @@ class AppLanguageResourceHandlerTest {
       component.inject(appLanguageResourceHandlerTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
@@ -656,7 +687,6 @@ class AppLanguageResourceHandlerTest {
     private val TURKEY_TURKISH_LOCALE = Locale("tr", "TR")
     private val HEBREW_LOCALE = Locale("he", "US")
 
-    private fun String.extractNumbers(): List<String> =
-      "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
+    private fun String.extractNumbers(): List<String> = "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
   }
 }

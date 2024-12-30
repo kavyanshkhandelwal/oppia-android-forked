@@ -140,7 +140,7 @@ private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicFragmentTest {
   @get:Rule
@@ -150,11 +150,12 @@ class TopicFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
-  )
+  var activityTestRule: ActivityTestRule<TopicActivity> =
+    ActivityTestRule(
+      TopicActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -196,7 +197,9 @@ class TopicFragmentTest {
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     initializeApplicationComponent(enableExtraTabsUi = false)
     launchTopicActivityIntent(
-      profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      profileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_toolbar_title)).check(matches(withText("Topic: Fractions")))
@@ -209,8 +212,10 @@ class TopicFragmentTest {
     markSpotlightSeen(FIRST_CHAPTER)
     launch<TopicActivity>(
       createTopicActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        FRACTIONS_TOPIC_ID,
+      ),
     ).use {
       // Mark lessons spotlight seen.
       testCoroutineDispatchers.runCurrent()
@@ -219,8 +224,10 @@ class TopicFragmentTest {
 
     launch<TopicActivity>(
       createTopicActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        FRACTIONS_TOPIC_ID,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(doesNotExist())
@@ -234,8 +241,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     onView(withText(R.string.topic_lessons_tab_spotlight_hint)).check(matches(isDisplayed()))
@@ -250,8 +257,8 @@ class TopicFragmentTest {
         profileId,
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0
-      )
+        FRACTIONS_STORY_ID_0,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     onView(withText(R.string.first_chapter_spotlight_hint)).check(matches(isDisplayed()))
@@ -265,8 +272,8 @@ class TopicFragmentTest {
         profileId,
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0
-      )
+        FRACTIONS_STORY_ID_0,
+      ),
     ).use {
       // Mark first chapter spotlight seen.
       testCoroutineDispatchers.runCurrent()
@@ -280,8 +287,8 @@ class TopicFragmentTest {
         profileId,
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
-        FRACTIONS_STORY_ID_0
-      )
+        FRACTIONS_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.first_chapter_spotlight_hint)).check(doesNotExist())
@@ -299,8 +306,11 @@ class TopicFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -315,8 +325,11 @@ class TopicFragmentTest {
     markSpotlightSeen(FIRST_CHAPTER)
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
@@ -334,8 +347,11 @@ class TopicFragmentTest {
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(profileId, false)
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       // Mark revision tab spotlight seen.
@@ -344,8 +360,11 @@ class TopicFragmentTest {
 
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID, RATIOS_STORY_ID_0
-      )
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.topic_revision_tab_spotlight_hint)).check(doesNotExist())
@@ -361,8 +380,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
@@ -384,8 +403,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
@@ -407,8 +426,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
@@ -429,8 +448,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     testCoroutineDispatchers.runCurrent()
     val topicToolbarTitle: TextView =
@@ -449,8 +468,8 @@ class TopicFragmentTest {
       createTopicActivityIntent(
         profileId,
         TEST_CLASSROOM_ID_1,
-        FRACTIONS_TOPIC_ID
-      )
+        FRACTIONS_TOPIC_ID,
+      ),
     )
     onView(withContentDescription(R.string.navigate_up)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -480,11 +499,12 @@ class TopicFragmentTest {
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       onView(
         withText(
-          TopicTab.getTabForPosition(
-            position = INFO_TAB_POSITION,
-            enableExtraTopicTabsUi.value
-          ).name
-        )
+          TopicTab
+            .getTabForPosition(
+              position = INFO_TAB_POSITION,
+              enableExtraTopicTabsUi.value,
+            ).name,
+        ),
       ).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
@@ -505,7 +525,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
@@ -518,7 +538,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION)
     }
@@ -545,7 +565,7 @@ class TopicFragmentTest {
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -560,10 +580,10 @@ class TopicFragmentTest {
         matches(
           isDescendantOfA(
             withId(
-              R.id.topic_tabs_container
-            )
-          )
-        )
+              R.id.topic_tabs_container,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -617,7 +637,7 @@ class TopicFragmentTest {
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
         targetViewId = R.id.master_skills_text_view,
-        stringToMatch = "Master These Skills"
+        stringToMatch = "Master These Skills",
       )
     }
   }
@@ -643,7 +663,7 @@ class TopicFragmentTest {
         recyclerView = R.id.revision_recycler_view,
         itemPosition = 0,
         targetViewId = R.id.subtopic_title,
-        stringToMatch = "What is a Fraction?"
+        stringToMatch = "What is a Fraction?",
       )
     }
   }
@@ -669,8 +689,8 @@ class TopicFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_name_text_view)).check(
         matches(
-          withText(containsString(TOPIC_NAME))
-        )
+          withText(containsString(TOPIC_NAME)),
+        ),
       )
     }
   }
@@ -688,7 +708,7 @@ class TopicFragmentTest {
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -705,7 +725,7 @@ class TopicFragmentTest {
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
         targetViewId = R.id.master_skills_text_view,
-        stringToMatch = "Master These Skills"
+        stringToMatch = "Master These Skills",
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -714,7 +734,7 @@ class TopicFragmentTest {
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
         targetViewId = R.id.master_skills_text_view,
-        stringToMatch = "Master These Skills"
+        stringToMatch = "Master These Skills",
       )
     }
   }
@@ -733,7 +753,7 @@ class TopicFragmentTest {
         recyclerView = R.id.revision_recycler_view,
         itemPosition = 0,
         targetViewId = R.id.subtopic_title,
-        stringToMatch = "What is a Fraction?"
+        stringToMatch = "What is a Fraction?",
       )
     }
   }
@@ -745,7 +765,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -754,7 +774,7 @@ class TopicFragmentTest {
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -766,7 +786,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -775,7 +795,7 @@ class TopicFragmentTest {
         recyclerView = R.id.story_summary_recycler_view,
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -788,7 +808,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -796,7 +816,7 @@ class TopicFragmentTest {
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
         targetViewId = R.id.master_skills_text_view,
-        stringToMatch = "Master These Skills"
+        stringToMatch = "Master These Skills",
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -805,7 +825,7 @@ class TopicFragmentTest {
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
         targetViewId = R.id.master_skills_text_view,
-        stringToMatch = "Master These Skills"
+        stringToMatch = "Master These Skills",
       )
     }
   }
@@ -818,7 +838,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
         .hasOpenLessonsTabContextThat()
@@ -835,7 +855,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       testCoroutineDispatchers.runCurrent()
@@ -855,7 +875,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       testCoroutineDispatchers.runCurrent()
@@ -877,7 +897,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       clickTabAtPosition(position = INFO_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -897,7 +917,7 @@ class TopicFragmentTest {
       profileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     ).use {
       clickTabAtPosition(position = PRACTICE_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -915,15 +935,14 @@ class TopicFragmentTest {
   private fun createTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
-  ): Intent {
-    return TopicActivity.createTopicActivityIntent(
+    topicId: String,
+  ): Intent =
+    TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId,
       classroomId,
-      topicId
+      topicId,
     )
-  }
 
   /**
    * Creates TopicActivity Intent with a storyId.
@@ -934,16 +953,15 @@ class TopicFragmentTest {
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
-  ): Intent {
-    return TopicActivity.createTopicPlayStoryActivityIntent(
+    storyId: String,
+  ): Intent =
+    TopicActivity.createTopicPlayStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId,
       classroomId,
       topicId,
-      storyId
+      storyId,
     )
-  }
 
   /**
    * Launches TopicActivity without a storyId.
@@ -952,10 +970,8 @@ class TopicFragmentTest {
   private fun launchTopicActivityIntent(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
-  ): ActivityScenario<TopicActivity> {
-    return launch(createTopicActivityIntent(profileId, classroomId, topicId))
-  }
+    topicId: String,
+  ): ActivityScenario<TopicActivity> = launch(createTopicActivityIntent(profileId, classroomId, topicId))
 
   /**
    * Launches TopicActivity with a valid storyId.
@@ -965,19 +981,18 @@ class TopicFragmentTest {
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
-  ): ActivityScenario<TopicActivity> {
-    return launch<TopicActivity>(
-      createTopicPlayStoryActivityIntent(profileId, classroomId, topicId, storyId)
+    storyId: String,
+  ): ActivityScenario<TopicActivity> =
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(profileId, classroomId, topicId, storyId),
     ).also { testCoroutineDispatchers.runCurrent() }
-  }
 
   private fun clickTabAtPosition(position: Int) {
     onView(
       allOf(
         withText(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value).name),
-        isDescendantOfA(withId(R.id.topic_tabs_container))
-      )
+        isDescendantOfA(withId(R.id.topic_tabs_container)),
+      ),
     ).perform(click())
   }
 
@@ -985,9 +1000,9 @@ class TopicFragmentTest {
     onView(withId(R.id.topic_tabs_container)).check(
       matches(
         matchCurrentTabTitle(
-          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value).name
-        )
-      )
+          TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value).name,
+        ),
+      ),
     )
   }
 
@@ -996,22 +1011,22 @@ class TopicFragmentTest {
     recyclerView: Int,
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         recyclerView,
         itemPosition,
-        targetViewId
-      )
+        targetViewId,
+      ),
     ).check(
       matches(
         withText(
           containsString(
-            stringToMatch
-          )
-        )
-      )
+            stringToMatch,
+          ),
+        ),
+      ),
     )
   }
 
@@ -1066,8 +1081,8 @@ class TopicFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1078,9 +1093,13 @@ class TopicFragmentTest {
     fun inject(topicFragmentTest: TopicFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicFragmentTest_TestApplicationComponent.builder()
+      DaggerTopicFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1089,9 +1108,12 @@ class TopicFragmentTest {
       component.inject(topicFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

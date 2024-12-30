@@ -9,5 +9,5 @@ import org.oppia.android.util.locale.OppiaLocale
  * @property oppiaLocaleContext the [OppiaLocaleContext] corresponding to this locale
  */
 data class ContentLocaleImpl(
-  val oppiaLocaleContext: OppiaLocaleContext
+  val oppiaLocaleContext: OppiaLocaleContext,
 ) : OppiaLocale.ContentLocale(oppiaLocaleContext)

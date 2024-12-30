@@ -28,7 +28,6 @@ class TopicLessonsFragment :
   ExpandedChapterListIndexListener,
   StorySummarySelector,
   ChapterSummarySelector {
-
   companion object {
     /** Arguments key for TopicLessonsFragment. */
     const val TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY = "TopicLessonsFragment.arguments"
@@ -41,20 +40,24 @@ class TopicLessonsFragment :
       profileId: ProfileId,
       classroomId: String,
       topicId: String,
-      storyId: String
+      storyId: String,
     ): TopicLessonsFragment {
-
-      val args = TopicLessonsFragmentArguments.newBuilder().apply {
-        this.classroomId = classroomId
-        this.topicId = topicId
-        if (storyId.isNotBlank())
-          this.storyId = storyId
-      }.build()
+      val args =
+        TopicLessonsFragmentArguments
+          .newBuilder()
+          .apply {
+            this.classroomId = classroomId
+            this.topicId = topicId
+            if (storyId.isNotBlank()) {
+              this.storyId = storyId
+            }
+          }.build()
       return TopicLessonsFragment().apply {
-        arguments = Bundle().apply {
-          putProto(TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -73,13 +76,14 @@ class TopicLessonsFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     if (savedInstanceState != null) {
-      val stateArgs = savedInstanceState.getProto(
-        TOPIC_LESSONS_FRAGMENT_STATE_KEY,
-        TopicLessonsFragmentStateBundle.getDefaultInstance()
-      )
+      val stateArgs =
+        savedInstanceState.getProto(
+          TOPIC_LESSONS_FRAGMENT_STATE_KEY,
+          TopicLessonsFragmentStateBundle.getDefaultInstance(),
+        )
       currentExpandedChapterListIndex =
         stateArgs?.currentExpandedChapterListIndex ?: -1
       if (currentExpandedChapterListIndex == -1) {
@@ -89,16 +93,19 @@ class TopicLessonsFragment :
     }
     val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
-    val args = arguments?.getProto(
-      TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
-      TopicLessonsFragmentArguments.getDefaultInstance()
-    )
-    val classroomId = checkNotNull(args?.classroomId) {
-      "Expected classroom ID to be included in arguments for TopicLessonsFragment."
-    }
-    val topicId = checkNotNull(args?.topicId) {
-      "Expected topic ID to be included in arguments for TopicLessonsFragment."
-    }
+    val args =
+      arguments?.getProto(
+        TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
+        TopicLessonsFragmentArguments.getDefaultInstance(),
+      )
+    val classroomId =
+      checkNotNull(args?.classroomId) {
+        "Expected classroom ID to be included in arguments for TopicLessonsFragment."
+      }
+    val topicId =
+      checkNotNull(args?.topicId) {
+        "Expected topic ID to be included in arguments for TopicLessonsFragment."
+      }
     val storyId = args?.storyId ?: ""
     return topicLessonsFragmentPresenter.handleCreateView(
       inflater,
@@ -109,23 +116,26 @@ class TopicLessonsFragment :
       classroomId,
       topicId,
       storyId,
-      isDefaultStoryExpanded
+      isDefaultStoryExpanded,
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
 
-    val args = TopicLessonsFragmentStateBundle.newBuilder().apply {
-      if (this@TopicLessonsFragment.currentExpandedChapterListIndex != null) {
-        this.currentExpandedChapterListIndex =
-          this@TopicLessonsFragment.currentExpandedChapterListIndex!!
-      }
-      this.isDefaultStoryExpanded = this@TopicLessonsFragment.isDefaultStoryExpanded
-    }.build()
+    val args =
+      TopicLessonsFragmentStateBundle
+        .newBuilder()
+        .apply {
+          if (this@TopicLessonsFragment.currentExpandedChapterListIndex != null) {
+            this.currentExpandedChapterListIndex =
+              this@TopicLessonsFragment.currentExpandedChapterListIndex!!
+          }
+          this.isDefaultStoryExpanded = this@TopicLessonsFragment.isDefaultStoryExpanded
+        }.build()
     outState.putProto(
       TOPIC_LESSONS_FRAGMENT_STATE_KEY,
-      args
+      args,
     )
   }
 
@@ -141,7 +151,7 @@ class TopicLessonsFragment :
   override fun selectChapterSummary(
     storyId: String,
     explorationId: String,
-    chapterPlayState: ChapterPlayState
+    chapterPlayState: ChapterPlayState,
   ) {
     topicLessonsFragmentPresenter.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }

@@ -29,7 +29,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AuthenticationModuleTest.TestApplication::class)
 class AuthenticationModuleTest {
-
   @Inject
   lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
 
@@ -52,17 +51,15 @@ class AuthenticationModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, AuthenticationModule::class,
-      RobolectricModule::class, DebugLogReportingModule::class
-    ]
+      RobolectricModule::class, DebugLogReportingModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -76,9 +73,12 @@ class AuthenticationModuleTest {
     fun inject(test: AuthenticationModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAuthenticationModuleTest_TestApplicationComponent.builder()
+      DaggerAuthenticationModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

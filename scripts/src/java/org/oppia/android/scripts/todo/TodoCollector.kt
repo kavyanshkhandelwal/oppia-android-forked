@@ -9,10 +9,11 @@ class TodoCollector {
   companion object {
     private val todoDetectorRegex = Regex(pattern = "\\bTODO\\b", option = RegexOption.IGNORE_CASE)
     private val todoRegex = Regex(pattern = "\\bTODO\\b\\s*\\(", option = RegexOption.IGNORE_CASE)
-    private val todoStartingRegex = Regex(
-      pattern = "(//|<!--|#|\\*)\\s\\bTODO\\b",
-      option = RegexOption.IGNORE_CASE
-    )
+    private val todoStartingRegex =
+      Regex(
+        pattern = "(//|<!--|#|\\*)\\s\\bTODO\\b",
+        option = RegexOption.IGNORE_CASE,
+      )
     private val correctTodoFormatRegex = "\\bTODO\\b\\(#(\\d+)\\): .+".toRegex()
 
     /**
@@ -24,7 +25,8 @@ class TodoCollector {
     fun collectTodos(repoPath: String): List<Todo> {
       val searchFiles = RepositoryFile.collectSearchFiles(repoPath)
       return searchFiles.flatMap { file ->
-        file.bufferedReader()
+        file
+          .bufferedReader()
           .lineSequence()
           .mapIndexedNotNull { lineIndex, lineContent ->
             checkIfContainsTodo(file.absoluteFile.normalize(), lineContent, lineIndex)
@@ -38,11 +40,10 @@ class TodoCollector {
      * @param todoList a list of TODOs of the repository
      * @return a list of all poorly formatted Todos
      */
-    fun collectPoorlyFormattedTodos(todoList: List<Todo>): List<Todo> {
-      return todoList.filter { todo ->
+    fun collectPoorlyFormattedTodos(todoList: List<Todo>): List<Todo> =
+      todoList.filter { todo ->
         checkIfTodoIsPoorlyFormatted(todo.lineContent)
       }
-    }
 
     /**
      * Collects all the correctly formatted TODOs in the repository.
@@ -50,11 +51,10 @@ class TodoCollector {
      * @param todoList a list of TODOs of the repository
      * @return a list of all correctly formatted Todos
      */
-    fun collectCorrectlyFormattedTodos(todoList: List<Todo>): List<Todo> {
-      return todoList.filter { todo ->
+    fun collectCorrectlyFormattedTodos(todoList: List<Todo>): List<Todo> =
+      todoList.filter { todo ->
         correctTodoFormatRegex.containsMatchIn(todo.lineContent)
       }
-    }
 
     /**
      * Parses the issue number from a TODO.
@@ -63,7 +63,11 @@ class TodoCollector {
      * @return the parsed issue number
      */
     fun parseIssueNumberFromTodo(codeLine: String): Int? =
-      correctTodoFormatRegex.find(codeLine)?.groupValues?.get(1)?.toIntOrNull()
+      correctTodoFormatRegex
+        .find(codeLine)
+        ?.groupValues
+        ?.get(1)
+        ?.toIntOrNull()
 
     /**
      * Computes whether a line of code contains the 'todo' keyword.
@@ -73,7 +77,11 @@ class TodoCollector {
      * @param lineIndex the index of the line sequence which is to be searched for a TODO
      * @return a Todo instance if the todo detector regex matches, else returns null
      */
-    private fun checkIfContainsTodo(file: File, lineContent: String, lineIndex: Int): Todo? {
+    private fun checkIfContainsTodo(
+      file: File,
+      lineContent: String,
+      lineIndex: Int,
+    ): Todo? {
       if (todoDetectorRegex.containsMatchIn(lineContent)) {
         return Todo(file, lineNumber = lineIndex + 1, lineContent = lineContent)
       }

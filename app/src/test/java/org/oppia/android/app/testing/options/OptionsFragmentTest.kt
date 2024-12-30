@@ -110,7 +110,7 @@ class OptionsFragmentTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE,
     )
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -142,10 +142,10 @@ class OptionsFragmentTest {
         atPositionOnView(
           R.id.options_recyclerview,
           0,
-          R.id.reading_text_size_item_layout
-        )
+          R.id.reading_text_size_item_layout,
+        ),
       ).perform(
-        click()
+        click(),
       )
       it.onActivity { activity ->
         val loadedFragment =
@@ -163,10 +163,10 @@ class OptionsFragmentTest {
         atPositionOnView(
           R.id.options_recyclerview,
           1,
-          R.id.app_language_item_layout
-        )
+          R.id.app_language_item_layout,
+        ),
       ).perform(
-        click()
+        click(),
       )
       it.onActivity { activity ->
         val loadedFragment =
@@ -184,10 +184,10 @@ class OptionsFragmentTest {
         atPositionOnView(
           R.id.options_recyclerview,
           2,
-          R.id.audio_laguage_item_layout
-        )
+          R.id.audio_laguage_item_layout,
+        ),
       ).perform(
-        click()
+        click(),
       )
       it.onActivity { activity ->
         val loadedFragment =
@@ -199,14 +199,14 @@ class OptionsFragmentTest {
 
   private fun createOptionActivityIntent(
     internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
+    isFromNavigationDrawer: Boolean,
   ): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
     return OptionsActivity.createOptionsActivity(
       ApplicationProvider.getApplicationContext(),
       profileId,
-      isFromNavigationDrawer
+      isFromNavigationDrawer,
     )
   }
 
@@ -242,8 +242,8 @@ class OptionsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -254,9 +254,13 @@ class OptionsFragmentTest {
     fun inject(optionsFragmentTest: OptionsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOptionsFragmentTest_TestApplicationComponent.builder()
+      DaggerOptionsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -265,9 +269,12 @@ class OptionsFragmentTest {
       component.inject(optionsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

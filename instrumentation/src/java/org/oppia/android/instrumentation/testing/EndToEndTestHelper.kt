@@ -13,7 +13,6 @@ import com.google.common.truth.Truth.assertThat
 
 /** This object contains common operations used for end-to-end tests. */
 object EndToEndTestHelper {
-
   private val OPPIA_PACKAGE = "org.oppia.android"
   private val LAUNCH_TIMEOUT_SECONDS = 30000L
   private val TRANSITION_TIMEOUT_SECONDS = 5000L
@@ -30,8 +29,9 @@ object EndToEndTestHelper {
 
     // Launch the blueprint app
     val context = ApplicationProvider.getApplicationContext<Context>()
-    val intent = context.packageManager
-      .getLaunchIntentForPackage(OPPIA_PACKAGE)
+    val intent =
+      context.packageManager
+        .getLaunchIntentForPackage(OPPIA_PACKAGE)
     intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
     context.startActivity(intent)
 
@@ -40,7 +40,10 @@ object EndToEndTestHelper {
   }
 
   /** Waits for the view with given resourceId to appear. */
-  fun UiDevice.waitForRes(resourceId: String, timeout: Long = TRANSITION_TIMEOUT_SECONDS) {
+  fun UiDevice.waitForRes(
+    resourceId: String,
+    timeout: Long = TRANSITION_TIMEOUT_SECONDS,
+  ) {
     wait(Until.hasObject(By.res(resourceId)), timeout)
   }
 
@@ -67,9 +70,7 @@ object EndToEndTestHelper {
   }
 
   /** Returns the UiObject for the given resourceId. */
-  fun UiObject2.findObjectByRes(resourceId: String): UiObject2 {
-    return checkNotNull(findObject(By.res("$OPPIA_PACKAGE:id/$resourceId")))
-  }
+  fun UiObject2.findObjectByRes(resourceId: String): UiObject2 = checkNotNull(findObject(By.res("$OPPIA_PACKAGE:id/$resourceId")))
 
   /** Returns the UiObject for the given content description. */
   fun UiDevice.findObjectByDesc(text: String): UiObject2 {
@@ -78,7 +79,10 @@ object EndToEndTestHelper {
   }
 
   /** Performs a scroll until the view with the give text is visible. */
-  fun scrollRecyclerViewTextIntoView(text: String, isVertical: Boolean = true) {
+  fun scrollRecyclerViewTextIntoView(
+    text: String,
+    isVertical: Boolean = true,
+  ) {
     val recyclerView = UiScrollable(UiSelector().scrollable(true))
     if (isVertical) {
       recyclerView.setAsVerticalList()

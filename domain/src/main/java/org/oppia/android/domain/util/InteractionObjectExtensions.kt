@@ -35,8 +35,8 @@ import org.oppia.android.util.math.toAnswerString
  * Returns a parsable string representation of a user-submitted answer version of this
  * [InteractionObject].
  */
-fun InteractionObject.toAnswerString(): String {
-  return when (checkNotNull(objectTypeCase)) {
+fun InteractionObject.toAnswerString(): String =
+  when (checkNotNull(objectTypeCase)) {
     NORMALIZED_STRING -> normalizedString
     SIGNED_INT -> signedInt.toString()
     NON_NEGATIVE_INT -> nonNegativeInt.toString()
@@ -57,11 +57,9 @@ fun InteractionObject.toAnswerString(): String {
     MATH_EXPRESSION -> mathExpression
     OBJECTTYPE_NOT_SET -> "" // The default InteractionObject should be an empty string.
   }
-}
 
 /** Returns the set of content IDs corresponding to this container. */
-fun SetOfTranslatableHtmlContentIds.getContentIdSet(): Set<String> =
-  contentIdsList.map(TranslatableHtmlContentId::getContentId).toSet()
+fun SetOfTranslatableHtmlContentIds.getContentIdSet(): Set<String> = contentIdsList.map(TranslatableHtmlContentId::getContentId).toSet()
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/NumberWithUnitsObjectFactory.ts#L50
 private fun NumberWithUnits.toAnswerString(): String {
@@ -71,32 +69,25 @@ private fun NumberWithUnits.toAnswerString(): String {
   val prefixString = prefixedUnits.joinToString(separator = " ")
   val suffixedString =
     suffixedUnits.joinToString(separator = " ", transform = NumberUnit::toAnswerStringPart)
-  val valueString = if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {
-    real.toString()
-  } else {
-    fraction.toAnswerString()
-  }
+  val valueString =
+    if (numberTypeCase == NumberWithUnits.NumberTypeCase.REAL) {
+      real.toString()
+    } else {
+      fraction.toAnswerString()
+    }
 
   return "$prefixString$valueString $suffixedString".trim()
 }
 
 // TODO(#152): Standardize these with a currency library.
-private fun isPrefixUnit(numberUnit: NumberUnit): Boolean {
-  return numberUnit.unit in listOf("$", "Rs", "₹", "€", "£", "¥")
-}
+private fun isPrefixUnit(numberUnit: NumberUnit): Boolean = numberUnit.unit in listOf("$", "Rs", "₹", "€", "£", "¥")
 
 // https://github.com/oppia/oppia/blob/37285a/core/templates/dev/head/domain/objects/UnitsObjectFactory.ts#L49
-private fun NumberUnit.toAnswerStringPart(): String {
-  return if (exponent == 1) unit else "^$unit"
-}
+private fun NumberUnit.toAnswerStringPart(): String = if (exponent == 1) unit else "^$unit"
 
-private fun StringList.toAnswerString(): String {
-  return htmlList.joinToString()
-}
+private fun StringList.toAnswerString(): String = htmlList.joinToString()
 
-private fun ListOfSetsOfHtmlStrings.toAnswerString(): String {
-  return setOfHtmlStringsList.joinToString { "[${it.toAnswerString()}]" }
-}
+private fun ListOfSetsOfHtmlStrings.toAnswerString(): String = setOfHtmlStringsList.joinToString { "[${it.toAnswerString()}]" }
 
 private fun ImageWithRegions.toAnswerString(): String =
   labelRegionsOrBuilderList.joinToString {
@@ -105,21 +96,12 @@ private fun ImageWithRegions.toAnswerString(): String =
       "${it.region.area.lowerRight.y})]"
   }
 
-private fun ClickOnImage.toAnswerString(): String =
-  "[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]"
+private fun ClickOnImage.toAnswerString(): String = "[(${clickedRegionsList.joinToString()}), (${clickPosition.x}, ${clickPosition.y})]"
 
-private fun TranslatableHtmlContentId.toAnswerString(): String {
-  return "content_id=$contentId"
-}
+private fun TranslatableHtmlContentId.toAnswerString(): String = "content_id=$contentId"
 
-private fun SetOfTranslatableHtmlContentIds.toAnswerString(): String {
-  return contentIdsList.joinToString()
-}
+private fun SetOfTranslatableHtmlContentIds.toAnswerString(): String = contentIdsList.joinToString()
 
-private fun ListOfSetsOfTranslatableHtmlContentIds.toAnswerString(): String {
-  return contentIdListsList.joinToString { "[${it.toAnswerString()}]" }
-}
+private fun ListOfSetsOfTranslatableHtmlContentIds.toAnswerString(): String = contentIdListsList.joinToString { "[${it.toAnswerString()}]" }
 
-private fun TranslatableSetOfNormalizedString.toAnswerString(): String {
-  return normalizedStringsList.joinToString()
-}
+private fun TranslatableSetOfNormalizedString.toAnswerString(): String = normalizedStringsList.joinToString()

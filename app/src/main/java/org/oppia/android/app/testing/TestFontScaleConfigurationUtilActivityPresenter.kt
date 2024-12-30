@@ -9,12 +9,14 @@ import javax.inject.Inject
 
 /** The presenter for [TestFontScaleConfigurationUtilActivity]. */
 @ActivityScope
-class TestFontScaleConfigurationUtilActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fontScaleConfigurationUtil: FontScaleConfigurationUtil
-) {
-  fun handleOnCreate(readingTextSize: ReadingTextSize) {
-    fontScaleConfigurationUtil.adjustFontScale(activity, readingTextSize)
-    activity.setContentView(R.layout.font_scale_test_activity)
+class TestFontScaleConfigurationUtilActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fontScaleConfigurationUtil: FontScaleConfigurationUtil,
+  ) {
+    fun handleOnCreate(readingTextSize: ReadingTextSize) {
+      fontScaleConfigurationUtil.adjustFontScale(activity, readingTextSize)
+      activity.setContentView(R.layout.font_scale_test_activity)
+    }
   }
-}

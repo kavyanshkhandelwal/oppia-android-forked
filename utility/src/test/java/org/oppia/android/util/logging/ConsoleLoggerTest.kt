@@ -42,7 +42,7 @@ import javax.inject.Singleton
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ConsoleLoggerTest.TestApplication::class
+  application = ConsoleLoggerTest.TestApplication::class,
 )
 class ConsoleLoggerTest {
   private companion object {
@@ -52,7 +52,9 @@ class ConsoleLoggerTest {
   }
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var consoleLogger: ConsoleLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
@@ -87,9 +89,10 @@ class ConsoleLoggerTest {
   @Test
   @OptIn(ExperimentalCoroutinesApi::class)
   fun testConsoleLogger_logError_withMessage_logsMessage() {
-    val firstErrorContextsDeferred = CoroutineScope(backgroundTestDispatcher).async {
-      consoleLogger.logErrorMessagesFlow.take(1).toList()
-    }
+    val firstErrorContextsDeferred =
+      CoroutineScope(backgroundTestDispatcher).async {
+        consoleLogger.logErrorMessagesFlow.take(1).toList()
+      }
 
     testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
     consoleLogger.e(testTag, testMessage)
@@ -154,7 +157,7 @@ class ConsoleLoggerTest {
       RobolectricModule::class, TestModule::class, LocaleTestModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class,
       FakeOppiaClockModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -168,9 +171,12 @@ class ConsoleLoggerTest {
     fun inject(test: ConsoleLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerConsoleLoggerTest_TestApplicationComponent.builder()
+      DaggerConsoleLoggerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

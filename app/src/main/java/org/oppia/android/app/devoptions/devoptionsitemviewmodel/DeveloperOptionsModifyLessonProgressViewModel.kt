@@ -11,9 +11,8 @@ import org.oppia.android.app.devoptions.RouteToMarkTopicsCompletedListener
 class DeveloperOptionsModifyLessonProgressViewModel(
   private val routeToMarkChaptersCompletedListener: RouteToMarkChaptersCompletedListener,
   private val routeToMarkStoriesCompletedListener: RouteToMarkStoriesCompletedListener,
-  private val routeToMarkTopicsCompletedListener: RouteToMarkTopicsCompletedListener
+  private val routeToMarkTopicsCompletedListener: RouteToMarkTopicsCompletedListener,
 ) : DeveloperOptionsItemViewModel() {
-
   /** Routes user to [MarkChaptersCompletedActivity] screen for modifying the progress of chapters. */
   fun onMarkChaptersCompletedClicked() {
     routeToMarkChaptersCompletedListener.routeToMarkChaptersCompleted()

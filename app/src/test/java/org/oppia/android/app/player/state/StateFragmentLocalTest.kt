@@ -190,6 +190,7 @@ import javax.inject.Singleton
 @Config(application = StateFragmentLocalTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StateFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   private val AUDIO_URL_1 =
@@ -197,14 +198,22 @@ class StateFragmentLocalTest {
   private val audioDataSource1 = DataSource.toDataSource(AUDIO_URL_1, /* headers= */ null)
 
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject lateinit var editTextInputAction: EditTextInputAction
+
   @Inject lateinit var accessibilityManager: FakeAccessibilityService
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
@@ -217,14 +226,16 @@ class StateFragmentLocalTest {
     // Initialize Glide such that all of its executors use the same shared dispatcher pool as the
     // rest of Oppia so that thread execution can be synchronized via Oppia's test coroutine
     // dispatchers.
-    val executorService = MockGlideExecutor.newTestExecutor(
-      CoroutineExecutorService(backgroundDispatcher)
-    )
+    val executorService =
+      MockGlideExecutor.newTestExecutor(
+        CoroutineExecutorService(backgroundDispatcher),
+      )
     Glide.init(
       context,
-      GlideBuilder().setDiskCacheExecutor(executorService)
+      GlideBuilder()
+        .setDiskCacheExecutor(executorService)
         .setAnimationExecutor(executorService)
-        .setSourceExecutor(executorService)
+        .setSourceExecutor(executorService),
     )
     profileTestHelper.initializeProfiles()
     ShadowMediaPlayer.addException(audioDataSource1, IOException("Test does not have networking"))
@@ -367,12 +378,12 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToViewType(
-          NUMERIC_EXPRESSION_INPUT_INTERACTION
-        )
+          NUMERIC_EXPRESSION_INPUT_INTERACTION,
+        ),
       )
       typeTextIntoInteraction(
         "1+2",
-        interactionViewId = R.id.math_expression_input_interaction_view
+        interactionViewId = R.id.math_expression_input_interaction_view,
       )
       clickSubmitAnswerButton()
 
@@ -389,23 +400,23 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToViewType(
-          NUMERIC_EXPRESSION_INPUT_INTERACTION
-        )
+          NUMERIC_EXPRESSION_INPUT_INTERACTION,
+        ),
       )
       typeTextIntoInteraction(
         "1+2",
-        interactionViewId = R.id.math_expression_input_interaction_view
+        interactionViewId = R.id.math_expression_input_interaction_view,
       )
       clickSubmitAnswerButton()
       clickContinueNavigationButton()
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToViewType(
-          NUMERIC_EXPRESSION_INPUT_INTERACTION
-        )
+          NUMERIC_EXPRESSION_INPUT_INTERACTION,
+        ),
       )
       typeTextIntoInteraction(
         "1+2",
-        interactionViewId = R.id.math_expression_input_interaction_view
+        interactionViewId = R.id.math_expression_input_interaction_view,
       )
       clickSubmitAnswerButton()
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(45))
@@ -642,7 +653,7 @@ class StateFragmentLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.state_recycler_view))
         .check(
-          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1),
         )
     }
   }
@@ -663,7 +674,7 @@ class StateFragmentLocalTest {
       // Both failed answers should be showing.
       onView(withId(R.id.state_recycler_view))
         .check(
-          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2),
         )
     }
   }
@@ -682,7 +693,7 @@ class StateFragmentLocalTest {
       // Only the latest failed answer should be showing.
       onView(withId(R.id.state_recycler_view))
         .check(
-          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1),
         )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
@@ -691,7 +702,7 @@ class StateFragmentLocalTest {
       // All failed answers should be showing.
       onView(withId(R.id.state_recycler_view))
         .check(
-          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2)
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 2),
         )
       onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
       testCoroutineDispatchers.runCurrent()
@@ -700,7 +711,7 @@ class StateFragmentLocalTest {
       // Only the latest failed answer should now be showing.
       onView(withId(R.id.state_recycler_view))
         .check(
-          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1)
+          matchesChildren(matcher = withId(R.id.submitted_answer_container), times = 1),
         )
     }
   }
@@ -824,17 +835,19 @@ class StateFragmentLocalTest {
       testCoroutineDispatchers.runCurrent()
       onView(
         atPositionOnView(
-          R.id.hints_and_solution_recycler_view, 0, R.id.hint_summary_container
-        )
+          R.id.hints_and_solution_recycler_view,
+          0,
+          R.id.hint_summary_container,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
 
       onView(isRoot()).check(
         matches(
           not(
-            withText("In a fraction, the pieces representing the denominator must be equal")
-          )
-        )
+            withText("In a fraction, the pieces representing the denominator must be equal"),
+          ),
+        ),
       )
     }
   }
@@ -850,7 +863,7 @@ class StateFragmentLocalTest {
 
       testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(5))
       assertThat(fakeAccessibilityService.getLatestAnnouncement()).isEqualTo(
-        "Go to the bottom of the screen for a hint."
+        "Go to the bottom of the screen for a hint.",
       )
     }
   }
@@ -1320,9 +1333,9 @@ class StateFragmentLocalTest {
         matches(
           withContentDescription(
             "Start by dividing the cake into equal parts:\n\nThree of " +
-              "the four equal parts are red. So, the answer is 3/4.\n\n"
-          )
-        )
+              "the four equal parts are red. So, the answer is 3/4.\n\n",
+          ),
+        ),
       )
     }
   }
@@ -1672,8 +1685,8 @@ class StateFragmentLocalTest {
       onView(withId(R.id.solution_correct_answer))
         .check(
           matches(
-            withContentDescription("One solution is: x raised to the power of 2 minus x minus 2")
-          )
+            withContentDescription("One solution is: x raised to the power of 2 minus x minus 2"),
+          ),
         )
     }
   }
@@ -1682,7 +1695,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = ""
+    appStringAndroidLanguageId = "",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_titlesAreCorrectInEnglish() {
@@ -1709,7 +1722,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = ""
+    appStringAndroidLanguageId = "",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_labelsAreInEnglish() {
@@ -1735,7 +1748,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = ""
+    appStringAndroidLanguageId = "",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_defaultContentLang_hint_explanationIsInEnglish() {
@@ -1765,7 +1778,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   fun testStateFragment_arabicLocale_defaultContentLang_hint_labelsAreInArabic() {
     // Ensure the system locale matches the initial locale context.
@@ -1790,7 +1803,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_arabicLocale_defaultContentLang_hint_explanationIsInArabic() {
@@ -1817,7 +1830,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = ""
+    appStringAndroidLanguageId = "",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_labelsAreInEnglish() {
@@ -1845,7 +1858,7 @@ class StateFragmentLocalTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ENGLISH_VALUE,
     appStringIetfTag = "en",
-    appStringAndroidLanguageId = ""
+    appStringAndroidLanguageId = "",
   )
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
   fun testStateFragment_englishLocale_arabicContentLang_hint_explanationIsInArabic() {
@@ -1930,16 +1943,16 @@ class StateFragmentLocalTest {
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
 
       onView(isRoot()).perform(orientationLandscape())
 
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
     }
   }
@@ -1953,16 +1966,16 @@ class StateFragmentLocalTest {
       clickContinueButton()
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
 
       onView(isRoot()).perform(orientationPortrait())
 
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
     }
   }
@@ -1997,23 +2010,23 @@ class StateFragmentLocalTest {
       onView(withId(R.id.full_screen_confetti_view)).check(matches(hasActiveConfetti()))
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
 
       clickPreviousStateNavigationButton()
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
       clickNextStateNavigationButton()
 
       // End of exploration confetti should only render one instance at a time.
       onView(withId(R.id.full_screen_confetti_view)).check(
         matches(
-          hasExpectedNumberOfActiveSystems(numSystems = 2)
-        )
+          hasExpectedNumberOfActiveSystems(numSystems = 2),
+        ),
       )
     }
   }
@@ -2024,7 +2037,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
 
@@ -2043,7 +2056,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
 
@@ -2062,7 +2075,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
       // Entering incorrect answer twice.
@@ -2084,7 +2097,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
       // Entering incorrect answer twice.
@@ -2106,7 +2119,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
 
@@ -2125,7 +2138,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
 
@@ -2144,7 +2157,7 @@ class StateFragmentLocalTest {
       startPlayingExploration()
       selectMultipleChoiceOption(
         optionPosition = 3,
-        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size.",
       )
       clickContinueNavigationButton()
       // Entering incorrect answer twice.
@@ -2215,19 +2228,19 @@ class StateFragmentLocalTest {
     }
   }
 
-  private fun createAudioUrl(explorationId: String, audioFileName: String): String {
-    return "https://storage.googleapis.com/oppiaserver-resources/" +
+  private fun createAudioUrl(
+    explorationId: String,
+    audioFileName: String,
+  ): String =
+    "https://storage.googleapis.com/oppiaserver-resources/" +
       "exploration/$explorationId/assets/audio/$audioFileName"
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun launchForExploration(
-    explorationId: String
-  ): ActivityScenario<StateFragmentTestActivity> {
-    return ActivityScenario.launch(
+  private fun launchForExploration(explorationId: String): ActivityScenario<StateFragmentTestActivity> =
+    ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
         profileId.internalId,
@@ -2235,10 +2248,9 @@ class StateFragmentLocalTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
-        shouldSavePartialProgress = false
-      )
+        shouldSavePartialProgress = false,
+      ),
     )
-  }
 
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
@@ -2451,7 +2463,10 @@ class StateFragmentLocalTest {
     pressShowHintOrSolutionButton(R.id.show_solution_button, hintPosition)
   }
 
-  private fun pressShowHintOrSolutionButton(@IdRes buttonId: Int, hintPosition: Int) {
+  private fun pressShowHintOrSolutionButton(
+    @IdRes buttonId: Int,
+    hintPosition: Int,
+  ) {
     // There should only ever be a single reveal button currently displayed; click that one.
     // However, it may need to be scrolled to in case many hints are showing.
     onView(withId(R.id.hints_and_solution_recycler_view))
@@ -2500,22 +2515,28 @@ class StateFragmentLocalTest {
     clickSubmitAnswerButton()
   }
 
-  private fun selectMultipleChoiceOption(optionPosition: Int, expectedOptionText: String) {
+  private fun selectMultipleChoiceOption(
+    optionPosition: Int,
+    expectedOptionText: String,
+  ) {
     clickSelection(
       optionPosition,
       targetClickViewId = R.id.multiple_choice_radio_button,
       expectedText = expectedOptionText,
-      targetTextViewId = R.id.multiple_choice_content_text_view
+      targetTextViewId = R.id.multiple_choice_content_text_view,
     )
     clickSubmitAnswerButton()
   }
 
-  private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {
+  private fun selectItemSelectionCheckbox(
+    optionPosition: Int,
+    expectedOptionText: String,
+  ) {
     clickSelection(
       optionPosition,
       targetClickViewId = R.id.item_selection_checkbox,
       expectedText = expectedOptionText,
-      targetTextViewId = R.id.item_selection_contents_text_view
+      targetTextViewId = R.id.item_selection_contents_text_view,
     )
   }
 
@@ -2550,7 +2571,10 @@ class StateFragmentLocalTest {
     clickSubmitAnswerButton()
   }
 
-  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+  private fun typeTextIntoInteraction(
+    text: String,
+    interactionViewId: Int,
+  ) {
     onView(withId(interactionViewId)).perform(editTextInputAction.appendText(text))
     testCoroutineDispatchers.runCurrent()
   }
@@ -2559,7 +2583,7 @@ class StateFragmentLocalTest {
     optionPosition: Int,
     targetClickViewId: Int,
     expectedText: String,
-    targetTextViewId: Int
+    targetTextViewId: Int,
   ) {
     onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(SELECTION_INTERACTION))
     // First, check that the option matches what's expected by the test.
@@ -2567,16 +2591,16 @@ class StateFragmentLocalTest {
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetTextViewId
-      )
+        targetViewId = targetTextViewId,
+      ),
     ).check(matches(withText(containsString(expectedText))))
     // Then, click on it.
     onView(
       atPositionOnView(
         recyclerViewId = R.id.selection_interaction_recyclerview,
         position = optionPosition,
-        targetViewId = targetClickViewId
-      )
+        targetViewId = targetClickViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -2621,7 +2645,8 @@ class StateFragmentLocalTest {
     // in advance of the standard show & reveal hint flow.
     submitWrongAnswerToFractionsState2()
     produceAndViewNextHint(
-      hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+      hintPosition = 0,
+      submitAnswer = this::submitWrongAnswerToFractionsState2AndWait,
     )
   }
 
@@ -2650,7 +2675,10 @@ class StateFragmentLocalTest {
     submitAlgebraicExpressionAnswer(text = "1 + 2")
   }
 
-  private fun produceAndViewFirstHint(hintPosition: Int, submitAnswer: () -> Unit) {
+  private fun produceAndViewFirstHint(
+    hintPosition: Int,
+    submitAnswer: () -> Unit,
+  ) {
     produceAndViewNextHint(hintPosition) {
       // Submit the wrong answer twice.
       submitAnswer()
@@ -2662,7 +2690,10 @@ class StateFragmentLocalTest {
    * Causes a hint after the first one to be shown (at approximately the specified recycler view
    * index for scrolling purposes), and then reveals it and closes the hints & solutions dialog.
    */
-  private fun produceAndViewNextHint(hintPosition: Int, submitAnswer: () -> Unit) {
+  private fun produceAndViewNextHint(
+    hintPosition: Int,
+    submitAnswer: () -> Unit,
+  ) {
     submitAnswer()
     openHintsAndSolutionsDialog()
     pressRevealHintButton(hintPosition)
@@ -2671,7 +2702,7 @@ class StateFragmentLocalTest {
 
   private fun produceAndViewSolutionAsFirstHint(
     activityScenario: ActivityScenario<StateFragmentTestActivity>,
-    submitAnswer: () -> Unit
+    submitAnswer: () -> Unit,
   ) {
     produceAndViewSolution(activityScenario) {
       // Submit the wrong answer twice.
@@ -2682,7 +2713,7 @@ class StateFragmentLocalTest {
 
   private fun produceAndViewSolution(
     activityScenario: ActivityScenario<StateFragmentTestActivity>,
-    submitAnswer: () -> Unit
+    submitAnswer: () -> Unit,
   ) {
     submitAnswer()
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -2694,13 +2725,16 @@ class StateFragmentLocalTest {
   private fun produceAndViewThreeHintsInFractionsState13() {
     submitWrongAnswerToFractionsState13()
     produceAndViewNextHint(
-      hintPosition = 0, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+      hintPosition = 0,
+      submitAnswer = this::submitWrongAnswerToFractionsState13AndWait,
     )
     produceAndViewNextHint(
-      hintPosition = 1, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+      hintPosition = 1,
+      submitAnswer = this::submitWrongAnswerToFractionsState13AndWait,
     )
     produceAndViewNextHint(
-      hintPosition = 2, submitAnswer = this::submitWrongAnswerToFractionsState13AndWait
+      hintPosition = 2,
+      submitAnswer = this::submitWrongAnswerToFractionsState13AndWait,
     )
   }
 
@@ -2709,19 +2743,22 @@ class StateFragmentLocalTest {
     // to be shown).
     produceAndViewFirstHintForFractionState2()
     produceAndViewNextHint(
-      hintPosition = 1, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+      hintPosition = 1,
+      submitAnswer = this::submitWrongAnswerToFractionsState2AndWait,
     )
     produceAndViewNextHint(
-      hintPosition = 2, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+      hintPosition = 2,
+      submitAnswer = this::submitWrongAnswerToFractionsState2AndWait,
     )
     produceAndViewNextHint(
-      hintPosition = 3, submitAnswer = this::submitWrongAnswerToFractionsState2AndWait
+      hintPosition = 3,
+      submitAnswer = this::submitWrongAnswerToFractionsState2AndWait,
     )
   }
 
   private fun produceAndViewSolutionInFractionsState2(
     activityScenario: ActivityScenario<StateFragmentTestActivity>,
-    revealedHintCount: Int
+    revealedHintCount: Int,
   ) {
     submitWrongAnswerToFractionsState2AndWait()
     openHintsAndSolutionsDialog()
@@ -2730,45 +2767,45 @@ class StateFragmentLocalTest {
     closeHintsAndSolutionsDialog()
   }
 
-  private fun clickConfirmRevealSolutionButton(
-    activityScenario: ActivityScenario<StateFragmentTestActivity>
-  ) {
+  private fun clickConfirmRevealSolutionButton(activityScenario: ActivityScenario<StateFragmentTestActivity>) {
     // See https://github.com/robolectric/robolectric/issues/5158 for context. It seems Robolectric
     // has some issues interacting with alert dialogs. In this case, it finds and presses the button
     // with Espresso view actions, but that button click doesn't actually lead to the click listener
     // being called.
     activityScenario.onActivity { activity ->
-      val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
-      )
+      val hintAndSolutionDialogFragment =
+        activity.supportFragmentManager.findFragmentByTag(
+          TAG_HINTS_AND_SOLUTION_DIALOG,
+        )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
-          TAG_REVEAL_SOLUTION_DIALOG
+          TAG_REVEAL_SOLUTION_DIALOG,
         ) as? DialogFragment
       val positiveButton =
-        revealSolutionDialogFragment?.dialog
+        revealSolutionDialogFragment
+          ?.dialog
           ?.findViewById<View>(android.R.id.button1)
       assertThat(checkNotNull(positiveButton).performClick()).isTrue()
     }
   }
 
-  private fun clickCancelInRevealSolutionDialog(
-    activityScenario: ActivityScenario<StateFragmentTestActivity>
-  ) {
+  private fun clickCancelInRevealSolutionDialog(activityScenario: ActivityScenario<StateFragmentTestActivity>) {
     // See https://github.com/robolectric/robolectric/issues/5158 for context. It seems Robolectric
     // has some issues interacting with alert dialogs. In this case, it finds and presses the button
     // with Espresso view actions, but that button click doesn't actually lead to the click listener
     // being called.
     activityScenario.onActivity { activity ->
-      val hintAndSolutionDialogFragment = activity.supportFragmentManager.findFragmentByTag(
-        TAG_HINTS_AND_SOLUTION_DIALOG
-      )
+      val hintAndSolutionDialogFragment =
+        activity.supportFragmentManager.findFragmentByTag(
+          TAG_HINTS_AND_SOLUTION_DIALOG,
+        )
       val revealSolutionDialogFragment =
         hintAndSolutionDialogFragment?.childFragmentManager?.findFragmentByTag(
-          TAG_REVEAL_SOLUTION_DIALOG
+          TAG_REVEAL_SOLUTION_DIALOG,
         ) as? DialogFragment
       val negativeButton =
-        revealSolutionDialogFragment?.dialog
+        revealSolutionDialogFragment
+          ?.dialog
           ?.findViewById<View>(android.R.id.button2)
       assertThat(checkNotNull(negativeButton).performClick()).isTrue()
     }
@@ -2789,33 +2826,36 @@ class StateFragmentLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
-  private fun isAnimating(): TypeSafeMatcher<View> {
-    return ActiveAnimationMatcher()
-  }
+  private fun isAnimating(): TypeSafeMatcher<View> = ActiveAnimationMatcher()
 
-  private class ActiveAnimationMatcher() : TypeSafeMatcher<View>() {
+  private class ActiveAnimationMatcher : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("View is animating")
     }
 
-    override fun matchesSafely(view: View): Boolean {
-      return view.animation?.hasStarted() ?: false
-    }
+    override fun matchesSafely(view: View): Boolean = view.animation?.hasStarted() ?: false
   }
 
   /**
@@ -2823,7 +2863,10 @@ class StateFragmentLocalTest {
    * number of times for children against the view under test. If the count does not exactly match,
    * the assertion will fail.
    */
-  private fun matchesChildren(matcher: Matcher<View>, times: Int): ViewAssertion {
+  private fun matchesChildren(
+    matcher: Matcher<View>,
+    times: Int,
+  ): ViewAssertion {
     return matches(
       object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
@@ -2834,74 +2877,76 @@ class StateFragmentLocalTest {
 
         override fun matchesSafely(view: View?): Boolean {
           if (view !is ViewGroup) {
-            throw PerformException.Builder()
+            throw PerformException
+              .Builder()
               .withCause(IllegalStateException("Expected to match against view group, not: $view"))
               .build()
           }
           val matchingCount = view.children.filter(matcher::matches).count()
           if (matchingCount != times) {
-            throw PerformException.Builder()
+            throw PerformException
+              .Builder()
               .withActionDescription("Expected to match $matcher against $times children")
               .withViewDescription("$view")
               .withCause(
-                IllegalStateException("Matched $matchingCount times in $view (expected $times)")
-              )
-              .build()
+                IllegalStateException("Matched $matchingCount times in $view (expected $times)"),
+              ).build()
           }
           return true
         }
-      })
+      },
+    )
   }
 
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
+    return (viewText as Spannable)
+      .getSpans(
+        // start=
+        0, // end=
+        text.length,
+        ClickableSpan::class.java,
+      ).map {
+        viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+      }
   }
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
-    find { text in it.first }?.second
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) = find { text in it.first }?.second
 
   private inline fun <reified T : Any> TextView.getSpans(): List<T> = (text as Spanned).getSpans()
 
-  private inline fun <reified T : Any> Spanned.getSpans(): List<T> =
-    getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
+  private inline fun <reified T : Any> Spanned.getSpans(): List<T> = getSpans(/* start= */ 0, /* end= */ length, T::class.java).toList()
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     @LoadImagesFromAssets
@@ -2936,8 +2981,8 @@ class StateFragmentLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -2948,9 +2993,13 @@ class StateFragmentLocalTest {
     fun inject(stateFragmentLocalTest: StateFragmentLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerStateFragmentLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -2959,31 +3008,30 @@ class StateFragmentLocalTest {
       component.inject(stateFragmentLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
-  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
-    return scrollToHolder(StateViewHolderTypeMatcher(viewType))
-  }
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction = scrollToHolder(StateViewHolderTypeMatcher(viewType))
 
   /**
    * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
    * StateFragment's RecyclerView.
    */
   private class StateViewHolderTypeMatcher(
-    private val viewType: StateItemViewModel.ViewType
+    private val viewType: StateItemViewModel.ViewType,
   ) : BaseMatcher<ViewHolder>() {
     override fun describeTo(description: Description?) {
       description?.appendText("item view type of $viewType")
     }
 
-    override fun matches(item: Any?): Boolean {
-      return (item as? ViewHolder)?.itemViewType == viewType.ordinal
-    }
+    override fun matches(item: Any?): Boolean = (item as? ViewHolder)?.itemViewType == viewType.ordinal
   }
 
   private companion object {

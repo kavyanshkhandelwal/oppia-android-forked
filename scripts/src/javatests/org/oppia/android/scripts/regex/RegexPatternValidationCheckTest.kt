@@ -138,10 +138,11 @@ class RegexPatternValidationCheckTest {
     "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum " +
       "of screens.proto and add that name to your activity using " +
       "Intent.decorateWithScreenName(value) on the activity creation intent."
-  private val screenNameTestNotPresentErrorMessage = "You've not added a test for verifying the " +
-    "presence of a screen name for this activity. To do this, add a test named " +
-    "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
-    "name has been added to the activity's intent."
+  private val screenNameTestNotPresentErrorMessage =
+    "You've not added a test for verifying the " +
+      "presence of a screen name for this activity. To do this, add a test named " +
+      "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
+      "name has been added to the activity's intent."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
@@ -270,7 +271,7 @@ class RegexPatternValidationCheckTest {
     val tempFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
     tempFile.writeText(requiredContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
@@ -279,7 +280,7 @@ class RegexPatternValidationCheckTest {
       - data/src/main/TestActivity.kt
 
       $wikiReferenceNote
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
@@ -298,7 +299,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values", "subdir")
     tempFolder.newFile("testfiles/app/src/main/res/values/subdir/strings.xml")
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
@@ -307,7 +308,7 @@ class RegexPatternValidationCheckTest {
       - app/src/main/res/values/subdir/strings.xml
 
       $wikiReferenceNote
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
@@ -316,7 +317,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFolder("testfiles", "domain", "src", "main", "res", "drawable", "subdir")
     tempFolder.newFile("testfiles/domain/src/main/res/drawable/subdir/example.png")
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
@@ -325,7 +326,7 @@ class RegexPatternValidationCheckTest {
       - domain/src/main/res/drawable/subdir/example.png
 
       $wikiReferenceNote
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
@@ -344,7 +345,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -352,7 +353,7 @@ class RegexPatternValidationCheckTest {
         """
         TestFile.kt:1: $supportLibraryUsageErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -362,7 +363,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -370,7 +371,7 @@ class RegexPatternValidationCheckTest {
         """
         TestFile.kt:1: $coroutineWorkerUsageErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -380,7 +381,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -388,7 +389,7 @@ class RegexPatternValidationCheckTest {
         """
         TestFile.kt:1: $announceForAccessibilityUsageErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -398,7 +399,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -406,7 +407,7 @@ class RegexPatternValidationCheckTest {
         """
         TestFile.kt:1: $announceForAccessibilityForViewUsageErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -416,7 +417,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/TestFile.kt")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -424,7 +425,7 @@ class RegexPatternValidationCheckTest {
         """
         TestFile.kt:1: $settableFutureUsageErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -434,7 +435,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -442,7 +443,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidLayoutIncludeTagErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -452,7 +453,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -460,7 +461,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGravityLeftErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -470,7 +471,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -478,7 +479,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGravityRightErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -488,7 +489,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -496,7 +497,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidLayoutGravityLeftErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -506,7 +507,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -514,7 +515,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidLayoutGravityRightErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -524,7 +525,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -532,7 +533,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -542,7 +543,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -550,7 +551,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -560,7 +561,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -568,7 +569,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -578,7 +579,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -586,7 +587,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -596,7 +597,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -604,7 +605,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -614,7 +615,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -622,7 +623,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -632,7 +633,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -640,7 +641,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -650,7 +651,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -658,7 +659,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -668,7 +669,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -676,7 +677,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -686,7 +687,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -694,7 +695,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -704,7 +705,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -712,7 +713,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -722,7 +723,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -730,7 +731,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -740,7 +741,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -748,7 +749,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -758,7 +759,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -766,7 +767,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -776,7 +777,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -784,7 +785,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -794,7 +795,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -802,7 +803,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -812,7 +813,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -820,7 +821,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -830,7 +831,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -838,7 +839,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidGenericStartEndRtlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -848,7 +849,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -856,7 +857,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidBarrierDirectionLeftErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -866,7 +867,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -874,7 +875,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidBarrierDirectionRightErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -884,7 +885,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -892,7 +893,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidDragDirectionLeftErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -902,7 +903,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -910,7 +911,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidDragDirectionRightErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -920,7 +921,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -928,7 +929,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidTouchAnchorSideLeftErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -938,7 +939,7 @@ class RegexPatternValidationCheckTest {
     val fileContainsSupportLibraryImport = tempFolder.newFile("testfiles/test_layout.xml")
     fileContainsSupportLibraryImport.writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -946,7 +947,7 @@ class RegexPatternValidationCheckTest {
         """
         test_layout.xml:1: $androidTouchAnchorSideRightErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -957,7 +958,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -965,7 +966,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $oppiaCantBeTranslatedErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -976,7 +977,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -984,7 +985,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $untranslatableStringsGoInSpecificFileErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1007,7 +1008,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1015,7 +1016,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $translatableStringsGoInMainFileErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1026,7 +1027,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/untranslated_strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1034,7 +1035,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $translatablePluralsGoInMainFileErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1045,7 +1046,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "data/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1053,7 +1054,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $importingAndroidBidiFormatterErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1064,7 +1065,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "data/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1072,7 +1073,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $importingAndroidXBidiFormatterErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1116,25 +1117,25 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringFormattingFunctions_inKotlin_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        fun exampleFunction() {
-          String.format("a string %s", "with this")
-          resources.getString(R.string.some_string)
-          resources.getStringArray(R.array.some_string_array)
-          resources.getQuantityString(R.plurals.plural_string, 1, "parameter")
-          resources.getQuantityText(R.plurals.plural_string, 1)
-          "Uppercase string".toLowerCase()
-          "Uppercase string".lowercase() // Kotlin 1.5 method.
-          "lowercase string".toUpperCase()
-          "lowercase string".uppercase() // Kotlin 1.5 method.
-          "uncapitalized".capitalize() // Kotlin-only
-          "Capitalized".decapitalize() // Kotlin-only
-        }
+      fun exampleFunction() {
+        String.format("a string %s", "with this")
+        resources.getString(R.string.some_string)
+        resources.getStringArray(R.array.some_string_array)
+        resources.getQuantityString(R.plurals.plural_string, 1, "parameter")
+        resources.getQuantityText(R.plurals.plural_string, 1)
+        "Uppercase string".toLowerCase()
+        "Uppercase string".lowercase() // Kotlin 1.5 method.
+        "lowercase string".toUpperCase()
+        "lowercase string".uppercase() // Kotlin 1.5 method.
+        "uncapitalized".capitalize() // Kotlin-only
+        "Capitalized".decapitalize() // Kotlin-only
+      }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val stringFilePath = "data/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1153,7 +1154,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:11: $useStringFormattingFunctionInKotlinOrJavaErrorMessage
         $stringFilePath:12: $useStringFormattingFunctionInKotlinOrJavaErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1161,21 +1162,21 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringFormattingFunctions_inJava_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        void exampleFunction() {
-          String.format("a string %s", "with this");
-          resources.getString(R.string.some_string);
-          resources.getStringArray(R.array.some_string_array);
-          resources.getQuantityString(R.plurals.plural_string, 1, "parameter");
-          resources.getQuantityText(R.plurals.plural_string, 1);
-          "Uppercase string".toLowerCase();
-          "lowercase string".toUpperCase();
-        }
+      void exampleFunction() {
+        String.format("a string %s", "with this");
+        resources.getString(R.string.some_string);
+        resources.getStringArray(R.array.some_string_array);
+        resources.getQuantityString(R.plurals.plural_string, 1, "parameter");
+        resources.getQuantityText(R.plurals.plural_string, 1);
+        "Uppercase string".toLowerCase();
+        "lowercase string".toUpperCase();
+      }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val stringFilePath = "data/src/main/SomeController.java"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1190,7 +1191,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:7: $useStringFormattingFunctionInKotlinOrJavaErrorMessage
         $stringFilePath:8: $useStringFormattingFunctionInKotlinOrJavaErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1198,17 +1199,17 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_ignoreCase_inKotlin_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        fun exampleFunction() {
-          "This strING".startsWith("this", ignoreCase = true)
-          "This strING".endsWith("string", ignoreCase = true)
-          "This strING".equals("this string", ignoreCase = true)
-        }
+      fun exampleFunction() {
+        "This strING".startsWith("this", ignoreCase = true)
+        "This strING".endsWith("string", ignoreCase = true)
+        "This strING".equals("this string", ignoreCase = true)
+      }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "data", "src", "main")
     val stringFilePath = "data/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1219,7 +1220,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:3: $useCaseInsensitiveOperationErrorMessage
         $stringFilePath:4: $useCaseInsensitiveOperationErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1227,18 +1228,18 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringFormattingFunctions_inXml_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <TextView
-          android:text="@{String.format(@string/example_string, viewModel.newVar}" />
-        <TextView
-          android:text="@{resources.getString(R.string.example_string)}" />
-        <TextView
-          android:text="@{resources.getStringArray(R.array.example_string_array)}" />
+      <TextView
+        android:text="@{String.format(@string/example_string, viewModel.newVar}" />
+      <TextView
+        android:text="@{resources.getString(R.string.example_string)}" />
+      <TextView
+        android:text="@{resources.getStringArray(R.array.example_string_array)}" />
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1249,7 +1250,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:4: $useStringFormattingFunctionInXmlErrorMessage
         $stringFilePath:6: $useStringFormattingFunctionInXmlErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1257,14 +1258,14 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringFormatting_inXml_usingDatabinding_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <TextView
-          android:text="@{@string/example_str(viewModel.newVar)}" />
+      <TextView
+        android:text="@{@string/example_str(viewModel.newVar)}" />
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1272,7 +1273,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:2: $useDatabindingStringOperationsErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1280,14 +1281,14 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringPlurals_inXml_usingDatabinding_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <TextView
-          android:text="@{@plurals/example_plural(viewModel.count, viewModel.otherVar)}" />
+      <TextView
+        android:text="@{@plurals/example_plural(viewModel.count, viewModel.otherVar)}" />
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1295,7 +1296,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:2: $useDatabindingPluralsErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1303,19 +1304,19 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_nonStringTypeAndPositionalSpecifiers_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <string name="passing_str1">String with %s string arg</string>
-        <string name="failing_str2">String with %d int arg</string>
-        <string name="passing_str3">String with %1${"$"}s string positional arg</string>
-        <string name="failing_str4">String with %1${"$"}d int positional arg</string>
-        <string name="failing_str5">String with %1${"$"}s and %d args</string>
-        <string name="failing_str6">%f arg at front</string>
-        <string name="passing_str7">%s arg at front</string>
+      <string name="passing_str1">String with %s string arg</string>
+      <string name="failing_str2">String with %d int arg</string>
+      <string name="passing_str3">String with %1${"$"}s string positional arg</string>
+      <string name="failing_str4">String with %1${"$"}d int positional arg</string>
+      <string name="failing_str5">String with %1${"$"}s and %d args</string>
+      <string name="failing_str6">%f arg at front</string>
+      <string name="passing_str7">%s arg at front</string>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1327,7 +1328,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:5: $useNonStringTypeSpecifiersErrorMessage
         $stringFilePath:6: $useNonStringTypeSpecifiersErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1335,9 +1336,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_stringTypeAndPositionalSpecifiers_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <string name="passing_str1">String with %s string arg</string>
-        <string name="passing_str2">String with %1${"$"}s string positional arg</string>
-        <string name="passing_str3">%s arg at front</string>
+      <string name="passing_str1">String with %s string arg</string>
+      <string name="passing_str2">String with %1${"$"}s string positional arg</string>
+      <string name="passing_str3">%s arg at front</string>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/strings.xml"
@@ -1356,7 +1357,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/SomeActivity.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1364,7 +1365,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $subclassedActivityErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1376,7 +1377,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/SomeActivity.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1384,7 +1385,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $subclassedAppCompatActivityErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1396,7 +1397,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/SomeActivity.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent + requiredContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1404,7 +1405,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $subclassedInjectableAppCompatActivityErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1415,7 +1416,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/SomeDialogFragment.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1423,7 +1424,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $subclassedDialogFragmentErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1431,22 +1432,22 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_activityDeclarationInManifest_withConfigChanges_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest package="org.oppia.android">
-          <application android:name=".app.application.OppiaApplication">
-            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
-            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
-            <activity
-              android:name=".app.ExampleActivity"
-              android:configChanges="orientation" />
-          </application>
-        </manifest>
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android">
+        <application android:name=".app.application.OppiaApplication">
+          <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+          <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+          <activity
+            android:name=".app.ExampleActivity"
+            android:configChanges="orientation" />
+        </application>
+      </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1454,7 +1455,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:8: $androidActivityConfigChangesErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1462,19 +1463,19 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_manifestWithFirebaseCrashlyticsEnabled_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest package="org.oppia.android">
-          <application android:name=".app.application.OppiaApplication">
-            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="true" />
-            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
-          </application>
-        </manifest>
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android">
+        <application android:name=".app.application.OppiaApplication">
+          <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="true" />
+          <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+        </application>
+      </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1482,7 +1483,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath: $androidManifestFirebaseCrashlyticsEnabledErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1490,19 +1491,19 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_manifestWithFirebaseAnalyticsEnabled_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest package="org.oppia.android">
-          <application android:name=".app.application.OppiaApplication">
-            <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
-            <meta-data android:name="firebase_analytics_collection_deactivated" android:value="false" />
-          </application>
-        </manifest>
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android">
+        <application android:name=".app.application.OppiaApplication">
+          <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+          <meta-data android:name="firebase_analytics_collection_deactivated" android:value="false" />
+        </application>
+      </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1510,7 +1511,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath: $androidManifestFirebaseAnalyticsEnabledErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1521,7 +1522,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1529,7 +1530,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $useJavaCalendarErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1540,7 +1541,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1548,7 +1549,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $useJavaDateErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1564,7 +1565,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1574,7 +1575,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:2: $useJavaTextErrorMessage
         $stringFilePath:3: $useJavaTextErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1585,7 +1586,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1593,7 +1594,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $useJavaLocaleErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1604,7 +1605,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1612,7 +1613,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doNotUseKotlinDelegatesErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1620,21 +1621,21 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_nonCompatDrawables_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        android:drawableStart="@drawable/example_drawable"
-        app:drawableStartCompat="@drawable/example_drawable"
-        android:drawableEnd="@drawable/example_drawable"
-        app:drawableEndCompat="@drawable/example_drawable"
-        android:drawableTop="@drawable/example_drawable"
-        app:drawableTopCompat="@drawable/example_drawable"
-        android:drawableBottom="@drawable/example_drawable"
-        app:drawableBottomCompat="@drawable/example_drawable"
-        android:src="@drawable/example_drawable"
-        app:srcCompat="@drawable/example_drawable"
+      android:drawableStart="@drawable/example_drawable"
+      app:drawableStartCompat="@drawable/example_drawable"
+      android:drawableEnd="@drawable/example_drawable"
+      app:drawableEndCompat="@drawable/example_drawable"
+      android:drawableTop="@drawable/example_drawable"
+      app:drawableTopCompat="@drawable/example_drawable"
+      android:drawableBottom="@drawable/example_drawable"
+      app:drawableBottomCompat="@drawable/example_drawable"
+      android:src="@drawable/example_drawable"
+      app:srcCompat="@drawable/example_drawable"
       """.trimIndent()
     val fileContainsSupportLibraryImport = "test_layout.xml"
     tempFolder.newFile("testfiles/$fileContainsSupportLibraryImport").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1646,7 +1647,7 @@ class RegexPatternValidationCheckTest {
         $fileContainsSupportLibraryImport:7: $nonCompatDrawableUsedErrorMessage
         $fileContainsSupportLibraryImport:9: $nonCompatDrawableUsedErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1661,7 +1662,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/test/SomeTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1670,7 +1671,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $parameterizedTestRunnerRequiresException
         $stringFilePath:2: $parameterizedTestRunnerRequiresException
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1681,7 +1682,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "data/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1689,7 +1690,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $useJava8OptionalErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1700,7 +1701,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/BUILD"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1708,7 +1709,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doNotUseProtoLibrary
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1719,7 +1720,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/BUILD.bazel"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1727,7 +1728,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doNotUseProtoLibrary
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1738,7 +1739,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "domain/src/main/SomeController.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -1746,7 +1747,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doNotUseClipboardManager
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1758,7 +1759,7 @@ class RegexPatternValidationCheckTest {
     val prohibitedFile = tempFolder.newFile("testfiles/data/src/main/TestActivity.kt")
     prohibitedFile.writeText(prohibitedContent + requiredContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim()).isEqualTo(
@@ -1768,7 +1769,7 @@ class RegexPatternValidationCheckTest {
 
       data/src/main/TestActivity.kt:1: $supportLibraryUsageErrorMessage
       $wikiReferenceNote
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
@@ -1789,7 +1790,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1802,7 +1803,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:7: $doesNotHaveColorSuffixOrSnakeCasing
         $stringFilePath:8: $doesNotHaveColorSuffixOrSnakeCasing
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1810,9 +1811,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_hasColorSuffixAndSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_toolbar_color">@color/color_def_oppia_green</color>
-        <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
-        <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
+      <color name="color_palette_toolbar_color">@color/color_def_oppia_green</color>
+      <color name="color_palette_status_bar_color">@color/color_def_dark_green</color>
+      <color name="color_palette_action_bar_color">@color/color_def_oppia_green</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -1837,7 +1838,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1849,7 +1850,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:3: $hasColorKeywordOrNoSnakeCasing
         $stringFilePath:5: $hasColorKeywordOrNoSnakeCasing
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1857,9 +1858,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_doesNotHaveColorKeywordHasSnakeCasing_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_def_oppia_dark_grey">#4D4D4D</color>
-        <color name="color_def_oppia_pink">#FF938F</color>
-        <color name="color_def_oppia_grayish_black">#32363B</color>
+      <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+      <color name="color_def_oppia_pink">#FF938F</color>
+      <color name="color_def_oppia_grayish_black">#32363B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -1874,16 +1875,16 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_hasHexColorValue_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
-        <color name="component_color_admin_controls_sub_heading_color">#6B0086FB</color>
-        <color name="component_color_admin_controls_switch_description_color">#FFFFFF</color>
-        <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
+      <color name="component_color_admin_controls_options_highlighted_background_color">@color/color_palette_highlighted_background_color</color>
+      <color name="component_color_admin_controls_sub_heading_color">#6B0086FB</color>
+      <color name="component_color_admin_controls_switch_description_color">#FFFFFF</color>
+      <color name="component_color_admin_controls_menu_options_text_color">@color/color_palette_dark_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1893,7 +1894,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:2: $hasHexColorValue
         $stringFilePath:3: $hasHexColorValue
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1901,9 +1902,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotHaveHexColorValue_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_shared_primary_dark_text_color">@color/color_palette_dark_text_color</color>
-        <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
-        <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
+      <color name="component_color_shared_primary_dark_text_color">@color/color_palette_dark_text_color</color>
+      <color name="component_color_add_profile_activity_switch_description_color">@color/color_palette_description_text_color</color>
+      <color name="component_color_add_profile_activity_layout_background_color">@color/color_palette_background_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1918,17 +1919,17 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_doesNotHaveRawColorDeclaration_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-       <color name="color_def_oppia_metallic_blue">@color/color_name</color>
-       <color name="color_def_oppia_light_black">#24282B</color>
-       <color name="color_def_oppia_dark_grey">#4D4D4D</color>
-       <color name="color_def_oppia_pink">@color/another_color_name</color>
-       <color name="color_def_oppia_grayish_black">#32363B</color>
+      <color name="color_def_oppia_metallic_blue">@color/color_name</color>
+      <color name="color_def_oppia_light_black">#24282B</color>
+      <color name="color_def_oppia_dark_grey">#4D4D4D</color>
+      <color name="color_def_oppia_pink">@color/another_color_name</color>
+      <color name="color_def_oppia_grayish_black">#32363B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -1938,7 +1939,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $doesNotHaveRawColorDeclaration
         $stringFilePath:4: $doesNotHaveRawColorDeclaration
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -1946,9 +1947,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_hasRawColorDeclaration_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_def_oppia_silver">#C4C4C4</color>
-        <color name="color_def_oppia_turquoise">#3bd1c4</color>
-        <color name="color_def_oppia_bangladesh_green">#03635B</color>
+      <color name="color_def_oppia_silver">#C4C4C4</color>
+      <color name="color_def_oppia_turquoise">#3bd1c4</color>
+      <color name="color_def_oppia_bangladesh_green">#03635B</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -1963,10 +1964,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_startsWithComponentColors_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
-        <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
-        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
-        <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
+      <color name="component_color_shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+      <color name="component_color_shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+      <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+      <color name="component_color_shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -1981,16 +1982,16 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_doesNotStartWithComponentColors_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
-        <color name="shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
-        <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
-        <color name="shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
+      <color name="shared_text_view_heading_text_color">@color/color_palette_highlighted_text_color</color>
+      <color name="shared_text_input_layout_text_color">@color/color_palette_primary_text_color</color>
+      <color name="component_color_shared_text_input_layout_stroke_color">@color/color_palette_primary_text_color</color>
+      <color name="shared_text_input_edit_text_text_color">@color/color_palette_primary_text_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2001,7 +2002,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:2: $doesNotStartWithComponentColor
         $stringFilePath:4: $doesNotStartWithComponentColor
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2009,10 +2010,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_startsWithColorPalette_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
-        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
-        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
-        <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
+      <color name="color_palette_primary_color">@color/color_def_oppia_green</color>
+      <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+      <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+      <color name="color_palette_primary_text_color">@color/color_def_accessible_grey</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -2027,16 +2028,16 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_doesNotStartWithColorPalette_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="primary_color">@color/color_def_oppia_green</color>
-        <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
-        <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
-        <color name="primary_text_color">@color/color_def_accessible_grey</color>
+      <color name="primary_color">@color/color_def_oppia_green</color>
+      <color name="color_palette_primary_dark_color">@color/color_def_dark_green</color>
+      <color name="color_palette_accent_color">@color/color_def_oppia_dark_blue</color>
+      <color name="primary_text_color">@color/color_def_accessible_grey</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2046,7 +2047,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $doesNotStartWithColorPalette
         $stringFilePath:4: $doesNotStartWithColorPalette
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2054,9 +2055,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_startsWithColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_def_oppia_green">#00645C</color>
-        <color name="color_def_dark_green">#003933</color>
-        <color name="color_def_oppia_light_green">#F0FFFF</color>
+      <color name="color_def_oppia_green">#00645C</color>
+      <color name="color_def_dark_green">#003933</color>
+      <color name="color_def_oppia_light_green">#F0FFFF</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
@@ -2071,17 +2072,17 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorDefs_doesNotStartWithColorDef_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="color_def_oppia_green">#00645C</color>
-        <color name="color_def_dark_green">#003933</color>
-        <color name="oppia_dark_blue">#2D4A9D</color>
-        <color name="color_def_oppia_light_green">#F0FFFF</color>
-        <color name="oppia_light_yellow">#FFFFF0</color>
+      <color name="color_def_oppia_green">#00645C</color>
+      <color name="color_def_dark_green">#003933</color>
+      <color name="oppia_dark_blue">#2D4A9D</color>
+      <color name="color_def_oppia_light_green">#F0FFFF</color>
+      <color name="oppia_light_yellow">#FFFFF0</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_defs.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2091,7 +2092,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:3: $doesNotStartWithColorDefs
         $stringFilePath:5: $doesNotStartWithColorDefs
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2099,9 +2100,9 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_referencesColorFromColorPalette_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
-        <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
-        <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+      <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
+      <color name="component_color_admin_auth_layout_background_color">@color/color_palette_background_color</color>
+      <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
@@ -2116,15 +2117,15 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_componentColors_includesNonPaletteColorReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
-        <color name="component_color_admin_auth_layout_background_color">@color/color_defs_background_color</color>
-        <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
+      <color name="component_color_admin_auth_secondary_text_color">@color/color_palette_description_text_color</color>
+      <color name="component_color_admin_auth_layout_background_color">@color/color_defs_background_color</color>
+      <color name="component_color_admin_auth_activity_toolbar_color">@color/color_palette_toolbar_color</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/component_colors.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2133,7 +2134,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:2: $doesNotReferenceColorFromColorPalette
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2141,36 +2142,36 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_xmlLayouts_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        android:textColor="@color/component_color_shared_primary_text_color"
-        android:textColor="@color/color_defs_shared_primary_text_color"
-        android:textColor="@color/color_palette_primary_text_color"
-        android:textColor="#003933"
-        android:background="@color/component_color_shared_primary_text_color"
-        android:background="@color/color_defs_shared_primary_text_color"
-        android:background="@color/color_palette_primary_text_color"
-        android:background="#003933"
-        app:tint="@color/component_color_shared_primary_text_color"
-        app:tint="@color/color_defs_shared_primary_text_color"
-        app:tint="@color/color_palette_primary_text_color"
-        app:tint="#003933"
-        app:strokeColor="@color/component_color_shared_primary_text_color"
-        app:strokeColor="@color/color_defs_shared_primary_text_color"
-        app:strokeColor="@color/color_palette_primary_text_color"
-        app:strokeColor="#003933"
-        app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
-        app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
-        app:cardBackgroundColor="@color/color_palette_primary_text_color"
-        app:cardBackgroundColor="#003933"
-        android:background="@color/component_color_shared_primary_text_color"
-        android:background="@color/color_defs_shared_primary_text_color"
-        android:background="@color/color_palette_primary_text_color"
-        android:background="#003933"
+      android:textColor="@color/component_color_shared_primary_text_color"
+      android:textColor="@color/color_defs_shared_primary_text_color"
+      android:textColor="@color/color_palette_primary_text_color"
+      android:textColor="#003933"
+      android:background="@color/component_color_shared_primary_text_color"
+      android:background="@color/color_defs_shared_primary_text_color"
+      android:background="@color/color_palette_primary_text_color"
+      android:background="#003933"
+      app:tint="@color/component_color_shared_primary_text_color"
+      app:tint="@color/color_defs_shared_primary_text_color"
+      app:tint="@color/color_palette_primary_text_color"
+      app:tint="#003933"
+      app:strokeColor="@color/component_color_shared_primary_text_color"
+      app:strokeColor="@color/color_defs_shared_primary_text_color"
+      app:strokeColor="@color/color_palette_primary_text_color"
+      app:strokeColor="#003933"
+      app:cardBackgroundColor="@color/component_color_shared_primary_text_color"
+      app:cardBackgroundColor="@color/color_defs_shared_primary_text_color"
+      app:cardBackgroundColor="@color/color_palette_primary_text_color"
+      app:cardBackgroundColor="#003933"
+      android:background="@color/component_color_shared_primary_text_color"
+      android:background="@color/color_defs_shared_primary_text_color"
+      android:background="@color/color_palette_primary_text_color"
+      android:background="#003933"
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "layout")
     val stringFilePath = "app/src/main/res/layout/test_layout.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2196,7 +2197,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:23: $doesNotReferenceColorFromComponentColorInLayouts
         $stringFilePath:24: $doesNotReferenceColorFromComponentColorInLayouts
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2204,16 +2205,16 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_xmlDrawables_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        android:color="@color/component_color_shared_primary_text_color"
-        android:color="@color/color_defs_shared_primary_text_color"
-        android:color="@color/color_palette_primary_text_color"
-        android:color="#003933"
+      android:color="@color/component_color_shared_primary_text_color"
+      android:color="@color/color_defs_shared_primary_text_color"
+      android:color="@color/color_palette_primary_text_color"
+      android:color="#003933"
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "drawable")
     val stringFilePath = "app/src/main/res/drawable/test_layout.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2224,7 +2225,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:3: $doesNotReferenceColorFromComponentColorInDrawables
         $stringFilePath:4: $doesNotReferenceColorFromComponentColorInDrawables
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2232,10 +2233,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kotlinFiles_includesNonColorComponentReferences_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        decorateWithScreenName(HOME_ACTIVITY)
-        R.color.component_color_shared_activity_status_bar_color
-        R.color.color_def_avatar_background_1
-        R.color.color_palette_primary_color
+      decorateWithScreenName(HOME_ACTIVITY)
+      R.color.component_color_shared_activity_status_bar_color
+      R.color.color_def_avatar_background_1
+      R.color.color_palette_primary_color
       """.trimIndent()
 
     tempFolder.newFolder(
@@ -2247,7 +2248,7 @@ class RegexPatternValidationCheckTest {
       "org",
       "oppia",
       "android",
-      "app"
+      "app",
     )
 
     val stringFilePath1 = "app/src/main/java/org/oppia/android/app/HomeActivity.kt"
@@ -2264,7 +2265,7 @@ class RegexPatternValidationCheckTest {
     tempFolder.newFile("testfiles/$stringFilePath5").writeText(prohibitedContent)
     tempFolder.newFile("testfiles/$stringFilePath6").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2284,7 +2285,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath6:3: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $stringFilePath6:4: $doesNotReferenceColorFromComponentColorInKotlinFiles
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2292,10 +2293,10 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_referencesColorFromColorDefs_fileContentIsCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_text_input_background_color">@color/color_def_white</color>
-        <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
-        <color name="color_palette_error_color">@color/color_def_oppia_red</color>
-        <color name="color_palette_container_background_color">@color/color_def_white</color>
+      <color name="color_palette_text_input_background_color">@color/color_def_white</color>
+      <color name="color_palette_dark_text_color">@color/color_def_black_87</color>
+      <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+      <color name="color_palette_container_background_color">@color/color_def_white</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
@@ -2310,16 +2311,16 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_colorPalette_doesNotReferenceColorFromColorDefs_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
-        <color name="color_palette_text_input_background_color">@color/blue</color>
-        <color name="color_palette_dark_text_color">@color/component_color_black_87</color>
-        <color name="color_palette_error_color">@color/color_def_oppia_red</color>
+      <color name="color_palette_description_text_color">@color/color_def_accessible_light_grey</color>
+      <color name="color_palette_text_input_background_color">@color/blue</color>
+      <color name="color_palette_dark_text_color">@color/component_color_black_87</color>
+      <color name="color_palette_error_color">@color/color_def_oppia_red</color>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "res", "values")
     val stringFilePath = "app/src/main/res/values/color_palette.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2329,7 +2330,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:2: $doesNotReferenceColorFromColorDefs
         $stringFilePath:3: $doesNotReferenceColorFromColorDefs
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2339,7 +2340,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/activity/HomeActivity.kt"
     tempFolder.newFile("testfiles/$stringFilePath")
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2347,7 +2348,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath: $screenNameNotPresentErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2369,7 +2370,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/activity/HomeActivityTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath")
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2377,7 +2378,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath: $screenNameTestNotPresentErrorMessage
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2397,13 +2398,13 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_referenceGetInstance_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        val workManager = WorkManager.getInstance(context)
+      val workManager = WorkManager.getInstance(context)
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/SomeInitializer.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Verify that all patterns are properly detected & prohibited.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2412,7 +2413,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doesNotUseWorkManagerGetInstance
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2420,13 +2421,13 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_postDelayedUsed_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
+      binding.view.postDelayed({ binding.view.visibility = View.GONE }, 1000)
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
 
@@ -2435,7 +2436,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2443,13 +2444,13 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_postUsed_withParenthesis_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        binding.view.post({ binding.view.visibility = View.GONE })
+      binding.view.post({ binding.view.visibility = View.GONE })
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
 
@@ -2458,7 +2459,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2466,13 +2467,13 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_postUsed_withCurlyBraces_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        binding.view.post { binding.view.visibility = View.GONE }
+      binding.view.post { binding.view.visibility = View.GONE }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
 
@@ -2481,7 +2482,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $doesNotUsePostOrPostDelayed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2489,18 +2490,18 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kdocNotFittingLineFormatting_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /** Content here.
-         */
-        /** Correct KDoc. */
-        /**
-         * Correct KDoc.
-         */
+      /** Content here.
+       */
+      /** Correct KDoc. */
+      /**
+       * Correct KDoc.
+       */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2508,7 +2509,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $badKdocShouldFitOnOneLine
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2516,15 +2517,15 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_singleLineKdocWithExtraCharactersAfterStart_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /**Content here. */
-        /*** Content here. */
-        /** Correct KDoc. */
+      /**Content here. */
+      /*** Content here. */
+      /** Correct KDoc. */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2533,7 +2534,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $badSingleLineKdocShouldHaveSpacesAfterOpening
         $stringFilePath:2: $badSingleLineKdocShouldHaveSpacesAfterOpening
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2541,15 +2542,15 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_singleLineKdocWithExtraSpacesAfterStart_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /**  Content here. */
-        /**   Content here. */
-        /** Correct KDoc. */
+      /**  Content here. */
+      /**   Content here. */
+      /** Correct KDoc. */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2558,7 +2559,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $badSingleLineKdocShouldHaveExactlyOneSpaceAfterOpening
         $stringFilePath:2: $badSingleLineKdocShouldHaveExactlyOneSpaceAfterOpening
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2566,28 +2567,28 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_multipleCommentTypesWithExtraCharactersBeforeEnd_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /** Content here.*/
-        /** Content here. **/
-        /** Correct KDoc. */
+      /** Content here.*/
+      /** Content here. **/
+      /** Correct KDoc. */
 
-        /*
-         * Incorrect block comment.
-         **/
-        /*
-         * Correct block comment.
-         */
-        /**
-         * Incorrect KDoc comment.
-         **/
-        /**
-         * Correct KDoc comment.
-         */
+      /*
+       * Incorrect block comment.
+       **/
+      /*
+       * Correct block comment.
+       */
+      /**
+       * Incorrect KDoc comment.
+       **/
+      /**
+       * Correct KDoc comment.
+       */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // Two patterns are combined in this check because they slightly overlap in affected cases (e.g.
     // line 2 fails due to three different checks), and one pattern is subequently needed for the
@@ -2603,7 +2604,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
         $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2611,15 +2612,15 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_singleLineKdocWithExtraSpacesBeforeEnd_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /** Content here.  */
-        /** Content here.   */
-        /** Correct KDoc. */
+      /** Content here.  */
+      /** Content here.   */
+      /** Correct KDoc. */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2628,7 +2629,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $badSingleLineKdocShouldHaveExactlyOneSpaceBeforeEnding
         $stringFilePath:2: $badSingleLineKdocShouldHaveExactlyOneSpaceBeforeEnding
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2636,20 +2637,20 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_kdocWithPropertiesAndParameters_withLinksAfter_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /**
-         * Summary fragment.
-         *
-         * @property [invalid] and explanation
-         * @property valid and explanation
-         * @param [invalid] and explanation
-         * @param valid and explanation
-         */
+      /**
+       * Summary fragment.
+       *
+       * @property [invalid] and explanation
+       * @property valid and explanation
+       * @param [invalid] and explanation
+       * @param valid and explanation
+       */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2658,7 +2659,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:4: $badKdocParamsAndPropertiesShouldHaveNameFollowing
         $stringFilePath:6: $badKdocParamsAndPropertiesShouldHaveNameFollowing
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2666,15 +2667,15 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_singleLineKdocDoesNotEndWithPunctuation_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /** Content here */
-        /** Correct KDoc. */
-        /** Correct KDoc! */
+      /** Content here */
+      /** Correct KDoc. */
+      /** Correct KDoc! */
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     // 'Punctuation' currently assumes a period.
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
@@ -2684,7 +2685,7 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:1: $badSingleLineKdocShouldEndWithPunctuation
         $stringFilePath:3: $badSingleLineKdocShouldEndWithPunctuation
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2698,7 +2699,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2706,7 +2707,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $activityTestRuleShouldNotBeUsed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2720,7 +2721,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2728,7 +2729,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $activityScenarioRuleShouldNotBeUsed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2736,13 +2737,13 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_includesReferenceToComputeIfAbsent_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        someMap.computeIfAbsent(key) { createOtherValue() }
+      someMap.computeIfAbsent(key) { createOtherValue() }
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2750,7 +2751,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $referenceComputeIfAbsent
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 
@@ -2764,7 +2765,7 @@ class RegexPatternValidationCheckTest {
     val stringFilePath = "app/src/main/res/values/strings.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString().trim())
@@ -2772,7 +2773,7 @@ class RegexPatternValidationCheckTest {
         """
         $stringFilePath:1: $cdataShouldNotBeUsed
         $wikiReferenceNote
-        """.trimIndent()
+        """.trimIndent(),
       )
   }
 

@@ -73,9 +73,10 @@ class AppLanguageLocaleHandlerTest {
 
   @Test
   fun testGetDisplayLocale_initialState_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      appLanguageLocaleHandler.getDisplayLocale()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        appLanguageLocaleHandler.getDisplayLocale()
+      }
 
     assertThat(exception).hasMessageThat().contains("Expected locale to be initialized")
   }
@@ -103,9 +104,10 @@ class AppLanguageLocaleHandlerTest {
   fun testInitializeLocale_twice_throwsException() {
     appLanguageLocaleHandler.initializeLocale(computeNewAppLanguageLocale(ENGLISH))
 
-    val exception = assertThrows<IllegalStateException>() {
-      appLanguageLocaleHandler.initializeLocale(retrieveAppLanguageLocale())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        appLanguageLocaleHandler.initializeLocale(retrieveAppLanguageLocale())
+      }
 
     // Trying to initialize a second time should result in an exception.
     assertThat(exception)
@@ -117,9 +119,10 @@ class AppLanguageLocaleHandlerTest {
   fun testUpdateLocale_uninitialized_throwsException() {
     setAppLanguage(ENGLISH)
 
-    val exception = assertThrows<IllegalStateException>() {
-      appLanguageLocaleHandler.updateLocale(retrieveAppLanguageLocale())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        appLanguageLocaleHandler.updateLocale(retrieveAppLanguageLocale())
+      }
 
     // The handler can't be updated before it's initialized.
     assertThat(exception).hasMessageThat().contains("Expected locale to be initialized")
@@ -186,9 +189,10 @@ class AppLanguageLocaleHandlerTest {
   fun testInitializeLocaleForActivity_uninitialized_throwsException() {
     val configuration = Configuration()
 
-    val exception = assertThrows<IllegalStateException>() {
-      appLanguageLocaleHandler.initializeLocaleForActivity(configuration)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        appLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+      }
 
     // The handler can't be updated before it's initialized.
     assertThat(exception).hasMessageThat().contains("Expected locale to be initialized")
@@ -279,7 +283,8 @@ class AppLanguageLocaleHandlerTest {
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -287,9 +292,11 @@ class AppLanguageLocaleHandlerTest {
     val updateProvider =
       translationController.updateAppLanguage(
         ProfileId.getDefaultInstance(),
-        AppLanguageSelection.newBuilder().apply {
-          selectedLanguage = language
-        }.build()
+        AppLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
       )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
@@ -318,9 +325,7 @@ class AppLanguageLocaleHandlerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -333,8 +338,8 @@ class AppLanguageLocaleHandlerTest {
       AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, CpuPerformanceSnapshotterModule::class
-    ]
+      PlatformParameterSingletonModule::class, CpuPerformanceSnapshotterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -348,9 +353,12 @@ class AppLanguageLocaleHandlerTest {
     fun inject(appLanguageLocaleHandlerTest: AppLanguageLocaleHandlerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppLanguageLocaleHandlerTest_TestApplicationComponent.builder()
+      DaggerAppLanguageLocaleHandlerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

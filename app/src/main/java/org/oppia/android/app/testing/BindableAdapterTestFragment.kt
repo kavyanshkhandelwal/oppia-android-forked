@@ -11,6 +11,7 @@ import javax.inject.Inject
 const val BINDABLE_TEST_FRAGMENT_TAG = "bindable_adapter_test_fragment"
 
 // TODO(#59): Make this fragment only included in relevant tests instead of all prod builds.
+
 /** A test fragment for the bindable RecyclerView adapter. */
 class BindableAdapterTestFragment : InjectableFragment() {
   @Inject
@@ -24,10 +25,8 @@ class BindableAdapterTestFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return bindableAdapterTestFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = bindableAdapterTestFragmentPresenter.handleCreateView(inflater, container)
 
   /** Test-only injector for the fragment that needs to be set up in the test. */
   interface TestInjector {

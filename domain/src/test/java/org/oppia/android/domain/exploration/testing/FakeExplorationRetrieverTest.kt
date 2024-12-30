@@ -58,9 +58,10 @@ class FakeExplorationRetrieverTest {
 
   @Test
   fun testLoadExploration_noProxySet_fakeExpId_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
+      }
 
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: fake_id")
   }
@@ -68,7 +69,8 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_realId_withProxyOverrideToValidId_returnsProxyExploration() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = TEST_EXPLORATION_ID_5
+      expIdToLoad = TEST_EXPLORATION_ID_2,
+      expIdToLoadInstead = TEST_EXPLORATION_ID_5,
     )
 
     val exp = runBlocking { fakeExplorationRetriever.loadExploration(TEST_EXPLORATION_ID_2) }
@@ -80,12 +82,14 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_realId_withProxyOverrideToInvalidId_throwsException() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = "fake_id"
+      expIdToLoad = TEST_EXPLORATION_ID_2,
+      expIdToLoadInstead = "fake_id",
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { fakeExplorationRetriever.loadExploration(TEST_EXPLORATION_ID_2) }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { fakeExplorationRetriever.loadExploration(TEST_EXPLORATION_ID_2) }
+      }
 
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: fake_id")
   }
@@ -93,7 +97,8 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_realId_withUnrelatedProxyOverride_returnsOriginalExploration() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_EXPLORATION_ID_5, expIdToLoadInstead = "fake_id"
+      expIdToLoad = TEST_EXPLORATION_ID_5,
+      expIdToLoadInstead = "fake_id",
     )
 
     val exp = runBlocking { fakeExplorationRetriever.loadExploration(TEST_EXPLORATION_ID_2) }
@@ -105,7 +110,8 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_fakeId_withProxyOverrideToValidId_returnsProxyExploration() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = "fake_id", expIdToLoadInstead = TEST_EXPLORATION_ID_2
+      expIdToLoad = "fake_id",
+      expIdToLoadInstead = TEST_EXPLORATION_ID_2,
     )
 
     val exp = runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
@@ -117,12 +123,14 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_fakeId_withProxyOverrideToInvalidId_throwsException() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = "fake_id", expIdToLoadInstead = "other_fake_id"
+      expIdToLoad = "fake_id",
+      expIdToLoadInstead = "other_fake_id",
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
+      }
 
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: other_fake_id")
   }
@@ -130,12 +138,14 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_fakeId_withUnrelatedProxyOverride_throwsException() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = TEST_EXPLORATION_ID_5
+      expIdToLoad = TEST_EXPLORATION_ID_2,
+      expIdToLoadInstead = TEST_EXPLORATION_ID_5,
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
+      }
 
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: fake_id")
   }
@@ -143,10 +153,12 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_fakeId_withProxyOverrideToValidId_setTwice_returnsLatestProxyExp() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = "fake_id", expIdToLoadInstead = TEST_EXPLORATION_ID_2
+      expIdToLoad = "fake_id",
+      expIdToLoadInstead = TEST_EXPLORATION_ID_2,
     )
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = "fake_id", expIdToLoadInstead = TEST_EXPLORATION_ID_5
+      expIdToLoad = "fake_id",
+      expIdToLoadInstead = TEST_EXPLORATION_ID_5,
     )
 
     val exp = runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
@@ -158,7 +170,8 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_realId_afterClearingValidProxy_returnsOriginalExploration() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = TEST_EXPLORATION_ID_2, expIdToLoadInstead = TEST_EXPLORATION_ID_5
+      expIdToLoad = TEST_EXPLORATION_ID_2,
+      expIdToLoadInstead = TEST_EXPLORATION_ID_5,
     )
 
     fakeExplorationRetriever.clearExplorationProxy(TEST_EXPLORATION_ID_2)
@@ -171,13 +184,15 @@ class FakeExplorationRetrieverTest {
   @Test
   fun testLoadExploration_fakeId_afterClearingValidProxy_throwsException() {
     fakeExplorationRetriever.setExplorationProxy(
-      expIdToLoad = "fake_id", expIdToLoadInstead = TEST_EXPLORATION_ID_2
+      expIdToLoad = "fake_id",
+      expIdToLoadInstead = TEST_EXPLORATION_ID_2,
     )
 
     fakeExplorationRetriever.clearExplorationProxy("fake_id")
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { fakeExplorationRetriever.loadExploration("fake_id") }
+      }
 
     // Clearing the proxy reverts to the normal state (which will lead to a crash).
     assertThat(exception).hasMessageThat().contains("Asset doesn't exist: fake_id")
@@ -192,14 +207,11 @@ class FakeExplorationRetrieverTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -207,14 +219,15 @@ class FakeExplorationRetrieverTest {
   @Component(
     modules = [
       TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class, AssetModule::class,
-      LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class
-    ]
+      LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -223,7 +236,8 @@ class FakeExplorationRetrieverTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeExplorationRetrieverTest_TestApplicationComponent.builder()
+      DaggerFakeExplorationRetrieverTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

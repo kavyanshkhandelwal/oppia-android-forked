@@ -14,6 +14,6 @@ interface RouteToResumeLessonListener {
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   )
 }

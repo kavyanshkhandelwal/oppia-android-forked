@@ -15,9 +15,7 @@ class ViewEventLogsFragment : InjectableFragment() {
   lateinit var viewEventLogsFragmentPresenter: ViewEventLogsFragmentPresenter
 
   companion object {
-    fun newInstance(): ViewEventLogsFragment {
-      return ViewEventLogsFragment()
-    }
+    fun newInstance(): ViewEventLogsFragment = ViewEventLogsFragment()
   }
 
   override fun onAttach(context: Context) {
@@ -28,8 +26,6 @@ class ViewEventLogsFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return viewEventLogsFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = viewEventLogsFragmentPresenter.handleCreateView(inflater, container)
 }

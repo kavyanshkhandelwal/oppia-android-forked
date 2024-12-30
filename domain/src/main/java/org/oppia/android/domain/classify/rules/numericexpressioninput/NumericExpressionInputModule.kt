@@ -15,7 +15,7 @@ class NumericExpressionInputModule {
   @StringKey("MatchesExactlyWith")
   @NumericExpressionInputRules
   internal fun provideNumericExpressionInputMatchesExactlyWithRuleClassifier(
-    classifierProvider: NumericExpressionInputMatchesExactlyWithRuleClassifierProvider
+    classifierProvider: NumericExpressionInputMatchesExactlyWithRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,7 +23,7 @@ class NumericExpressionInputModule {
   @StringKey("MatchesUpToTrivialManipulations")
   @NumericExpressionInputRules
   internal fun provideNumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifier(
-    classifierProvider: NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+    classifierProvider: NumericExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,6 +31,6 @@ class NumericExpressionInputModule {
   @StringKey("IsEquivalentTo")
   @NumericExpressionInputRules
   internal fun provideNumericExpressionInputIsEquivalentToRuleClassifier(
-    classifierProvider: NumericExpressionInputIsEquivalentToRuleClassifierProvider
+    classifierProvider: NumericExpressionInputIsEquivalentToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

@@ -32,9 +32,8 @@ class PlatformParameterSyncUpWorker private constructor(
   private val platformParameterService: Optional<PlatformParameterService>,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
 ) : ListenableWorker(context, params) {
-
   companion object {
     /** Exception message when the type of values received in the network response are not valid. */
     const val INCORRECT_TYPE_EXCEPTION_MSG =
@@ -56,22 +55,26 @@ class PlatformParameterSyncUpWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     // TODO(#4463): Add withTimeout() to avoid potential hanging.
-    return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
-        PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
-        else -> Result.failure()
-      }
-    }.asListenableFuture()
+    return backgroundScope
+      .async {
+        when (inputData.getStringFromData(WORKER_TYPE_KEY)) {
+          PLATFORM_PARAMETER_WORKER -> refreshPlatformParameters()
+          else -> Result.failure()
+        }
+      }.asListenableFuture()
   }
 
   /**
    * Parses a map of platform parameter values into a [List<PlatformParameter>]. Parameters must be
    * of type String, Int or Boolean.
    */
-  private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
-    return response.map {
-      val platformParameter = PlatformParameter.newBuilder().setName(it.key)
-        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+  private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> =
+    response.map {
+      val platformParameter =
+        PlatformParameter
+          .newBuilder()
+          .setName(it.key)
+          .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       when (val value = it.value) {
         is String -> platformParameter.string = value
         is Int -> platformParameter.integer = value
@@ -80,22 +83,21 @@ class PlatformParameterSyncUpWorker private constructor(
       }
       platformParameter.build()
     }
-  }
 
   /**
    * Synchronously executes the network request to get platform parameters from the Oppia backend.
    */
-  private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> {
-    return platformParameterService.transform { service ->
-      service?.getPlatformParametersByVersion(
-        applicationContext.getVersionName()
-      )?.execute()
+  private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> =
+    platformParameterService.transform { service ->
+      service
+        ?.getPlatformParametersByVersion(
+          applicationContext.getVersionName(),
+        )?.execute()
     }
-  }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store. */
-  private suspend fun refreshPlatformParameters(): Result {
-    return try {
+  private suspend fun refreshPlatformParameters(): Result =
+    try {
       val optionalResponse = makeNetworkCallForPlatformParameters()
       val response = optionalResponse.orNull()
       if (response != null) {
@@ -105,9 +107,10 @@ class PlatformParameterSyncUpWorker private constructor(
         if (platformParameterList.isEmpty()) {
           throw IllegalArgumentException(EMPTY_RESPONSE_EXCEPTION_MSG)
         }
-        val cachingResult = platformParameterController
-          .updatePlatformParameterDatabase(platformParameterList)
-          .retrieveData()
+        val cachingResult =
+          platformParameterController
+            .updatePlatformParameterDatabase(platformParameterList)
+            .retrieveData()
         if (cachingResult is AsyncResult.Failure) {
           throw IllegalStateException(cachingResult.error)
         }
@@ -121,27 +124,30 @@ class PlatformParameterSyncUpWorker private constructor(
       exceptionsController.logNonFatalException(e)
       Result.failure()
     }
-  }
 
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
-  class Factory @Inject constructor(
-    private val platformParameterController: PlatformParameterController,
-    private val platformParameterService: Optional<PlatformParameterService>,
-    private val oppiaLogger: OppiaLogger,
-    private val exceptionsController: ExceptionsController,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) {
-    /** Returns new instances of [PlatformParameterSyncUpWorker]. */
-    fun create(context: Context, params: WorkerParameters): ListenableWorker {
-      return PlatformParameterSyncUpWorker(
-        context,
-        params,
-        platformParameterController,
-        platformParameterService,
-        oppiaLogger,
-        exceptionsController,
-        backgroundDispatcher
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val platformParameterController: PlatformParameterController,
+      private val platformParameterService: Optional<PlatformParameterService>,
+      private val oppiaLogger: OppiaLogger,
+      private val exceptionsController: ExceptionsController,
+      @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+    ) {
+      /** Returns new instances of [PlatformParameterSyncUpWorker]. */
+      fun create(
+        context: Context,
+        params: WorkerParameters,
+      ): ListenableWorker =
+        PlatformParameterSyncUpWorker(
+          context,
+          params,
+          platformParameterController,
+          platformParameterService,
+          oppiaLogger,
+          exceptionsController,
+          backgroundDispatcher,
+        )
     }
-  }
 }

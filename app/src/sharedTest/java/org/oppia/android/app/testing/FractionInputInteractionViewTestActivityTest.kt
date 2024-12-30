@@ -102,7 +102,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = FractionInputInteractionViewTestActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class FractionInputInteractionViewTestActivityTest {
   @get:Rule
@@ -134,9 +134,10 @@ class FractionInputInteractionViewTestActivityTest {
 
   @Test
   fun testFractionInput_withNoInput_hasCorrectPendingAnswerType() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -149,16 +150,17 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeNumber_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(editTextInputAction.appendText("-9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
       assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
@@ -168,16 +170,17 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withWholeNumber_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(editTextInputAction.appendText("9"))
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
       assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(9)
@@ -187,20 +190,21 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withFraction_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "9/10"
-        )
+          "9/10",
+        ),
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
       assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
@@ -211,20 +215,21 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeFraction_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "-9/10"
-        )
+          "-9/10",
+        ),
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
       assertThat(pendingAnswer.answer.fraction.numerator).isEqualTo(9)
@@ -235,20 +240,21 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withMixedNumber_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "5 9/10"
-        )
+          "5 9/10",
+        ),
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(false)
       assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(5)
@@ -260,20 +266,21 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and will not be used by user
   fun testFractionInput_withNegativeMixedNumber_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "-55 59/9"
-        )
+          "-55 59/9",
+        ),
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.fractionInteractionViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.FRACTION
+        InteractionObject.ObjectTypeCase.FRACTION,
       )
       assertThat(pendingAnswer.answer.fraction.isNegative).isEqualTo(true)
       assertThat(pendingAnswer.answer.fraction.wholeNumber).isEqualTo(55)
@@ -285,19 +292,21 @@ class FractionInputInteractionViewTestActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      FractionInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        FractionInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "9/5"
-        )
+          "9/5",
+        ),
       )
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
     }
-    onView(withId(R.id.test_fraction_input_interaction_view)).check(matches(isDisplayed()))
+    onView(withId(R.id.test_fraction_input_interaction_view))
+      .check(matches(isDisplayed()))
       .check(matches(withText("9/5")))
   }
 
@@ -308,106 +317,106 @@ class FractionInputInteractionViewTestActivityTest {
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "55-"
-        )
+          "55-",
+        ),
       )
     onView(withId(R.id.fraction_input_error))
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
+            R.string.fraction_error_invalid_format,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withNegativeSignAt0MoreThan1_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "--55"
-        )
+          "--55",
+        ),
       )
     onView(withId(R.id.fraction_input_error))
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
+            R.string.fraction_error_invalid_format,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withDividerMoreThanOnce_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "5/5/"
-        )
+          "5/5/",
+        ),
       )
     onView(withId(R.id.fraction_input_error))
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
+            R.string.fraction_error_invalid_format,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withDividerAtStart_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "/5"
-        )
+          "/5",
+        ),
       )
     onView(withId(R.id.fraction_input_error))
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
+            R.string.fraction_error_invalid_format,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withPartialMixedNumber_numberFormatErrorIsNotDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "5 5/"
-        )
+          "5 5/",
+        ),
       )
     onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withPartialMixedNumberSubmit_numberFormatErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "5 5/"
-        )
+          "5 5/",
+        ),
       )
     closeSoftKeyboard()
     scrollToSubmitButton()
@@ -416,22 +425,22 @@ class FractionInputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_invalid_format
-          )
-        )
+            R.string.fraction_error_invalid_format,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withMixedNumber_submit_noErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "3 1/2"
-        )
+          "3 1/2",
+        ),
       )
     closeSoftKeyboard()
     scrollToSubmitButton()
@@ -439,30 +448,30 @@ class FractionInputInteractionViewTestActivityTest {
     onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withDivideByZero_errorIsNotDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "1/0"
-        )
+          "1/0",
+        ),
       )
     onView(withId(R.id.fraction_input_error)).check(matches(withText("")))
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withDivideByZero_submit_divideByZeroErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java)
     onView(withId(R.id.test_fraction_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "1/0"
-        )
+          "1/0",
+        ),
       )
     closeSoftKeyboard()
     scrollToSubmitButton()
@@ -471,44 +480,44 @@ class FractionInputInteractionViewTestActivityTest {
       .check(
         matches(
           withText(
-            R.string.fraction_error_divide_by_zero
-          )
-        )
+            R.string.fraction_error_divide_by_zero,
+          ),
+        ),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withInvalidCharacter_invalidCharacterErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
           editTextInputAction.appendText(
-            "."
-          )
+            ".",
+          ),
         )
       onView(withId(R.id.fraction_input_error))
         .check(
           matches(
             withText(
-              R.string.fraction_error_invalid_chars
-            )
-          )
+              R.string.fraction_error_invalid_chars,
+            ),
+          ),
         )
     }
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_withLong_submit_numberTooLongErrorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       onView(withId(R.id.test_fraction_input_interaction_view))
         .perform(
           editTextInputAction.appendText(
-            "12345678"
-          )
+            "12345678",
+          ),
         )
       closeSoftKeyboard()
       scrollToSubmitButton()
@@ -517,16 +526,16 @@ class FractionInputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.fraction_error_larger_than_seven_digits
-            )
-          )
+              R.string.fraction_error_larger_than_seven_digits,
+            ),
+          ),
         )
     }
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as FractionInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testFractionInput_emptyInput_submit_errorIsDisplayed() {
     ActivityScenario.launch(FractionInputInteractionViewTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -537,9 +546,9 @@ class FractionInputInteractionViewTestActivityTest {
         .check(
           matches(
             withText(
-              R.string.fraction_error_empty_input
-            )
-          )
+              R.string.fraction_error_empty_input,
+            ),
+          ),
         )
     }
   }
@@ -578,8 +587,8 @@ class FractionInputInteractionViewTestActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -588,9 +597,13 @@ class FractionInputInteractionViewTestActivityTest {
     fun inject(inputInteractionViewTestActivityTest: FractionInputInteractionViewTestActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFractionInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
+      DaggerFractionInputInteractionViewTestActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -599,9 +612,12 @@ class FractionInputInteractionViewTestActivityTest {
       component.inject(inputInteractionViewTestActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

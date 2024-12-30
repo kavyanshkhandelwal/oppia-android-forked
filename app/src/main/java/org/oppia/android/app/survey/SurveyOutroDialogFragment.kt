@@ -21,9 +21,7 @@ class SurveyOutroDialogFragment : InjectableDialogFragment() {
      *
      * @return [SurveyOutroDialogFragment]: DialogFragment
      */
-    fun newInstance(): SurveyOutroDialogFragment {
-      return SurveyOutroDialogFragment()
-    }
+    fun newInstance(): SurveyOutroDialogFragment = SurveyOutroDialogFragment()
   }
 
   override fun onAttach(context: Context) {
@@ -39,13 +37,12 @@ class SurveyOutroDialogFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return surveyOutroDialogFragmentPresenter.handleCreateView(
+    savedInstanceState: Bundle?,
+  ): View =
+    surveyOutroDialogFragmentPresenter.handleCreateView(
       inflater,
-      container
+      container,
     )
-  }
 
   override fun onStart() {
     super.onStart()

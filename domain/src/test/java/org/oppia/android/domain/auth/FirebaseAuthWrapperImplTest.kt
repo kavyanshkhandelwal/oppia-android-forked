@@ -32,7 +32,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FirebaseAuthWrapperImplTest.TestApplication::class)
 class FirebaseAuthWrapperImplTest {
-
   @Inject
   lateinit var firebaseAuthWrapperImpl: FirebaseAuthWrapperImpl
 
@@ -49,7 +48,8 @@ class FirebaseAuthWrapperImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -57,22 +57,19 @@ class FirebaseAuthWrapperImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Module
   class AuthenticationModule {
     @Provides
     @Singleton
-    fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper):
-      FirebaseAuthWrapper = FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapper)
+    fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper): FirebaseAuthWrapper =
+      FirebaseAuthWrapperImpl(firebaseAuthInstanceWrapper)
 
     @Provides
     @Singleton
-    fun provideFirebaseAuthInstanceWrapper(): FirebaseAuthInstanceWrapper =
-      FakeFirebaseAuthInstanceWrapperImpl()
+    fun provideFirebaseAuthInstanceWrapper(): FirebaseAuthInstanceWrapper = FakeFirebaseAuthInstanceWrapperImpl()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -82,7 +79,7 @@ class FirebaseAuthWrapperImplTest {
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, TestDispatcherModule::class,
       AuthenticationModule::class, TestLogReportingModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -96,9 +93,12 @@ class FirebaseAuthWrapperImplTest {
     fun inject(test: FirebaseAuthWrapperImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFirebaseAuthWrapperImplTest_TestApplicationComponent.builder()
+      DaggerFirebaseAuthWrapperImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

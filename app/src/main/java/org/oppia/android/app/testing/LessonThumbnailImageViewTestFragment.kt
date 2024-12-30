@@ -10,16 +10,15 @@ import org.oppia.android.app.fragment.InjectableFragment
 
 /** Test-only fragment for verifying behaviors of [LessonThumbnailImageView]. */
 class LessonThumbnailImageViewTestFragment : InjectableFragment() {
-
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return inflater.inflate(
+    savedInstanceState: Bundle?,
+  ): View =
+    inflater.inflate(
       R.layout.lesson_thumbnail_image_view_test_fragment,
       container,
-      /* attachToRoot= */ false
+      // attachToRoot=
+      false,
     )
-  }
 }

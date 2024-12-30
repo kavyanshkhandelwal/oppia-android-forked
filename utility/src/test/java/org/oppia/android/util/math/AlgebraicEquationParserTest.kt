@@ -47,7 +47,8 @@ class AlgebraicEquationParserTest {
   fun testParseAlgEq_slopeInterceptForm_additionalVars_correctlyParsesBothSidesStructures() {
     val equation =
       parseAlgebraicEquation(
-        "y = mx + b", allowedVariables = listOf("x", "y", "b", "m")
+        "y = mx + b",
+        allowedVariables = listOf("x", "y", "b", "m"),
       )
 
     assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
@@ -167,7 +168,8 @@ class AlgebraicEquationParserTest {
   fun testParseAlgEq_generalLineEquation_onLeftSide_correctlyParsesBothSidesStructures() {
     val equation =
       parseAlgebraicEquation(
-        "a*x^2 + b*x + c = 0", allowedVariables = listOf("x", "a", "b", "c")
+        "a*x^2 + b*x + c = 0",
+        allowedVariables = listOf("x", "a", "b", "c"),
       )
 
     assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
@@ -259,11 +261,14 @@ class AlgebraicEquationParserTest {
   private companion object {
     private fun parseAlgebraicEquation(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
+      allowedVariables: List<String> = listOf("x", "y", "z"),
     ): MathEquation {
-      val result = MathExpressionParser.parseAlgebraicEquation(
-        expression, allowedVariables, ErrorCheckingMode.ALL_ERRORS
-      )
+      val result =
+        MathExpressionParser.parseAlgebraicEquation(
+          expression,
+          allowedVariables,
+          ErrorCheckingMode.ALL_ERRORS,
+        )
       assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)
       return (result as MathParsingResult.Success<MathEquation>).result
     }

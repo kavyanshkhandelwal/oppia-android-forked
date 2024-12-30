@@ -23,11 +23,12 @@ class OnboardingProfileTypeFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
-      "Expected OnboardingProfileTypeFragment to have a profileId argument."
-    }
+    val profileId =
+      checkNotNull(arguments?.extractCurrentUserProfileId()) {
+        "Expected OnboardingProfileTypeFragment to have a profileId argument."
+      }
     return onboardingProfileTypeFragmentPresenter.handleCreateView(inflater, container, profileId)
   }
 }

@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericInputEqualsRuleClassifierProviderTest {
-
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
   private val POSITIVE_REAL_VALUE_3_5 =
@@ -36,8 +35,9 @@ class NumericInputEqualsRuleClassifierProviderTest {
     InteractionObjectTestBuilder.createReal(value = 5 * DOUBLE_EQUALITY_EPSILON)
   private val FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL =
     InteractionObjectTestBuilder.createReal(
-      value = 5 * DOUBLE_EQUALITY_EPSILON +
-        DOUBLE_EQUALITY_EPSILON / 10
+      value =
+        5 * DOUBLE_EQUALITY_EPSILON +
+          DOUBLE_EQUALITY_EPSILON / 10,
     )
   private val STRING_VALUE =
     InteractionObjectTestBuilder.createString(value = "test")
@@ -63,7 +63,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -77,7 +77,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -85,15 +85,17 @@ class NumericInputEqualsRuleClassifierProviderTest {
 
   @Test
   fun testPositiveRealAnswer_positiveRealInput_valuesInRange_bothValuesMatch() {
-    val inputs = mapOf(
-      "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL
-    )
+    val inputs =
+      mapOf(
+        "x" to FIVE_TIMES_FLOAT_EQUALITY_INTERVAL,
+      )
 
-    val matches = inputEqualsRuleClassifier.matches(
-      answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputEqualsRuleClassifier.matches(
+        answer = FIVE_POINT_ONE_TIMES_FLOAT_EQUALITY_INTERVAL,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -106,7 +108,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -120,7 +122,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -134,7 +136,7 @@ class NumericInputEqualsRuleClassifierProviderTest {
       inputEqualsRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -144,13 +146,14 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -161,13 +164,14 @@ class NumericInputEqualsRuleClassifierProviderTest {
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputEqualsRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputEqualsRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -175,7 +179,8 @@ class NumericInputEqualsRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumericInputEqualsRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerNumericInputEqualsRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

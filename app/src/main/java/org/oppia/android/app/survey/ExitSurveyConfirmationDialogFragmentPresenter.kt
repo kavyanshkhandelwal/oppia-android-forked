@@ -17,59 +17,62 @@ const val TAG_EXIT_SURVEY_CONFIRMATION_DIALOG = "EXIT_SURVEY_CONFIRMATION_DIALOG
 
 /** Presenter for [ExitSurveyConfirmationDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
-class ExitSurveyConfirmationDialogFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val surveyController: SurveyController,
-  private val oppiaLogger: OppiaLogger
-) {
+class ExitSurveyConfirmationDialogFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val surveyController: SurveyController,
+    private val oppiaLogger: OppiaLogger,
+  ) {
+    /** Sets up data binding. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View {
+      val binding =
+        SurveyExitConfirmationDialogBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-  /** Sets up data binding. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?
-  ): View {
-    val binding =
-      SurveyExitConfirmationDialogBinding.inflate(inflater, container, /* attachToRoot= */ false)
+      binding.lifecycleOwner = fragment
 
-    binding.lifecycleOwner = fragment
+      binding.continueSurveyButton.setOnClickListener {
+        fragment.parentFragmentManager
+          .beginTransaction()
+          .remove(fragment)
+          .commitNow()
+      }
 
-    binding.continueSurveyButton.setOnClickListener {
-      fragment.parentFragmentManager.beginTransaction()
+      binding.exitSurveyButton.setOnClickListener {
+        endSurveyWithCallback { closeSurveyDialogAndActivity() }
+      }
+
+      return binding.root
+    }
+
+    private fun closeSurveyDialogAndActivity() {
+      activity.finish()
+      fragment.parentFragmentManager
+        .beginTransaction()
         .remove(fragment)
         .commitNow()
     }
 
-    binding.exitSurveyButton.setOnClickListener {
-      endSurveyWithCallback { closeSurveyDialogAndActivity() }
+    private fun endSurveyWithCallback(callback: () -> Unit) {
+      surveyController.stopSurveySession(surveyCompleted = false).toLiveData().observe(
+        activity,
+        {
+          when (it) {
+            is AsyncResult.Pending -> oppiaLogger.d("SurveyActivity", "Stopping survey session")
+            is AsyncResult.Failure -> {
+              oppiaLogger.d("SurveyActivity", "Failed to stop the survey session")
+              activity.finish() // Can't recover from the session failing to stop.
+            }
+            is AsyncResult.Success -> {
+              oppiaLogger.d("SurveyActivity", "Stopped the survey session")
+              callback()
+            }
+          }
+        },
+      )
     }
-
-    return binding.root
   }
-
-  private fun closeSurveyDialogAndActivity() {
-    activity.finish()
-    fragment.parentFragmentManager.beginTransaction()
-      .remove(fragment)
-      .commitNow()
-  }
-
-  private fun endSurveyWithCallback(callback: () -> Unit) {
-    surveyController.stopSurveySession(surveyCompleted = false).toLiveData().observe(
-      activity,
-      {
-        when (it) {
-          is AsyncResult.Pending -> oppiaLogger.d("SurveyActivity", "Stopping survey session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.d("SurveyActivity", "Failed to stop the survey session")
-            activity.finish() // Can't recover from the session failing to stop.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("SurveyActivity", "Stopped the survey session")
-            callback()
-          }
-        }
-      }
-    )
-  }
-}

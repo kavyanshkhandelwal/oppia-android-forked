@@ -27,8 +27,6 @@ class MathExpressionParserFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return mathExpressionParserFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = mathExpressionParserFragmentPresenter.handleCreateView(inflater, container)
 }

@@ -119,7 +119,7 @@ class DateTimeUtilTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Before
@@ -228,8 +228,8 @@ class DateTimeUtilTest {
       SyncStatusModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
-    ]
+      ExplorationProgressModule::class, TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -243,9 +243,13 @@ class DateTimeUtilTest {
     fun inject(dateTimeUtilTest: DateTimeUtilTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDateTimeUtilTest_TestApplicationComponent.builder()
+      DaggerDateTimeUtilTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -254,9 +258,12 @@ class DateTimeUtilTest {
       component.inject(dateTimeUtilTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

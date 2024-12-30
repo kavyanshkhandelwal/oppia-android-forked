@@ -18,11 +18,10 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class TextInputActionTest {
-
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TextInputActionTestActivity>(
-      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Test

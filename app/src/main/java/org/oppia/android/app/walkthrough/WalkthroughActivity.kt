@@ -30,7 +30,7 @@ class WalkthroughActivity :
         override fun handleOnBackPressed() {
           walkthroughActivityPresenter.handleSystemBack()
         }
-      }
+      },
     )
   }
 
@@ -38,14 +38,19 @@ class WalkthroughActivity :
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
-  override fun pageWithTopicId(walkthroughPage: Int, topicId: String) {
+  override fun pageWithTopicId(
+    walkthroughPage: Int,
+    topicId: String,
+  ) {
     walkthroughActivityPresenter.setTopicId(topicId)
     walkthroughActivityPresenter.changePage(walkthroughPage)
   }
 
   companion object {
-
-    fun createWalkthroughActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createWalkthroughActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, WalkthroughActivity::class.java).apply {
         decorateWithUserProfileId(profileId)

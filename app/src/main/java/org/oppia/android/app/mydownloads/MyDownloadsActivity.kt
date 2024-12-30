@@ -35,7 +35,10 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    fun createMyDownloadsActivityIntent(context: Context, internalProfileId: Int?): Intent {
+    fun createMyDownloadsActivityIntent(
+      context: Context,
+      internalProfileId: Int?,
+    ): Intent {
       val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, MyDownloadsActivity::class.java)
       if (profileId != null) {
@@ -48,10 +51,12 @@ class MyDownloadsActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onBackPressed() {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    val intent = if (enableMultipleClassrooms.value)
-      ClassroomListActivity.createClassroomListActivity(this, profileId)
-    else
-      HomeActivity.createHomeActivity(this, profileId)
+    val intent =
+      if (enableMultipleClassrooms.value) {
+        ClassroomListActivity.createClassroomListActivity(this, profileId)
+      } else {
+        HomeActivity.createHomeActivity(this, profileId)
+      }
     startActivity(intent)
     finish()
   }

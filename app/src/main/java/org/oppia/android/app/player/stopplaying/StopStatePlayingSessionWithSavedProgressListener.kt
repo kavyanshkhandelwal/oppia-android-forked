@@ -5,7 +5,6 @@ package org.oppia.android.app.player.stopplaying
  * the topic.
  */
 interface StopStatePlayingSessionWithSavedProgressListener {
-
   /**
    * Leave the currently playing session without saving the current progress.
    *

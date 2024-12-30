@@ -26,7 +26,5 @@ class XmlSyntaxErrorHandler : ErrorHandler {
    *
    * @return a list of all the errors collected by the error handler
    */
-  fun retrieveErrorList(): List<SAXParseException> {
-    return syntaxErrorList
-  }
+  fun retrieveErrorList(): List<SAXParseException> = syntaxErrorList
 }

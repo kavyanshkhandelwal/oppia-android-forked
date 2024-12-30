@@ -42,7 +42,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogReportingModuleTest.TestApplication::class)
 class LogReportingModuleTest {
-
   @Inject
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
@@ -77,30 +76,26 @@ class LogReportingModuleTest {
 
   @Module
   class TestPlatformParameterModule {
-
     companion object {
       var forceLoggingLearnerStudyIds: Boolean = false
     }
 
     @Provides
     @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
 
     @Provides
     @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> =
+      PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
       )
-    }
 
     @Provides
     @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLoggingLearnerStudyIds)
-    }
+    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(forceLoggingLearnerStudyIds)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -111,22 +106,26 @@ class LogReportingModuleTest {
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(logReportingModuleTest: LogReportingModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogReportingModuleTest_TestApplicationComponent.builder()
+      DaggerLogReportingModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -349,7 +349,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getStringInLocale(-1) }
     }
   }
@@ -359,11 +359,13 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(HEBREW_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getStringInLocaleWithWrapping(
-        R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-      )
-    }
+    val str =
+      impl.run {
+        resources.getStringInLocaleWithWrapping(
+          R.string.test_string_with_arg_hebrew,
+          "123 Some Street, Mountain View, CA",
+        )
+      }
 
     // This is based on the example here:
     // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
@@ -378,7 +380,8 @@ class DisplayLocaleImplTest {
 
     impl.run {
       resources.getStringInLocaleWithWrapping(
-        R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        R.string.test_string_with_arg_hebrew,
+        "123 Some Street, Mountain View, CA",
       )
     }
 
@@ -392,7 +395,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getStringInLocaleWithWrapping(-1) }
     }
   }
@@ -402,11 +405,13 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(HEBREW_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getStringInLocaleWithoutWrapping(
-        R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-      )
-    }
+    val str =
+      impl.run {
+        resources.getStringInLocaleWithoutWrapping(
+          R.string.test_string_with_arg_hebrew,
+          "123 Some Street, Mountain View, CA",
+        )
+      }
 
     // This is based on the example here:
     // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
@@ -422,7 +427,8 @@ class DisplayLocaleImplTest {
 
     impl.run {
       resources.getStringInLocaleWithoutWrapping(
-        R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        R.string.test_string_with_arg_hebrew,
+        "123 Some Street, Mountain View, CA",
       )
     }
 
@@ -435,7 +441,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getStringInLocaleWithoutWrapping(-1) }
     }
   }
@@ -455,7 +461,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getStringArrayInLocale(-1) }
     }
   }
@@ -465,9 +471,10 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 1)
-    }
+    val str =
+      impl.run {
+        resources.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 1)
+      }
 
     assertThat(str).isEqualTo("1 item")
   }
@@ -477,9 +484,10 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 2)
-    }
+    val str =
+      impl.run {
+        resources.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 2)
+      }
 
     // Note that the 'other' case covers most scenarios in English (per
     // https://issuetracker.google.com/issues/36917255).
@@ -491,7 +499,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getQuantityStringInLocale(-1, 0) }
     }
   }
@@ -501,11 +509,14 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityStringInLocaleWithWrapping(
-        R.plurals.test_plural_string_with_args, 2, "Two"
-      )
-    }
+    val str =
+      impl.run {
+        resources.getQuantityStringInLocaleWithWrapping(
+          R.plurals.test_plural_string_with_args,
+          2,
+          "Two",
+        )
+      }
 
     assertThat(str).isEqualTo("Two items")
   }
@@ -517,7 +528,9 @@ class DisplayLocaleImplTest {
 
     impl.run {
       resources.getQuantityStringInLocaleWithWrapping(
-        R.plurals.test_plural_string_with_args, 2, "Two"
+        R.plurals.test_plural_string_with_args,
+        2,
+        "Two",
       )
     }
 
@@ -530,7 +543,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getQuantityStringInLocaleWithWrapping(-1, 0) }
     }
   }
@@ -540,11 +553,14 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityStringInLocaleWithoutWrapping(
-        R.plurals.test_plural_string_with_args, 2, "Two"
-      )
-    }
+    val str =
+      impl.run {
+        resources.getQuantityStringInLocaleWithoutWrapping(
+          R.plurals.test_plural_string_with_args,
+          2,
+          "Two",
+        )
+      }
 
     assertThat(str).isEqualTo("Two items")
   }
@@ -556,7 +572,9 @@ class DisplayLocaleImplTest {
 
     impl.run {
       resources.getQuantityStringInLocaleWithoutWrapping(
-        R.plurals.test_plural_string_with_args, 2, "Two"
+        R.plurals.test_plural_string_with_args,
+        2,
+        "Two",
       )
     }
 
@@ -569,7 +587,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getQuantityStringInLocaleWithoutWrapping(-1, 0) }
     }
   }
@@ -579,9 +597,10 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityTextInLocale(R.plurals.test_plural_string_no_args, 1)
-    }
+    val str =
+      impl.run {
+        resources.getQuantityTextInLocale(R.plurals.test_plural_string_no_args, 1)
+      }
 
     assertThat(str).isEqualTo("1 item")
   }
@@ -591,9 +610,10 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    val str = impl.run {
-      resources.getQuantityTextInLocale(R.plurals.test_plural_string_no_args, 2)
-    }
+    val str =
+      impl.run {
+        resources.getQuantityTextInLocale(R.plurals.test_plural_string_no_args, 2)
+      }
 
     // Note that the 'other' case covers most scenarios in English (per
     // https://issuetracker.google.com/issues/36917255).
@@ -605,7 +625,7 @@ class DisplayLocaleImplTest {
     val impl = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val resources = context.resources
 
-    assertThrows<Resources.NotFoundException>() {
+    assertThrows<Resources.NotFoundException> {
       impl.run { resources.getQuantityTextInLocale(-1, 0) }
     }
   }
@@ -616,7 +636,8 @@ class DisplayLocaleImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDisplayLocaleImplTest_TestApplicationComponent.builder()
+    DaggerDisplayLocaleImplTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -627,9 +648,7 @@ class DisplayLocaleImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -637,8 +656,8 @@ class DisplayLocaleImplTest {
   @Component(
     modules = [
       TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -656,83 +675,154 @@ class DisplayLocaleImplTest {
     // Date & time: Wed Apr 24 2019 08:22:03 GMT.
     private const val MORNING_UTC_TIMESTAMP_MILLIS = 1556094123000
 
-    private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ENGLISH
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "en"
-          }.build()
+    private val US_ENGLISH_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ENGLISH
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "en"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.UNITED_STATES
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "US"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.UNITED_STATES
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "US"
-        }.build()
-      }.build()
-    }.build()
 
-    private val EGYPT_ARABIC_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ARABIC
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "ar"
-          }.build()
+    private val EGYPT_ARABIC_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ARABIC
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "ar"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.REGION_UNSPECIFIED
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "EG"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.REGION_UNSPECIFIED
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "EG"
-        }.build()
-      }.build()
-    }.build()
 
-    private val TURKEY_TURKISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.LANGUAGE_UNSPECIFIED
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "tr"
-          }.build()
+    private val TURKEY_TURKISH_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.LANGUAGE_UNSPECIFIED
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "tr"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.REGION_UNSPECIFIED
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "TR"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.REGION_UNSPECIFIED
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "TR"
-        }.build()
-      }.build()
-    }.build()
 
-    private val HEBREW_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ARABIC
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "he"
-          }.build()
+    private val HEBREW_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ARABIC
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "he"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.UNITED_STATES
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "US"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.UNITED_STATES
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "US"
-        }.build()
-      }.build()
-    }.build()
 
-    private fun String.extractNumbers(): List<String> =
-      "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
+    private fun String.extractNumbers(): List<String> = "\\d+".toRegex().findAll(this).flatMap { it.groupValues }.toList()
   }
 }

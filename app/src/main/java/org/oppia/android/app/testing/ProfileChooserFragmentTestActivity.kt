@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 /** Test Activity used for testing [ProfileChooserFragment]. */
 class ProfileChooserFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var profileChooserFragmentTestActivityPresenter:
     ProfileChooserFragmentTestActivityPresenter

@@ -64,7 +64,7 @@ class StringResourceValidationCheckTest {
 
   @Test
   fun testScript_missingPath_throwsException() {
-    val exception = assertThrows<IllegalArgumentException>() { runScript(/* With no path. */) }
+    val exception = assertThrows<IllegalArgumentException> { runScript(/* With no path. */) }
 
     assertThat(exception)
       .hasMessageThat()
@@ -73,9 +73,10 @@ class StringResourceValidationCheckTest {
 
   @Test
   fun testScript_validPath_noStringFiles_fails() {
-    val exception = assertThrows<IllegalStateException>() {
-      runScript(tempFolder.root.absolutePath)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runScript(tempFolder.root.absolutePath)
+      }
 
     assertThat(exception).hasMessageThat().contains("Missing translation strings for language(s)")
   }
@@ -96,16 +97,16 @@ class StringResourceValidationCheckTest {
   @Test
   fun testScript_inconsistentLines_arabic_failsWithFindings() {
     populateArabicTranslations(
-      mapOf("str1" to AR_STRING_NO_NEWLINES, "str2" to AR_STRING_TWO_NEWLINES)
+      mapOf("str1" to AR_STRING_NO_NEWLINES, "str2" to AR_STRING_TWO_NEWLINES),
     )
     populateBrazilianPortugueseTranslations(mapOf("str1" to PT_BR_STRING_ONE_NEWLINE))
     populateEnglishTranslations(
-      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE),
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception> { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -117,7 +118,7 @@ class StringResourceValidationCheckTest {
       2 consistency error(s) were found for ARABIC strings (file: app/src/main/res/values-ar/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -125,15 +126,15 @@ class StringResourceValidationCheckTest {
   fun testScript_inconsistentLines_brazilianPortuguese_failsWithFindings() {
     populateArabicTranslations(mapOf("str1" to AR_STRING_ONE_NEWLINE))
     populateBrazilianPortugueseTranslations(
-      mapOf("str1" to PT_BR_STRING_NO_NEWLINES, "str2" to PT_BR_STRING_TWO_NEWLINES)
+      mapOf("str1" to PT_BR_STRING_NO_NEWLINES, "str2" to PT_BR_STRING_TWO_NEWLINES),
     )
     populateEnglishTranslations(
-      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE),
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception> { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -145,7 +146,7 @@ class StringResourceValidationCheckTest {
       2 consistency error(s) were found for BRAZILIAN_PORTUGUESE strings (file: app/src/main/res/values-pt-rBR/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -154,14 +155,14 @@ class StringResourceValidationCheckTest {
     populateArabicTranslations(mapOf("str1" to AR_STRING_ONE_NEWLINE))
     populateBrazilianPortugueseTranslations(mapOf("str1" to PT_BR_STRING_ONE_NEWLINE))
     populateEnglishTranslations(
-      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE),
     )
     populateSwahiliTranslations(
-      mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES)
+      mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES),
     )
     populateNigerianPidginTranslations(mapOf("str1" to PCM_STRING_ONE_NEWLINE))
 
-    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception> { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -173,7 +174,7 @@ class StringResourceValidationCheckTest {
       2 consistency error(s) were found for SWAHILI strings (file: app/src/main/res/values-sw/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -182,14 +183,14 @@ class StringResourceValidationCheckTest {
     populateArabicTranslations(mapOf("str1" to AR_STRING_ONE_NEWLINE))
     populateBrazilianPortugueseTranslations(mapOf("str1" to PT_BR_STRING_ONE_NEWLINE))
     populateEnglishTranslations(
-      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE),
     )
     populateSwahiliTranslations(mapOf("str1" to SW_STRING_ONE_NEWLINE))
     populateNigerianPidginTranslations(
-      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
+      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES),
     )
 
-    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception> { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -201,29 +202,29 @@ class StringResourceValidationCheckTest {
       2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
   @Test
   fun testScript_inconsistentLines_allLanguages_failsWithFindings() {
     populateArabicTranslations(
-      mapOf("str1" to AR_STRING_NO_NEWLINES, "str2" to AR_STRING_TWO_NEWLINES)
+      mapOf("str1" to AR_STRING_NO_NEWLINES, "str2" to AR_STRING_TWO_NEWLINES),
     )
     populateBrazilianPortugueseTranslations(
-      mapOf("str1" to PT_BR_STRING_NO_NEWLINES, "str2" to PT_BR_STRING_TWO_NEWLINES)
+      mapOf("str1" to PT_BR_STRING_NO_NEWLINES, "str2" to PT_BR_STRING_TWO_NEWLINES),
     )
     populateEnglishTranslations(
-      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE)
+      mapOf("str1" to EN_STRING_ONE_NEWLINE, "str2" to EN_STRING_ONE_NEWLINE),
     )
     populateSwahiliTranslations(
-      mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES)
+      mapOf("str1" to SW_STRING_NO_NEWLINES, "str2" to SW_STRING_TWO_NEWLINES),
     )
     populateNigerianPidginTranslations(
-      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES)
+      mapOf("str1" to PCM_STRING_NO_NEWLINES, "str2" to PCM_STRING_TWO_NEWLINES),
     )
 
-    val exception = assertThrows<Exception>() { runScript(tempFolder.root.absolutePath) }
+    val exception = assertThrows<Exception> { runScript(tempFolder.root.absolutePath) }
 
     // This output check also inadvertently verifies that the script doesn't care about missing
     // strings in translated string files.
@@ -247,7 +248,7 @@ class StringResourceValidationCheckTest {
       2 consistency error(s) were found for NIGERIAN_PIDGIN strings (file: app/src/main/res/values-pcm-rNG/strings.xml):
       - string str1: original translation uses 2 line(s) but translation uses 1 line(s). Please remove any extra lines or add any that are missing.
       - string str2: original translation uses 2 line(s) but translation uses 3 line(s). Please remove any extra lines or add any that are missing.
-      """.trimIndent().trim()
+      """.trimIndent().trim(),
     )
   }
 
@@ -276,20 +277,25 @@ class StringResourceValidationCheckTest {
   private fun populateTranslations(
     resourceDir: File,
     valuesDirName: String,
-    translations: Map<String, String>
+    translations: Map<String, String>,
   ) {
     val document = documentBuilderFactory.newDocumentBuilder().newDocument()
     val resourcesRoot = document.createElement("resources").also { document.appendChild(it) }
-    translations.map { (name, value) ->
-      document.createElement("string").also {
-        it.setAttribute("name", name)
-        it.textContent = value
-      }
-    }.forEach(resourcesRoot::appendChild)
+    translations
+      .map { (name, value) ->
+        document.createElement("string").also {
+          it.setAttribute("name", name)
+          it.textContent = value
+        }
+      }.forEach(resourcesRoot::appendChild)
     writeTranslationsFile(resourceDir, valuesDirName, document.toSource())
   }
 
-  private fun writeTranslationsFile(resourceDir: File, valuesDirName: String, contents: String) {
+  private fun writeTranslationsFile(
+    resourceDir: File,
+    valuesDirName: String,
+    contents: String,
+  ) {
     val valuesDir = File(resourceDir, valuesDirName).also { check(it.mkdir()) }
     File(valuesDir, "strings.xml").writeText(contents)
   }
@@ -297,9 +303,10 @@ class StringResourceValidationCheckTest {
   private fun Document.toSource(): String {
     // Reference: https://stackoverflow.com/a/5456836.
     val transformer = transformerFactory.newTransformer()
-    return StringWriter().apply {
-      transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
-    }.toString()
+    return StringWriter()
+      .apply {
+        transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
+      }.toString()
   }
 
   private fun ByteArrayOutputStream.asString() = toString(Charsets.UTF_8.name())

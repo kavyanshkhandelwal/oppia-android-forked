@@ -22,8 +22,6 @@ class AppVersionFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return appVersionFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = appVersionFragmentPresenter.handleCreateView(inflater, container)
 }

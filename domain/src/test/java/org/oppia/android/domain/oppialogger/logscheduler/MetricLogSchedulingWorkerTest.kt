@@ -102,10 +102,12 @@ class MetricLogSchedulingWorkerTest {
     TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(metricLogSchedulingWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(metricLogSchedulingWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -113,14 +115,18 @@ class MetricLogSchedulingWorkerTest {
   fun testWorker_enqueueRequest_verifyStorageUsagePerformanceMetricLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.STORAGE_USAGE_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -135,14 +141,18 @@ class MetricLogSchedulingWorkerTest {
   fun testWorker_enqueueRequest_verifyPeriodicBackgroundPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -157,14 +167,18 @@ class MetricLogSchedulingWorkerTest {
   fun testWorker_enqueueRequest_verifyPeriodicUiPerformanceMetricsLogging() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -179,8 +193,9 @@ class MetricLogSchedulingWorkerTest {
   fun testWorker_enqueueRequest_writeFails_verifyFailure() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -194,15 +209,18 @@ class MetricLogSchedulingWorkerTest {
   fun testScheduler_enqueueRequestForIncorrectWorkerCase_verifyWorkRequestReturnsFailureResult() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData: Data = Data.Builder()
-      .putString(
-        MetricLogSchedulingWorker.WORKER_CASE_KEY,
-        INCORRECT_WORKER_CASE
-      ).build()
+    val inputData: Data =
+      Data
+        .Builder()
+        .putString(
+          MetricLogSchedulingWorker.WORKER_CASE_KEY,
+          INCORRECT_WORKER_CASE,
+        ).build()
 
-    val request = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
-      .setInputData(inputData)
-      .build()
+    val request =
+      OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -212,7 +230,8 @@ class MetricLogSchedulingWorkerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent.builder()
+    DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -225,21 +244,19 @@ class MetricLogSchedulingWorkerTest {
     fun provideContext(application: Application): Context = application
 
     @Provides
-    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
-      AnalyticsEventLogger = fakeAnalyticsEventLogger
+    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger): AnalyticsEventLogger = fakeAnalyticsEventLogger
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
 
     @Provides
     fun bindFakePerformanceMetricsEventLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger,
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
   }
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -255,7 +272,6 @@ class MetricLogSchedulingWorkerTest {
 
   @Module
   interface TestFirebaseLogUploaderModule {
-
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }
@@ -271,23 +287,27 @@ class MetricLogSchedulingWorkerTest {
       AssetModule::class, TestPlatformParameterModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
-    ]
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(metricLogSchedulingWorkerTest: MetricLogSchedulingWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent.builder()
+      DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

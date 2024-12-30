@@ -101,7 +101,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TextInputInteractionViewTestActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TextInputInteractionViewTestActivityTest {
   @get:Rule
@@ -131,13 +131,14 @@ class TextInputInteractionViewTestActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
-    val activityScenario = ActivityScenario.launch(
-      TextInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        TextInputInteractionViewTestActivity::class.java,
+      )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
@@ -145,24 +146,25 @@ class TextInputInteractionViewTestActivityTest {
     }
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withChar_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      TextInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        TextInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "abc"
-        )
+          "abc",
+        ),
       )
     activityScenario.onActivity { activity ->
       val pendingAnswer = activity.textInputViewModel.getPendingAnswer()
       assertThat(pendingAnswer.answer).isInstanceOf(InteractionObject::class.java)
       assertThat(pendingAnswer.answer.objectTypeCase).isEqualTo(
-        InteractionObject.ObjectTypeCase.NORMALIZED_STRING
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
       )
       assertThat(pendingAnswer.answer.normalizedString).isEqualTo("abc")
     }
@@ -171,14 +173,15 @@ class TextInputInteractionViewTestActivityTest {
   @Test
   @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
-    val activityScenario = ActivityScenario.launch(
-      TextInputInteractionViewTestActivity::class.java
-    )
+    val activityScenario =
+      ActivityScenario.launch(
+        TextInputInteractionViewTestActivity::class.java,
+      )
     onView(withId(R.id.test_text_input_interaction_view))
       .perform(
         editTextInputAction.appendText(
-          "abc"
-        )
+          "abc",
+        ),
       )
     activityScenario.onActivity { activity ->
       activity.requestedOrientation = Configuration.ORIENTATION_LANDSCAPE
@@ -186,27 +189,28 @@ class TextInputInteractionViewTestActivityTest {
     onView(withId(R.id.test_text_input_interaction_view))
       .check(matches(isDisplayed()))
       .check(
-        matches(withText("abc"))
+        matches(withText("abc")),
       )
   }
 
+  // will not be used by user
   @Test
   @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
     ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
       scrollToSubmitButton()
-      onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.submit_button))
+        .check(matches(isDisplayed()))
         .perform(
-          click()
+          click(),
         )
       onView(withId(R.id.text_input_error))
         .check(
           matches(
             withText(
-              R.string.text_error_empty_input
-            )
-          )
+              R.string.text_error_empty_input,
+            ),
+          ),
         )
     }
   }
@@ -244,8 +248,8 @@ class TextInputInteractionViewTestActivityTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class
-    ]
+      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -254,9 +258,13 @@ class TextInputInteractionViewTestActivityTest {
     fun inject(inputInteractionViewTestActivityTest: TextInputInteractionViewTestActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTextInputInteractionViewTestActivityTest_TestApplicationComponent.builder()
+      DaggerTextInputInteractionViewTestActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -265,9 +273,12 @@ class TextInputInteractionViewTestActivityTest {
       component.inject(inputInteractionViewTestActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

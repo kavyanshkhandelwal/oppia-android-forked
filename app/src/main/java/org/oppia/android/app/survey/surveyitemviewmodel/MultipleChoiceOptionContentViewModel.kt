@@ -7,7 +7,7 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
 class MultipleChoiceOptionContentViewModel(
   val optionContent: String,
   val itemIndex: Int,
-  private val optionsViewModel: SurveyAnswerItemViewModel
+  private val optionsViewModel: SurveyAnswerItemViewModel,
 ) : ObservableViewModel() {
   var isAnswerSelected = ObservableBoolean()
 

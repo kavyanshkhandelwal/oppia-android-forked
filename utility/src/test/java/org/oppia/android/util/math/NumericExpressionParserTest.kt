@@ -30,7 +30,6 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NumericExpressionParserTest {
-
   @Test
   fun testParse_singleInteger_returnsExpressionWithConstant() {
     val expression = parseNumericExpressionWithAllErrors("1")
@@ -1768,7 +1767,7 @@ class NumericExpressionParserTest {
 
     private fun parseNumericExpressionInternal(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode
+      errorCheckingMode: ErrorCheckingMode,
     ): MathExpression {
       val result = MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
       assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)

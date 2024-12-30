@@ -135,8 +135,10 @@ class ProfileRenameFragmentTest {
   val activityTestRule: ActivityTestRule<ProfileRenameActivity> =
     ActivityTestRule(
       ProfileRenameActivity::class.java,
-      /* initialTouchMode= */ true,
-      /* launchActivity= */ false
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
     )
 
   @Before
@@ -159,311 +161,324 @@ class ProfileRenameFragmentTest {
 
   @Test
   fun testProfileRenameFragment_inputNewName_clickSave_checkProfileEditActivityIsOpen() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("James"))
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(ProfileEditActivity::class.java.name))
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputNewName_clickImeActionButton_checkProfileEditActivityIsOpen() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("James"),
+          pressImeActionButton(),
         )
-      ).perform(
-        editTextInputAction.appendText("James"),
-        pressImeActionButton()
-      )
-      testCoroutineDispatchers.runCurrent()
-    }
+        testCoroutineDispatchers.runCurrent()
+      }
     intended(hasComponent(ProfileEditActivity::class.java.name))
   }
 
   @Test
   fun testProfileRenameFragment_inputNewName_configurationChange_checkSaveIsEnabled() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
-    }
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("James"))
+        testCoroutineDispatchers.runCurrent()
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).check(matches(isEnabled()))
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputNewName_configurationChange_inputTextExists() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("James"))
+        testCoroutineDispatchers.runCurrent()
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).check(
+          matches(
+            withText("James"),
+          ),
         )
-      ).perform(editTextInputAction.appendText("James"))
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).check(
-        matches(
-          withText("James")
-        )
-      )
-    }
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_checkNameNotUniqueError() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("Admin"))
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_input)).check(
+          matches(
+            hasErrorText(
+              context.resources.getString(
+                R.string.add_profile_error_name_not_unique,
+              ),
+            ),
+          ),
         )
-      ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input)).check(
-        matches(
-          hasErrorText(
-            context.resources.getString(
-              R.string.add_profile_error_name_not_unique
-            )
-          )
-        )
-      )
-    }
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_inputName_checkErrorIsCleared() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("Admin"))
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText(" "))
-      onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
-    }
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("Admin"))
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText(" "))
+        onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputNameWithNumbers_clickCreate_checkNameOnlyLettersError() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("123"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_only_letters)
-            )
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("123"))
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_input))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.add_profile_error_name_only_letters),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputNameWithNumbers_clickCreate_inputName_checkErrorIsCleared() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText("123"))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
-        )
-      ).perform(editTextInputAction.appendText(" "))
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
-    }
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText("123"))
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(editTextInputAction.appendText(" "))
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_input)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputName_changeConfiguration_checkNameIsDisplayed() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("test"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("test"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+        testCoroutineDispatchers.runCurrent()
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).check(
+          matches(
+            withText("test"),
+          ),
         )
-      ).check(
-        matches(
-          withText("test")
-        )
-      )
-    }
+      }
   }
 
   @Test
   fun testProfileRenameFragment_inputOldName_clickSave_changeConfiguration_errorIsVisible() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_rename_input_edit_text),
-          isDescendantOfA(withId(R.id.profile_rename_input))
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_rename_input_edit_text),
+            isDescendantOfA(withId(R.id.profile_rename_input)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("Admin"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("Admin"),
-        closeSoftKeyboard()
-      )
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_input))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_name_not_unique)
-            )
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_input))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.add_profile_error_name_not_unique),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileRenameFragment_clickSave_changeConfiguration_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use {
-      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
-    }
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use {
+        onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
+        onView(isRoot()).perform(orientationLandscape())
+        testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.profile_rename_save_button)).check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    ActivityScenario.launch<ProfileRenameActivity>(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = context,
-        internalProfileId = 1
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    ActivityScenario
+      .launch<ProfileRenameActivity>(
+        ProfileRenameActivity.createProfileRenameActivity(
+          context = context,
+          internalProfileId = 1,
+        ),
+      ).use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
 
-        val profileRenameFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment
-        val args =
-          checkNotNull(profileRenameFragment.arguments) {
-            "Expected arguments to be passed to ProfileRenameFragment"
-          }
-        val receivedProfileId = args.extractCurrentUserProfileId().internalId
+          val profileRenameFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.profile_rename_fragment_placeholder) as ProfileRenameFragment
+          val args =
+            checkNotNull(profileRenameFragment.arguments) {
+              "Expected arguments to be passed to ProfileRenameFragment"
+            }
+          val receivedProfileId = args.extractCurrentUserProfileId().internalId
 
-        assertThat(receivedProfileId).isEqualTo(1)
+          assertThat(receivedProfileId).isEqualTo(1)
+        }
       }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -495,8 +510,8 @@ class ProfileRenameFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -507,9 +522,14 @@ class ProfileRenameFragmentTest {
     fun inject(profileRenameFragmentTest: ProfileRenameFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileRenameFragmentTest_TestApplicationComponent.builder().setApplication(this)
+      DaggerProfileRenameFragmentTest_TestApplicationComponent
+        .builder()
+        .setApplication(this)
         .build() as TestApplicationComponent
     }
 
@@ -517,9 +537,12 @@ class ProfileRenameFragmentTest {
       component.inject(profileRenameFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

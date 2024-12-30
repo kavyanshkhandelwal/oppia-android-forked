@@ -49,7 +49,7 @@ class ScriptBackgroundCoroutineDispatcherTest {
     dispatcher.close()
 
     // The task should fail to schedule since the dispatcher has been closed.
-    assertThrows<CancellationException>() {
+    assertThrows<CancellationException> {
       runBlocking { withContext(dispatcher) { mockRunnable.run() } }
     }
   }
@@ -58,7 +58,8 @@ class ScriptBackgroundCoroutineDispatcherTest {
   fun testClose_pendingTaskLongerThanCloseTimeout_taskIsNotRun() {
     val dispatcher =
       ScriptBackgroundCoroutineDispatcher(
-        closeTimeout = 50L, closeTimeoutUnit = TimeUnit.MILLISECONDS
+        closeTimeout = 50L,
+        closeTimeoutUnit = TimeUnit.MILLISECONDS,
       )
     val taskStartedChannel = Channel<Boolean>()
     // Schedule a task but make sure that the attempt to close the dispatcher happens exactly

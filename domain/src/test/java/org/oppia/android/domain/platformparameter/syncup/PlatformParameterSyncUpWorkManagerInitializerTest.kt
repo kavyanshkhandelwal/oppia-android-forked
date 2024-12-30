@@ -66,7 +66,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class PlatformParameterSyncUpWorkManagerInitializerTest {
-
   @Inject
   lateinit var syncUpWorkManagerInitializer: PlatformParameterSyncUpWorkManagerInitializer
 
@@ -87,10 +86,12 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   fun setup() {
     setUpTestApplicationComponent()
     setUpApplicationForContext()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(platformParameterSyncUpWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -113,10 +114,12 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_verifyWorkerConstraints() {
-    val workerConstraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build()
+    val workerConstraints =
+      Constraints
+        .Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresBatteryNotLow(true)
+        .build()
 
     val syncUpWorkRequestConstraints = syncUpWorkManagerInitializer.getSyncUpWorkerConstraints()
     assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
@@ -124,10 +127,13 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   @Test
   fun testWorkRequest_verifyWorkRequestData() {
-    val workerTypeForSyncingUpParameters = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val workerTypeForSyncingUpParameters =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
     val syncUpWorkRequestData = syncUpWorkManagerInitializer.getSyncUpWorkRequestData()
 
@@ -143,12 +149,13 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
 
     assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
     )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPlatformParameterSyncUpWorkManagerInitializerTest_TestApplicationComponent.builder()
+    DaggerPlatformParameterSyncUpWorkManagerInitializerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -157,11 +164,13 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   private fun setUpApplicationForContext() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -176,9 +185,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -197,26 +204,28 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
 
   @Module
   class TestNetworkModule {
-
     @OppiaRetrofit
     @Provides
     @Singleton
     fun provideRetrofitInstance(
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
+      @BaseUrl baseUrl: String,
     ): Optional<Retrofit> {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
+      val client =
+        OkHttpClient
+          .Builder()
+          .addInterceptor(jsonPrefixNetworkInterceptor)
+          .addInterceptor(remoteAuthNetworkInterceptor)
+          .build()
 
       return Optional.of(
-        Retrofit.Builder()
+        Retrofit
+          .Builder()
           .baseUrl(baseUrl)
           .addConverterFactory(MoshiConverterFactory.create())
           .client(client)
-          .build()
+          .build(),
       )
     }
 
@@ -225,9 +234,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): Optional<PlatformParameterService> {
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
       return Optional.of(MockPlatformParameterService(delegate))
     }
@@ -244,14 +251,15 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

@@ -38,11 +38,12 @@ class HelpFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to HelpFragment"
-    }
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to HelpFragment"
+      }
     val args =
       arguments.getProto(HELP_FRAGMENT_ARGUMENTS_KEY, HelpFragmentArguments.getDefaultInstance())
     val isMultipane = args.isMultipane

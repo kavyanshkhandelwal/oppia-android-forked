@@ -29,12 +29,16 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
 
     /** Returns a new [Intent] to route to [CompletedStoryListActivity] for a specified profile ID. */
-    fun createCompletedStoryListActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createCompletedStoryListActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val intent = Intent(context, CompletedStoryListActivity::class.java).apply {
-        decorateWithUserProfileId(profileId)
-        decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
-      }
+      val intent =
+        Intent(context, CompletedStoryListActivity::class.java).apply {
+          decorateWithUserProfileId(profileId)
+          decorateWithScreenName(COMPLETED_STORY_LIST_ACTIVITY)
+        }
 
       return intent
     }

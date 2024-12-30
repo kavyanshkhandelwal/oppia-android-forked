@@ -12,7 +12,7 @@ class HelpItemViewModel(
   val activity: AppCompatActivity,
   val title: String,
   val isMultipane: Boolean,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
   fun onClick(title: String) {
     when (title) {
@@ -27,12 +27,14 @@ class HelpItemViewModel(
       }
       resourceHandler.getStringInLocale(R.string.third_party_dependency_list_activity_title) -> {
         if (isMultipane) {
-          val loadThirdPartyDependencyListFragmentListener = activity as
-            LoadThirdPartyDependencyListFragmentListener
+          val loadThirdPartyDependencyListFragmentListener =
+            activity as
+              LoadThirdPartyDependencyListFragmentListener
           loadThirdPartyDependencyListFragmentListener.loadThirdPartyDependencyListFragment()
         } else {
-          val routeToThirdPartyDependencyListListener = activity
-            as RouteToThirdPartyDependencyListListener
+          val routeToThirdPartyDependencyListListener =
+            activity
+              as RouteToThirdPartyDependencyListListener
           routeToThirdPartyDependencyListListener.onRouteToThirdPartyDependencyList()
         }
       }
@@ -47,8 +49,9 @@ class HelpItemViewModel(
 
   private fun loadPolicyPage(policyPage: PolicyPage) {
     if (isMultipane) {
-      val loadPoliciesFragmentListener = activity as
-        LoadPoliciesFragmentListener
+      val loadPoliciesFragmentListener =
+        activity as
+          LoadPoliciesFragmentListener
       loadPoliciesFragmentListener.loadPoliciesFragment(policyPage)
     } else {
       val routeToPoliciesListener = activity as RouteToPoliciesListener

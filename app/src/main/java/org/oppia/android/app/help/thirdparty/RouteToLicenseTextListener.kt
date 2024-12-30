@@ -10,5 +10,8 @@ interface RouteToLicenseTextListener {
    *   [ThirdPartyDependencyListFragment]
    * @param licenseIndex index of the license clicked by the user in the [LicenseListFragment]
    */
-  fun onRouteToLicenseText(dependencyIndex: Int, licenseIndex: Int)
+  fun onRouteToLicenseText(
+    dependencyIndex: Int,
+    licenseIndex: Int,
+  )
 }

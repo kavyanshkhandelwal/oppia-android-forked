@@ -38,13 +38,14 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TestCoroutineDispatcherEspressoImplTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
-class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
-  shortTaskDelayMillis = 5L,
-  longTaskDelayMillis = 15000L,
-  longTaskDelayDeltaCheckMillis = 1000L
-) {
+class TestCoroutineDispatcherEspressoImplTest :
+  TestCoroutineDispatcherTestBase(
+    shortTaskDelayMillis = 5L,
+    longTaskDelayMillis = 15000L,
+    longTaskDelayDeltaCheckMillis = 1000L,
+  ) {
   @Before
   override fun setUp() {
     setUpTestApplicationComponent()
@@ -122,9 +123,7 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -151,23 +150,27 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
     modules = [
       TestDispatcherModule::class,
       TestModule::class,
-      TestLogReportingModule::class
-    ]
+      TestLogReportingModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: TestCoroutineDispatcherEspressoImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestCoroutineDispatcherEspressoImplTest_TestApplicationComponent.builder()
+      DaggerTestCoroutineDispatcherEspressoImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

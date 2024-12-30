@@ -12,9 +12,8 @@ import java.util.concurrent.TimeUnit
 class ApplicationLifecycleModule {
   @Provides
   @IntoSet
-  fun bindLifecycleObserver(
-    applicationLifecycleObserver: ApplicationLifecycleObserver
-  ): ApplicationStartupListener = applicationLifecycleObserver
+  fun bindLifecycleObserver(applicationLifecycleObserver: ApplicationLifecycleObserver): ApplicationStartupListener =
+    applicationLifecycleObserver
 
   @Provides
   @LearnerAnalyticsInactivityLimitMillis
@@ -22,7 +21,6 @@ class ApplicationLifecycleModule {
 
   @Provides
   @IntoSet
-  fun provideApplicationLifecycleListeners(
-    activeTimeController: ExplorationActiveTimeController
-  ): ApplicationLifecycleListener = activeTimeController
+  fun provideApplicationLifecycleListeners(activeTimeController: ExplorationActiveTimeController): ApplicationLifecycleListener =
+    activeTimeController
 }

@@ -16,17 +16,19 @@ class ProtoExtraMatcher {
      * @param keyName The key name of the proto extra in the Intent.
      * @param expectedProto The expected proto message to be matched.
      */
-    fun <T : MessageLite> hasProtoExtraCheck(keyName: String, expectedProto: T): Matcher<Intent> {
+    fun <T : MessageLite> hasProtoExtraCheck(
+      keyName: String,
+      expectedProto: T,
+    ): Matcher<Intent> {
       val defaultProto = expectedProto.newBuilderForType().build()
       return object : TypeSafeMatcher<Intent>() {
         override fun describeTo(description: Description) {
           description.appendText("Intent with extra: $keyName and proto value: $expectedProto")
         }
 
-        override fun matchesSafely(intent: Intent): Boolean {
-          return intent.hasExtra(keyName) &&
+        override fun matchesSafely(intent: Intent): Boolean =
+          intent.hasExtra(keyName) &&
             intent.getProtoExtra(keyName, defaultProto) == expectedProto
-        }
       }
     }
   }

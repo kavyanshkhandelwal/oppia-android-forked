@@ -29,81 +29,82 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraic
  *
  * See this class's tests for a list of supported cases (both for matching and not matching).
  */
-class MathEquationInputIsEquivalentToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val consoleLogger: ConsoleLogger
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+class MathEquationInputIsEquivalentToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val consoleLogger: ConsoleLogger,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<String> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun matches(
-    answer: String,
-    input: String,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val allowedVariables = classificationContext.extractAllowedVariables()
-    val (answerLhs, answerRhs) =
-      parsePolynomials(answer, allowedVariables, ALL_ERRORS) ?: return false
-    val (inputLhs, inputRhs) =
-      parsePolynomials(input, allowedVariables, REQUIRED_ONLY) ?: return false
+    override fun matches(
+      answer: String,
+      input: String,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val allowedVariables = classificationContext.extractAllowedVariables()
+      val (answerLhs, answerRhs) =
+        parsePolynomials(answer, allowedVariables, ALL_ERRORS) ?: return false
+      val (inputLhs, inputRhs) =
+        parsePolynomials(input, allowedVariables, REQUIRED_ONLY) ?: return false
 
-    val newAnswerLhs = (answerLhs - answerRhs).sort()
-    val newInputLhs = (inputLhs - inputRhs).sort()
-    val negativeAnswerLhs = (-newAnswerLhs).sort()
-    val negativeInputLhs = (-newInputLhs).sort()
+      val newAnswerLhs = (answerLhs - answerRhs).sort()
+      val newInputLhs = (inputLhs - inputRhs).sort()
+      val negativeAnswerLhs = (-newAnswerLhs).sort()
+      val negativeInputLhs = (-newInputLhs).sort()
 
-    // By subtracting the right-hand sides of both equations with their left-hand sides, the
-    // right-hand side becomes zero for both and implicitly equal. If the new simplified left-hand
-    // sides are equal then the equations are equivalent regardless of how they were originally
-    // arranged. Furthermore, the '-1' check is correct since the order of the equation can flip
-    // depending on how it was inputted, and '-1 * 0=0' so the new right-hand side remains
-    // unaffected.
-    return newAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
-      negativeAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
-      newAnswerLhs.isApproximatelyEqualTo(negativeInputLhs)
-  }
+      // By subtracting the right-hand sides of both equations with their left-hand sides, the
+      // right-hand side becomes zero for both and implicitly equal. If the new simplified left-hand
+      // sides are equal then the equations are equivalent regardless of how they were originally
+      // arranged. Furthermore, the '-1' check is correct since the order of the equation can flip
+      // depending on how it was inputted, and '-1 * 0=0' so the new right-hand side remains
+      // unaffected.
+      return newAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
+        negativeAnswerLhs.isApproximatelyEqualTo(newInputLhs) ||
+        newAnswerLhs.isApproximatelyEqualTo(negativeInputLhs)
+    }
 
-  private fun parsePolynomials(
-    rawEquation: String,
-    allowedVariables: List<String>,
-    checkingMode: ErrorCheckingMode
-  ): Pair<Polynomial, Polynomial>? {
-    return when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
-      is MathParsingResult.Success -> {
-        val lhsExp = eqResult.result.leftSide.toPolynomial()
-        val rhsExp = eqResult.result.rightSide.toPolynomial()
-        if (lhsExp != null && rhsExp != null) {
-          lhsExp to rhsExp
-        } else {
-          consoleLogger.w(
-            "AlgebraEqEquivalent", "Equation is not a supported polynomial: $rawEquation."
+    private fun parsePolynomials(
+      rawEquation: String,
+      allowedVariables: List<String>,
+      checkingMode: ErrorCheckingMode,
+    ): Pair<Polynomial, Polynomial>? =
+      when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
+        is MathParsingResult.Success -> {
+          val lhsExp = eqResult.result.leftSide.toPolynomial()
+          val rhsExp = eqResult.result.rightSide.toPolynomial()
+          if (lhsExp != null && rhsExp != null) {
+            lhsExp to rhsExp
+          } else {
+            consoleLogger.w(
+              "AlgebraEqEquivalent",
+              "Equation is not a supported polynomial: $rawEquation.",
+            )
+            null
+          }
+        }
+        is MathParsingResult.Failure -> {
+          consoleLogger.e(
+            "AlgebraEqEquivalent",
+            "Encountered equation that failed parsing. Equation: $rawEquation." +
+              " Failure: ${eqResult.error}.",
           )
           null
         }
       }
-      is MathParsingResult.Failure -> {
-        consoleLogger.e(
-          "AlgebraEqEquivalent",
-          "Encountered equation that failed parsing. Equation: $rawEquation." +
-            " Failure: ${eqResult.error}."
-        )
-        null
-      }
-    }
-  }
 
-  private companion object {
-    private fun ClassificationContext.extractAllowedVariables(): List<String> {
-      return customizationArgs["customOskLetters"]
-        ?.schemaObjectList
-        ?.schemaObjectList
-        ?.map { it.normalizedString }
-        ?: listOf()
+    private companion object {
+      private fun ClassificationContext.extractAllowedVariables(): List<String> =
+        customizationArgs["customOskLetters"]
+          ?.schemaObjectList
+          ?.schemaObjectList
+          ?.map { it.normalizedString }
+          ?: listOf()
     }
   }
-}

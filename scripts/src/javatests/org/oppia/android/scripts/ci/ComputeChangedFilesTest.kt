@@ -56,7 +56,7 @@ class ComputeChangedFilesTest {
 
   @Test
   fun testUtility_noArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf()) }
+    val exception = assertThrows<SecurityException> { main(arrayOf()) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -66,7 +66,7 @@ class ComputeChangedFilesTest {
 
   @Test
   fun testUtility_oneArgument_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf("first")) }
+    val exception = assertThrows<SecurityException> { main(arrayOf("first")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -76,7 +76,7 @@ class ComputeChangedFilesTest {
 
   @Test
   fun testUtility_twoArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second")) }
+    val exception = assertThrows<SecurityException> { main(arrayOf("first", "second")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -86,7 +86,7 @@ class ComputeChangedFilesTest {
 
   @Test
   fun testUtility_threeArguments_printsUsageStringAndExits() {
-    val exception = assertThrows<SecurityException>() { main(arrayOf("first", "second", "three")) }
+    val exception = assertThrows<SecurityException> { main(arrayOf("first", "second", "three")) }
 
     // Bazel catches the System.exit() call and throws a SecurityException. This is a bit hacky way
     // to verify that System.exit() is called, but it's helpful.
@@ -96,36 +96,41 @@ class ComputeChangedFilesTest {
 
   @Test
   fun testUtility_directoryRootDoesNotExist_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=false"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=false"))
+      }
 
     assertThat(exception).hasMessageThat().contains("Expected 'fake' to be a directory")
   }
 
   @Test
   fun testUtility_invalid_lastArgument_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_filess=false"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_filess=false"))
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected last argument to start with 'compute_all_files='")
   }
 
   @Test
   fun testUtility_invalid_lastArgumentValue_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=blah"))
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        main(arrayOf("fake", "alsofake", "andstillfake", "compute_all_files=blah"))
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Expected last argument to have 'true' or 'false' passed to it, not: 'blah'")
   }
 
   @Test
   fun testUtility_emptyDirectory_throwsException() {
-    val exception = assertThrows<IllegalStateException>() { runScript(currentHeadHash = "ad") }
+    val exception = assertThrows<IllegalStateException> { runScript(currentHeadHash = "ad") }
 
     assertThat(exception).hasMessageThat().contains("run from the workspace's root directory")
   }
@@ -262,7 +267,7 @@ class ComputeChangedFilesTest {
       oldFileName = "First",
       oldSubPackage = "app",
       newFileName = "RenamedFile",
-      newSubPackage = "domain"
+      newSubPackage = "domain",
     )
 
     val reportedFiles = runScript()
@@ -293,7 +298,7 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     createAndCommitFiles(
       "InstrumentationFile",
-      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
     )
 
     val reportedFiles = runScript()
@@ -306,21 +311,21 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     createAndCommitFiles(
       "Robolectric",
-      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app",
     )
     createAndCommitFiles(
       "Third",
-      subPackage = "instrumentation"
+      subPackage = "instrumentation",
     )
 
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).contains(
-      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt",
     )
     assertThat(reportedFiles.first().changedFilesList).contains(
-      "instrumentation/Third.kt"
+      "instrumentation/Third.kt",
     )
   }
 
@@ -330,7 +335,7 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles(
       "InstrumentationFile",
-      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player"
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/player",
     )
 
     val reportedFiles = runScript()
@@ -345,21 +350,21 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles(
       "Robolectric",
-      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app"
+      subPackage = "instrumentation/src/javatests/org/oppia/android/instrumentation/app",
     )
     createAndCommitFiles(
       "Third",
-      subPackage = "instrumentation"
+      subPackage = "instrumentation",
     )
 
     val reportedFiles = runScript()
 
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList).contains(
-      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt"
+      "instrumentation/src/javatests/org/oppia/android/instrumentation/app/Robolectric.kt",
     )
     assertThat(reportedFiles.first().changedFilesList).contains(
-      "instrumentation/Third.kt"
+      "instrumentation/Third.kt",
     )
   }
 
@@ -476,8 +481,10 @@ class ComputeChangedFilesTest {
     assertThat(fileMap["domain"]?.changedFilesList).containsExactly("domain/DomainFile.kt")
     assertThat(fileMap["generic"]?.changedFilesList)
       .containsExactly(
-        "data/DataFile.kt", "instrumentation/InstrumentationFile.kt", "testing/TestingFile.kt",
-        "utility/UtilityFile.kt"
+        "data/DataFile.kt",
+        "instrumentation/InstrumentationFile.kt",
+        "testing/TestingFile.kt",
+        "utility/UtilityFile.kt",
       )
     assertThat(fileMap["scripts"]?.changedFilesList)
       .containsExactly("scripts/ScriptsFile.kt")
@@ -489,11 +496,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("AppFile1", "AppFile2", "AppFile3", subPackage = "app")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // App module files partition eagerly, so there should be 3 groups. Also, the code below
     // verifies duplicates by ensuring no shards are empty and there are no duplicate files. Note
@@ -512,11 +520,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("DataFile1", "DataFile2", "DataFile3", subPackage = "data")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // Data files are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
@@ -530,11 +539,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("DomainFile1", "DomainFile2", "DomainFile3", subPackage = "domain")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // Domain files are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
@@ -547,22 +557,26 @@ class ComputeChangedFilesTest {
     initializeEmptyGitRepository()
     switchToFeatureBranch()
     createAndCommitFiles(
-      "InstrumentationFile1", "InstrumentationFile2", "InstrumentationFile3",
-      subPackage = "instrumentation"
+      "InstrumentationFile1",
+      "InstrumentationFile2",
+      "InstrumentationFile3",
+      subPackage = "instrumentation",
     )
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // Instrumentation files are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
     assertThat(reportedFiles.first().changedFilesList)
       .containsExactly(
-        "instrumentation/InstrumentationFile1.kt", "instrumentation/InstrumentationFile2.kt",
-        "instrumentation/InstrumentationFile3.kt"
+        "instrumentation/InstrumentationFile1.kt",
+        "instrumentation/InstrumentationFile2.kt",
+        "instrumentation/InstrumentationFile3.kt",
       )
   }
 
@@ -572,11 +586,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("ScriptsFile1", "ScriptsFile2", "ScriptsFile3", subPackage = "scripts")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // See app module file above for specifics. Scripts files are medium partitioned which means 3
     // files will be split into two partitions.
@@ -588,7 +603,7 @@ class ComputeChangedFilesTest {
       .containsExactly(
         "scripts/ScriptsFile1.kt",
         "scripts/ScriptsFile2.kt",
-        "scripts/ScriptsFile3.kt"
+        "scripts/ScriptsFile3.kt",
       )
   }
 
@@ -598,11 +613,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("TestingFile1", "TestingFile2", "TestingFile3", subPackage = "testing")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // Testing files are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
@@ -610,7 +626,7 @@ class ComputeChangedFilesTest {
       .containsExactly(
         "testing/TestingFile1.kt",
         "testing/TestingFile2.kt",
-        "testing/TestingFile3.kt"
+        "testing/TestingFile3.kt",
       )
   }
 
@@ -620,11 +636,12 @@ class ComputeChangedFilesTest {
     switchToFeatureBranch()
     createAndCommitFiles("UtilityFile1", "UtilityFile2", "UtilityFile3", subPackage = "utility")
 
-    val reportedFiles = runScriptWithShardLimits(
-      maxFileCountPerLargeShard = 3,
-      maxFileCountPerMediumShard = 2,
-      maxFileCountPerSmallShard = 1
-    )
+    val reportedFiles =
+      runScriptWithShardLimits(
+        maxFileCountPerLargeShard = 3,
+        maxFileCountPerMediumShard = 2,
+        maxFileCountPerSmallShard = 1,
+      )
 
     // Utility tests are partitioned such that they are combined into one partition.
     assertThat(reportedFiles).hasSize(1)
@@ -632,7 +649,7 @@ class ComputeChangedFilesTest {
       .containsExactly(
         "utility/UtilityFile1.kt",
         "utility/UtilityFile2.kt",
-        "utility/UtilityFile3.kt"
+        "utility/UtilityFile3.kt",
       )
   }
 
@@ -902,7 +919,7 @@ class ComputeChangedFilesTest {
 
   private fun runScriptWithTextOutput(
     currentHeadHash: String = computeMergeBase("develop"),
-    computeAllFiles: Boolean = false
+    computeAllFiles: Boolean = false,
   ): List<String> {
     val outputLog = tempFolder.newFile("output.log")
     main(
@@ -910,8 +927,8 @@ class ComputeChangedFilesTest {
         tempFolder.root.absolutePath,
         outputLog.absolutePath,
         currentHeadHash,
-        "compute_all_files=$computeAllFiles"
-      )
+        "compute_all_files=$computeAllFiles",
+      ),
     )
     return outputLog.readLines()
   }
@@ -923,16 +940,14 @@ class ComputeChangedFilesTest {
    */
   private fun runScript(
     currentHeadHash: String = computeMergeBase("develop"),
-    computeAllFiles: Boolean = false
-  ): List<ChangedFilesBucket> {
-    return parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllFiles))
-  }
+    computeAllFiles: Boolean = false,
+  ): List<ChangedFilesBucket> = parseOutputLogLines(runScriptWithTextOutput(currentHeadHash, computeAllFiles))
 
   private fun runScriptWithShardLimits(
     baseBranch: String = "develop",
     maxFileCountPerLargeShard: Int,
     maxFileCountPerMediumShard: Int,
-    maxFileCountPerSmallShard: Int
+    maxFileCountPerSmallShard: Int,
   ): List<ChangedFilesBucket> {
     val outputLog = tempFolder.newFile("output.log")
     val currentHeadHash = computeMergeBase(baseBranch)
@@ -944,22 +959,21 @@ class ComputeChangedFilesTest {
       maxFileCountPerLargeShard = maxFileCountPerLargeShard,
       maxFileCountPerMediumShard = maxFileCountPerMediumShard,
       maxFileCountPerSmallShard = maxFileCountPerSmallShard,
-      commandExecutor = commandExecutor
+      commandExecutor = commandExecutor,
     ).compute(
       pathToRoot = tempFolder.root.absolutePath,
       pathToOutputFile = outputLog.absolutePath,
       baseCommit = currentHeadHash,
-      computeAllFilesSetting = false
+      computeAllFilesSetting = false,
     )
 
     return parseOutputLogLines(outputLog.readLines())
   }
 
-  private fun parseOutputLogLines(outputLogLines: List<String>): List<ChangedFilesBucket> {
-    return outputLogLines.map {
+  private fun parseOutputLogLines(outputLogLines: List<String>): List<ChangedFilesBucket> =
+    outputLogLines.map {
       ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(it.split(";")[1])
     }
-  }
 
   private fun createEmptyWorkspace() {
     testBazelWorkspace.initEmptyWorkspace()
@@ -974,7 +988,10 @@ class ComputeChangedFilesTest {
     testGitRepository.commit(message = "Initial commit.", allowEmpty = true)
   }
 
-  private fun createFiles(vararg fileNames: String, subPackage: String): List<File> {
+  private fun createFiles(
+    vararg fileNames: String,
+    subPackage: String,
+  ): List<File> {
     createEmptyWorkspace()
     if (!File(tempFolder.root, subPackage).exists()) {
       tempFolder.newFolder(subPackage)
@@ -984,7 +1001,10 @@ class ComputeChangedFilesTest {
     }
   }
 
-  private fun createNonKotlinFiles(vararg fileNames: String, subPackage: String): List<File> {
+  private fun createNonKotlinFiles(
+    vararg fileNames: String,
+    subPackage: String,
+  ): List<File> {
     createEmptyWorkspace()
     if (!File(tempFolder.root, subPackage).exists()) {
       tempFolder.newFolder(subPackage)
@@ -994,25 +1014,37 @@ class ComputeChangedFilesTest {
     }
   }
 
-  private fun createAndCommitFiles(vararg fileNames: String, subPackage: String) {
+  private fun createAndCommitFiles(
+    vararg fileNames: String,
+    subPackage: String,
+  ) {
     val createdFiles = createFiles(fileNames = fileNames, subPackage = subPackage)
 
     testGitRepository.stageFilesForCommit(createdFiles)
     testGitRepository.commit(message = "Introduce files.")
   }
 
-  private fun changeFile(fileName: String, subPackage: String): File {
+  private fun changeFile(
+    fileName: String,
+    subPackage: String,
+  ): File {
     val file = File(tempFolder.root, "$subPackage/$fileName.kt")
     file.appendText(";") // Add a character to change the file.
     return file
   }
 
-  private fun changeAndStageFile(fileName: String, subPackage: String) {
+  private fun changeAndStageFile(
+    fileName: String,
+    subPackage: String,
+  ) {
     val file = changeFile(fileName, subPackage)
     testGitRepository.stageFileForCommit(file)
   }
 
-  private fun changeAndCommitFile(fileName: String, subPackage: String) {
+  private fun changeAndCommitFile(
+    fileName: String,
+    subPackage: String,
+  ) {
     changeAndStageFile(fileName, subPackage)
     testGitRepository.commit(message = "Modified file $fileName")
   }
@@ -1021,7 +1053,7 @@ class ComputeChangedFilesTest {
     oldFileName: String,
     oldSubPackage: String,
     newFileName: String,
-    newSubPackage: String
+    newSubPackage: String,
   ) {
     val oldFilePath = File(tempFolder.root, "$oldSubPackage/$oldFileName.kt")
     val newFilePath = File(tempFolder.root, "$newSubPackage/$newFileName.kt")
@@ -1034,7 +1066,10 @@ class ComputeChangedFilesTest {
     testGitRepository.commit(message = "Move file from $oldFilePath to $newFilePath")
   }
 
-  private fun removeAndCommitFile(fileName: String, subPackage: String) {
+  private fun removeAndCommitFile(
+    fileName: String,
+    subPackage: String,
+  ) {
     val file = File(tempFolder.root, "$subPackage/$fileName.kt")
     testGitRepository.removeFileForCommit(file)
     testGitRepository.commit(message = "Remove file $fileName")
@@ -1047,9 +1082,10 @@ class ComputeChangedFilesTest {
   private fun computeMergeBase(referenceBranch: String): String =
     GitClient(tempFolder.root, referenceBranch, commandExecutor).branchMergeBase
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

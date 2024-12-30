@@ -22,14 +22,18 @@ import javax.inject.Singleton
 class RetrofitTestModule {
   @Provides
   @Singleton
-  fun provideMockRetrofit(@OppiaRetrofit retrofit: Optional<Retrofit>): MockRetrofit {
+  fun provideMockRetrofit(
+    @OppiaRetrofit retrofit: Optional<Retrofit>,
+  ): MockRetrofit {
     check(retrofit.isPresent) {
       "Expected Retrofit to be present in order to create a MockRetrofit"
     }
     val behavior = NetworkBehavior.create()
     behavior.setFailurePercent(0)
-    return MockRetrofit.Builder(retrofit.get()).apply {
-      networkBehavior(behavior)
-    }.build()
+    return MockRetrofit
+      .Builder(retrofit.get())
+      .apply {
+        networkBehavior(behavior)
+      }.build()
   }
 }

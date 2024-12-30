@@ -10,26 +10,27 @@ import javax.inject.Inject
 private const val INITIAL_SLIDE_NUMBER = 0
 
 /** [ViewModel] for [OnboardingFragment]. */
-class OnboardingViewModel @Inject constructor(
-  private val resourceHandler: AppLanguageResourceHandler
-) : ObservableViewModel() {
-  val slideNumber = ObservableField(INITIAL_SLIDE_NUMBER)
-  val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
-  val slideDotsContainerContentDescription =
-    ObservableField(computeSlideDotsContainerContentDescription(INITIAL_SLIDE_NUMBER))
+class OnboardingViewModel
+  @Inject
+  constructor(
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) : ObservableViewModel() {
+    val slideNumber = ObservableField(INITIAL_SLIDE_NUMBER)
+    val totalNumberOfSlides = TOTAL_NUMBER_OF_SLIDES
+    val slideDotsContainerContentDescription =
+      ObservableField(computeSlideDotsContainerContentDescription(INITIAL_SLIDE_NUMBER))
 
-  fun slideChanged(slideIndex: Int) {
-    slideNumber.set(slideIndex)
-    slideDotsContainerContentDescription.set(
-      computeSlideDotsContainerContentDescription(slideIndex)
-    )
-  }
+    fun slideChanged(slideIndex: Int) {
+      slideNumber.set(slideIndex)
+      slideDotsContainerContentDescription.set(
+        computeSlideDotsContainerContentDescription(slideIndex),
+      )
+    }
 
-  private fun computeSlideDotsContainerContentDescription(slideNumber: Int): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.onboarding_slide_dots_content_description,
-      (slideNumber + 1).toString(),
-      totalNumberOfSlides.toString()
-    )
+    private fun computeSlideDotsContainerContentDescription(slideNumber: Int): String =
+      resourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_slide_dots_content_description,
+        (slideNumber + 1).toString(),
+        totalNumberOfSlides.toString(),
+      )
   }
-}

@@ -15,12 +15,14 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   companion object {
     /** Arguments key for AdminSettingsDialogFragment. */
     const val ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY = "AdminSettingsDialogFragment.arguments"
+
     fun newInstance(adminPin: String): AdminSettingsDialogFragment {
       val args = AdminSettingsDialogFragmentArguments.newBuilder().setAdminPin(adminPin).build()
       return AdminSettingsDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -34,15 +36,16 @@ class AdminSettingsDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    val args = arguments?.getProto(
-      ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-      AdminSettingsDialogFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments?.getProto(
+        ADMIN_SETTINGS_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        AdminSettingsDialogFragmentArguments.getDefaultInstance(),
+      )
     val adminPin = args?.adminPin
     checkNotNull(adminPin) { "Admin Pin must not be null" }
     return adminSettingsDialogFragmentPresenter.handleOnCreateDialog(
       activity as ProfileRouteDialogInterface,
-      adminPin
+      adminPin,
     )
   }
 }

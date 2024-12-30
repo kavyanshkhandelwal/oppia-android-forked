@@ -29,7 +29,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MetricLogSchedulerModuleTest {
-
   @Inject
   lateinit var metricLogScheduler: MetricLogScheduler
 
@@ -44,7 +43,8 @@ class MetricLogSchedulerModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMetricLogSchedulerModuleTest_TestApplicationComponent.builder()
+    DaggerMetricLogSchedulerModuleTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -62,8 +62,8 @@ class MetricLogSchedulerModuleTest {
   @Component(
     modules = [
       TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

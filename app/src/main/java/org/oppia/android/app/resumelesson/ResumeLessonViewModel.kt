@@ -13,16 +13,17 @@ import javax.inject.Inject
  * being resumed.
  */
 @FragmentScope
-class ResumeLessonViewModel @Inject constructor(
-  @ExplorationHtmlParserEntityType val entityType: String
-) : ObservableViewModel() {
+class ResumeLessonViewModel
+  @Inject
+  constructor(
+    @ExplorationHtmlParserEntityType val entityType: String,
+  ) : ObservableViewModel() {
+    /** The chapter summary for the exploration that may be resumed. */
+    val chapterSummary = ObservableField(ChapterSummary.getDefaultInstance())
 
-  /** The chapter summary for the exploration that may be resumed. */
-  val chapterSummary = ObservableField(ChapterSummary.getDefaultInstance())
+    /** The title of the chapter/exploration being resumed. */
+    val chapterTitle = ObservableField<String>()
 
-  /** The title of the chapter/exploration being resumed. */
-  val chapterTitle = ObservableField<String>()
-
-  /** The [ExplorationCheckpoint] that may be used to resume the exploration. */
-  val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
-}
+    /** The [ExplorationCheckpoint] that may be used to resume the exploration. */
+    val explorationCheckpoint = ObservableField(ExplorationCheckpoint.getDefaultInstance())
+  }

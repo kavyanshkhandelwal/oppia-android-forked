@@ -24,68 +24,77 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
  * Note that the hint should be set via [setPlaceholder] to ensure that it's properly initialized if
  * using databinding, otherwise setting the hint through android:hint should work fine.
  */
-class MathExpressionInteractionsView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = android.R.attr.editTextStyle
-) : AppCompatEditText(context, attrs, defStyle), View.OnFocusChangeListener {
-  private var hintText: CharSequence = ""
-  private val stateKeyboardButtonListener: StateKeyboardButtonListener
+class MathExpressionInteractionsView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = android.R.attr.editTextStyle,
+  ) : AppCompatEditText(context, attrs, defStyle),
+    View.OnFocusChangeListener {
+    private var hintText: CharSequence = ""
+    private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
-  init {
-    onFocusChangeListener = this
-    // Assume multi-line for the purpose of properly showing long hints.
-    isSingleLine = hint != null
-    stateKeyboardButtonListener = context as StateKeyboardButtonListener
-  }
+    init {
+      onFocusChangeListener = this
+      // Assume multi-line for the purpose of properly showing long hints.
+      isSingleLine = hint != null
+      stateKeyboardButtonListener = context as StateKeyboardButtonListener
+    }
 
-  // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
-  override fun onFocusChange(v: View, hasFocus: Boolean) = if (hasFocus) {
-    hintText = hint
-    hideHint()
-    showSoftKeyboard(v, context)
-  } else {
-    restoreHint()
-    hideSoftKeyboard(v, context)
-  }
-
-  override fun onKeyPreIme(keyCode: Int, event: KeyEvent): Boolean {
-    if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-      clearFocus()
+    // TODO(#4574): Add tests to verify that the placeholder correctly shows/doesn’t show when expected
+    override fun onFocusChange(
+      v: View,
+      hasFocus: Boolean,
+    ) = if (hasFocus) {
+      hintText = hint
+      hideHint()
+      showSoftKeyboard(v, context)
+    } else {
       restoreHint()
+      hideSoftKeyboard(v, context)
     }
-    return super.onKeyPreIme(keyCode, event)
-  }
 
-  override fun onEditorAction(actionCode: Int) {
-    if (actionCode == EditorInfo.IME_ACTION_DONE) {
-      stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
+    override fun onKeyPreIme(
+      keyCode: Int,
+      event: KeyEvent,
+    ): Boolean {
+      if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+        clearFocus()
+        restoreHint()
+      }
+      return super.onKeyPreIme(keyCode, event)
     }
-    super.onEditorAction(actionCode)
-  }
 
-  /**
-   * Sets the current placeholder text used by the view to [placeholderText].
-   *
-   * See the class's KDoc for caveats on how this relates to the text view's hint.
-   */
-  fun setPlaceholder(placeholderText: CharSequence) {
-    hintText = placeholderText
-    if (!hasFocus()) {
-      hint = placeholderText
+    override fun onEditorAction(actionCode: Int) {
+      if (actionCode == EditorInfo.IME_ACTION_DONE) {
+        stateKeyboardButtonListener.onEditorAction(EditorInfo.IME_ACTION_DONE)
+      }
+      super.onEditorAction(actionCode)
+    }
+
+    /**
+     * Sets the current placeholder text used by the view to [placeholderText].
+     *
+     * See the class's KDoc for caveats on how this relates to the text view's hint.
+     */
+    fun setPlaceholder(placeholderText: CharSequence) {
+      hintText = placeholderText
+      if (!hasFocus()) {
+        hint = placeholderText
+      }
+    }
+
+    private fun hideHint() {
+      hint = ""
+      typeface = Typeface.DEFAULT
+      isSingleLine = true
+    }
+
+    private fun restoreHint() {
+      hint = hintText
+
+      if (text?.isEmpty() == true) setTypeface(typeface, Typeface.ITALIC)
+      isSingleLine = false
     }
   }
-
-  private fun hideHint() {
-    hint = ""
-    typeface = Typeface.DEFAULT
-    isSingleLine = true
-  }
-
-  private fun restoreHint() {
-    hint = hintText
-
-    if (text?.isEmpty() == true) setTypeface(typeface, Typeface.ITALIC)
-    isSingleLine = false
-  }
-}

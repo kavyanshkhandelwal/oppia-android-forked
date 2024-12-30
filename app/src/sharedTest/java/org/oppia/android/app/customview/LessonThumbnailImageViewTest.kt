@@ -91,7 +91,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = LessonThumbnailImageViewTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class LessonThumbnailImageViewTest {
   @get:Rule
@@ -101,17 +101,21 @@ class LessonThumbnailImageViewTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    LessonThumbnailImageViewTestActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      LessonThumbnailImageViewTestActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Test
   fun callDataBindingFunctions_thenInflateView_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
+    val lessonThumbnailImageViewHolder =
+      activityTestRule.activity
+        .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
     lessonThumbnailImageView.id = R.id.lesson_thumbnail
@@ -131,8 +135,9 @@ class LessonThumbnailImageViewTest {
   @Test
   fun inflateView_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
     activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
+    val lessonThumbnailImageViewHolder =
+      activityTestRule.activity
+        .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
 
     val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
     lessonThumbnailImageView.id = R.id.lesson_thumbnail
@@ -178,8 +183,8 @@ class LessonThumbnailImageViewTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -190,9 +195,13 @@ class LessonThumbnailImageViewTest {
     fun inject(lessonThumbnailImageViewTest: LessonThumbnailImageViewTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLessonThumbnailImageViewTest_TestApplicationComponent.builder()
+      DaggerLessonThumbnailImageViewTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -201,9 +210,12 @@ class LessonThumbnailImageViewTest {
       component.inject(lessonThumbnailImageViewTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -22,121 +22,121 @@ import javax.inject.Inject
 
 /** The ViewModel for StoryFragment. */
 @FragmentScope
-class StoryViewModel @Inject constructor(
-  private val fragment: Fragment,
-  private val topicController: TopicController,
-  private val explorationCheckpointController: ExplorationCheckpointController,
-  private val oppiaLogger: OppiaLogger,
-  @StoryHtmlParserEntityType val entityType: String,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val translationController: TranslationController
-) {
-  private var internalProfileId: Int = -1
-  private lateinit var classroomId: String
-  private lateinit var topicId: String
+class StoryViewModel
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val topicController: TopicController,
+    private val explorationCheckpointController: ExplorationCheckpointController,
+    private val oppiaLogger: OppiaLogger,
+    @StoryHtmlParserEntityType val entityType: String,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val translationController: TranslationController,
+  ) {
+    private var internalProfileId: Int = -1
+    private lateinit var classroomId: String
+    private lateinit var topicId: String
 
-  /** [storyId] needs to be set before any of the live data members can be accessed. */
-  private lateinit var storyId: String
-  private val explorationSelectionListener = fragment as ExplorationSelectionListener
+    /** [storyId] needs to be set before any of the live data members can be accessed. */
+    private lateinit var storyId: String
+    private val explorationSelectionListener = fragment as ExplorationSelectionListener
 
-  private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
-    topicController.getStory(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId,
-      storyId
-    ).toLiveData()
-  }
-
-  private val storyLiveData: LiveData<EphemeralStorySummary> by lazy {
-    Transformations.map(storyResultLiveData, ::processStoryResult)
-  }
-
-  val storyNameLiveData: LiveData<String> by lazy {
-    Transformations.map(storyLiveData, ::processStoryTitle)
-  }
-
-  val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
-    Transformations.map(storyLiveData, ::processStoryChapterList)
-  }
-
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
-  }
-
-  fun setClassroomId(classroomId: String) {
-    this.classroomId = classroomId
-  }
-
-  fun setTopicId(topicId: String) {
-    this.topicId = topicId
-  }
-
-  fun setStoryId(storyId: String) {
-    this.storyId = storyId
-  }
-
-  private fun processStoryResult(
-    ephemeralResult: AsyncResult<EphemeralStorySummary>
-  ): EphemeralStorySummary {
-    return when (ephemeralResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("StoryFragment", "Failed to retrieve Story: ", ephemeralResult.error)
-        EphemeralStorySummary.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> EphemeralStorySummary.getDefaultInstance()
-      is AsyncResult.Success -> ephemeralResult.value
-    }
-  }
-
-  private fun processStoryTitle(ephemeralStorySummary: EphemeralStorySummary): String {
-    return translationController.extractString(
-      ephemeralStorySummary.storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
-    )
-  }
-
-  private fun processStoryChapterList(
-    ephemeralStorySummary: EphemeralStorySummary
-  ): List<StoryItemViewModel> {
-    val storySummary = ephemeralStorySummary.storySummary
-    val chapterList = ephemeralStorySummary.chaptersList
-    for (position in chapterList.indices) {
-      if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
-        (fragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
-        break
-      }
-    }
-
-    val completedCount =
-      chapterList.filter { ephemeralChapterSummary ->
-        ephemeralChapterSummary.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED
-      }.size
-
-    // List with only the header
-    val itemViewModelList: MutableList<StoryItemViewModel> = mutableListOf(
-      StoryHeaderViewModel(completedCount, chapterList.size, resourceHandler) as StoryItemViewModel
-    )
-
-    // Add the rest of the list
-    itemViewModelList.addAll(
-      chapterList.mapIndexed { index, ephemeralChapterSummary ->
-        StoryChapterSummaryViewModel(
-          index,
-          chapterList.size,
-          fragment,
-          explorationSelectionListener,
-          explorationCheckpointController,
-          internalProfileId,
-          classroomId,
+    private val storyResultLiveData: LiveData<AsyncResult<EphemeralStorySummary>> by lazy {
+      topicController
+        .getStory(
+          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
           topicId,
           storyId,
-          ephemeralChapterSummary,
-          entityType,
-          resourceHandler,
-          translationController
-        )
-      }
-    )
+        ).toLiveData()
+    }
 
-    return itemViewModelList
+    private val storyLiveData: LiveData<EphemeralStorySummary> by lazy {
+      Transformations.map(storyResultLiveData, ::processStoryResult)
+    }
+
+    val storyNameLiveData: LiveData<String> by lazy {
+      Transformations.map(storyLiveData, ::processStoryTitle)
+    }
+
+    val storyChapterLiveData: LiveData<List<StoryItemViewModel>> by lazy {
+      Transformations.map(storyLiveData, ::processStoryChapterList)
+    }
+
+    fun setInternalProfileId(internalProfileId: Int) {
+      this.internalProfileId = internalProfileId
+    }
+
+    fun setClassroomId(classroomId: String) {
+      this.classroomId = classroomId
+    }
+
+    fun setTopicId(topicId: String) {
+      this.topicId = topicId
+    }
+
+    fun setStoryId(storyId: String) {
+      this.storyId = storyId
+    }
+
+    private fun processStoryResult(ephemeralResult: AsyncResult<EphemeralStorySummary>): EphemeralStorySummary =
+      when (ephemeralResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e("StoryFragment", "Failed to retrieve Story: ", ephemeralResult.error)
+          EphemeralStorySummary.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> EphemeralStorySummary.getDefaultInstance()
+        is AsyncResult.Success -> ephemeralResult.value
+      }
+
+    private fun processStoryTitle(ephemeralStorySummary: EphemeralStorySummary): String =
+      translationController.extractString(
+        ephemeralStorySummary.storySummary.storyTitle,
+        ephemeralStorySummary.writtenTranslationContext,
+      )
+
+    private fun processStoryChapterList(ephemeralStorySummary: EphemeralStorySummary): List<StoryItemViewModel> {
+      val storySummary = ephemeralStorySummary.storySummary
+      val chapterList = ephemeralStorySummary.chaptersList
+      for (position in chapterList.indices) {
+        if (storySummary.chapterList[position].chapterPlayState == ChapterPlayState.NOT_STARTED) {
+          (fragment as StoryFragmentScroller).smoothScrollToPosition(position + 1)
+          break
+        }
+      }
+
+      val completedCount =
+        chapterList
+          .filter { ephemeralChapterSummary ->
+            ephemeralChapterSummary.chapterSummary.chapterPlayState == ChapterPlayState.COMPLETED
+          }.size
+
+      // List with only the header
+      val itemViewModelList: MutableList<StoryItemViewModel> =
+        mutableListOf(
+          StoryHeaderViewModel(completedCount, chapterList.size, resourceHandler) as StoryItemViewModel,
+        )
+
+      // Add the rest of the list
+      itemViewModelList.addAll(
+        chapterList.mapIndexed { index, ephemeralChapterSummary ->
+          StoryChapterSummaryViewModel(
+            index,
+            chapterList.size,
+            fragment,
+            explorationSelectionListener,
+            explorationCheckpointController,
+            internalProfileId,
+            classroomId,
+            topicId,
+            storyId,
+            ephemeralChapterSummary,
+            entityType,
+            resourceHandler,
+            translationController,
+          )
+        },
+      )
+
+      return itemViewModelList
+    }
   }
-}

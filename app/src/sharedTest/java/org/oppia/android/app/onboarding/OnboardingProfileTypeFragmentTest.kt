@@ -117,7 +117,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = OnboardingProfileTypeFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class OnboardingProfileTypeFragmentTest {
   @get:Rule
@@ -127,9 +127,13 @@ class OnboardingProfileTypeFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
   private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -157,10 +161,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               withText(
-                R.string.onboarding_profile_type_activity_header
-              )
-            )
-          )
+                R.string.onboarding_profile_type_activity_header,
+              ),
+            ),
+          ),
         )
     }
   }
@@ -176,10 +180,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               withText(
-                R.string.onboarding_profile_type_activity_header
-              )
-            )
-          )
+                R.string.onboarding_profile_type_activity_header,
+              ),
+            ),
+          ),
         )
     }
   }
@@ -193,10 +197,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_student_text)
-              )
-            )
-          )
+                withText(R.string.onboarding_profile_type_activity_student_text),
+              ),
+            ),
+          ),
         )
 
       onView(withId(R.id.profile_type_supervisor_navigation_card))
@@ -205,10 +209,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_parent_text)
-              )
-            )
-          )
+                withText(R.string.onboarding_profile_type_activity_parent_text),
+              ),
+            ),
+          ),
         )
     }
   }
@@ -224,10 +228,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_student_text)
-              )
-            )
-          )
+                withText(R.string.onboarding_profile_type_activity_student_text),
+              ),
+            ),
+          ),
         )
 
       onView(withId(R.id.profile_type_supervisor_navigation_card))
@@ -236,10 +240,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_parent_text)
-              )
-            )
-          )
+                withText(R.string.onboarding_profile_type_activity_parent_text),
+              ),
+            ),
+          ),
         )
     }
   }
@@ -253,10 +257,10 @@ class OnboardingProfileTypeFragmentTest {
             allOf(
               isDisplayed(),
               withText(
-                R.string.onboarding_step_count_two
-              )
-            )
-          )
+                R.string.onboarding_step_count_two,
+              ),
+            ),
+          ),
         )
     }
   }
@@ -267,9 +271,11 @@ class OnboardingProfileTypeFragmentTest {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val params = CreateProfileActivityParams.newBuilder()
-        .setProfileType(ProfileType.SOLE_LEARNER)
-        .build()
+      val params =
+        CreateProfileActivityParams
+          .newBuilder()
+          .setProfileType(ProfileType.SOLE_LEARNER)
+          .build()
 
       intended(hasComponent(CreateProfileActivity::class.java.name))
       intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
@@ -286,9 +292,11 @@ class OnboardingProfileTypeFragmentTest {
       onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      val params = CreateProfileActivityParams.newBuilder()
-        .setProfileType(ProfileType.SOLE_LEARNER)
-        .build()
+      val params =
+        CreateProfileActivityParams
+          .newBuilder()
+          .setProfileType(ProfileType.SOLE_LEARNER)
+          .build()
 
       intended(hasComponent(CreateProfileActivity::class.java.name))
       intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
@@ -352,16 +360,16 @@ class OnboardingProfileTypeFragmentTest {
     }
   }
 
-  private fun launchOnboardingProfileTypeActivity():
-    ActivityScenario<OnboardingProfileTypeActivity>? {
-      val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
+  private fun launchOnboardingProfileTypeActivity(): ActivityScenario<OnboardingProfileTypeActivity>? {
+    val scenario =
+      ActivityScenario.launch<OnboardingProfileTypeActivity>(
         OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context).apply {
           decorateWithUserProfileId(testProfileId)
-        }
+        },
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -396,8 +404,8 @@ class OnboardingProfileTypeFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -406,9 +414,13 @@ class OnboardingProfileTypeFragmentTest {
     fun inject(onboardingProfileTypeFragmentTest: OnboardingProfileTypeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingProfileTypeFragmentTest_TestApplicationComponent.builder()
+      DaggerOnboardingProfileTypeFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -417,9 +429,12 @@ class OnboardingProfileTypeFragmentTest {
       component.inject(onboardingProfileTypeFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

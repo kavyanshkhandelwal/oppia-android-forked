@@ -123,7 +123,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = QuestionPlayerActivityLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class QuestionPlayerActivityLocalTest {
   @get:Rule
@@ -287,8 +287,8 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 5)
-        )
+          hasChildCount(/* childCount= */ 5),
+        ),
       )
     }
   }
@@ -307,8 +307,8 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 6)
-        )
+          hasChildCount(/* childCount= */ 6),
+        ),
       )
     }
   }
@@ -324,8 +324,8 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 5)
-        )
+          hasChildCount(/* childCount= */ 5),
+        ),
       )
 
       onView(withId(R.id.question_recycler_view))
@@ -333,35 +333,34 @@ class QuestionPlayerActivityLocalTest {
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 6)
-        )
+          hasChildCount(/* childCount= */ 6),
+        ),
       )
 
       onView(withId(R.id.previous_response_header)).perform(click())
       onView(withId(R.id.question_recycler_view)).check(
         matches(
-          hasChildCount(/* childCount= */ 5)
-        )
+          hasChildCount(/* childCount= */ 5),
+        ),
       )
     }
   }
 
-  private fun launchForQuestionPlayer(
-    skillIdList: ArrayList<String>
-  ): ActivityScenario<QuestionPlayerActivity> {
-    return ActivityScenario.launch(
+  private fun launchForQuestionPlayer(skillIdList: ArrayList<String>): ActivityScenario<QuestionPlayerActivity> =
+    ActivityScenario.launch(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        context, skillIdList, ProfileId.getDefaultInstance()
-      )
+        context,
+        skillIdList,
+        ProfileId.getDefaultInstance(),
+      ),
     )
-  }
 
   private fun submitCorrectAnswerToQuestionPlayerFractionInput() {
     onView(withId(R.id.question_recycler_view))
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
       editTextInputAction.appendText("1/2"),
-      closeSoftKeyboard()
+      closeSoftKeyboard(),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -376,7 +375,7 @@ class QuestionPlayerActivityLocalTest {
       .perform(scrollToViewType(StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION))
     onView(withId(R.id.text_input_interaction_view)).perform(
       editTextInputAction.appendText("1/4"),
-      closeSoftKeyboard()
+      closeSoftKeyboard(),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -411,24 +410,20 @@ class QuestionPlayerActivityLocalTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction {
-    return scrollToHolder(StateViewHolderTypeMatcher(viewType))
-  }
+  private fun scrollToViewType(viewType: StateItemViewModel.ViewType): ViewAction = scrollToHolder(StateViewHolderTypeMatcher(viewType))
 
   /**
    * [BaseMatcher] that matches against the first occurrence of the specified view holder type in
    * StateFragment's RecyclerView.
    */
   private class StateViewHolderTypeMatcher(
-    private val viewType: StateItemViewModel.ViewType
+    private val viewType: StateItemViewModel.ViewType,
   ) : BaseMatcher<RecyclerView.ViewHolder>() {
     override fun describeTo(description: Description?) {
       description?.appendText("item view type of $viewType")
     }
 
-    override fun matches(item: Any?): Boolean {
-      return (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
-    }
+    override fun matches(item: Any?): Boolean = (item as? RecyclerView.ViewHolder)?.itemViewType == viewType.ordinal
   }
 
   private fun setUpTestApplicationComponent() {
@@ -513,8 +508,8 @@ class QuestionPlayerActivityLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -525,9 +520,13 @@ class QuestionPlayerActivityLocalTest {
     fun inject(questionPlayerActivityLocalTest: QuestionPlayerActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerQuestionPlayerActivityLocalTest_TestApplicationComponent.builder()
+      DaggerQuestionPlayerActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -536,9 +535,12 @@ class QuestionPlayerActivityLocalTest {
       component.inject(questionPlayerActivityLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -43,9 +43,12 @@ class ExplorationPlayerTest {
 
     // Assert Topic Completed.
     scrollRecyclerViewTextIntoView("Chapter 1: Prototype Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 1: Prototype Exploration"
-    ).parent.findObjectByRes("chapter_completed_tick")
+    val chapterCompletedTick =
+      device
+        .findObjectByText(
+          "Chapter 1: Prototype Exploration",
+        ).parent
+        .findObjectByRes("chapter_completed_tick")
     assertThat(chapterCompletedTick).isNotNull()
   }
 
@@ -68,9 +71,12 @@ class ExplorationPlayerTest {
 
     // Assert Topic Completed.
     scrollRecyclerViewTextIntoView("Chapter 2: Image Region Selection Exploration")
-    val chapterCompletedTick = device.findObjectByText(
-      "Chapter 2: Image Region Selection Exploration"
-    ).parent.findObjectByRes("chapter_completed_tick")
+    val chapterCompletedTick =
+      device
+        .findObjectByText(
+          "Chapter 2: Image Region Selection Exploration",
+        ).parent
+        .findObjectByRes("chapter_completed_tick")
     assertThat(chapterCompletedTick).isNotNull()
   }
 

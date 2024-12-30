@@ -9,7 +9,5 @@ import dagger.multibindings.IntoSet
 interface ExplorationProgressModule {
   @Binds
   @IntoSet
-  fun provideExplorationProgressListener(
-    activeTimeController: ExplorationActiveTimeController
-  ): ExplorationProgressListener
+  fun provideExplorationProgressListener(activeTimeController: ExplorationActiveTimeController): ExplorationProgressListener
 }

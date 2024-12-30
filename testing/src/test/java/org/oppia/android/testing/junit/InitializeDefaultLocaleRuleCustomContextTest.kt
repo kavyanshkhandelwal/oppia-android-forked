@@ -97,7 +97,7 @@ import javax.inject.Singleton
   oppiaLanguageEnumId = OppiaLanguage.HINGLISH_VALUE,
   appStringMacaronicId = "hi-en",
   appStringAndroidLanguageId = "hi",
-  appStringAndroidRegionId = "en"
+  appStringAndroidRegionId = "en",
 )
 class InitializeDefaultLocaleRuleCustomContextTest {
   @get:Rule
@@ -133,7 +133,7 @@ class InitializeDefaultLocaleRuleCustomContextTest {
     oppiaLanguageEnumId = OppiaLanguage.HINDI_VALUE,
     appStringIetfTag = "hi",
     appStringAndroidLanguageId = "hi",
-    appStringAndroidRegionId = "IN"
+    appStringAndroidRegionId = "IN",
   )
   fun testRule_customMethodContext_initializesLocaleHandlerWithCustomContext() {
     // Rule runs with the method-level override.
@@ -157,7 +157,7 @@ class InitializeDefaultLocaleRuleCustomContextTest {
     appStringIetfTag = "hi",
     appStringMacaronicId = "hi-en",
     appStringAndroidLanguageId = "hi",
-    appStringAndroidRegionId = "IN"
+    appStringAndroidRegionId = "IN",
   )
   fun testRule_customContext_ietfAndMacaronicId_picksIetfId() {
     // Rule runs with the method-level override.
@@ -201,7 +201,7 @@ class InitializeDefaultLocaleRuleCustomContextTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.HINDI_VALUE,
     appStringIetfTag = "hi",
-    appStringAndroidRegionId = "IN"
+    appStringAndroidRegionId = "IN",
   )
   fun testRule_customContext_noAndroidLanguageId_omitsAndroidLanguageId() {
     // Rule runs with the method-level override.
@@ -222,7 +222,7 @@ class InitializeDefaultLocaleRuleCustomContextTest {
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.HINDI_VALUE,
-    appStringIetfTag = "hi"
+    appStringIetfTag = "hi",
   )
   fun testRule_customContext_noAndroidLanguageOrRegionId_omitsAndroidId() {
     // Rule runs with the method-level override.
@@ -271,8 +271,8 @@ class InitializeDefaultLocaleRuleCustomContextTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -283,27 +283,30 @@ class InitializeDefaultLocaleRuleCustomContextTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      initializeDefaultLocaleRuleCustomContextTest: InitializeDefaultLocaleRuleCustomContextTest
-    )
+    fun inject(initializeDefaultLocaleRuleCustomContextTest: InitializeDefaultLocaleRuleCustomContextTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerInitializeDefaultLocaleRuleCustomContextTest_TestApplicationComponent.builder()
+      DaggerInitializeDefaultLocaleRuleCustomContextTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(
-      initializeDefaultLocaleRuleCustomContextTest: InitializeDefaultLocaleRuleCustomContextTest
-    ) {
+    fun inject(initializeDefaultLocaleRuleCustomContextTest: InitializeDefaultLocaleRuleCustomContextTest) {
       component.inject(initializeDefaultLocaleRuleCustomContextTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

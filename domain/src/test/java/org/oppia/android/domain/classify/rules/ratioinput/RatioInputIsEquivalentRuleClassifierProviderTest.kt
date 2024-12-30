@@ -23,26 +23,25 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class RatioInputIsEquivalentRuleClassifierProviderTest {
-
   private val NON_NEGATIVE_VALUE_TEST_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 0
+      value = 0,
     )
   private val RATIO_VALUE_TEST_1_2_3 =
     InteractionObjectTestBuilder.createRatio(
-      listOf(1, 2, 3)
+      listOf(1, 2, 3),
     )
   private val RATIO_VALUE_TEST_2_4_6 =
     InteractionObjectTestBuilder.createRatio(
-      listOf(2, 4, 6)
+      listOf(2, 4, 6),
     )
   private val RATIO_VALUE_TEST_2_4_6_8 =
     InteractionObjectTestBuilder.createRatio(
-      listOf(2, 4, 6, 8)
+      listOf(2, 4, 6, 8),
     )
   private val RATIO_VALUE_TEST_2_3_5 =
     InteractionObjectTestBuilder.createRatio(
-      listOf(2, 3, 5)
+      listOf(2, 3, 5),
     )
 
   @Inject
@@ -66,7 +65,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_2_4_6,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -80,7 +79,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -94,7 +93,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -108,7 +107,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -122,7 +121,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -136,7 +135,7 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
       isEquivalentClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -146,18 +145,19 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isEquivalentClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isEquivalentClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type RATIO_EXPRESSION not NON_NEGATIVE_INT"
+        "Expected input value to be of type RATIO_EXPRESSION not NON_NEGATIVE_INT",
       )
   }
 
@@ -165,13 +165,14 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
   fun testAnswer_testRatio_missingInputX_throwsException() {
     val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isEquivalentClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isEquivalentClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -181,7 +182,9 @@ class RatioInputIsEquivalentRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerRatioInputIsEquivalentRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

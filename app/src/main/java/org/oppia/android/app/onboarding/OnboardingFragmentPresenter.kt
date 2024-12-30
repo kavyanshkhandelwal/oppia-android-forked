@@ -35,243 +35,261 @@ private const val ONBOARDING_FRAGMENT_SAVED_STATE_KEY = "OnboardingFragment.save
 
 /** The presenter for [OnboardingFragment]. */
 @FragmentScope
-class OnboardingFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val translationController: TranslationController,
-  private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel
-) {
-  private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
-  private var profileId: ProfileId = ProfileId.getDefaultInstance()
-  private lateinit var selectedLanguage: OppiaLanguage
-  private lateinit var supportedLanguages: List<OppiaLanguage>
+class OnboardingFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
+    private val profileManagementController: ProfileManagementController,
+    private val oppiaLogger: OppiaLogger,
+    private val translationController: TranslationController,
+    private val onboardingAppLanguageViewModel: OnboardingAppLanguageViewModel,
+  ) {
+    private lateinit var binding: OnboardingAppLanguageSelectionFragmentBinding
+    private var profileId: ProfileId = ProfileId.getDefaultInstance()
+    private lateinit var selectedLanguage: OppiaLanguage
+    private lateinit var supportedLanguages: List<OppiaLanguage>
 
-  /** Handle creation and binding of the [OnboardingFragment] layout. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?, outState: Bundle?): View {
-    binding = OnboardingAppLanguageSelectionFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    /** Handle creation and binding of the [OnboardingFragment] layout. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      outState: Bundle?,
+    ): View {
+      binding =
+        OnboardingAppLanguageSelectionFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    val savedSelectedLanguage = outState?.getProto(
-      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
-      OnboardingFragmentStateBundle.getDefaultInstance()
-    )?.selectedLanguage
+      val savedSelectedLanguage =
+        outState
+          ?.getProto(
+            ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
+            OnboardingFragmentStateBundle.getDefaultInstance(),
+          )?.selectedLanguage
 
-    if (savedSelectedLanguage != null) {
-      selectedLanguage = savedSelectedLanguage
-      onboardingAppLanguageViewModel.setSelectedLanguageLivedata(savedSelectedLanguage)
-    } else {
-      initializeSelectedLanguageToSystemLanguage()
-    }
+      if (savedSelectedLanguage != null) {
+        selectedLanguage = savedSelectedLanguage
+        onboardingAppLanguageViewModel.setSelectedLanguageLivedata(savedSelectedLanguage)
+      } else {
+        initializeSelectedLanguageToSystemLanguage()
+      }
 
-    retrieveSupportedLanguages()
+      retrieveSupportedLanguages()
 
-    subscribeToGetProfileList()
+      subscribeToGetProfileList()
 
-    binding.apply {
-      lifecycleOwner = fragment
+      binding.apply {
+        lifecycleOwner = fragment
 
-      onboardingLanguageTitle.text = appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.onboarding_language_activity_title,
-        appLanguageResourceHandler.getStringInLocale(R.string.app_name)
-      )
-
-      onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(
-        fragment,
-        { languagesList ->
-          supportedLanguages = languagesList
-          val adapter = ArrayAdapter(
-            fragment.requireContext(),
-            R.layout.onboarding_language_dropdown_item,
-            R.id.onboarding_language_text_view,
-            languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+        onboardingLanguageTitle.text =
+          appLanguageResourceHandler.getStringInLocaleWithWrapping(
+            R.string.onboarding_language_activity_title,
+            appLanguageResourceHandler.getStringInLocale(R.string.app_name),
           )
-          onboardingLanguageDropdown.setAdapter(adapter)
-        }
-      )
 
-      onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
-        fragment,
-        { language ->
-          selectedLanguage = language
-          onboardingLanguageDropdown.setText(
-            appLanguageResourceHandler.computeLocalizedDisplayName(
-              language
-            ),
-            false
-          )
-        }
-      )
+        onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(
+          fragment,
+          { languagesList ->
+            supportedLanguages = languagesList
+            val adapter =
+              ArrayAdapter(
+                fragment.requireContext(),
+                R.layout.onboarding_language_dropdown_item,
+                R.id.onboarding_language_text_view,
+                languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) },
+              )
+            onboardingLanguageDropdown.setAdapter(adapter)
+          },
+        )
 
-      onboardingLanguageDropdown.apply {
-        setRawInputType(EditorInfo.TYPE_NULL)
+        onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
+          fragment,
+          { language ->
+            selectedLanguage = language
+            onboardingLanguageDropdown.setText(
+              appLanguageResourceHandler.computeLocalizedDisplayName(
+                language,
+              ),
+              false,
+            )
+          },
+        )
 
-        onItemClickListener =
-          AdapterView.OnItemClickListener { _, _, position, _ ->
-            adapter.getItem(position).let { selectedItem ->
-              selectedItem?.let {
-                selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
-                  appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
-                }[it] ?: OppiaLanguage.ENGLISH
-                onboardingAppLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
+        onboardingLanguageDropdown.apply {
+          setRawInputType(EditorInfo.TYPE_NULL)
+
+          onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+              adapter.getItem(position).let { selectedItem ->
+                selectedItem?.let {
+                  selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
+                    appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
+                  }[it] ?: OppiaLanguage.ENGLISH
+                  onboardingAppLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
+                }
               }
             }
-          }
-      }
+        }
 
-      onboardingLanguageLetsGoButton.setOnClickListener {
-        updateSelectedLanguage(selectedLanguage).also {
-          val intent =
-            OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-          intent.decorateWithUserProfileId(profileId)
-          fragment.startActivity(intent)
+        onboardingLanguageLetsGoButton.setOnClickListener {
+          updateSelectedLanguage(selectedLanguage).also {
+            val intent =
+              OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+            intent.decorateWithUserProfileId(profileId)
+            fragment.startActivity(intent)
+          }
         }
       }
+
+      return binding.root
     }
 
-    return binding.root
-  }
-
-  private val existingProfiles: LiveData<List<Profile>> by lazy {
-    Transformations.map(
-      profileManagementController.getProfiles().toLiveData(),
-      ::processGetProfilesResult
-    )
-  }
-
-  /** Save the current dropdown selection to be retrieved on configuration change. */
-  fun saveToSavedInstanceState(outState: Bundle) {
-    outState.putProto(
-      ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
-      OnboardingFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    )
-  }
-
-  private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
-    val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(profileId, selection).toLiveData()
-      .observe(
-        fragment,
-        { result ->
-          when (result) {
-            is AsyncResult.Failure -> oppiaLogger.e(
-              "OnboardingFragment",
-              "Failed to set AppLanguageSelection",
-              result.error
-            )
-            else -> {} // Do nothing. The user should be able to progress regardless of the result.
-          }
-        }
+    private val existingProfiles: LiveData<List<Profile>> by lazy {
+      Transformations.map(
+        profileManagementController.getProfiles().toLiveData(),
+        ::processGetProfilesResult,
       )
-  }
-
-  private fun initializeSelectedLanguageToSystemLanguage() {
-    translationController.getSystemLanguageLocale().toLiveData().observe(
-      fragment,
-      { result ->
-        onboardingAppLanguageViewModel.setSelectedLanguageLivedata(
-          processSystemLanguageResult(result)
-        )
-      }
-    )
-  }
-
-  private fun processSystemLanguageResult(
-    result: AsyncResult<OppiaLocale.DisplayLocale>
-  ): OppiaLanguage {
-    return when (result) {
-      is AsyncResult.Success -> {
-        result.value.getCurrentLanguage()
-      }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "OnboardingFragment",
-          "Failed to retrieve system language locale.",
-          result.error
-        )
-        OppiaLanguage.ENGLISH
-      }
-      is AsyncResult.Pending -> OppiaLanguage.ENGLISH
-    }
-  }
-
-  private fun retrieveSupportedLanguages() {
-    translationController.getSupportedAppLanguages().toLiveData().observe(
-      fragment,
-      { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            onboardingAppLanguageViewModel.setSupportedAppLanguages(result.value)
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "OnboardingFragment",
-              "Failed to retrieve supported language list.",
-              result.error
-            )
-          }
-          is AsyncResult.Pending -> {}
-        }
-      }
-    )
-  }
-
-  private fun subscribeToGetProfileList() {
-    existingProfiles.observe(
-      fragment,
-      { profilesList ->
-        if (!profilesList.isNullOrEmpty()) {
-          profileId = profilesList.first().id
-        } else {
-          createDefaultProfile()
-        }
-      }
-    )
-  }
-
-  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
-    val profileList = when (profilesResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "OnboardingFragment", "Failed to retrieve the list of profiles", profilesResult.error
-        )
-        emptyList()
-      }
-      is AsyncResult.Pending -> emptyList()
-      is AsyncResult.Success -> profilesResult.value
     }
 
-    return profileList
-  }
+    /** Save the current dropdown selection to be retrieved on configuration change. */
+    fun saveToSavedInstanceState(outState: Bundle) {
+      outState.putProto(
+        ONBOARDING_FRAGMENT_SAVED_STATE_KEY,
+        OnboardingFragmentStateBundle.newBuilder().setSelectedLanguage(selectedLanguage).build(),
+      )
+    }
 
-  private fun createDefaultProfile() {
-    profileManagementController.addProfile(
-      name = "",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = true
-    ).toLiveData()
-      .observe(
+    private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
+      val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
+      translationController
+        .updateAppLanguage(profileId, selection)
+        .toLiveData()
+        .observe(
+          fragment,
+          { result ->
+            when (result) {
+              is AsyncResult.Failure ->
+                oppiaLogger.e(
+                  "OnboardingFragment",
+                  "Failed to set AppLanguageSelection",
+                  result.error,
+                )
+              else -> {} // Do nothing. The user should be able to progress regardless of the result.
+            }
+          },
+        )
+    }
+
+    private fun initializeSelectedLanguageToSystemLanguage() {
+      translationController.getSystemLanguageLocale().toLiveData().observe(
+        fragment,
+        { result ->
+          onboardingAppLanguageViewModel.setSelectedLanguageLivedata(
+            processSystemLanguageResult(result),
+          )
+        },
+      )
+    }
+
+    private fun processSystemLanguageResult(result: AsyncResult<OppiaLocale.DisplayLocale>): OppiaLanguage =
+      when (result) {
+        is AsyncResult.Success -> {
+          result.value.getCurrentLanguage()
+        }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "OnboardingFragment",
+            "Failed to retrieve system language locale.",
+            result.error,
+          )
+          OppiaLanguage.ENGLISH
+        }
+        is AsyncResult.Pending -> OppiaLanguage.ENGLISH
+      }
+
+    private fun retrieveSupportedLanguages() {
+      translationController.getSupportedAppLanguages().toLiveData().observe(
         fragment,
         { result ->
           when (result) {
-            is AsyncResult.Success -> subscribeToGetProfileList()
+            is AsyncResult.Success -> {
+              onboardingAppLanguageViewModel.setSupportedAppLanguages(result.value)
+            }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
-                "OnboardingFragment", "Error creating the default profile", result.error
+                "OnboardingFragment",
+                "Failed to retrieve supported language list.",
+                result.error,
               )
-              activity.finish()
             }
             is AsyncResult.Pending -> {}
           }
-        }
+        },
       )
+    }
+
+    private fun subscribeToGetProfileList() {
+      existingProfiles.observe(
+        fragment,
+        { profilesList ->
+          if (!profilesList.isNullOrEmpty()) {
+            profileId = profilesList.first().id
+          } else {
+            createDefaultProfile()
+          }
+        },
+      )
+    }
+
+    private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
+      val profileList =
+        when (profilesResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "OnboardingFragment",
+              "Failed to retrieve the list of profiles",
+              profilesResult.error,
+            )
+            emptyList()
+          }
+          is AsyncResult.Pending -> emptyList()
+          is AsyncResult.Success -> profilesResult.value
+        }
+
+      return profileList
+    }
+
+    private fun createDefaultProfile() {
+      profileManagementController
+        .addProfile(
+          name = "",
+          pin = "",
+          avatarImagePath = null,
+          allowDownloadAccess = true,
+          colorRgb = -10710042,
+          isAdmin = true,
+        ).toLiveData()
+        .observe(
+          fragment,
+          { result ->
+            when (result) {
+              is AsyncResult.Success -> subscribeToGetProfileList()
+              is AsyncResult.Failure -> {
+                oppiaLogger.e(
+                  "OnboardingFragment",
+                  "Error creating the default profile",
+                  result.error,
+                )
+                activity.finish()
+              }
+              is AsyncResult.Pending -> {}
+            }
+          },
+        )
+    }
   }
-}

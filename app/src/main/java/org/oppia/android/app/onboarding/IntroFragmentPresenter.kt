@@ -16,59 +16,65 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import javax.inject.Inject
 
 /** The presenter for [IntroFragment]. */
-class IntroFragmentPresenter @Inject constructor(
-  private var fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val profileManagementController: ProfileManagementController,
-) {
-  private lateinit var binding: LearnerIntroFragmentBinding
+class IntroFragmentPresenter
+  @Inject
+  constructor(
+    private var fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
+    private val profileManagementController: ProfileManagementController,
+  ) {
+    private lateinit var binding: LearnerIntroFragmentBinding
 
-  /** Handle creation and binding of the OnboardingLearnerIntroFragment layout. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileNickname: String,
-    profileId: ProfileId
-  ): View {
-    binding = LearnerIntroFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    /** Handle creation and binding of the OnboardingLearnerIntroFragment layout. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileNickname: String,
+      profileId: ProfileId,
+    ): View {
+      binding =
+        LearnerIntroFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.lifecycleOwner = fragment
+      binding.lifecycleOwner = fragment
 
-    setLearnerName(profileNickname)
+      setLearnerName(profileNickname)
 
-    profileManagementController.markProfileOnboardingStarted(profileId)
+      profileManagementController.markProfileOnboardingStarted(profileId)
 
-    binding.onboardingNavigationBack.setOnClickListener {
-      activity.finish()
+      binding.onboardingNavigationBack.setOnClickListener {
+        activity.finish()
+      }
+
+      binding.onboardingLearnerIntroFeedback.text =
+        appLanguageResourceHandler.getStringInLocaleWithWrapping(
+          R.string.onboarding_learner_intro_feedback_text,
+          appLanguageResourceHandler.getStringInLocale(R.string.app_name),
+        )
+
+      binding.onboardingNavigationContinue.setOnClickListener {
+        val intent =
+          AudioLanguageActivity.createAudioLanguageActivityIntent(
+            fragment.requireContext(),
+            AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
+          )
+        intent.decorateWithUserProfileId(profileId)
+        fragment.startActivity(intent)
+      }
+
+      return binding.root
     }
 
-    binding.onboardingLearnerIntroFeedback.text =
-      appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.onboarding_learner_intro_feedback_text,
-        appLanguageResourceHandler.getStringInLocale(R.string.app_name)
-      )
-
-    binding.onboardingNavigationContinue.setOnClickListener {
-      val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
-        fragment.requireContext(),
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      )
-      intent.decorateWithUserProfileId(profileId)
-      fragment.startActivity(intent)
+    private fun setLearnerName(profileName: String) {
+      binding.onboardingLearnerIntroTitle.text =
+        appLanguageResourceHandler.getStringInLocaleWithWrapping(
+          R.string.onboarding_learner_intro_activity_text,
+          profileName,
+        )
     }
-
-    return binding.root
   }
-
-  private fun setLearnerName(profileName: String) {
-    binding.onboardingLearnerIntroTitle.text =
-      appLanguageResourceHandler.getStringInLocaleWithWrapping(
-        R.string.onboarding_learner_intro_activity_text, profileName
-      )
-  }
-}

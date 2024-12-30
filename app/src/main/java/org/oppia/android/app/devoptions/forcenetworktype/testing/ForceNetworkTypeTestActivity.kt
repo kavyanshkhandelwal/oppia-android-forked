@@ -8,7 +8,6 @@ import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragmen
 
 /** Activity for testing [ForceNetworkTypeFragment]. */
 class ForceNetworkTypeTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -17,15 +16,16 @@ class ForceNetworkTypeTestActivity : InjectableAutoLocalizedAppCompatActivity() 
     setContentView(R.layout.force_network_type_activity)
     if (getForceNetworkTypeFragment() == null) {
       val forceNetworkTypeFragment = ForceNetworkTypeFragment.newInstance()
-      supportFragmentManager.beginTransaction().add(
-        R.id.force_network_type_container,
-        forceNetworkTypeFragment
-      ).commitNow()
+      supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.force_network_type_container,
+          forceNetworkTypeFragment,
+        ).commitNow()
     }
   }
 
-  private fun getForceNetworkTypeFragment(): ForceNetworkTypeFragment? {
-    return supportFragmentManager
+  private fun getForceNetworkTypeFragment(): ForceNetworkTypeFragment? =
+    supportFragmentManager
       .findFragmentById(R.id.force_network_type_container) as ForceNetworkTypeFragment?
-  }
 }

@@ -49,8 +49,8 @@ class ExpressionToLatexConverter private constructor() {
      * @param divAsFraction determines whether divisions within the math structure should be
      *     rendered instead as fractions rather than division operations
      */
-    fun MathExpression.convertToLatex(divAsFraction: Boolean): String {
-      return when (expressionTypeCase) {
+    fun MathExpression.convertToLatex(divAsFraction: Boolean): String =
+      when (expressionTypeCase) {
         CONSTANT -> constant.toPlainText()
         VARIABLE -> variable
         BINARY_OPERATION -> {
@@ -59,12 +59,18 @@ class ExpressionToLatexConverter private constructor() {
           when (binaryOperation.operator) {
             ADD -> "$lhsLatex + $rhsLatex"
             SUBTRACT -> "$lhsLatex - $rhsLatex"
-            MULTIPLY -> if (binaryOperation.isImplicit) {
-              "$lhsLatex$rhsLatex"
-            } else "$lhsLatex \\times $rhsLatex"
-            DIVIDE -> if (divAsFraction) {
-              "\\frac{$lhsLatex}{$rhsLatex}"
-            } else "$lhsLatex \\div $rhsLatex"
+            MULTIPLY ->
+              if (binaryOperation.isImplicit) {
+                "$lhsLatex$rhsLatex"
+              } else {
+                "$lhsLatex \\times $rhsLatex"
+              }
+            DIVIDE ->
+              if (divAsFraction) {
+                "\\frac{$lhsLatex}{$rhsLatex}"
+              } else {
+                "$lhsLatex \\div $rhsLatex"
+              }
             EXPONENTIATE -> "$lhsLatex ^ {$rhsLatex}"
             // There's no operator, so try and "recover" by outputting the raw operands.
             BinaryOperator.OPERATOR_UNSPECIFIED, BinaryOperator.UNRECOGNIZED, null ->
@@ -91,7 +97,6 @@ class ExpressionToLatexConverter private constructor() {
         GROUP -> "(${group.convertToLatex(divAsFraction)})"
         EXPRESSIONTYPE_NOT_SET, null -> "" // No corresponding LaTeX, so just go with empty string.
       }
-    }
 
     /**
      * Returns the LaTeX conversion of this [MathEquation].

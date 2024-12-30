@@ -52,7 +52,7 @@ import org.oppia.android.util.math.MathParsingError.VariableInNumericExpressionE
  */
 class MathParsingErrorSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: MathParsingError
+  private val actual: MathParsingError,
 ) : Subject(metadata, actual) {
   /** Verifies that the [MathParsingError] being tested is a [SpacesBetweenNumbersError]. */
   fun isSpacesBetweenNumbers() {
@@ -68,50 +68,40 @@ class MathParsingErrorSubject private constructor(
    * Verifies that the [MathParsingError] being tested is a [SingleRedundantParenthesesError], and
    * returns a [SingleRedundantParenthesesSubject] to test its specific attributes.
    */
-  fun isSingleRedundantParenthesesThat(): SingleRedundantParenthesesSubject {
-    return SingleRedundantParenthesesSubject.assertThat(verifyAsType())
-  }
+  fun isSingleRedundantParenthesesThat(): SingleRedundantParenthesesSubject = SingleRedundantParenthesesSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is a [MultipleRedundantParenthesesError], and
    * returns a [MultipleRedundantParenthesesSubject] to test its specific attributes.
    */
-  fun isMultipleRedundantParenthesesThat(): MultipleRedundantParenthesesSubject {
-    return MultipleRedundantParenthesesSubject.assertThat(verifyAsType())
-  }
+  fun isMultipleRedundantParenthesesThat(): MultipleRedundantParenthesesSubject =
+    MultipleRedundantParenthesesSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is a
    * [RedundantParenthesesForIndividualTermsError], and returns a
    * [RedundantParenthesesForIndividualTermsSubject] to test its specific attributes.
    */
-  fun isRedundantIndividualTermsParensThat(): RedundantParenthesesForIndividualTermsSubject {
-    return RedundantParenthesesForIndividualTermsSubject.assertThat(verifyAsType())
-  }
+  fun isRedundantIndividualTermsParensThat(): RedundantParenthesesForIndividualTermsSubject =
+    RedundantParenthesesForIndividualTermsSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is an [UnnecessarySymbolsError], and returns
    * a [StringSubject] to verify the symbol's specific value.
    */
-  fun isUnnecessarySymbolWithSymbolThat(): StringSubject {
-    return assertThat(verifyAsType<UnnecessarySymbolsError>().invalidSymbol)
-  }
+  fun isUnnecessarySymbolWithSymbolThat(): StringSubject = assertThat(verifyAsType<UnnecessarySymbolsError>().invalidSymbol)
 
   /**
    * Verifies that the [MathParsingError] being tested is a [NumberAfterVariableError], and returns
    * a [NumberAfterVariableSubject] to test its specific attributes.
    */
-  fun isNumberAfterVariableThat(): NumberAfterVariableSubject {
-    return NumberAfterVariableSubject.assertThat(verifyAsType())
-  }
+  fun isNumberAfterVariableThat(): NumberAfterVariableSubject = NumberAfterVariableSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is a [SubsequentBinaryOperatorsError], and
    * returns a [SubsequentBinaryOperatorsSubject] to test its specific attributes.
    */
-  fun isSubsequentBinaryOperatorsThat(): SubsequentBinaryOperatorsSubject {
-    return SubsequentBinaryOperatorsSubject.assertThat(verifyAsType())
-  }
+  fun isSubsequentBinaryOperatorsThat(): SubsequentBinaryOperatorsSubject = SubsequentBinaryOperatorsSubject.assertThat(verifyAsType())
 
   /** Verifies that the [MathParsingError] being tested is a [SubsequentUnaryOperatorsError]. */
   fun isSubsequentUnaryOperators() {
@@ -123,18 +113,16 @@ class MathParsingErrorSubject private constructor(
    * [NoVariableOrNumberBeforeBinaryOperatorError], and returns a
    * [NoVariableOrNumberBeforeBinaryOperatorSubject] to test its specific attributes.
    */
-  fun isNoVarOrNumBeforeBinaryOperatorThat(): NoVariableOrNumberBeforeBinaryOperatorSubject {
-    return NoVariableOrNumberBeforeBinaryOperatorSubject.assertThat(verifyAsType())
-  }
+  fun isNoVarOrNumBeforeBinaryOperatorThat(): NoVariableOrNumberBeforeBinaryOperatorSubject =
+    NoVariableOrNumberBeforeBinaryOperatorSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is a
    * [NoVariableOrNumberAfterBinaryOperatorError], and returns a
    * [NoVariableOrNumberAfterBinaryOperatorSubject] to test its specific attributes.
    */
-  fun isNoVariableOrNumberAfterBinaryOperatorThat(): NoVariableOrNumberAfterBinaryOperatorSubject {
-    return NoVariableOrNumberAfterBinaryOperatorSubject.assertThat(verifyAsType())
-  }
+  fun isNoVariableOrNumberAfterBinaryOperatorThat(): NoVariableOrNumberAfterBinaryOperatorSubject =
+    NoVariableOrNumberAfterBinaryOperatorSubject.assertThat(verifyAsType())
 
   /**
    * Verifies that the [MathParsingError] being tested is an [ExponentIsVariableExpressionError].
@@ -172,9 +160,7 @@ class MathParsingErrorSubject private constructor(
    * Verifies that the [MathParsingError] being tested is a [DisabledVariablesInUseError], and
    * returns an [IterableSubject] to verify the specific disallowed variables in use.
    */
-  fun isDisabledVariablesInUseWithVariablesThat(): IterableSubject {
-    return assertThat(verifyAsType<DisabledVariablesInUseError>().variables)
-  }
+  fun isDisabledVariablesInUseWithVariablesThat(): IterableSubject = assertThat(verifyAsType<DisabledVariablesInUseError>().variables)
 
   /** Verifies that the [MathParsingError] being tested is an [EquationIsMissingEqualsError]. */
   fun isEquationIsMissingEquals() {
@@ -195,9 +181,7 @@ class MathParsingErrorSubject private constructor(
    * Verifies that the [MathParsingError] being tested is a [InvalidFunctionInUseError], and returns
    * a [StringSubject] to verify the specific function name in used.
    */
-  fun isInvalidFunctionInUseWithNameThat(): StringSubject {
-    return assertThat(verifyAsType<InvalidFunctionInUseError>().functionName)
-  }
+  fun isInvalidFunctionInUseWithNameThat(): StringSubject = assertThat(verifyAsType<InvalidFunctionInUseError>().functionName)
 
   /** Verifies that the [MathParsingError] being tested is a [FunctionNameIncompleteError]. */
   fun isFunctionNameIncomplete() {
@@ -221,7 +205,7 @@ class MathParsingErrorSubject private constructor(
    */
   class SingleRedundantParenthesesSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: SingleRedundantParenthesesError
+    private val actual: SingleRedundantParenthesesError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test the value of
@@ -240,11 +224,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [SingleRedundantParenthesesSubject] to verify aspects of the specified
        * [SingleRedundantParenthesesError] value.
        */
-      internal fun assertThat(
-        actual: SingleRedundantParenthesesError
-      ): SingleRedundantParenthesesSubject {
-        return assertAbout(::SingleRedundantParenthesesSubject).that(actual)
-      }
+      internal fun assertThat(actual: SingleRedundantParenthesesError): SingleRedundantParenthesesSubject =
+        assertAbout(::SingleRedundantParenthesesSubject).that(actual)
     }
   }
 
@@ -255,7 +236,7 @@ class MathParsingErrorSubject private constructor(
    */
   class MultipleRedundantParenthesesSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: MultipleRedundantParenthesesError
+    private val actual: MultipleRedundantParenthesesError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test the value of
@@ -275,11 +256,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [MultipleRedundantParenthesesSubject] to verify aspects of the specified
        * [MultipleRedundantParenthesesError] value.
        */
-      internal fun assertThat(
-        actual: MultipleRedundantParenthesesError
-      ): MultipleRedundantParenthesesSubject {
-        return assertAbout(::MultipleRedundantParenthesesSubject).that(actual)
-      }
+      internal fun assertThat(actual: MultipleRedundantParenthesesError): MultipleRedundantParenthesesSubject =
+        assertAbout(::MultipleRedundantParenthesesSubject).that(actual)
     }
   }
 
@@ -290,7 +268,7 @@ class MathParsingErrorSubject private constructor(
    */
   class RedundantParenthesesForIndividualTermsSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: RedundantParenthesesForIndividualTermsError
+    private val actual: RedundantParenthesesForIndividualTermsError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test the value of
@@ -311,11 +289,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [RedundantParenthesesForIndividualTermsSubject] to verify aspects of the
        * specified [RedundantParenthesesForIndividualTermsError] value.
        */
-      internal fun assertThat(
-        actual: RedundantParenthesesForIndividualTermsError
-      ): RedundantParenthesesForIndividualTermsSubject {
-        return assertAbout(::RedundantParenthesesForIndividualTermsSubject).that(actual)
-      }
+      internal fun assertThat(actual: RedundantParenthesesForIndividualTermsError): RedundantParenthesesForIndividualTermsSubject =
+        assertAbout(::RedundantParenthesesForIndividualTermsSubject).that(actual)
     }
   }
 
@@ -326,7 +301,7 @@ class MathParsingErrorSubject private constructor(
    */
   class NumberAfterVariableSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: NumberAfterVariableError
+    private val actual: NumberAfterVariableError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [RealSubject] to test the value of [NumberAfterVariableError.number] for the error
@@ -357,7 +332,7 @@ class MathParsingErrorSubject private constructor(
    */
   class SubsequentBinaryOperatorsSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: SubsequentBinaryOperatorsError
+    private val actual: SubsequentBinaryOperatorsError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test the value of [SubsequentBinaryOperatorsError.operator1] for
@@ -376,11 +351,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [SubsequentBinaryOperatorsSubject] to verify aspects of the
        * specified [SubsequentBinaryOperatorsError] value.
        */
-      internal fun assertThat(
-        actual: SubsequentBinaryOperatorsError
-      ): SubsequentBinaryOperatorsSubject {
-        return assertAbout(::SubsequentBinaryOperatorsSubject).that(actual)
-      }
+      internal fun assertThat(actual: SubsequentBinaryOperatorsError): SubsequentBinaryOperatorsSubject =
+        assertAbout(::SubsequentBinaryOperatorsSubject).that(actual)
     }
   }
 
@@ -391,15 +363,14 @@ class MathParsingErrorSubject private constructor(
    */
   class NoVariableOrNumberBeforeBinaryOperatorSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: NoVariableOrNumberBeforeBinaryOperatorError
+    private val actual: NoVariableOrNumberBeforeBinaryOperatorError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [ComparableSubject] to test the value of
      * [NoVariableOrNumberBeforeBinaryOperatorError.operator] for the error being tested by this
      * subject.
      */
-    fun hasOperatorThat(): ComparableSubject<MathBinaryOperation.Operator> =
-      assertThat(actual.operator)
+    fun hasOperatorThat(): ComparableSubject<MathBinaryOperation.Operator> = assertThat(actual.operator)
 
     /**
      * Returns a [StringSubject] to test the value of
@@ -413,11 +384,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [NoVariableOrNumberBeforeBinaryOperatorSubject] to verify aspects of the
        * specified [NoVariableOrNumberBeforeBinaryOperatorError] value.
        */
-      internal fun assertThat(
-        actual: NoVariableOrNumberBeforeBinaryOperatorError
-      ): NoVariableOrNumberBeforeBinaryOperatorSubject {
-        return assertAbout(::NoVariableOrNumberBeforeBinaryOperatorSubject).that(actual)
-      }
+      internal fun assertThat(actual: NoVariableOrNumberBeforeBinaryOperatorError): NoVariableOrNumberBeforeBinaryOperatorSubject =
+        assertAbout(::NoVariableOrNumberBeforeBinaryOperatorSubject).that(actual)
     }
   }
 
@@ -428,15 +396,14 @@ class MathParsingErrorSubject private constructor(
    */
   class NoVariableOrNumberAfterBinaryOperatorSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: NoVariableOrNumberAfterBinaryOperatorError
+    private val actual: NoVariableOrNumberAfterBinaryOperatorError,
   ) : Subject(metadata, actual) {
     /**
      * Returns a [ComparableSubject] to test the value of
      * [NoVariableOrNumberAfterBinaryOperatorError.operator] for the error being tested by this
      * subject.
      */
-    fun hasOperatorThat(): ComparableSubject<MathBinaryOperation.Operator> =
-      assertThat(actual.operator)
+    fun hasOperatorThat(): ComparableSubject<MathBinaryOperation.Operator> = assertThat(actual.operator)
 
     /**
      * Returns a [StringSubject] to test the value of
@@ -450,11 +417,8 @@ class MathParsingErrorSubject private constructor(
        * Returns a new [NoVariableOrNumberAfterBinaryOperatorSubject] to verify aspects of the
        * specified [NoVariableOrNumberAfterBinaryOperatorError] value.
        */
-      internal fun assertThat(
-        actual: NoVariableOrNumberAfterBinaryOperatorError
-      ): NoVariableOrNumberAfterBinaryOperatorSubject {
-        return assertAbout(::NoVariableOrNumberAfterBinaryOperatorSubject).that(actual)
-      }
+      internal fun assertThat(actual: NoVariableOrNumberAfterBinaryOperatorError): NoVariableOrNumberAfterBinaryOperatorSubject =
+        assertAbout(::NoVariableOrNumberAfterBinaryOperatorSubject).that(actual)
     }
   }
 
@@ -463,7 +427,6 @@ class MathParsingErrorSubject private constructor(
      * Returns a new [MathParsingErrorSubject] to verify aspects of the specified [MathParsingError]
      * value.
      */
-    fun assertThat(actual: MathParsingError): MathParsingErrorSubject =
-      assertAbout(::MathParsingErrorSubject).that(actual)
+    fun assertThat(actual: MathParsingError): MathParsingErrorSubject = assertAbout(::MathParsingErrorSubject).that(actual)
   }
 }

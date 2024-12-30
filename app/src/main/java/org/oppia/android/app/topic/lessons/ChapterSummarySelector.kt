@@ -7,6 +7,6 @@ interface ChapterSummarySelector {
   fun selectChapterSummary(
     storyId: String,
     explorationId: String,
-    chapterPlayState: ChapterPlayState
+    chapterPlayState: ChapterPlayState,
   )
 }

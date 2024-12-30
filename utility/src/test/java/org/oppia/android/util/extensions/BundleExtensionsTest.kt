@@ -22,7 +22,11 @@ class BundleExtensionsTest {
   private val TEST_STRING = "String value"
 
   private val TEST_MESSAGE_WITH_STR_AND_INT =
-    TestMessage.newBuilder().setStrValue(TEST_STRING).setIntValue(1).build()
+    TestMessage
+      .newBuilder()
+      .setStrValue(TEST_STRING)
+      .setIntValue(1)
+      .build()
 
   private val TEST_MESSAGE_WITH_INT = TestMessage.newBuilder().setIntValue(1).build()
 
@@ -30,9 +34,11 @@ class BundleExtensionsTest {
   fun testGetProto_noProtoInBundle_returnsDefault() {
     val bundle = Bundle()
 
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     assertThat(testMessage).isEqualTo(testMessage)
   }
@@ -51,9 +57,11 @@ class BundleExtensionsTest {
     val bundle = Bundle()
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
 
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     assertThat(testMessage).isEqualTo(TEST_MESSAGE_WITH_STR_AND_INT)
   }
@@ -63,10 +71,11 @@ class BundleExtensionsTest {
     val bundle = Bundle()
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_INT)
 
-    val testMessage = bundle.getProto(
-      "test_proto_key",
-      defaultValue = TestMessage.newBuilder().setStrValue("Different string value").build()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.newBuilder().setStrValue("Different string value").build(),
+      )
 
     // The string from the default value should not be incorporated since the default is only used
     // if the proto is not defined yet in the bundle.
@@ -80,9 +89,11 @@ class BundleExtensionsTest {
 
     // Override the proto in the bundle.
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     // The most recent proto value should be retrieved.
     assertThat(testMessage).isEqualTo(TEST_MESSAGE_WITH_STR_AND_INT)
@@ -95,9 +106,11 @@ class BundleExtensionsTest {
 
     // Remove the proto from the bundle.
     bundle.remove("test_proto_key")
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     // The default should be used since the proto was removed.
     assertThat(testMessage).isEqualTo(TestMessage.getDefaultInstance())
@@ -109,12 +122,16 @@ class BundleExtensionsTest {
     bundle.putProto("test_proto_key1", TEST_MESSAGE_WITH_INT)
     bundle.putProto("test_proto_key2", TEST_MESSAGE_WITH_STR_AND_INT)
 
-    val testMessage1 = bundle.getProto(
-      "test_proto_key1", defaultValue = TestMessage.getDefaultInstance()
-    )
-    val testMessage2 = bundle.getProto(
-      "test_proto_key2", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage1 =
+      bundle.getProto(
+        "test_proto_key1",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
+    val testMessage2 =
+      bundle.getProto(
+        "test_proto_key2",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     // Both protos should be retrievable.
     assertThat(testMessage1).isEqualTo(TEST_MESSAGE_WITH_INT)
@@ -127,9 +144,11 @@ class BundleExtensionsTest {
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
 
     // Retrieve a "newer" version of the proto (using a proto that's binary-compatible).
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage2.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage2.getDefaultInstance(),
+      )
 
     // The string should be retrievable from the new proto, and the new field should be defaulted.
     // The int will be ignored since it was "removed" (but is reserved).
@@ -143,9 +162,11 @@ class BundleExtensionsTest {
     bundle.putProto("test_proto_key", TEST_MESSAGE_WITH_STR_AND_INT)
 
     // Try retrieving the wrong proto type.
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = IncompatibleTestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = IncompatibleTestMessage.getDefaultInstance(),
+      )
 
     // Proto incompatibilities should lead to the default value being returned.
     assertThat(testMessage).isEqualTo(IncompatibleTestMessage.getDefaultInstance())
@@ -157,9 +178,11 @@ class BundleExtensionsTest {
     bundle.putString("test_proto_key", "not_a_proto")
 
     // Try retrieving a proto when a non-proto was saved.
-    val testMessage = bundle.getProto(
-      "test_proto_key", defaultValue = TestMessage.getDefaultInstance()
-    )
+    val testMessage =
+      bundle.getProto(
+        "test_proto_key",
+        defaultValue = TestMessage.getDefaultInstance(),
+      )
 
     // Like other bundle retrieval functions, return the default if there's a type incompatibility.
     assertThat(testMessage).isEqualTo(TestMessage.getDefaultInstance())

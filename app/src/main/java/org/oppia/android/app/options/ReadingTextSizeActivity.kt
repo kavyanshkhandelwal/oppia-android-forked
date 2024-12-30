@@ -23,7 +23,6 @@ private const val ACTIVITY_SAVED_STATE_KEY = "ReadingTextSizeActivity.saved_stat
 
 /** The activity to change the text size of the reading content in the app. */
 class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var readingTextSizeActivityPresenter: ReadingTextSizeActivityPresenter
 
@@ -40,16 +39,20 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
       this,
       object : OnBackPressedCallback(/* enabled = */ true) {
         override fun handleOnBackPressed() {
-          val resultBundle = ReadingTextSizeActivityResultBundle.newBuilder().apply {
-            selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
-          }.build()
-          val intent = Intent().apply {
-            putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
-          }
+          val resultBundle =
+            ReadingTextSizeActivityResultBundle
+              .newBuilder()
+              .apply {
+                selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
+              }.build()
+          val intent =
+            Intent().apply {
+              putProtoExtra(MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, resultBundle)
+            }
           setResult(RESULT_OK, intent)
           finish()
         }
-      }
+      },
     )
   }
 
@@ -57,11 +60,14 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [ReadingTextSizeActivity]. */
     fun createReadingTextSizeActivityIntent(
       context: Context,
-      initialReadingTextSize: ReadingTextSize
+      initialReadingTextSize: ReadingTextSize,
     ): Intent {
-      val params = ReadingTextSizeActivityParams.newBuilder().apply {
-        readingTextSize = initialReadingTextSize
-      }.build()
+      val params =
+        ReadingTextSizeActivityParams
+          .newBuilder()
+          .apply {
+            readingTextSize = initialReadingTextSize
+          }.build()
       return Intent(context, ReadingTextSizeActivity::class.java).apply {
         putProtoExtra(ACTIVITY_PARAMS_KEY, params)
         decorateWithScreenName(READING_TEXT_SIZE_ACTIVITY)
@@ -71,18 +77,20 @@ class ReadingTextSizeActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val stateBundle = ReadingTextSizeActivityStateBundle.newBuilder().apply {
-      selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
-    }.build()
+    val stateBundle =
+      ReadingTextSizeActivityStateBundle
+        .newBuilder()
+        .apply {
+          selectedReadingTextSize = readingTextSizeActivityPresenter.getSelectedReadingTextSize()
+        }.build()
     outState.putProto(ACTIVITY_SAVED_STATE_KEY, stateBundle)
   }
 
-  private fun retrieveActivityParams() =
-    intent.getProtoExtra(ACTIVITY_PARAMS_KEY, ReadingTextSizeActivityParams.getDefaultInstance())
+  private fun retrieveActivityParams() = intent.getProtoExtra(ACTIVITY_PARAMS_KEY, ReadingTextSizeActivityParams.getDefaultInstance())
 
-  private fun Bundle.retrieveStateBundle(): ReadingTextSizeActivityStateBundle {
-    return getProto(
-      ACTIVITY_SAVED_STATE_KEY, ReadingTextSizeActivityStateBundle.getDefaultInstance()
+  private fun Bundle.retrieveStateBundle(): ReadingTextSizeActivityStateBundle =
+    getProto(
+      ACTIVITY_SAVED_STATE_KEY,
+      ReadingTextSizeActivityStateBundle.getDefaultInstance(),
     )
-  }
 }

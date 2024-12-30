@@ -28,35 +28,34 @@ class RecentlyPlayedViewModel private constructor(
   private val promotedStoryClickListener: PromotedStoryClickListener,
   private val profileId: ProfileId,
 ) {
-
   /** Factory of RecentlyPlayedViewModel. */
-  class Factory @Inject constructor(
-    private val activity: AppCompatActivity,
-    private val topicListController: TopicListController,
-    @StoryHtmlParserEntityType private val entityType: String,
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController,
-    @EnableMultipleClassrooms
-    private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  ) {
-
-    /** Creates an instance of [RecentlyPlayedViewModel]. */
-    fun create(
-      promotedStoryClickListener: PromotedStoryClickListener,
-      profileId: ProfileId
-    ): RecentlyPlayedViewModel {
-      return RecentlyPlayedViewModel(
-        activity,
-        topicListController,
-        entityType,
-        resourceHandler,
-        translationController,
-        enableMultipleClassrooms,
-        promotedStoryClickListener,
-        profileId,
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val activity: AppCompatActivity,
+      private val topicListController: TopicListController,
+      @StoryHtmlParserEntityType private val entityType: String,
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController,
+      @EnableMultipleClassrooms
+      private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+    ) {
+      /** Creates an instance of [RecentlyPlayedViewModel]. */
+      fun create(
+        promotedStoryClickListener: PromotedStoryClickListener,
+        profileId: ProfileId,
+      ): RecentlyPlayedViewModel =
+        RecentlyPlayedViewModel(
+          activity,
+          topicListController,
+          entityType,
+          resourceHandler,
+          translationController,
+          enableMultipleClassrooms,
+          promotedStoryClickListener,
+          profileId,
+        )
     }
-  }
 
   /**
    * [LiveData] with the list of recently played items for a ProfileId, organized in sections.
@@ -75,38 +74,35 @@ class RecentlyPlayedViewModel private constructor(
       topicListController.getPromotedActivityList(profileId).toLiveData()
     }
 
-  private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> {
-    return Transformations.map(promotedStoryListSummaryResultLiveData) {
+  private fun getAssumedSuccessfulPromotedActivityList(): LiveData<PromotedActivityList> =
+    Transformations.map(promotedStoryListSummaryResultLiveData) {
       when (it) {
         // If there's an error loading the data, assume the default.
         is AsyncResult.Failure, is AsyncResult.Pending -> PromotedActivityList.getDefaultInstance()
         is AsyncResult.Success -> it.value
       }
     }
-  }
 
-  private fun processPromotedStoryList(
-    promotedActivityList: PromotedActivityList
-  ): List<RecentlyPlayedItemViewModel> {
+  private fun processPromotedStoryList(promotedActivityList: PromotedActivityList): List<RecentlyPlayedItemViewModel> {
     val itemList: MutableList<RecentlyPlayedItemViewModel> = mutableListOf()
     if (promotedActivityList.promotedStoryList.recentlyPlayedStoryList.isNotEmpty()) {
       addRecentlyPlayedStoryListSection(
         promotedActivityList.promotedStoryList.recentlyPlayedStoryList,
-        itemList
+        itemList,
       )
     }
 
     if (promotedActivityList.promotedStoryList.olderPlayedStoryList.isNotEmpty()) {
       addOlderStoryListSection(
         promotedActivityList.promotedStoryList.olderPlayedStoryList,
-        itemList
+        itemList,
       )
     }
 
     if (promotedActivityList.promotedStoryList.suggestedStoryList.isNotEmpty()) {
       addRecommendedStoryListSection(
         promotedActivityList.promotedStoryList.suggestedStoryList,
-        itemList
+        itemList,
       )
     }
     return itemList
@@ -114,11 +110,12 @@ class RecentlyPlayedViewModel private constructor(
 
   private fun addRecentlyPlayedStoryListSection(
     recentlyPlayedStoryList: MutableList<PromotedStory>,
-    itemList: MutableList<RecentlyPlayedItemViewModel>
+    itemList: MutableList<RecentlyPlayedItemViewModel>,
   ) {
     val recentSectionTitleViewModel =
       SectionTitleViewModel(
-        resourceHandler.getStringInLocale(R.string.ongoing_story_last_week), false
+        resourceHandler.getStringInLocale(R.string.ongoing_story_last_week),
+        false,
       )
     itemList.add(recentSectionTitleViewModel)
     recentlyPlayedStoryList.forEachIndexed { index, promotedStory ->
@@ -129,13 +126,13 @@ class RecentlyPlayedViewModel private constructor(
 
   private fun addOlderStoryListSection(
     olderPlayedStoryList: List<PromotedStory>,
-    itemList: MutableList<RecentlyPlayedItemViewModel>
+    itemList: MutableList<RecentlyPlayedItemViewModel>,
   ) {
     val showDivider = itemList.isNotEmpty()
     val olderSectionTitleViewModel =
       SectionTitleViewModel(
         resourceHandler.getStringInLocale(R.string.ongoing_story_last_month),
-        showDivider
+        showDivider,
       )
     itemList.add(olderSectionTitleViewModel)
     olderPlayedStoryList.forEachIndexed { index, promotedStory ->
@@ -146,13 +143,13 @@ class RecentlyPlayedViewModel private constructor(
 
   private fun addRecommendedStoryListSection(
     suggestedStoryList: List<PromotedStory>,
-    itemList: MutableList<RecentlyPlayedItemViewModel>
+    itemList: MutableList<RecentlyPlayedItemViewModel>,
   ) {
     val showDivider = itemList.isNotEmpty()
     val recommendedSectionTitleViewModel =
       SectionTitleViewModel(
         resourceHandler.getStringInLocale(R.string.recommended_stories),
-        showDivider
+        showDivider,
       )
     itemList.add(recommendedSectionTitleViewModel)
     suggestedStoryList.forEachIndexed { index, suggestedStory ->
@@ -163,9 +160,9 @@ class RecentlyPlayedViewModel private constructor(
 
   private fun createOngoingStoryViewModel(
     promotedStory: PromotedStory,
-    index: Int
-  ): RecentlyPlayedItemViewModel {
-    return PromotedStoryViewModel(
+    index: Int,
+  ): RecentlyPlayedItemViewModel =
+    PromotedStoryViewModel(
       activity,
       promotedStory,
       entityType,
@@ -173,7 +170,6 @@ class RecentlyPlayedViewModel private constructor(
       index,
       resourceHandler,
       enableMultipleClassrooms.value,
-      translationController
+      translationController,
     )
-  }
 }

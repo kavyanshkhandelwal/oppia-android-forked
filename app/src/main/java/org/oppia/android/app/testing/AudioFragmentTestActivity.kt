@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 /** Test Activity used for testing AudioFragment. */
 class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var audioFragmentTestActivityController: AudioFragmentTestActivityPresenter
 
@@ -25,7 +24,10 @@ class AudioFragmentTestActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    fun createAudioFragmentTestActivity(context: Context, internalProfileId: Int?): Intent {
+    fun createAudioFragmentTestActivity(
+      context: Context,
+      internalProfileId: Int?,
+    ): Intent {
       val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       val intent = Intent(context, AudioFragmentTestActivity::class.java)
       if (profileId != null) {

@@ -8,27 +8,29 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileListActivity]. */
 @ActivityScope
-class ProfileListActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
+class ProfileListActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    /** Handles onCreate method of [ProfileListActivity]. */
+    fun handleOnCreate() {
+      activity.title = resourceHandler.getStringInLocale(R.string.profile_list_activity_title)
+      activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+      activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+      activity.setContentView(R.layout.profile_list_activity)
 
-  /** Handles onCreate method of [ProfileListActivity]. */
-  fun handleOnCreate() {
-    activity.title = resourceHandler.getStringInLocale(R.string.profile_list_activity_title)
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    activity.setContentView(R.layout.profile_list_activity)
-
-    if (getProfileListFragment() == null) {
-      val profileListFragment = ProfileListFragment.newInstance()
-      activity.supportFragmentManager.beginTransaction()
-        .add(R.id.profile_list_container, profileListFragment).commitNow()
+      if (getProfileListFragment() == null) {
+        val profileListFragment = ProfileListFragment.newInstance()
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(R.id.profile_list_container, profileListFragment)
+          .commitNow()
+      }
     }
-  }
 
-  private fun getProfileListFragment(): ProfileListFragment? {
-    return activity.supportFragmentManager
-      .findFragmentById(R.id.profile_list_container) as ProfileListFragment?
+    private fun getProfileListFragment(): ProfileListFragment? =
+      activity.supportFragmentManager
+        .findFragmentById(R.id.profile_list_container) as ProfileListFragment?
   }
-}

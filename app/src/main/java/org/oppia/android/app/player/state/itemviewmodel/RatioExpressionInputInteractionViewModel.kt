@@ -30,8 +30,9 @@ class RatioExpressionInputInteractionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  userAnswerState: UserAnswerState
-) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION), InteractionAnswerHandler {
+  userAnswerState: UserAnswerState,
+) : StateItemViewModel(ViewType.RATIO_EXPRESSION_INPUT_INTERACTION),
+  InteractionAnswerHandler {
   private var pendingAnswerError: String? = null
   var answerText: CharSequence = userAnswerState.textInputAnswer
   private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
@@ -46,10 +47,13 @@ class RatioExpressionInputInteractionViewModel private constructor(
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        override fun onPropertyChanged(
+          sender: Observable,
+          propertyId: Int,
+        ) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            inputAnswerAvailable = true // Allow blank answer submission.
+            inputAnswerAvailable = true, // Allow blank answer submission.
           )
         }
       }
@@ -59,23 +63,29 @@ class RatioExpressionInputInteractionViewModel private constructor(
     // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       pendingAnswerError = null,
-      inputAnswerAvailable = true
+      inputAnswerAvailable = true,
     )
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    if (answerText.isNotEmpty()) {
-      val ratioAnswer = stringToRatioParser.parseRatioOrThrow(answerText.toString())
-      answer = InteractionObject.newBuilder().apply {
-        ratioExpression = ratioAnswer
+  override fun getPendingAnswer(): UserAnswer =
+    UserAnswer
+      .newBuilder()
+      .apply {
+        if (answerText.isNotEmpty()) {
+          val ratioAnswer = stringToRatioParser.parseRatioOrThrow(answerText.toString())
+          answer =
+            InteractionObject
+              .newBuilder()
+              .apply {
+                ratioExpression = ratioAnswer
+              }.build()
+          plainAnswer = ratioAnswer.toAnswerString()
+          contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
+          this.writtenTranslationContext =
+            this@RatioExpressionInputInteractionViewModel.writtenTranslationContext
+        }
       }.build()
-      plainAnswer = ratioAnswer.toAnswerString()
-      contentDescription = ratioAnswer.toAccessibleAnswerString(resourceHandler)
-      this.writtenTranslationContext =
-        this@RatioExpressionInputInteractionViewModel.writtenTranslationContext
-    }
-  }.build()
 
   /**
    * It checks the pending error for the current ratio input, and correspondingly
@@ -83,36 +93,52 @@ class RatioExpressionInputInteractionViewModel private constructor(
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     answerErrorCetegory = category
-    pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME ->
-        if (answerText.isNotEmpty())
-          stringToRatioParser.getRealTimeAnswerError(answerText.toString())
-            .getErrorMessageFromStringRes(resourceHandler)
-        else null
-      AnswerErrorCategory.SUBMIT_TIME ->
-        stringToRatioParser.getSubmitTimeError(
-          answerText.toString(),
-          numberOfTerms = numberOfTerms
-        ).getErrorMessageFromStringRes(resourceHandler)
-      else -> null
-    }
+    pendingAnswerError =
+      when (category) {
+        AnswerErrorCategory.REAL_TIME ->
+          if (answerText.isNotEmpty()) {
+            stringToRatioParser
+              .getRealTimeAnswerError(answerText.toString())
+              .getErrorMessageFromStringRes(resourceHandler)
+          } else {
+            null
+          }
+        AnswerErrorCategory.SUBMIT_TIME ->
+          stringToRatioParser
+            .getSubmitTimeError(
+              answerText.toString(),
+              numberOfTerms = numberOfTerms,
+            ).getErrorMessageFromStringRes(resourceHandler)
+        else -> null
+      }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
-  override fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.newBuilder().apply {
-      this.textInputAnswer = answerText.toString()
-      this.answerErrorCategory = answerErrorCetegory
-    }.build()
-  }
+  override fun getUserAnswerState(): UserAnswerState =
+    UserAnswerState
+      .newBuilder()
+      .apply {
+        this.textInputAnswer = answerText.toString()
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
 
-  fun getAnswerTextWatcher(): TextWatcher {
-    return object : TextWatcher {
-      override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+  fun getAnswerTextWatcher(): TextWatcher =
+    object : TextWatcher {
+      override fun beforeTextChanged(
+        s: CharSequence,
+        start: Int,
+        count: Int,
+        after: Int,
+      ) {
       }
 
-      override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
+      override fun onTextChanged(
+        answer: CharSequence,
+        start: Int,
+        before: Int,
+        count: Int,
+      ) {
         answerText = answer.toString().trim()
         val isAnswerTextAvailable = answerText.isNotEmpty()
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
@@ -124,7 +150,6 @@ class RatioExpressionInputInteractionViewModel private constructor(
       override fun afterTextChanged(s: Editable) {
       }
     }
-  }
 
   private fun deriveHintText(interaction: Interaction): CharSequence {
     // The subtitled unicode can apparently exist in the structure in two different formats.
@@ -148,32 +173,33 @@ class RatioExpressionInputInteractionViewModel private constructor(
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController
-  ) : InteractionItemFactory {
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return RatioExpressionInputInteractionViewModel(
-        interaction,
-        hasConversationView,
-        isSplitView,
-        answerErrorReceiver,
-        writtenTranslationContext,
-        resourceHandler,
-        translationController,
-        userAnswerState
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        RatioExpressionInputInteractionViewModel(
+          interaction,
+          hasConversationView,
+          isSplitView,
+          answerErrorReceiver,
+          writtenTranslationContext,
+          resourceHandler,
+          translationController,
+          userAnswerState,
+        )
     }
-  }
 }

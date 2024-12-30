@@ -18,7 +18,7 @@ import javax.inject.Singleton
  */
 class InMemoryBlockingCache<T : Any> private constructor(
   blockingDispatcher: CoroutineDispatcher,
-  initialValue: T?
+  initialValue: T?,
 ) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
 
@@ -39,42 +39,38 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * Returns a [Deferred] that, upon completion, guarantees that the cache has been recreated and initialized to the
    * specified value. The [Deferred] will be passed the most up-to-date state of the cache.
    */
-  fun createAsync(newValue: T): Deferred<T> {
-    return blockingScope.async {
+  fun createAsync(newValue: T): Deferred<T> =
+    blockingScope.async {
       setCache(newValue)
     }
-  }
 
   /**
    * Returns a [Deferred] that provides the most-up-to-date value of the cache, after either retrieving the current
    * state (if defined), or calling the provided generator to create a new state and initialize the cache to that state.
    * The provided function must be thread-safe and should have no side effects.
    */
-  fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> {
-    return blockingScope.async {
+  fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> =
+    blockingScope.async {
       setCache(value ?: generate())
     }
-  }
 
   /**
    * Returns a [Deferred] that will provide the most-up-to-date value stored in the cache, or null if it's not yet
    * initialized.
    */
-  fun readAsync(): Deferred<T?> {
-    return blockingScope.async {
+  fun readAsync(): Deferred<T?> =
+    blockingScope.async {
       value
     }
-  }
 
   /**
    * Returns a [Deferred] similar to [readAsync], except this assumes the cache to have been created already otherwise
    * an exception will be thrown.
    */
-  fun readIfPresentAsync(): Deferred<T> {
-    return blockingScope.async {
+  fun readIfPresentAsync(): Deferred<T> =
+    blockingScope.async {
       checkNotNull(value) { "Expected to read the cache only after it's been created" }
     }
-  }
 
   /**
    * Returns a [Deferred] that provides the most-up-to-date value of the cache, after atomically updating it based on
@@ -82,60 +78,56 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * side effects. This function is safe to call regardless of whether the cache has been created, meaning it can be
    * used also to initialize the cache.
    */
-  fun updateAsync(update: suspend (T?) -> T): Deferred<T> {
-    return blockingScope.async {
+  fun updateAsync(update: suspend (T?) -> T): Deferred<T> =
+    blockingScope.async {
       setCache(update(value))
     }
-  }
 
   /**
    * Returns a [Deferred] in the same way as [updateAsync], excepted this update is expected to occur after cache
    * creation otherwise an exception will be thrown.
    */
-  fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> {
-    return blockingScope.async {
+  fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> =
+    blockingScope.async {
       setCache(
         update(
           checkNotNull(value) {
             "Expected to update the cache only after it's been created"
-          }
-        )
+          },
+        ),
       )
     }
-  }
 
   /** See [updateIfPresentAsync]. Returns a custom deferred result. */
-  fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> {
-    return blockingScope.async {
-      val (updatedValue, customResult) = update(
-        checkNotNull(value) {
-          "Expected to update the cache only after it's been created"
-        }
-      )
+  fun <V> updateWithCustomChannelIfPresentAsync(update: suspend (T) -> Pair<T, V>): Deferred<V> =
+    blockingScope.async {
+      val (updatedValue, customResult) =
+        update(
+          checkNotNull(value) {
+            "Expected to update the cache only after it's been created"
+          },
+        )
       setCache(updatedValue)
       customResult
     }
-  }
 
   /**
    * Returns a [Deferred] in the same way and for the same conditions as [updateIfPresentAsync] except the provided
    * function is expected to update the cache in-place and return a custom value to propagate to the result of the
    * [Deferred] object.
    */
-  fun <O> updateInPlaceIfPresentAsync(update: suspend (T) -> O): Deferred<O> {
-    return blockingScope.async {
+  fun <O> updateInPlaceIfPresentAsync(update: suspend (T) -> O): Deferred<O> =
+    blockingScope.async {
       update(checkNotNull(value) { "Expected to update the cache only after it's been created" })
     }
-  }
 
   /**
    * Returns a [Deferred] that executes when this cache has been fully cleared, or if it's already been cleared.
    */
-  fun deleteAsync(): Deferred<Unit> {
-    return blockingScope.async {
+  fun deleteAsync(): Deferred<Unit> =
+    blockingScope.async {
       clearCache()
     }
-  }
 
   /**
    * Returns a [Deferred] that executes when checking the specified function on whether this cache should be deleted,
@@ -143,29 +135,31 @@ class InMemoryBlockingCache<T : Any> private constructor(
    *
    * Note that the provided function will not be called if the cache is already cleared.
    */
-  fun maybeDeleteAsync(shouldDelete: suspend (T) -> Boolean): Deferred<Boolean> {
-    return blockingScope.async {
+  fun maybeDeleteAsync(shouldDelete: suspend (T) -> Boolean): Deferred<Boolean> =
+    blockingScope.async {
       val valueSnapshot = value
       if (valueSnapshot != null && shouldDelete(valueSnapshot)) {
         clearCache()
         true
-      } else false
+      } else {
+        false
+      }
     }
-  }
 
   /**
    * Returns a [Deferred] in the same way as [maybeDeleteAsync], except the deletion function provided is guaranteed to
    * be called regardless of the state of the cache, and whose return value will be returned in this method's
    * [Deferred].
    */
-  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> {
-    return blockingScope.async {
+  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> =
+    blockingScope.async {
       if (shouldDelete(value)) {
         clearCache()
         true
-      } else false
+      } else {
+        false
+      }
     }
-  }
 
   private suspend fun setCache(newValue: T): T {
     val oldValue = value
@@ -182,12 +176,12 @@ class InMemoryBlockingCache<T : Any> private constructor(
 
   /** An injectable factory for [InMemoryBlockingCache]es. */
   @Singleton
-  class Factory @Inject constructor(
-    @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher
-  ) {
-    /** Returns a new [InMemoryBlockingCache] with, optionally, the specified initial value. */
-    fun <T : Any> create(initialValue: T? = null): InMemoryBlockingCache<T> {
-      return InMemoryBlockingCache(blockingDispatcher, initialValue)
+  class Factory
+    @Inject
+    constructor(
+      @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
+    ) {
+      /** Returns a new [InMemoryBlockingCache] with, optionally, the specified initial value. */
+      fun <T : Any> create(initialValue: T? = null): InMemoryBlockingCache<T> = InMemoryBlockingCache(blockingDispatcher, initialValue)
     }
-  }
 }

@@ -13,7 +13,6 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RatioExtensionsTest {
-
   @Test
   fun testRatio_ratioReduced_returnsOriginalList() {
     val ratioReduced = createRatio(listOf(1, 2, 3))
@@ -41,7 +40,5 @@ class RatioExtensionsTest {
     assertThat(ratio.toAnswerString()).isEqualTo("1:2:3")
   }
 
-  private fun createRatio(element: List<Int>): RatioExpression {
-    return RatioExpression.newBuilder().addAllRatioComponent(element).build()
-  }
+  private fun createRatio(element: List<Int>): RatioExpression = RatioExpression.newBuilder().addAllRatioComponent(element).build()
 }

@@ -94,7 +94,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TestFontScaleConfigurationUtilActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TestFontScaleConfigurationUtilActivityTest {
   @get:Rule
@@ -116,24 +116,23 @@ class TestFontScaleConfigurationUtilActivityTest {
     Intents.release()
   }
 
-  private fun createFontScaleTestActivityIntent(readingTextSize: ReadingTextSize): Intent {
-    return TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
+  private fun createFontScaleTestActivityIntent(readingTextSize: ReadingTextSize): Intent =
+    TestFontScaleConfigurationUtilActivity.createFontScaleTestActivity(
       context,
-      readingTextSize
+      readingTextSize,
     )
-  }
 
   @Test
   fun testFontScaleConfigurationUtil_smallTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE)
+      createFontScaleTestActivityIntent(ReadingTextSize.SMALL_TEXT_SIZE),
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size)
-          )
-        )
+            context.resources.getDimension(R.dimen.font_scale_content_small_text_view_size),
+          ),
+        ),
       )
     }
   }
@@ -141,14 +140,14 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_mediumTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE)
+      createFontScaleTestActivityIntent(ReadingTextSize.MEDIUM_TEXT_SIZE),
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_text_size)
-          )
-        )
+            context.resources.getDimension(R.dimen.font_scale_content_text_size),
+          ),
+        ),
       )
     }
   }
@@ -156,14 +155,14 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_largeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE)
+      createFontScaleTestActivityIntent(ReadingTextSize.LARGE_TEXT_SIZE),
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size)
-          )
-        )
+            context.resources.getDimension(R.dimen.font_scale_content_large_text_view_size),
+          ),
+        ),
       )
     }
   }
@@ -171,14 +170,14 @@ class TestFontScaleConfigurationUtilActivityTest {
   @Test
   fun testFontScaleConfigurationUtil_extraLargeTextSize_hasCorrectDimension() {
     launch<TestFontScaleConfigurationUtilActivity>(
-      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE)
+      createFontScaleTestActivityIntent(ReadingTextSize.EXTRA_LARGE_TEXT_SIZE),
     ).use {
       onView(withId(R.id.font_scale_content_text_view)).check(
         matches(
           withFontSize(
-            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size)
-          )
-        )
+            context.resources.getDimension(R.dimen.font_scale_content_extra_large_text_view_size),
+          ),
+        ),
       )
     }
   }
@@ -212,8 +211,8 @@ class TestFontScaleConfigurationUtilActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -221,27 +220,30 @@ class TestFontScaleConfigurationUtilActivityTest {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      testFontScaleConfigurationUtilActivityTest: TestFontScaleConfigurationUtilActivityTest
-    )
+    fun inject(testFontScaleConfigurationUtilActivityTest: TestFontScaleConfigurationUtilActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestFontScaleConfigurationUtilActivityTest_TestApplicationComponent.builder()
+      DaggerTestFontScaleConfigurationUtilActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(
-      testFontScaleConfigurationUtilActivityTest: TestFontScaleConfigurationUtilActivityTest
-    ) {
+    fun inject(testFontScaleConfigurationUtilActivityTest: TestFontScaleConfigurationUtilActivityTest) {
       component.inject(testFontScaleConfigurationUtilActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

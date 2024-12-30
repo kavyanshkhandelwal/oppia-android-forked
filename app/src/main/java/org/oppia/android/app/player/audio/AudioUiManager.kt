@@ -20,7 +20,10 @@ interface AudioUiManager {
    * @param newState: New State for the audio player to get recorded voiceovers from.
    * @param explorationId: Used to build voiceover uri.
    */
-  fun setStateAndExplorationId(newState: State, explorationId: String)
+  fun setStateAndExplorationId(
+    newState: State,
+    explorationId: String,
+  )
 
   /**
    * Loads audio for media player with the main content's id.
@@ -35,7 +38,10 @@ interface AudioUiManager {
    * @param contentId: Used to get a specific Voiceover for feedback.
    * @param allowAutoPlay: If false, audio is guaranteed not to be autoPlayed.
    */
-  fun loadFeedbackAudio(contentId: String, allowAutoPlay: Boolean)
+  fun loadFeedbackAudio(
+    contentId: String,
+    allowAutoPlay: Boolean,
+  )
 
   /** Used to pause all playing audio. */
   fun pauseAudio()

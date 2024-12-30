@@ -8,15 +8,19 @@ import javax.inject.Inject
 
 /** The presenter for [AdministratorControlsFragmentTestActivity]. */
 @ActivityScope
-class AdministratorControlsFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-  /** Initializes the [AdministratorControlsFragmentTestActivity] and sets the navigation drawer. */
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.administrator_controls_fragment_test_activity)
-    activity.supportFragmentManager.beginTransaction().replace(
-      R.id.administrator_controls_fragment_test_activity_fragment_container,
-      AdministratorControlsFragment.newInstance(isMultipane = false)
-    ).commitNow()
+class AdministratorControlsFragmentTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    /** Initializes the [AdministratorControlsFragmentTestActivity] and sets the navigation drawer. */
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.administrator_controls_fragment_test_activity)
+      activity.supportFragmentManager
+        .beginTransaction()
+        .replace(
+          R.id.administrator_controls_fragment_test_activity_fragment_container,
+          AdministratorControlsFragment.newInstance(isMultipane = false),
+        ).commitNow()
+    }
   }
-}

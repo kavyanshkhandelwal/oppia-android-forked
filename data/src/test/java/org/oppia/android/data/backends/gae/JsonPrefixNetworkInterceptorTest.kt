@@ -19,7 +19,6 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class JsonPrefixNetworkInterceptorTest {
-
   @Inject
   lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
 
@@ -28,23 +27,22 @@ class JsonPrefixNetworkInterceptorTest {
     setUpTestApplicationComponent()
   }
 
-  private fun removeSpaces(raw: String): String {
-    return raw.replace(" ", "")
-  }
+  private fun removeSpaces(raw: String): String = raw.replace(" ", "")
 
   @Test
   fun testNetworkInterceptor_withXssiPrefix_removesXssiPrefix() {
     val rawJson: String =
-      jsonPrefixNetworkInterceptor.removeXssiPrefix(
-        loadUnformattedFakeJson(
-          "dummy_response_with_xssi_prefix.json"
-        )
-      ).trim()
+      jsonPrefixNetworkInterceptor
+        .removeXssiPrefix(
+          loadUnformattedFakeJson(
+            "dummy_response_with_xssi_prefix.json",
+          ),
+        ).trim()
 
     assertThat(removeSpaces(formatJson(rawJson))).isEqualTo(
       loadFormattedFakeJson(
-        "dummy_response_without_xssi_prefix.json"
-      )
+        "dummy_response_without_xssi_prefix.json",
+      ),
     )
   }
 
@@ -53,27 +51,26 @@ class JsonPrefixNetworkInterceptorTest {
     val rawJson: String =
       jsonPrefixNetworkInterceptor.removeXssiPrefix(
         loadUnformattedFakeJson(
-          "dummy_response_without_xssi_prefix.json"
-        )
+          "dummy_response_without_xssi_prefix.json",
+        ),
       )
 
     assertThat(formatJson(rawJson)).isEqualTo(
       loadFormattedFakeJson(
-        "dummy_response_without_xssi_prefix.json"
-      )
+        "dummy_response_without_xssi_prefix.json",
+      ),
     )
   }
 
-  private fun loadUnformattedFakeJson(filename: String): String =
-    ApiMockLoader.getFakeJson(filename)
+  private fun loadUnformattedFakeJson(filename: String): String = ApiMockLoader.getFakeJson(filename)
 
-  private fun loadFormattedFakeJson(filename: String): String =
-    formatJson(loadUnformattedFakeJson(filename))
+  private fun loadFormattedFakeJson(filename: String): String = formatJson(loadUnformattedFakeJson(filename))
 
   private fun formatJson(rawJson: String): String = JSONObject(rawJson).toString()
 
   private fun setUpTestApplicationComponent() {
-    DaggerJsonPrefixNetworkInterceptorTest_TestApplicationComponent.builder()
+    DaggerJsonPrefixNetworkInterceptorTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

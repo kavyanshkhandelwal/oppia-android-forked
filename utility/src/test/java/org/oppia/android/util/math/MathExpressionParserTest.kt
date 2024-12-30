@@ -46,12 +46,16 @@ import org.robolectric.annotation.LooperMode
 class MathExpressionParserTest {
   @Parameter
   lateinit var lhsOp: String
+
   @Parameter
   lateinit var rhsOp: String
+
   @Parameter
   lateinit var binOp: String
+
   @Parameter
   lateinit var subExp: String
+
   @Parameter
   lateinit var func: String
 
@@ -404,7 +408,8 @@ class MathExpressionParserTest {
   fun testParseNumExp_expWithTripleParens_optionalErrorsDisabled_doesNotFail() {
     // This doesn't trigger an error when optional errors are disabled.
     expectSuccessWhenParsingNumericExpression(
-      "1+(7*((( 9  + 3) )))", errorCheckingMode = REQUIRED_ONLY
+      "1+(7*((( 9  + 3) )))",
+      errorCheckingMode = REQUIRED_ONLY,
     )
   }
 
@@ -908,7 +913,9 @@ class MathExpressionParserTest {
 
     // This doesn't trigger a failure when optional errors are disabled.
     expectSuccessWhenParsingAlgebraicExpression(
-      "apple", allowedVariables, errorCheckingMode = REQUIRED_ONLY
+      "apple",
+      allowedVariables,
+      errorCheckingMode = REQUIRED_ONLY,
     )
   }
 
@@ -1114,80 +1121,102 @@ class MathExpressionParserTest {
   }
 
   private companion object {
-    private val BINARY_SYMBOL_TO_OPERATOR_MAP = mapOf(
-      "*" to MULTIPLY,
-      "×" to MULTIPLY,
-      "/" to DIVIDE,
-      "÷" to DIVIDE,
-      "^" to EXPONENTIATE,
-      "+" to ADD,
-      "-" to SUBTRACT,
-      "−" to SUBTRACT,
-      "–" to SUBTRACT
-    )
-    private val LOWERCASE_LATIN_ALPHABET = listOf(
-      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
-      "t", "u", "v", "w", "x", "y", "z"
-    )
+    private val BINARY_SYMBOL_TO_OPERATOR_MAP =
+      mapOf(
+        "*" to MULTIPLY,
+        "×" to MULTIPLY,
+        "/" to DIVIDE,
+        "÷" to DIVIDE,
+        "^" to EXPONENTIATE,
+        "+" to ADD,
+        "-" to SUBTRACT,
+        "−" to SUBTRACT,
+        "–" to SUBTRACT,
+      )
+    private val LOWERCASE_LATIN_ALPHABET =
+      listOf(
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+      )
 
     private fun expectSuccessWhenParsingNumericExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
     ) {
       expectSuccessfulParsingResult(parseNumericExpression(expression, errorCheckingMode))
     }
 
-    private fun expectFailureWhenParsingNumericExpression(expression: String): MathParsingError {
-      return expectFailingParsingResult(parseNumericExpression(expression))
-    }
+    private fun expectFailureWhenParsingNumericExpression(expression: String): MathParsingError =
+      expectFailingParsingResult(parseNumericExpression(expression))
 
     private fun expectSuccessWhenParsingAlgebraicExpression(
       expression: String,
       allowedVariables: List<String> = listOf("x", "y", "z"),
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
     ) {
       expectSuccessfulParsingResult(
-        parseAlgebraicExpression(expression, allowedVariables, errorCheckingMode)
+        parseAlgebraicExpression(expression, allowedVariables, errorCheckingMode),
       )
     }
 
     private fun expectFailureWhenParsingAlgebraicExpression(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathParsingError {
-      return expectFailingParsingResult(parseAlgebraicExpression(expression, allowedVariables))
-    }
+      allowedVariables: List<String> = listOf("x", "y", "z"),
+    ): MathParsingError = expectFailingParsingResult(parseAlgebraicExpression(expression, allowedVariables))
 
     private fun expectSuccessWhenParsingAlgebraicEquation(expression: String) {
       expectSuccessfulParsingResult(parseAlgebraicEquation(expression))
     }
 
-    private fun expectFailureWhenParsingAlgebraicEquation(expression: String): MathParsingError {
-      return expectFailingParsingResult(parseAlgebraicEquation(expression))
-    }
+    private fun expectFailureWhenParsingAlgebraicEquation(expression: String): MathParsingError =
+      expectFailingParsingResult(parseAlgebraicEquation(expression))
 
     private fun parseNumericExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathParsingResult<MathExpression> {
-      return MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
-    }
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathParsingResult<MathExpression> = MathExpressionParser.parseNumericExpression(expression, errorCheckingMode)
 
     private fun parseAlgebraicExpression(
       expression: String,
       allowedVariables: List<String>,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathParsingResult<MathExpression> {
-      return MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables, errorCheckingMode
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathParsingResult<MathExpression> =
+      MathExpressionParser.parseAlgebraicExpression(
+        expression,
+        allowedVariables,
+        errorCheckingMode,
       )
-    }
 
-    private fun parseAlgebraicEquation(expression: String): MathParsingResult<MathEquation> {
-      return MathExpressionParser.parseAlgebraicEquation(
-        expression, allowedVariables = listOf("x", "y", "z"), ALL_ERRORS
+    private fun parseAlgebraicEquation(expression: String): MathParsingResult<MathEquation> =
+      MathExpressionParser.parseAlgebraicEquation(
+        expression,
+        allowedVariables = listOf("x", "y", "z"),
+        ALL_ERRORS,
       )
-    }
 
     private fun <T> expectSuccessfulParsingResult(result: MathParsingResult<T>) {
       assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)

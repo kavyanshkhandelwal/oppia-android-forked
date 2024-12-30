@@ -16,7 +16,7 @@ class ParameterizedRunnerDelegate(
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
   private val iterationName: String?,
-  private val restrictMethodNamesForPaths: Boolean = false
+  private val restrictMethodNamesForPaths: Boolean = false,
 ) : ParameterizedRunnerOverrideMethods {
   /**
    * A lambda used to call into the parent runner's [getChildren] method. This should be set by
@@ -36,32 +36,42 @@ class ParameterizedRunnerDelegate(
    */
   lateinit var fetchMethodInvokerFromParent: (FrameworkMethod?, Any?) -> Statement
 
-  override fun getChildren(): MutableList<FrameworkMethod> {
-    return fetchChildrenFromParent().filter {
-      // Either only match to the specific method, or no parameterized methods.
-      if (methodName != null) {
-        it.method.name == methodName
-      } else it.method.name !in parameterizedMethods.keys
-    }.toMutableList()
-  }
+  override fun getChildren(): MutableList<FrameworkMethod> =
+    fetchChildrenFromParent()
+      .filter {
+        // Either only match to the specific method, or no parameterized methods.
+        if (methodName != null) {
+          it.method.name == methodName
+        } else {
+          it.method.name !in parameterizedMethods.keys
+        }
+      }.toMutableList()
 
-  override fun testName(method: FrameworkMethod?): String {
-    return if (methodName != null) {
-      val partName = if (restrictMethodNamesForPaths) {
-        iterationName?.replace("/", "_slash_")
-      } else iterationName
+  override fun testName(method: FrameworkMethod?): String =
+    if (methodName != null) {
+      val partName =
+        if (restrictMethodNamesForPaths) {
+          iterationName?.replace("/", "_slash_")
+        } else {
+          iterationName
+        }
       "${fetchTestNameFromParent(method)}_$partName"
-    } else fetchTestNameFromParent(method)
-  }
+    } else {
+      fetchTestNameFromParent(method)
+    }
 
-  override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement {
+  override fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Statement {
     val invoker = fetchMethodInvokerFromParent(method, test)
     checkNotNull(test) { "Expected test to be initialized." }
     return if (methodName != null && iterationName != null) {
-      val parameterizedMethod = checkNotNull(parameterizedMethods[method?.name]) {
-        "Expected to find registered parameterized method: ${method?.name}, available:" +
-          " ${parameterizedMethods.keys}"
-      }
+      val parameterizedMethod =
+        checkNotNull(parameterizedMethods[method?.name]) {
+          "Expected to find registered parameterized method: ${method?.name}, available:" +
+            " ${parameterizedMethods.keys}"
+        }
       object : Statement() {
         override fun evaluate() {
           // Initialize the test prior to execution.
@@ -69,6 +79,8 @@ class ParameterizedRunnerDelegate(
           invoker.evaluate()
         }
       }
-    } else invoker
+    } else {
+      invoker
+    }
   }
 }

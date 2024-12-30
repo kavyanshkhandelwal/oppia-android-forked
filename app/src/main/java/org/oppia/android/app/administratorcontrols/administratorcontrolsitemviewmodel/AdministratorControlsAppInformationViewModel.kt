@@ -6,9 +6,8 @@ import org.oppia.android.app.administratorcontrols.RouteToAppVersionListener
 
 /** [ViewModel] for the recycler view in [AdministratorControlsFragment]. */
 class AdministratorControlsAppInformationViewModel(
-  activity: AppCompatActivity
+  activity: AppCompatActivity,
 ) : AdministratorControlsItemViewModel() {
-
   private val routeToAppVersionListener = activity as RouteToAppVersionListener
   private val loadAppVersionListener = activity as LoadAppVersionListener
 

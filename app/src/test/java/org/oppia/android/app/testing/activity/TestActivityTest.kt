@@ -170,8 +170,7 @@ class TestActivityTest {
     }
   }
 
-  private fun launchTestActivity(): ActivityScenario<TestActivity> =
-    ActivityScenario.launch(TestActivity.createIntent(context))
+  private fun launchTestActivity(): ActivityScenario<TestActivity> = ActivityScenario.launch(TestActivity.createIntent(context))
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -205,8 +204,8 @@ class TestActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -220,9 +219,13 @@ class TestActivityTest {
     fun inject(testActivityTest: TestActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestActivityTest_TestApplicationComponent.builder()
+      DaggerTestActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -231,9 +234,12 @@ class TestActivityTest {
       component.inject(testActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

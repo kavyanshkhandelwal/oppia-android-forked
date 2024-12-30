@@ -12,13 +12,14 @@ import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 
 // TODO(#59): Hide the visibility of this class to domain implementations.
+
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
  * treats the learner's progress like a deck of cards to simplify forward/backward navigation.
  */
 class StateDeck constructor(
   initialState: State,
-  private val isTopOfDeckTerminalChecker: (State) -> Boolean
+  private val isTopOfDeckTerminalChecker: (State) -> Boolean,
 ) {
   private var pendingTopState: State = initialState
   private val previousStates: MutableList<EphemeralState> = ArrayList()
@@ -38,7 +39,7 @@ class StateDeck constructor(
     pendingTopState: State,
     previousStates: List<EphemeralState>,
     currentDialogInteractions: List<AnswerAndResponse>,
-    stateIndex: Int
+    stateIndex: Int,
   ) {
     this.pendingTopState = pendingTopState
     this.previousStates.clear()
@@ -82,18 +83,17 @@ class StateDeck constructor(
   fun getViewedStateCount(): Int = previousStates.size
 
   /** Returns the current [State] being viewed by the learner. */
-  fun getCurrentState(): State {
-    return when {
+  fun getCurrentState(): State =
+    when {
       isCurrentStateTopOfDeck() -> pendingTopState
       else -> previousStates[stateIndex].state
     }
-  }
 
   /** Returns the current [EphemeralState] the learner is viewing. */
   fun getCurrentEphemeralState(
     helpIndex: HelpIndex,
     timestamp: Long,
-    isContinueButtonAnimationSeen: Boolean
+    isContinueButtonAnimationSeen: Boolean,
   ): EphemeralState {
     // Note that the terminal state is evaluated first since it can only return true if the current
     // state is the top of the deck, and that state is the terminal one. Otherwise the terminal
@@ -101,11 +101,12 @@ class StateDeck constructor(
     // pending.
     return when {
       isCurrentStateTerminal() -> getCurrentTerminalState()
-      isCurrentStateTopOfDeck() -> getCurrentPendingState(
-        helpIndex,
-        timestamp,
-        isContinueButtonAnimationSeen
-      )
+      isCurrentStateTopOfDeck() ->
+        getCurrentPendingState(
+          helpIndex,
+          timestamp,
+          isContinueButtonAnimationSeen,
+        )
       else -> getPreviousState()
     }
   }
@@ -126,7 +127,7 @@ class StateDeck constructor(
     state: State,
     prohibitSameStateName: Boolean,
     timestamp: Long,
-    isContinueButtonAnimationSeen: Boolean
+    isContinueButtonAnimationSeen: Boolean,
   ) {
     check(isCurrentStateTopOfDeck()) {
       "Cannot push a new state unless the learner is at the most recent state."
@@ -144,13 +145,15 @@ class StateDeck constructor(
     }
     // NB: This technically has a 'next' state, but it's not marked until it's first navigated away
     // since the new state doesn't become fully realized until navigated to.
-    previousStates += EphemeralState.newBuilder()
-      .setState(pendingTopState)
-      .setHasPreviousState(!isCurrentStateInitial())
-      .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
-      .setContinueButtonAnimationTimestampMs(timestamp)
-      .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
-      .build()
+    previousStates +=
+      EphemeralState
+        .newBuilder()
+        .setState(pendingTopState)
+        .setHasPreviousState(!isCurrentStateInitial())
+        .setCompletedState(CompletedState.newBuilder().addAllAnswer(currentDialogInteractions))
+        .setContinueButtonAnimationTimestampMs(timestamp)
+        .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
+        .build()
     currentDialogInteractions.clear()
     pendingTopState = state
   }
@@ -161,14 +164,20 @@ class StateDeck constructor(
    * This operation fails if the user is not at the most recent state in the deck, or if the most
    * recent state is terminal (since no answer can be submitted to a terminal interaction).
    */
-  fun submitAnswer(userAnswer: UserAnswer, feedback: SubtitledHtml, isCorrectAnswer: Boolean) {
+  fun submitAnswer(
+    userAnswer: UserAnswer,
+    feedback: SubtitledHtml,
+    isCorrectAnswer: Boolean,
+  ) {
     check(isCurrentStateTopOfDeck()) { "Cannot submit an answer except to the most recent state." }
     check(!isCurrentStateTerminal()) { "Cannot submit an answer to a terminal state." }
-    currentDialogInteractions += AnswerAndResponse.newBuilder()
-      .setUserAnswer(userAnswer)
-      .setFeedback(feedback)
-      .setIsCorrectAnswer(isCorrectAnswer)
-      .build()
+    currentDialogInteractions +=
+      AnswerAndResponse
+        .newBuilder()
+        .setUserAnswer(userAnswer)
+        .setFeedback(feedback)
+        .setIsCorrectAnswer(isCorrectAnswer)
+        .build()
   }
 
   /**
@@ -179,66 +188,63 @@ class StateDeck constructor(
     explorationVersion: Int,
     explorationTitle: String,
     timestamp: Long,
-    helpIndex: HelpIndex
-  ): ExplorationCheckpoint {
-    return ExplorationCheckpoint.newBuilder().apply {
-      addAllCompletedStatesInCheckpoint(
-        previousStates.map { state ->
-          CompletedStateInCheckpoint.newBuilder().apply {
-            completedState = state.completedState
-            stateName = state.state.name
-          }.build()
-        }
-      )
-      pendingStateName = pendingTopState.name
-      addAllPendingUserAnswers(currentDialogInteractions)
-      this.stateIndex = this@StateDeck.stateIndex
-      this.explorationVersion = explorationVersion
-      this.explorationTitle = explorationTitle
-      timestampOfFirstCheckpoint = timestamp
-      this.helpIndex = helpIndex
-    }.build()
-  }
+    helpIndex: HelpIndex,
+  ): ExplorationCheckpoint =
+    ExplorationCheckpoint
+      .newBuilder()
+      .apply {
+        addAllCompletedStatesInCheckpoint(
+          previousStates.map { state ->
+            CompletedStateInCheckpoint
+              .newBuilder()
+              .apply {
+                completedState = state.completedState
+                stateName = state.state.name
+              }.build()
+          },
+        )
+        pendingStateName = pendingTopState.name
+        addAllPendingUserAnswers(currentDialogInteractions)
+        this.stateIndex = this@StateDeck.stateIndex
+        this.explorationVersion = explorationVersion
+        this.explorationTitle = explorationTitle
+        timestampOfFirstCheckpoint = timestamp
+        this.helpIndex = helpIndex
+      }.build()
 
   private fun getCurrentPendingState(
     helpIndex: HelpIndex,
     timestamp: Long,
-    isContinueButtonAnimationSeen: Boolean
-  ): EphemeralState {
-    return EphemeralState.newBuilder()
+    isContinueButtonAnimationSeen: Boolean,
+  ): EphemeralState =
+    EphemeralState
+      .newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setPendingState(
-        PendingState.newBuilder()
+        PendingState
+          .newBuilder()
           .addAllWrongAnswer(currentDialogInteractions)
-          .setHelpIndex(helpIndex)
-      )
-      .setContinueButtonAnimationTimestampMs(timestamp)
+          .setHelpIndex(helpIndex),
+      ).setContinueButtonAnimationTimestampMs(timestamp)
       .setShowContinueButtonAnimation(!isContinueButtonAnimationSeen && isCurrentStateInitial())
       .build()
-  }
 
-  private fun getCurrentTerminalState(): EphemeralState {
-    return EphemeralState.newBuilder()
+  private fun getCurrentTerminalState(): EphemeralState =
+    EphemeralState
+      .newBuilder()
       .setState(pendingTopState)
       .setHasPreviousState(!isCurrentStateInitial())
       .setTerminalState(true)
       .build()
-  }
 
-  private fun getPreviousState(): EphemeralState {
-    return previousStates[stateIndex]
-  }
+  private fun getPreviousState(): EphemeralState = previousStates[stateIndex]
 
   /** Returns whether the current scrolled state is the first state of the exploration. */
-  private fun isCurrentStateInitial(): Boolean {
-    return stateIndex == 0
-  }
+  private fun isCurrentStateInitial(): Boolean = stateIndex == 0
 
   /** Returns whether the current scrolled state is the most recent state played by the learner. */
-  fun isCurrentStateTopOfDeck(): Boolean {
-    return stateIndex == previousStates.size
-  }
+  fun isCurrentStateTopOfDeck(): Boolean = stateIndex == previousStates.size
 
   /** Returns whether the current state is terminal. */
   private fun isCurrentStateTerminal(): Boolean {
@@ -248,7 +254,5 @@ class StateDeck constructor(
   }
 
   /** Returns whether the most recent card on the deck is terminal. */
-  private fun isTopOfDeckTerminal(): Boolean {
-    return isTopOfDeckTerminalChecker(pendingTopState)
-  }
+  private fun isTopOfDeckTerminal(): Boolean = isTopOfDeckTerminalChecker(pendingTopState)
 }

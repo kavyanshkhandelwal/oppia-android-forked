@@ -21,15 +21,15 @@ class AdministratorControlsFragment : InjectableFragment() {
   lateinit var administratorControlsFragmentPresenter: AdministratorControlsFragmentPresenter
 
   companion object {
-
     /** Creates a new instance of [AdministratorControlsFragment]. */
     fun newInstance(isMultipane: Boolean): AdministratorControlsFragment {
       val args =
         AdministratorControlsFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
       return AdministratorControlsFragment().apply {
-        arguments = Bundle().apply {
-          putProto(ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -42,16 +42,17 @@ class AdministratorControlsFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) {
         "Expected arguments to be passed to AdministratorControlsFragment"
       }
-    val args = arguments.getProto(
-      ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
-      AdministratorControlsFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
+        AdministratorControlsFragmentArguments.getDefaultInstance(),
+      )
     val isMultipane = args.isMultipane
     return administratorControlsFragmentPresenter
       .handleCreateView(inflater, container, isMultipane)

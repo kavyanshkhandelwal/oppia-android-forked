@@ -108,14 +108,14 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MathExpressionParserFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MathExpressionParserFragmentTest {
   private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
 
   private val activityScenarioRule by lazy {
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
   }
 
@@ -126,8 +126,11 @@ class MathExpressionParserFragmentTest {
     RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var editTextInputAction: EditTextInputAction
+
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   @Before
@@ -158,7 +161,7 @@ class MathExpressionParserFragmentTest {
       .check(matches(withText("Parse result: Uninitialized")))
   }
 
-  /* Tests specific to numeric expressions. */
+  // Tests specific to numeric expressions.
 
   @Test
   fun testFragment_selectNumExps_typeExp_emptyExp_clickParse_uninitedParseResult() {
@@ -458,7 +461,7 @@ class MathExpressionParserFragmentTest {
     }
   }
 
-  /* Tests specific to algebraic expressions. */
+  // Tests specific to algebraic expressions.
 
   @Test
   fun testFragment_selectAlgExps_typeExp_emptyExp_clickParse_uninitedParseResult() {
@@ -847,7 +850,7 @@ class MathExpressionParserFragmentTest {
     }
   }
 
-  /* Tests specific to algebraic/math equations. */
+  // Tests specific to algebraic/math equations.
 
   @Test
   fun testFragment_selectAlgEqs_typeExp_emptyExp_clickParse_uninitedParseResult() {
@@ -1246,8 +1249,7 @@ class MathExpressionParserFragmentTest {
     }
   }
 
-  private fun typeExpression(text: String) =
-    typeIntoView(R.id.math_expression_input_edit_text, text)
+  private fun typeExpression(text: String) = typeIntoView(R.id.math_expression_input_edit_text, text)
 
   private fun clickParseButton() = clickOnView(R.id.parse_math_expression_button)
 
@@ -1323,48 +1325,46 @@ class MathExpressionParserFragmentTest {
     typeIntoView(R.id.allowed_variables_edit_text, allowedVariables.joinToString(separator = ","))
   }
 
-  private fun toggleTreatDivisionsAsFractionsSwitch() =
-    clickOnView(R.id.math_expression_treat_divisions_as_fractions_switch)
+  private fun toggleTreatDivisionsAsFractionsSwitch() = clickOnView(R.id.math_expression_treat_divisions_as_fractions_switch)
 
   private fun scrollToParseResult() = scrollToView(R.id.math_expression_parse_result_text_view)
 
-  private fun clickOnNumericExpressionsRadioButton() =
-    clickOnView(R.id.math_expression_parse_type_numeric_expression_radio_button)
+  private fun clickOnNumericExpressionsRadioButton() = clickOnView(R.id.math_expression_parse_type_numeric_expression_radio_button)
 
-  private fun clickOnAlgebraicExpressionsRadioButton() =
-    clickOnView(R.id.math_expression_parse_type_algebraic_expression_radio_button)
+  private fun clickOnAlgebraicExpressionsRadioButton() = clickOnView(R.id.math_expression_parse_type_algebraic_expression_radio_button)
 
-  private fun clickOnAlgebraicEquationsRadioButton() =
-    clickOnView(R.id.math_expression_parse_type_algebraic_equation_radio_button)
+  private fun clickOnAlgebraicEquationsRadioButton() = clickOnView(R.id.math_expression_parse_type_algebraic_equation_radio_button)
 
-  private fun clickOnMathExpressionRadioButton() =
-    clickOnView(R.id.math_expression_result_type_math_expression_radio_button)
+  private fun clickOnMathExpressionRadioButton() = clickOnView(R.id.math_expression_result_type_math_expression_radio_button)
 
-  private fun clickOnComparableOperationRadioButton() =
-    clickOnView(R.id.math_expression_result_type_comparable_operation_radio_button)
+  private fun clickOnComparableOperationRadioButton() = clickOnView(R.id.math_expression_result_type_comparable_operation_radio_button)
 
-  private fun clickOnPolynomialRadioButton() =
-    clickOnView(R.id.math_expression_result_type_polynomial_radio_button)
+  private fun clickOnPolynomialRadioButton() = clickOnView(R.id.math_expression_result_type_polynomial_radio_button)
 
-  private fun clickOnLatexRadioButton() =
-    clickOnView(R.id.math_expression_result_type_latex_radio_button)
+  private fun clickOnLatexRadioButton() = clickOnView(R.id.math_expression_result_type_latex_radio_button)
 
-  private fun clickOnHumanReadableStringRadioButton() =
-    clickOnView(R.id.math_expression_result_type_human_readable_string_radio_button)
+  private fun clickOnHumanReadableStringRadioButton() = clickOnView(R.id.math_expression_result_type_human_readable_string_radio_button)
 
-  private fun scrollToView(@IdRes viewId: Int) {
+  private fun scrollToView(
+    @IdRes viewId: Int,
+  ) {
     onView(withId(viewId)).perform(scrollTo())
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun typeIntoView(@IdRes viewId: Int, text: String) {
+  private fun typeIntoView(
+    @IdRes viewId: Int,
+    text: String,
+  ) {
     // First, ensure the view is visible before trying to input text.
     scrollToView(viewId)
     onView(withId(viewId)).perform(editTextInputAction.replaceText(text))
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun clickOnView(@IdRes viewId: Int) {
+  private fun clickOnView(
+    @IdRes viewId: Int,
+  ) {
     // First, ensure the view is visible before trying to click on it.
     scrollToView(viewId)
     onView(withId(viewId)).perform(click())
@@ -1377,14 +1377,15 @@ class MathExpressionParserFragmentTest {
   }
 
   private fun TestActivity.addMathExpressionParserFragment() {
-    supportFragmentManager.beginTransaction().apply {
-      add(R.id.test_fragment_placeholder, MathExpressionParserFragment.createNewInstance())
-    }.commitNow()
+    supportFragmentManager
+      .beginTransaction()
+      .apply {
+        add(R.id.test_fragment_placeholder, MathExpressionParserFragment.createNewInstance())
+      }.commitNow()
   }
 
-  private inline fun <reified T> TextView.findSpansOfType(): List<T> {
-    return (text as? Spannable)?.getSpans(0, text.length, T::class.java)?.toList() ?: listOf()
-  }
+  private inline fun <reified T> TextView.findSpansOfType(): List<T> =
+    (text as? Spannable)?.getSpans(0, text.length, T::class.java)?.toList() ?: listOf()
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -1419,8 +1420,8 @@ class MathExpressionParserFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1431,9 +1432,13 @@ class MathExpressionParserFragmentTest {
     fun inject(mathExpressionParserFragmentTest: MathExpressionParserFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMathExpressionParserFragmentTest_TestApplicationComponent.builder()
+      DaggerMathExpressionParserFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1442,9 +1447,12 @@ class MathExpressionParserFragmentTest {
       component.inject(mathExpressionParserFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

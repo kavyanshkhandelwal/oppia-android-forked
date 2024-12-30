@@ -9,20 +9,22 @@ import javax.inject.Inject
 
 /** The presenter for [TopicRevisionTestActivity]. */
 @ActivityScope
-class TopicRevisionTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.topic_revision_test_activity)
-    val profileId = ProfileId.newBuilder().setInternalId(0).build()
-    val topicRevisionFragment =
-      TopicRevisionFragment.newInstance(profileId = profileId, topicId = "")
-    activity.supportFragmentManager.beginTransaction()
-      .add(
-        R.id.topic_revision_container,
-        topicRevisionFragment,
-        TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG
-      ).commit()
+class TopicRevisionTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.topic_revision_test_activity)
+      val profileId = ProfileId.newBuilder().setInternalId(0).build()
+      val topicRevisionFragment =
+        TopicRevisionFragment.newInstance(profileId = profileId, topicId = "")
+      activity.supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.topic_revision_container,
+          topicRevisionFragment,
+          TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG,
+        ).commit()
+    }
   }
-}

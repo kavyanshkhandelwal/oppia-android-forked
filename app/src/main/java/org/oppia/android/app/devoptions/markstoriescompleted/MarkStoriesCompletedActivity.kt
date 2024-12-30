@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 /** Activity for Mark Stories Completed. */
 class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var markStoriesCompletedActivityPresenter: MarkStoriesCompletedActivityPresenter
 
@@ -42,7 +41,7 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
         override fun handleOnBackPressed() {
           finish()
         }
-      }
+      },
     )
   }
 
@@ -54,9 +53,11 @@ class MarkStoriesCompletedActivity : InjectableAutoLocalizedAppCompatActivity() 
   }
 
   companion object {
-
     /** Returns an [Intent] to start this activity. */
-    fun createMarkStoriesCompletedIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkStoriesCompletedIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, MarkStoriesCompletedActivity::class.java).apply {
         decorateWithUserProfileId(profileId)

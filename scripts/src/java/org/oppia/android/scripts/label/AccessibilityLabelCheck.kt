@@ -42,27 +42,29 @@ fun main(vararg args: String) {
 
   val repoRoot = File(repoPath)
 
-  val missingAccessibilityLabelActivities = manifestPaths.flatMap { relativePath ->
-    val file = File(repoRoot, relativePath)
-    val docBuilder = builderFactory.newDocumentBuilder()
-    val doc = docBuilder.parse(file)
-    // Normalisation results in the removal of redundancies such as whitespaces, line breaks and
-    // comments.
-    doc.getDocumentElement().normalize()
-    val packageName = doc.getDocumentElement().getAttribute("package")
-    return@flatMap doc.getElementsByTagName("activity").toListOfNodes().mapNotNull { activityNode ->
-      computeFailureActivityPath(
-        activityNode = activityNode,
-        activityPathPrefix = activityPathPrefix,
-        packageName = packageName
-      )
+  val missingAccessibilityLabelActivities =
+    manifestPaths.flatMap { relativePath ->
+      val file = File(repoRoot, relativePath)
+      val docBuilder = builderFactory.newDocumentBuilder()
+      val doc = docBuilder.parse(file)
+      // Normalisation results in the removal of redundancies such as whitespaces, line breaks and
+      // comments.
+      doc.getDocumentElement().normalize()
+      val packageName = doc.getDocumentElement().getAttribute("package")
+      return@flatMap doc.getElementsByTagName("activity").toListOfNodes().mapNotNull { activityNode ->
+        computeFailureActivityPath(
+          activityNode = activityNode,
+          activityPathPrefix = activityPathPrefix,
+          packageName = packageName,
+        )
+      }
     }
-  }
 
   val redundantExemptions = accessibilityLabelExemptionList - missingAccessibilityLabelActivities
 
-  val failureActivitiesAfterExemption = missingAccessibilityLabelActivities -
-    accessibilityLabelExemptionList
+  val failureActivitiesAfterExemption =
+    missingAccessibilityLabelActivities -
+      accessibilityLabelExemptionList
 
   logRedundantExemptions(redundantExemptions, accessibilityLabelExemptionTextProtoFilePath)
 
@@ -71,7 +73,7 @@ fun main(vararg args: String) {
   if (failureActivitiesAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#accessibility-label-check for more details on how to fix this.\n"
+        "#accessibility-label-check for more details on how to fix this.\n",
     )
   }
 
@@ -94,15 +96,16 @@ fun main(vararg args: String) {
 private fun computeFailureActivityPath(
   activityNode: Node,
   activityPathPrefix: String,
-  packageName: String
+  packageName: String,
 ): String? {
   val attributesList = activityNode.getAttributes()
   val activityName = attributesList.getNamedItem("android:name").getNodeValue()
-  val activityPath = computeActivityPathFromName(
-    activityPathPrefix = activityPathPrefix,
-    activityName = activityName,
-    packageName = packageName
-  )
+  val activityPath =
+    computeActivityPathFromName(
+      activityPathPrefix = activityPathPrefix,
+      activityName = activityName,
+      packageName = packageName,
+    )
   if (attributesList.getNamedItem("android:label") != null) {
     return null
   }
@@ -120,7 +123,7 @@ private fun computeFailureActivityPath(
 private fun computeActivityPathFromName(
   activityPathPrefix: String,
   activityName: String,
-  packageName: String
+  packageName: String,
 ): String {
   if (activityName.startsWith(".")) {
     return activityPathPrefix + (packageName + activityName).replace(".", "/")
@@ -160,7 +163,7 @@ private fun logFailures(missingAccessibilityLabelActivities: List<String>) {
  */
 private fun logRedundantExemptions(
   redundantExemptions: List<String>,
-  accessibilityLabelExemptionTextProtoFilePath: String
+  accessibilityLabelExemptionTextProtoFilePath: String,
 ) {
   if (redundantExemptions.isNotEmpty()) {
     println("Redundant exemptions:")
@@ -168,7 +171,7 @@ private fun logRedundantExemptions(
       println("- $exemption")
     }
     println(
-      "Please remove them from $accessibilityLabelExemptionTextProtoFilePath.textproto"
+      "Please remove them from $accessibilityLabelExemptionTextProtoFilePath.textproto",
     )
     println()
   }
@@ -180,9 +183,7 @@ private fun logRedundantExemptions(
  * @param pathToProtoBinary path to the pb file to be parsed
  * @return proto class from the parsed textproto file
  */
-private fun loadAccessibilityLabelExemptionsProto(
-  pathToProtoBinary: String
-): AccessibilityLabelExemptions {
+private fun loadAccessibilityLabelExemptionsProto(pathToProtoBinary: String): AccessibilityLabelExemptions {
   val protoBinaryFile = File(pathToProtoBinary)
   val builder = AccessibilityLabelExemptions.getDefaultInstance().newBuilderForType()
 
@@ -190,8 +191,9 @@ private fun loadAccessibilityLabelExemptionsProto(
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
   val protoObj: AccessibilityLabelExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as AccessibilityLabelExemptions
+    FileInputStream(protoBinaryFile)
+      .use {
+        builder.mergeFrom(it)
+      }.build() as AccessibilityLabelExemptions
   return protoObj
 }

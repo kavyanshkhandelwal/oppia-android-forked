@@ -22,9 +22,7 @@ class RevealSolutionDialogFragment : InjectableDialogFragment() {
      *
      * @return [RevealSolutionDialogFragment]: DialogFragment
      */
-    fun newInstance(): RevealSolutionDialogFragment {
-      return RevealSolutionDialogFragment()
-    }
+    fun newInstance(): RevealSolutionDialogFragment = RevealSolutionDialogFragment()
   }
 
   @Inject
@@ -48,10 +46,8 @@ class RevealSolutionDialogFragment : InjectableDialogFragment() {
       .setPositiveButton(resourceHandler.getStringInLocale(R.string.reveal)) { _, _ ->
         revealSolutionInterface.revealSolution()
         dismiss()
-      }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
+      }.setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

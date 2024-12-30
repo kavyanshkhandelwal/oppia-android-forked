@@ -258,9 +258,10 @@ class AsyncDataSubscriptionManagerTest {
 
   @Test
   fun testAssociateIds_sameId_throwsException() {
-    val error = assertThrows<IllegalStateException>() {
-      asyncDataSubscriptionManager.associateIds("same_id", "same_id")
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        asyncDataSubscriptionManager.associateIds("same_id", "same_id")
+      }
 
     assertThat(error).hasMessageThat().contains("Encountered cycle")
   }
@@ -430,9 +431,10 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.subscribe("child_id", mockSubscriptionCallback2.toAsyncChange())
     asyncDataSubscriptionManager.associateIds("child_id", "parent_id")
 
-    val error = assertThrows<IllegalStateException>() {
-      asyncDataSubscriptionManager.associateIds("parent_id", "child_id")
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        asyncDataSubscriptionManager.associateIds("parent_id", "child_id")
+      }
 
     // Can't create a relationship between an already associated link.
     assertThat(error).hasMessageThat().contains("Encountered cycle")
@@ -446,9 +448,10 @@ class AsyncDataSubscriptionManagerTest {
     asyncDataSubscriptionManager.associateIds("child_id1", "parent_id")
     asyncDataSubscriptionManager.associateIds("child_id2", "child_id1")
 
-    val error = assertThrows<IllegalStateException>() {
-      asyncDataSubscriptionManager.associateIds("parent_id", "child_id1")
-    }
+    val error =
+      assertThrows<IllegalStateException> {
+        asyncDataSubscriptionManager.associateIds("parent_id", "child_id1")
+      }
 
     // Indirect cycles should also fail.
     assertThat(error).hasMessageThat().contains("Encountered cycle")
@@ -524,7 +527,8 @@ class AsyncDataSubscriptionManagerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAsyncDataSubscriptionManagerTest_TestApplicationComponent.builder()
+    DaggerAsyncDataSubscriptionManagerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -541,8 +545,8 @@ class AsyncDataSubscriptionManagerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

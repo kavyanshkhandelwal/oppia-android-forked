@@ -22,7 +22,7 @@ import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
  */
 class RealSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: Real?
+  private val actual: Real?,
 ) : LiteProtoSubject(metadata, actual) {
   private val nonNullActual by lazy { checkNotNull(actual) { "Expected real to be non-null" } }
 

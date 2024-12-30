@@ -47,16 +47,18 @@ fun ClassroomList(
   isSticky: Boolean,
 ) {
   LazyRow(
-    modifier = Modifier
-      .testTag(CLASSROOM_LIST_TEST_TAG)
-      .background(
-        color = colorResource(id = R.color.component_color_shared_screen_primary_background_color)
+    modifier =
+      Modifier
+        .testTag(CLASSROOM_LIST_TEST_TAG)
+        .background(
+          color = colorResource(id = R.color.component_color_shared_screen_primary_background_color),
+        ),
+    contentPadding =
+      PaddingValues(
+        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+        top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
+        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
       ),
-    contentPadding = PaddingValues(
-      start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-      top = dimensionResource(id = R.dimen.classrooms_text_margin_bottom),
-      end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-    ),
   ) {
     items(classroomSummaryList) {
       ClassroomCard(classroomSummaryViewModel = it, selectedClassroomId, isSticky)
@@ -73,48 +75,54 @@ fun ClassroomCard(
 ) {
   val isCardSelected = classroomSummaryViewModel.classroomSummary.classroomId == selectedClassroomId
   Card(
-    modifier = Modifier
-      .width(getClassroomCardWidth())
-      .padding(
-        start = dimensionResource(R.dimen.classrooms_card_margin_start),
-        end = dimensionResource(R.dimen.classrooms_card_margin_end),
-      )
-      .clickable {
-        classroomSummaryViewModel.handleClassroomClick()
+    modifier =
+      Modifier
+        .width(getClassroomCardWidth())
+        .padding(
+          start = dimensionResource(R.dimen.classrooms_card_margin_start),
+          end = dimensionResource(R.dimen.classrooms_card_margin_end),
+        ).clickable {
+          classroomSummaryViewModel.handleClassroomClick()
+        },
+    backgroundColor =
+      if (isCardSelected) {
+        colorResource(id = R.color.component_color_classroom_card_selected_color)
+      } else {
+        colorResource(id = R.color.component_color_classroom_card_color)
       },
-    backgroundColor = if (isCardSelected) {
-      colorResource(id = R.color.component_color_classroom_card_selected_color)
-    } else {
-      colorResource(id = R.color.component_color_classroom_card_color)
-    },
     border = BorderStroke(2.dp, color = colorResource(id = R.color.color_def_oppia_green)),
     elevation = dimensionResource(id = R.dimen.classrooms_card_elevation),
   ) {
     Column(
-      modifier = Modifier.padding(
-        horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
-        vertical = if (isSticky) {
-          dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
-        } else {
-          dimensionResource(id = R.dimen.classrooms_card_padding_vertical)
-        },
-      ),
+      modifier =
+        Modifier.padding(
+          horizontal = dimensionResource(id = R.dimen.classrooms_card_padding_horizontal),
+          vertical =
+            if (isSticky) {
+              dimensionResource(id = R.dimen.classrooms_card_collapsed_padding_vertical)
+            } else {
+              dimensionResource(id = R.dimen.classrooms_card_padding_vertical)
+            },
+        ),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       AnimatedVisibility(visible = !isSticky) {
         Image(
-          painter = painterResource(
-            id = classroomSummaryViewModel
-              .classroomSummary
-              .classroomThumbnail
-              .getDrawableResource()
-          ),
+          painter =
+            painterResource(
+              id =
+                classroomSummaryViewModel
+                  .classroomSummary
+                  .classroomThumbnail
+                  .getDrawableResource(),
+            ),
           contentDescription = classroomSummaryViewModel.title,
-          modifier = Modifier
-            .testTag("${CLASSROOM_CARD_ICON_TEST_TAG}_${classroomSummaryViewModel.title}")
-            .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
-            .size(size = dimensionResource(id = R.dimen.classrooms_card_icon_size)),
+          modifier =
+            Modifier
+              .testTag("${CLASSROOM_CARD_ICON_TEST_TAG}_${classroomSummaryViewModel.title}")
+              .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
+              .size(size = dimensionResource(id = R.dimen.classrooms_card_icon_size)),
         )
       }
       Text(
@@ -136,8 +144,9 @@ private fun getClassroomCardWidth(): Dp {
   val topicCardHorizontalMargin = 8.dp
   val topicListSpanCount = integerResource(id = R.integer.home_span_count)
 
-  val totalTopicCardWidth = screenWidth -
-    (horizontalPadding.times(2) + (topicCardHorizontalMargin * (topicListSpanCount - 1) * 2))
+  val totalTopicCardWidth =
+    screenWidth -
+      (horizontalPadding.times(2) + (topicCardHorizontalMargin * (topicListSpanCount - 1) * 2))
 
   return totalTopicCardWidth.div(topicListSpanCount)
 }

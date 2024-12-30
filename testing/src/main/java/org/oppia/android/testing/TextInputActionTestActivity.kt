@@ -14,7 +14,6 @@ class TextInputActionTestActivity : AppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] for the given [Context] to launch new [TextInputActionTestActivity]s. */
-    fun createIntent(context: Context): Intent =
-      Intent(context, TextInputActionTestActivity::class.java)
+    fun createIntent(context: Context): Intent = Intent(context, TextInputActionTestActivity::class.java)
   }
 }

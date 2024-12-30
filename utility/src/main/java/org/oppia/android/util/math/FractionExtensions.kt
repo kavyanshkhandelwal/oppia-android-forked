@@ -5,9 +5,7 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 /** Returns whether this fraction has a fractional component. */
-fun Fraction.hasFractionalPart(): Boolean {
-  return numerator != 0
-}
+fun Fraction.hasFractionalPart(): Boolean = numerator != 0
 
 /**
  * Returns whether this fraction only represents a whole number.
@@ -15,9 +13,7 @@ fun Fraction.hasFractionalPart(): Boolean {
  * Note that for the fraction '0' this will return true. Furthermore, this will return false for
  * whole number-like improper fractions such as '3/1'.
  */
-fun Fraction.isOnlyWholeNumber(): Boolean {
-  return !hasFractionalPart()
-}
+fun Fraction.isOnlyWholeNumber(): Boolean = !hasFractionalPart()
 
 /**
  * Returns this fraction as a whole number. Note that this will not return a value that is
@@ -40,13 +36,14 @@ fun Fraction.toDouble(): Double {
  * Returns a submittable answer string representation of this fraction (note that this may not be
  * the verbatim string originally submitted by the user, if any.
  */
-fun Fraction.toAnswerString(): String {
-  return when {
+fun Fraction.toAnswerString(): String =
+  when {
     // Fraction is only a whole number.
-    isOnlyWholeNumber() -> when (wholeNumber) {
-      0 -> "0" // 0 is always 0 regardless of its negative sign.
-      else -> if (isNegative) "-$wholeNumber" else "$wholeNumber"
-    }
+    isOnlyWholeNumber() ->
+      when (wholeNumber) {
+        0 -> "0" // 0 is always 0 regardless of its negative sign.
+        else -> if (isNegative) "-$wholeNumber" else "$wholeNumber"
+      }
     wholeNumber == 0 -> {
       // Fraction contains just a fraction (no whole number).
       when (denominator) {
@@ -64,7 +61,6 @@ fun Fraction.toAnswerString(): String {
       }
     }
   }
-}
 
 /**
  * Returns this fraction in its most simplified form.
@@ -73,10 +69,11 @@ fun Fraction.toAnswerString(): String {
  */
 fun Fraction.toSimplestForm(): Fraction {
   val commonDenominator = gcd(numerator, denominator)
-  return toBuilder().apply {
-    numerator = this@toSimplestForm.numerator / commonDenominator
-    denominator = this@toSimplestForm.denominator / commonDenominator
-  }.build()
+  return toBuilder()
+    .apply {
+      numerator = this@toSimplestForm.numerator / commonDenominator
+      denominator = this@toSimplestForm.denominator / commonDenominator
+    }.build()
 }
 
 /**
@@ -86,14 +83,15 @@ fun Fraction.toSimplestForm(): Fraction {
  * This function will properly convert a fraction whose denominator is 1 into a whole number-only
  * fraction.
  */
-fun Fraction.toProperForm(): Fraction {
-  return toSimplestForm().let {
-    it.toBuilder().apply {
-      wholeNumber = it.wholeNumber + (it.numerator / it.denominator)
-      numerator = it.numerator % it.denominator
-    }.build()
+fun Fraction.toProperForm(): Fraction =
+  toSimplestForm().let {
+    it
+      .toBuilder()
+      .apply {
+        wholeNumber = it.wholeNumber + (it.numerator / it.denominator)
+        numerator = it.numerator % it.denominator
+      }.build()
   }
-}
 
 /**
  * Returns this fraction in an improper form (that is, with a 0 whole number and only fractional
@@ -101,26 +99,26 @@ fun Fraction.toProperForm(): Fraction {
  */
 fun Fraction.toImproperForm(): Fraction {
   val newNumerator = numerator + (denominator * wholeNumber)
-  return toBuilder().apply {
-    numerator = newNumerator
-    wholeNumber = 0
-  }.build()
+  return toBuilder()
+    .apply {
+      numerator = newNumerator
+      wholeNumber = 0
+    }.build()
 }
 
 /** Returns the inverse improper fraction representation of this fraction. */
-private fun Fraction.toInvertedImproperForm(): Fraction {
-  return toImproperForm().let { improper ->
-    improper.toBuilder().apply {
-      numerator = improper.denominator
-      denominator = improper.numerator
-    }.build()
+private fun Fraction.toInvertedImproperForm(): Fraction =
+  toImproperForm().let { improper ->
+    improper
+      .toBuilder()
+      .apply {
+        numerator = improper.denominator
+        denominator = improper.numerator
+      }.build()
   }
-}
 
 /** Returns the negated form of this fraction. */
-operator fun Fraction.unaryMinus(): Fraction {
-  return toBuilder().apply { isNegative = !this@unaryMinus.isNegative }.build()
-}
+operator fun Fraction.unaryMinus(): Fraction = toBuilder().apply { isNegative = !this@unaryMinus.isNegative }.build()
 
 /** Adds two fractions together and returns a new one in its proper form. */
 operator fun Fraction.plus(rhs: Fraction): Fraction {
@@ -139,22 +137,26 @@ operator fun Fraction.plus(rhs: Fraction): Fraction {
   // negative.
   val leftNeg = leftFraction.isNegative
   val rightNeg = rightFraction.isNegative
-  val (newNumerator, isNegative) = when {
-    leftNeg && rightNeg -> leftNumerator + rightNumerator to true
-    !leftNeg && !rightNeg -> leftNumerator + rightNumerator to false
-    leftNeg && !rightNeg ->
-      (-leftNumerator + rightNumerator).absoluteValue to (leftNumerator > rightNumerator)
-    !leftNeg && rightNeg ->
-      (leftNumerator - rightNumerator).absoluteValue to (rightNumerator > leftNumerator)
-    else -> throw Exception("Impossible case")
-  }
+  val (newNumerator, isNegative) =
+    when {
+      leftNeg && rightNeg -> leftNumerator + rightNumerator to true
+      !leftNeg && !rightNeg -> leftNumerator + rightNumerator to false
+      leftNeg && !rightNeg ->
+        (-leftNumerator + rightNumerator).absoluteValue to (leftNumerator > rightNumerator)
+      !leftNeg && rightNeg ->
+        (leftNumerator - rightNumerator).absoluteValue to (rightNumerator > leftNumerator)
+      else -> throw Exception("Impossible case")
+    }
 
   // Finally, compute the new fraction and convert it to proper form to compute its whole number.
-  return Fraction.newBuilder().apply {
-    this.isNegative = isNegative
-    numerator = newNumerator
-    denominator = commonDenominator
-  }.build().toProperForm()
+  return Fraction
+    .newBuilder()
+    .apply {
+      this.isNegative = isNegative
+      numerator = newNumerator
+      denominator = commonDenominator
+    }.build()
+    .toProperForm()
 }
 
 /**
@@ -177,11 +179,14 @@ operator fun Fraction.times(rhs: Fraction): Fraction {
 
   // Third, determine negative (negative is retained if only one is negative).
   val isNegative = leftFraction.isNegative xor rightFraction.isNegative
-  return Fraction.newBuilder().apply {
-    this.isNegative = isNegative
-    numerator = newNumerator
-    denominator = newDenominator
-  }.build().toProperForm()
+  return Fraction
+    .newBuilder()
+    .apply {
+      this.isNegative = isNegative
+      numerator = newNumerator
+      denominator = newDenominator
+    }.build()
+    .toProperForm()
 }
 
 /** Returns the proper form of the division from this fraction by the specified fraction. */
@@ -211,10 +216,12 @@ operator fun Fraction.div(rhs: Fraction): Fraction {
 infix fun Fraction.pow(exp: Int): Fraction {
   return when {
     exp == 0 -> {
-      Fraction.newBuilder().apply {
-        wholeNumber = 1
-        denominator = 1
-      }.build()
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 1
+          denominator = 1
+        }.build()
     }
     exp == 1 -> this
     // x^-2 == 1/(x^2).
@@ -230,21 +237,27 @@ infix fun Fraction.pow(exp: Int): Fraction {
 /** Returns the [Fraction] representation of this integer (as a whole number fraction). */
 fun Int.toWholeNumberFraction(): Fraction {
   val intValue = this
-  return Fraction.newBuilder().apply {
-    isNegative = intValue < 0
-    wholeNumber = abs(intValue)
-    numerator = 0
-    denominator = 1
-  }.build()
+  return Fraction
+    .newBuilder()
+    .apply {
+      isNegative = intValue < 0
+      wholeNumber = abs(intValue)
+      numerator = 0
+      denominator = 1
+    }.build()
 }
 
 /** Returns the greatest common divisor between two integers. */
-private fun gcd(x: Int, y: Int): Int {
-  return if (y == 0) x else gcd(y, x % y)
-}
+private fun gcd(
+  x: Int,
+  y: Int,
+): Int = if (y == 0) x else gcd(y, x % y)
 
 /** Returns the least common multiple between two integers. */
-private fun lcm(x: Int, y: Int): Int {
+private fun lcm(
+  x: Int,
+  y: Int,
+): Int {
   // Reference: https://en.wikipedia.org/wiki/Least_common_multiple#Calculation.
   return (x * y).absoluteValue / gcd(x, y)
 }

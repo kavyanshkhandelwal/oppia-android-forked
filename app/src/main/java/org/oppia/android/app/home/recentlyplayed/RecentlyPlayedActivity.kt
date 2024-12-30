@@ -26,17 +26,17 @@ class RecentlyPlayedActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToExplorationListener,
   RouteToResumeLessonListener {
-
   @Inject
   lateinit var recentlyPlayedActivityPresenter: RecentlyPlayedActivityPresenter
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val recentlyPlayedActivityParams = intent.getProtoExtra(
-      RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-      RecentlyPlayedActivityParams.getDefaultInstance()
-    )
+    val recentlyPlayedActivityParams =
+      intent.getProtoExtra(
+        RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+        RecentlyPlayedActivityParams.getDefaultInstance(),
+      )
     recentlyPlayedActivityPresenter.handleOnCreate(recentlyPlayedActivityParams)
   }
 
@@ -48,16 +48,15 @@ class RecentlyPlayedActivity :
     /** Returns a new [Intent] to route to [RecentlyPlayedActivity]. */
     fun createRecentlyPlayedActivityIntent(
       context: Context,
-      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
-    ): Intent {
-      return Intent(context, RecentlyPlayedActivity::class.java).apply {
+      recentlyPlayedActivityParams: RecentlyPlayedActivityParams,
+    ): Intent =
+      Intent(context, RecentlyPlayedActivity::class.java).apply {
         putProtoExtra(
           RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-          recentlyPlayedActivityParams
+          recentlyPlayedActivityParams,
         )
         decorateWithScreenName(ScreenName.RECENTLY_PLAYED_ACTIVITY)
       }
-    }
   }
 
   override fun routeToExploration(
@@ -67,7 +66,7 @@ class RecentlyPlayedActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -78,8 +77,8 @@ class RecentlyPlayedActivity :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
   }
 
@@ -90,7 +89,7 @@ class RecentlyPlayedActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
@@ -101,17 +100,17 @@ class RecentlyPlayedActivity :
         storyId,
         explorationId,
         parentScreen,
-        explorationCheckpoint
-      )
+        explorationCheckpoint,
+      ),
     )
   }
 
-  class RecentlyPlayedActivityIntentFactoryImpl @Inject constructor(
-    private val activity: AppCompatActivity
-  ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
-    override fun createIntent(
-      recentlyPlayedActivityParams: RecentlyPlayedActivityParams
-    ): Intent =
-      createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityParams)
-  }
+  class RecentlyPlayedActivityIntentFactoryImpl
+    @Inject
+    constructor(
+      private val activity: AppCompatActivity,
+    ) : ActivityIntentFactories.RecentlyPlayedActivityIntentFactory {
+      override fun createIntent(recentlyPlayedActivityParams: RecentlyPlayedActivityParams): Intent =
+        createRecentlyPlayedActivityIntent(activity, recentlyPlayedActivityParams)
+    }
 }

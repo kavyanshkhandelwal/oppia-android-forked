@@ -32,7 +32,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NetworkConnectionTestUtilTest {
-
   private val NO_CONNECTION = -1
 
   @Inject
@@ -46,13 +45,15 @@ class NetworkConnectionTestUtilTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    connectivityManager = context.getSystemService(
-      Context.CONNECTIVITY_SERVICE
-    ) as ConnectivityManager
+    connectivityManager =
+      context.getSystemService(
+        Context.CONNECTIVITY_SERVICE,
+      ) as ConnectivityManager
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionTestUtilTest_TestApplicationComponent.builder()
+    DaggerNetworkConnectionTestUtilTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -62,7 +63,7 @@ class NetworkConnectionTestUtilTest {
   fun testSetNetworkInfo_wifiShadowNetwork_connected_networkInfoIsWifiConnected() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(connectivityManager.getActiveType()).isEqualTo(ConnectivityManager.TYPE_WIFI)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.CONNECTED)
@@ -72,7 +73,7 @@ class NetworkConnectionTestUtilTest {
   fun testSetNetworkInfo_wifiShadowNetwork_notConnected_networkInfoIsWifiDisconnected() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(connectivityManager.getActiveType()).isEqualTo(ConnectivityManager.TYPE_WIFI)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.DISCONNECTED)
@@ -82,7 +83,7 @@ class NetworkConnectionTestUtilTest {
   fun testSetNetworkInfo_cellularShadowNetwork_connected_networkInfoIsCellularConnected() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(connectivityManager.getActiveType()).isEqualTo(ConnectivityManager.TYPE_MOBILE)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.CONNECTED)
@@ -92,7 +93,7 @@ class NetworkConnectionTestUtilTest {
   fun testSetNetworkInfo_cellularShadowNetwork_notConnected_networkInfoIsCellularDisconnected() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(connectivityManager.getActiveType()).isEqualTo(ConnectivityManager.TYPE_MOBILE)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.DISCONNECTED)
@@ -102,7 +103,7 @@ class NetworkConnectionTestUtilTest {
   fun testSetNetworkInfo_noActiveShadowNetwork_networkInfoIsNoNetwork() {
     networkConnectionTestUtil.setNetworkInfo(
       status = NO_CONNECTION,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(connectivityManager.getActiveType()).isEqualTo(NO_CONNECTION)
     assertThat(connectivityManager.getActiveState()).isEqualTo(NetworkInfo.State.DISCONNECTED)
@@ -117,9 +118,7 @@ class NetworkConnectionTestUtilTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -140,8 +139,8 @@ class NetworkConnectionTestUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

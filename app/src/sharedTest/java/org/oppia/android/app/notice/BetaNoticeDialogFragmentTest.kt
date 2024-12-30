@@ -103,7 +103,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @Config(
-  application = BetaNoticeDialogFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi"
+  application = BetaNoticeDialogFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi",
 )
 @LooperMode(LooperMode.Mode.PAUSED)
 class BetaNoticeDialogFragmentTest {
@@ -250,8 +251,8 @@ class BetaNoticeDialogFragmentTest {
       CachingTestModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -265,18 +266,25 @@ class BetaNoticeDialogFragmentTest {
     fun inject(test: BetaNoticeDialogFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerBetaNoticeDialogFragmentTest_TestApplicationComponent.builder()
+      DaggerBetaNoticeDialogFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
 
     fun inject(test: BetaNoticeDialogFragmentTest) = component.inject(test)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

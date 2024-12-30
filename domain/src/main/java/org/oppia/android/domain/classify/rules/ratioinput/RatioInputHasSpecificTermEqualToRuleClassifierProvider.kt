@@ -13,26 +13,26 @@ import javax.inject.Inject
  * has a specific value.
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class RatioInputHasSpecificTermEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeDoubleInputMatcher<RatioExpression, Int, Int> {
+class RatioInputHasSpecificTermEqualToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeDoubleInputMatcher<RatioExpression, Int, Int> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createDoubleInputClassifier(
+        expectedAnswerObjectType = InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
+        expectedObjectType1 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+        firstInputParameterName = "x",
+        expectedObjectType2 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+        secondInputParameterName = "y",
+        matcher = this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(
-      expectedAnswerObjectType = InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
-      expectedObjectType1 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
-      firstInputParameterName = "x",
-      expectedObjectType2 = InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
-      secondInputParameterName = "y",
-      matcher = this
-    )
+    override fun matches(
+      answer: RatioExpression,
+      firstInput: Int,
+      secondInput: Int,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.ratioComponentList.getOrNull(firstInput - 1) == secondInput
   }
-
-  override fun matches(
-    answer: RatioExpression,
-    firstInput: Int,
-    secondInput: Int,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.ratioComponentList.getOrNull(firstInput - 1) == secondInput
-}

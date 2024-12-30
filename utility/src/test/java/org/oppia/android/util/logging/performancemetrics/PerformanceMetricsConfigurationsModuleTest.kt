@@ -32,7 +32,6 @@ private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsConfigurationsModuleTest.TestApplication::class)
 class PerformanceMetricsConfigurationsModuleTest {
-
   @JvmField
   @field:[Inject MediumMemoryTierUpperBound]
   var mediumMemoryTierUpperBound: Long = 0L
@@ -91,23 +90,27 @@ class PerformanceMetricsConfigurationsModuleTest {
     modules = [
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class
-    ]
+      PerformanceMetricsConfigurationsModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: PerformanceMetricsConfigurationsModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsConfigurationsModuleTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsConfigurationsModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

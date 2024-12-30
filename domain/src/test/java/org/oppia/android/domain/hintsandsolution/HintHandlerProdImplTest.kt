@@ -63,8 +63,11 @@ class HintHandlerProdImplTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockHelpIndexFlowMonitor: Runnable
+
   @Inject lateinit var hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl
+
   @Inject lateinit var explorationRetriever: ExplorationRetriever
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject BlockingDispatcher] lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
 
@@ -79,14 +82,14 @@ class HintHandlerProdImplTest {
   private val expWithOneHintAndNoSolution by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
       )
     }
   }
   private val expWithOneHintAndSolution by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_one_hint_and_solution"
+        "test_single_interactive_state_exp_with_one_hint_and_solution",
       )
     }
   }
@@ -98,14 +101,14 @@ class HintHandlerProdImplTest {
   private val expWithHintsAndSolution by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_hints_and_solution"
+        "test_single_interactive_state_exp_with_hints_and_solution",
       )
     }
   }
   private val expWithSolutionMissingCorrectAnswer by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_solution_missing_answer"
+        "test_single_interactive_state_exp_with_solution_missing_answer",
       )
     }
   }
@@ -119,7 +122,7 @@ class HintHandlerProdImplTest {
     hintHandler = hintHandlerProdImplFactory.create()
   }
 
-  /* Tests for startWatchingForHintsInNewState */
+  // Tests for startWatchingForHintsInNewState
 
   @Test
   fun testStartWatchingForHints_stateWithoutHints_doesNotChangeHelpIndex() {
@@ -225,13 +228,15 @@ class HintHandlerProdImplTest {
     waitFor60Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
-  /* Tests for resumeHintsForSavedState */
+  // Tests for resumeHintsForSavedState
 
   @Test
   fun testResumeHint_stateWithoutHints_noTrackedAnswers_noHintVisible_doesNotChangeHelpIndex() {
@@ -241,7 +246,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     // Nothing should be called since the help index didn't actually change due to there being
@@ -256,7 +261,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
@@ -269,7 +274,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 2,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
@@ -281,7 +286,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -296,7 +301,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 2,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     waitFor60Seconds()
@@ -312,7 +317,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       helpIndex = HelpIndex.getDefaultInstance(),
-      state = state
+      state = state,
     )
 
     // There's nothing to restore, so show nothing.
@@ -325,7 +330,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
@@ -337,7 +342,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -352,7 +357,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -367,7 +372,7 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -383,15 +388,17 @@ class HintHandlerProdImplTest {
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
       HelpIndex.getDefaultInstance(),
-      state
+      state,
     )
 
     waitFor60Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -400,10 +407,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            nextAvailableHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -417,10 +427,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            nextAvailableHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -434,10 +447,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            nextAvailableHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -451,10 +467,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            latestRevealedHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -468,10 +487,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            latestRevealedHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -486,19 +508,24 @@ class HintHandlerProdImplTest {
     val state = expWithOneHintAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            latestRevealedHintIndex = 0
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -507,10 +534,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            latestRevealedHintIndex = 1
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -525,19 +555,24 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            latestRevealedHintIndex = 1
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
     waitFor30Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -548,10 +583,13 @@ class HintHandlerProdImplTest {
 
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build(),
+      state,
     )
 
     verify(mockHelpIndexFlowMonitor).run()
@@ -562,16 +600,21 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build(),
+      state,
     )
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -580,10 +623,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -597,10 +643,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -614,10 +663,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -633,10 +685,13 @@ class HintHandlerProdImplTest {
 
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build(),
+      state,
     )
 
     verify(mockHelpIndexFlowMonitor).run()
@@ -648,16 +703,21 @@ class HintHandlerProdImplTest {
 
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build(),
+      state,
     )
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -666,10 +726,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -683,10 +746,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -700,10 +766,13 @@ class HintHandlerProdImplTest {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.resumeHintsForSavedStateSync(
       trackedWrongAnswerCount = 0,
-      helpIndex = HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build(),
-      state
+      helpIndex =
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build(),
+      state,
     )
     hintHandler.monitorHelpIndex()
 
@@ -712,7 +781,7 @@ class HintHandlerProdImplTest {
     verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
-  /* Tests for finishState */
+  // Tests for finishState
 
   @Test
   fun testFinishState_defaultState_noLogicalChangeToHints_doesNotChangeHelpIndex() {
@@ -815,9 +884,11 @@ class HintHandlerProdImplTest {
     // A new hint index should be revealed despite the entire previous state being completed (since
     // the handler has been reset).
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -835,7 +906,7 @@ class HintHandlerProdImplTest {
     verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
-  /* Tests for handleWrongAnswerSubmission */
+  // Tests for handleWrongAnswerSubmission
 
   @Test
   fun testWrongAnswerSubmission_stateWithHints_monitorNotCalled() {
@@ -904,9 +975,11 @@ class HintHandlerProdImplTest {
     waitFor60Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -935,9 +1008,11 @@ class HintHandlerProdImplTest {
     hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 2)
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -968,16 +1043,17 @@ class HintHandlerProdImplTest {
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualToDefaultInstance()
   }
 
-  /* Tests for viewHint */
+  // Tests for viewHint
 
   @Test
   fun testViewHint_noHintAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewHintSync(hintIndex = 0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewHintSync(hintIndex = 0)
+      }
 
     // No hint is available to reveal.
     assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
@@ -1005,9 +1081,11 @@ class HintHandlerProdImplTest {
     hintHandler.viewHintSync(hintIndex = 0)
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1048,9 +1126,11 @@ class HintHandlerProdImplTest {
     waitFor30Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1063,9 +1143,11 @@ class HintHandlerProdImplTest {
     triggerAndRevealSecondHint()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1079,9 +1161,11 @@ class HintHandlerProdImplTest {
     triggerSolution()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1119,9 +1203,11 @@ class HintHandlerProdImplTest {
     waitFor30Seconds()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1156,9 +1242,10 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewHintSync(hintIndex = 0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewHintSync(hintIndex = 0)
+      }
 
     // No hint is available to reveal since it's already been revealed.
     assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
@@ -1171,9 +1258,10 @@ class HintHandlerProdImplTest {
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewHintSync(hintIndex = 0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewHintSync(hintIndex = 0)
+      }
 
     // No hint is available to reveal since all hints have been revealed.
     assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
@@ -1187,24 +1275,26 @@ class HintHandlerProdImplTest {
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewHintSync(hintIndex = 0)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewHintSync(hintIndex = 0)
+      }
 
     // No hint is available to reveal since everything has been revealed.
     assertThat(exception).hasMessageThat().contains("Cannot reveal hint")
   }
 
-  /* Tests for viewSolution */
+  // Tests for viewSolution
 
   @Test
   fun testViewSolution_nothingAvailable_throwsException() {
     val state = expWithHintsAndSolution.getInitialState()
     hintHandler.startWatchingForHintsInNewStateSync(state)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewSolutionSync()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewSolutionSync()
+      }
 
     // The solution is not yet available to be seen (no hints have been viewed).
     assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
@@ -1216,9 +1306,10 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerFirstHint()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewSolutionSync()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewSolutionSync()
+      }
 
     // The solution is not yet available to be seen (one hint is available, but hasn't been viewed).
     assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
@@ -1230,9 +1321,10 @@ class HintHandlerProdImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
     triggerAndRevealFirstHint()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewSolutionSync()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewSolutionSync()
+      }
 
     // The solution is not yet available to be seen (one hint was viewed, but the solution isn't
     // available yet).
@@ -1246,9 +1338,10 @@ class HintHandlerProdImplTest {
     triggerAndRevealFirstHint()
     triggerAndRevealSecondHint()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewSolutionSync()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewSolutionSync()
+      }
 
     // The solution is not yet available to be seen since the user hasn't triggered the solution to
     // actually show up.
@@ -1281,9 +1374,11 @@ class HintHandlerProdImplTest {
     hintHandler.viewSolutionSync()
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -1343,15 +1438,16 @@ class HintHandlerProdImplTest {
     triggerAndRevealSecondHint()
     triggerAndRevealSolution()
 
-    val exception = assertThrows<IllegalStateException>() {
-      hintHandler.viewSolutionSync()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hintHandler.viewSolutionSync()
+      }
 
     // The solution has already been revealed.
     assertThat(exception).hasMessageThat().contains("Cannot reveal solution")
   }
 
-  /* Tests for navigateToPreviousState */
+  // Tests for navigateToPreviousState
 
   @Test
   fun testNavigateToPreviousState_pendingHint_wait60Sec_monitorNotCalled() {
@@ -1382,7 +1478,7 @@ class HintHandlerProdImplTest {
     verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
-  /* Tests for navigateBackToLatestPendingState */
+  // Tests for navigateBackToLatestPendingState
 
   @Test
   fun testNavigateBackToLatestPendingState_fromPreviousState_pendingHint_monitorNotCalled() {
@@ -1474,9 +1570,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1525,9 +1623,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1541,9 +1641,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1557,9 +1659,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1572,9 +1676,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1588,9 +1694,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1604,9 +1712,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1620,9 +1730,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1637,9 +1749,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1655,9 +1769,11 @@ class HintHandlerProdImplTest {
 
     // Multiple wrong answers do not force a hint to be shown except for the first hint.
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 0
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 0
+        }.build(),
     )
   }
 
@@ -1673,9 +1789,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        nextAvailableHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          nextAvailableHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1688,9 +1806,11 @@ class HintHandlerProdImplTest {
 
     // All hints have been viewed for this state, so nothing remains.
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -1704,9 +1824,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1721,9 +1843,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1738,9 +1862,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1756,9 +1882,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -1773,9 +1901,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1791,9 +1921,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1810,9 +1942,11 @@ class HintHandlerProdImplTest {
 
     // Multiple subsequent wrong answers only affects the first hint.
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        latestRevealedHintIndex = 1
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          latestRevealedHintIndex = 1
+        }.build(),
     )
   }
 
@@ -1829,9 +1963,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1876,9 +2012,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1927,9 +2065,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1943,9 +2083,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -1959,9 +2101,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -1985,9 +2129,11 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          showSolution = true
+        }.build(),
     )
   }
 
@@ -2001,50 +2147,55 @@ class HintHandlerProdImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
-  private fun HintHandler.startWatchingForHintsInNewStateSync(
-    state: State
-  ) = runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
+  private fun HintHandler.startWatchingForHintsInNewStateSync(state: State) =
+    runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
 
   private fun HintHandler.resumeHintsForSavedStateSync(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
-    state: State
+    state: State,
   ) = runSynchronouslyInBackground {
     resumeHintsForSavedState(trackedWrongAnswerCount, helpIndex, state)
   }
 
-  private fun HintHandler.finishStateSync(newState: State) = runSynchronouslyInBackground {
-    finishState(newState)
-  }
+  private fun HintHandler.finishStateSync(newState: State) =
+    runSynchronouslyInBackground {
+      finishState(newState)
+    }
 
-  private fun HintHandler.handleWrongAnswerSubmissionSync(
-    wrongAnswerCount: Int
-  ) = runSynchronouslyInBackground { handleWrongAnswerSubmission(wrongAnswerCount) }
+  private fun HintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount: Int) =
+    runSynchronouslyInBackground { handleWrongAnswerSubmission(wrongAnswerCount) }
 
-  private fun HintHandler.viewHintSync(hintIndex: Int) = runSynchronouslyInBackground {
-    viewHint(hintIndex)
-  }
+  private fun HintHandler.viewHintSync(hintIndex: Int) =
+    runSynchronouslyInBackground {
+      viewHint(hintIndex)
+    }
 
   private fun HintHandler.viewSolutionSync() = runSynchronouslyInBackground { viewSolution() }
 
-  private fun HintHandler.navigateToPreviousStateSync() = runSynchronouslyInBackground {
-    navigateToPreviousState()
-  }
+  private fun HintHandler.navigateToPreviousStateSync() =
+    runSynchronouslyInBackground {
+      navigateToPreviousState()
+    }
 
-  private fun HintHandler.navigateBackToLatestPendingStateSync() = runSynchronouslyInBackground {
-    navigateBackToLatestPendingState()
-  }
+  private fun HintHandler.navigateBackToLatestPendingStateSync() =
+    runSynchronouslyInBackground {
+      navigateBackToLatestPendingState()
+    }
 
   private fun HintHandler.monitorHelpIndex() {
-    getCurrentHelpIndex().onEach {
-      mockHelpIndexFlowMonitor.run()
-    }.launchIn(blockingCoroutineScope)
+    getCurrentHelpIndex()
+      .onEach {
+        mockHelpIndexFlowMonitor.run()
+      }.launchIn(blockingCoroutineScope)
 
     // Allow the initial onEach call to change the mock, then reset it so that it's in a clean
     // state.
@@ -2115,8 +2266,7 @@ class HintHandlerProdImplTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   @Singleton
@@ -2125,8 +2275,8 @@ class HintHandlerProdImplTest {
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class
-    ]
+      ExplorationStorageTestModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -2140,9 +2290,12 @@ class HintHandlerProdImplTest {
     fun inject(hintHandlerProdImplTest: HintHandlerProdImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintHandlerProdImplTest_TestApplicationComponent.builder()
+      DaggerHintHandlerProdImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

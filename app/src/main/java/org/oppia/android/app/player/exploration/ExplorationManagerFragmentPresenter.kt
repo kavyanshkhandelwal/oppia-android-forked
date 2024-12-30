@@ -16,43 +16,43 @@ import javax.inject.Inject
 
 /** The presenter for [ExplorationManagerFragment]. */
 @FragmentScope
-class ExplorationManagerFragmentPresenter @Inject constructor(
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment
-) {
-  private lateinit var profileId: ProfileId
+class ExplorationManagerFragmentPresenter
+  @Inject
+  constructor(
+    private val profileManagementController: ProfileManagementController,
+    private val oppiaLogger: OppiaLogger,
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+  ) {
+    private lateinit var profileId: ProfileId
 
-  fun handleCreate(profileId: ProfileId) {
-    this.profileId = profileId
-    retrieveReadingTextSize().observe(
-      fragment,
-      { result ->
-        (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
-      }
-    )
-  }
+    fun handleCreate(profileId: ProfileId) {
+      this.profileId = profileId
+      retrieveReadingTextSize().observe(
+        fragment,
+        { result ->
+          (activity as DefaultFontSizeStateListener).onDefaultFontSizeLoaded(result)
+        },
+      )
+    }
 
-  private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processReadingTextSizeResult
-    )
-  }
+    private fun retrieveReadingTextSize(): LiveData<ReadingTextSize> =
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processReadingTextSizeResult,
+      )
 
-  private fun processReadingTextSizeResult(
-    readingTextSizeResult: AsyncResult<Profile>
-  ): ReadingTextSize {
-    return when (readingTextSizeResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ExplorationManagerFragment", "Failed to retrieve profile", readingTextSizeResult.error
-        )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> readingTextSizeResult.value
-    }.readingTextSize
+    private fun processReadingTextSizeResult(readingTextSizeResult: AsyncResult<Profile>): ReadingTextSize =
+      when (readingTextSizeResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ExplorationManagerFragment",
+            "Failed to retrieve profile",
+            readingTextSizeResult.error,
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> Profile.getDefaultInstance()
+        is AsyncResult.Success -> readingTextSizeResult.value
+      }.readingTextSize
   }
-}

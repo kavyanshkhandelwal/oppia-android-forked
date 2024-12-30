@@ -14,16 +14,15 @@ class RatioInputModule {
   @IntoMap
   @StringKey("Equals")
   @RatioExpressionInputRules
-  internal fun provideRatioInputEqualsRuleClassifier(
-    classifierProvider: RatioInputEqualsRuleClassifierProvider
-  ): RuleClassifier = classifierProvider.createRuleClassifier()
+  internal fun provideRatioInputEqualsRuleClassifier(classifierProvider: RatioInputEqualsRuleClassifierProvider): RuleClassifier =
+    classifierProvider.createRuleClassifier()
 
   @Provides
   @IntoMap
   @StringKey("HasNumberOfTermsEqualTo")
   @RatioExpressionInputRules
   internal fun provideRatioInputHasNumberOfTermsEqualToRuleClassifier(
-    classifierProvider: RatioInputHasNumberOfTermsEqualToClassifierProvider
+    classifierProvider: RatioInputHasNumberOfTermsEqualToClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,7 +30,7 @@ class RatioInputModule {
   @StringKey("HasSpecificTermEqualTo")
   @RatioExpressionInputRules
   internal fun provideRatioInputHasSpecificTermEqualToRuleClassifierProvider(
-    classifierProvider: RatioInputHasSpecificTermEqualToRuleClassifierProvider
+    classifierProvider: RatioInputHasSpecificTermEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -39,6 +38,6 @@ class RatioInputModule {
   @StringKey("IsEquivalent")
   @RatioExpressionInputRules
   internal fun provideRatioInputIsEquivalentRuleClassifier(
-    classifierProvider: RatioInputIsEquivalentRuleClassifierProvider
+    classifierProvider: RatioInputIsEquivalentRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

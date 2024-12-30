@@ -16,18 +16,19 @@ class ChapterSummaryViewModel(
   private val index: Int,
   private val chapterSummarySelector: ChapterSummarySelector,
   private val resourceHandler: AppLanguageResourceHandler,
-  val storyIndex: Int
+  val storyIndex: Int,
 ) : ObservableViewModel() {
-
   fun onClick(explorationId: String) {
     chapterSummarySelector.selectChapterSummary(storyId, explorationId, chapterPlayState)
   }
 
-  fun computeChapterPlayStateIconContentDescription(): String {
-    return when (chapterPlayState) {
+  fun computeChapterPlayStateIconContentDescription(): String =
+    when (chapterPlayState) {
       ChapterPlayState.COMPLETED -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.chapter_completed, (index + 1).toString(), chapterTitle
+          R.string.chapter_completed,
+          (index + 1).toString(),
+          chapterTitle,
         )
       }
       ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES -> {
@@ -37,25 +38,26 @@ class ChapterSummaryViewModel(
             (index + 1).toString(),
             chapterTitle,
             index.toString(),
-            previousChapterTitle
+            previousChapterTitle,
           )
         } else {
           resourceHandler.getStringInLocaleWithWrapping(
-            R.string.chapter_prerequisite_title_label_without_chapter_title
+            R.string.chapter_prerequisite_title_label_without_chapter_title,
           )
         }
       }
       else -> {
         resourceHandler.getStringInLocaleWithWrapping(
-          R.string.chapter_in_progress, (index + 1).toString(), chapterTitle
+          R.string.chapter_in_progress,
+          (index + 1).toString(),
+          chapterTitle,
         )
       }
     }
-  }
 
-  fun computePlayChapterIndexText(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.topic_play_chapter_index, (index + 1).toString()
+  fun computePlayChapterIndexText(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.topic_play_chapter_index,
+      (index + 1).toString(),
     )
-  }
 }

@@ -23,57 +23,56 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
-
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 123
+      value = 123,
     )
   private val FRACTION_VALUE_TEST_2_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 2,
-      denominator = 4
+      denominator = 4,
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_20_OVER_5 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 20,
-      denominator = 5
+      denominator = 5,
     )
   private val MIXED_NUMBER_VALUE_TEST_123_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 123,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_123_0_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 123,
       numerator = 0,
-      denominator = 3
+      denominator = 3,
     )
   private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 123,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 123,
       numerator = 0,
-      denominator = 3
+      denominator = 3,
     )
 
   @Inject
@@ -97,7 +96,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -111,7 +110,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -125,7 +124,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -139,7 +138,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_123_0_OVER_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -153,7 +152,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -167,7 +166,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = MIXED_NUMBER_VALUE_TEST_NEGATIVE_123_0_OVER_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -181,7 +180,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_1_OVER_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -195,7 +194,7 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
       hasNoFractionalPartClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_20_OVER_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -204,7 +203,9 @@ class FractionInputHasNoFractionalPartRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputHasNoFractionalPartRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

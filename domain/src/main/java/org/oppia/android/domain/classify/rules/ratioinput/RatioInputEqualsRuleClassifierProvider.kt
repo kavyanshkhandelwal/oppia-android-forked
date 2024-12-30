@@ -13,21 +13,22 @@ import javax.inject.Inject
  * interaction.
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class RatioInputEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<RatioExpression> {
+class RatioInputEqualsRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<RatioExpression> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: RatioExpression,
+      input: RatioExpression,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.ratioComponentList == input.ratioComponentList
   }
-
-  override fun matches(
-    answer: RatioExpression,
-    input: RatioExpression,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.ratioComponentList == input.ratioComponentList
-}

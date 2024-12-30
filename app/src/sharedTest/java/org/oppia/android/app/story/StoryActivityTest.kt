@@ -128,11 +128,14 @@ class StoryActivityTest {
   private val internalProfileId = 0
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
-    StoryActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<StoryActivity> =
+    ActivityTestRule(
+      StoryActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Before
   fun setUp() {
@@ -149,12 +152,13 @@ class StoryActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createStoryActivityIntent(
-      internalProfileId = internalProfileId,
-      classroomId = TEST_CLASSROOM_ID_0,
-      topicId = TEST_TOPIC_ID_0,
-      storyId = TEST_STORY_ID_0
-    ).extractCurrentAppScreenName()
+    val currentScreenName =
+      createStoryActivityIntent(
+        internalProfileId = internalProfileId,
+        classroomId = TEST_CLASSROOM_ID_0,
+        topicId = TEST_TOPIC_ID_0,
+        storyId = TEST_STORY_ID_0,
+      ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.STORY_ACTIVITY)
   }
@@ -166,8 +170,8 @@ class StoryActivityTest {
         internalProfileId = internalProfileId,
         classroomId = TEST_CLASSROOM_ID_0,
         topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_STORY_ID_0
-      )
+        storyId = TEST_STORY_ID_0,
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -184,38 +188,41 @@ class StoryActivityTest {
         internalProfileId = internalProfileId,
         classroomId = TEST_CLASSROOM_ID_0,
         topicId = TEST_TOPIC_ID_0,
-        storyId = TEST_STORY_ID_0
-      )
+        storyId = TEST_STORY_ID_0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_chapter_list)).perform(
         RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
           1,
-          click()
-        )
+          click(),
+        ),
       )
       testCoroutineDispatchers.runCurrent()
 
-      val expectedParams = ExplorationActivityParams.newBuilder().apply {
-        explorationId = TEST_EXPLORATION_ID_2
-        storyId = TEST_STORY_ID_0
-        topicId = TEST_TOPIC_ID_0
-        classroomId = TEST_CLASSROOM_ID_0
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-        parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
-        isCheckpointingEnabled = true
-      }.build()
+      val expectedParams =
+        ExplorationActivityParams
+          .newBuilder()
+          .apply {
+            explorationId = TEST_EXPLORATION_ID_2
+            storyId = TEST_STORY_ID_0
+            topicId = TEST_TOPIC_ID_0
+            classroomId = TEST_CLASSROOM_ID_0
+            profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+            parentScreen = ExplorationActivityParams.ParentScreen.STORY_SCREEN
+            isCheckpointingEnabled = true
+          }.build()
       intended(
         allOf(
           hasProtoExtra("ExplorationActivity.params", expectedParams),
-          hasComponent(ExplorationActivity::class.java.name)
-        )
+          hasComponent(ExplorationActivity::class.java.name),
+        ),
       )
     }
   }
@@ -228,16 +235,15 @@ class StoryActivityTest {
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String
-  ): Intent {
-    return StoryActivity.createStoryActivityIntent(
+    storyId: String,
+  ): Intent =
+    StoryActivity.createStoryActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
       internalProfileId = internalProfileId,
       classroomId = classroomId,
       topicId = topicId,
-      storyId = storyId
+      storyId = storyId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -268,8 +274,8 @@ class StoryActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -280,9 +286,13 @@ class StoryActivityTest {
     fun inject(storyActivityTest: StoryActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStoryActivityTest_TestApplicationComponent.builder()
+      DaggerStoryActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -291,9 +301,12 @@ class StoryActivityTest {
       component.inject(storyActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

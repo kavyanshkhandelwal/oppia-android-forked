@@ -15,19 +15,23 @@ data class SpotlightTarget(
   val anchor: View,
   val hint: String,
   val shape: SpotlightShape = SpotlightShape.RoundedRectangle,
-  val feature: FeatureCase
+  val feature: FeatureCase,
 ) {
-
   /** The left margin of the anchor. */
   val anchorLeft: Float = calculateAnchorLeft()
+
   /** The top margin of the anchor. */
   val anchorTop: Float = calculateAnchorTop()
+
   /** The height of the anchor. */
   val anchorHeight: Int = calculateAnchorHeight()
+
   /** The width of the anchor. */
   val anchorWidth: Int = calculateAnchorWidth()
+
   /** The position of the vertical centre of the anchor. */
   val anchorCentreX = calculateAnchorCentreX()
+
   /** The position of the horizontal centre of the anchor. */
   val anchorCentreY = calculateAnchorCentreY()
 
@@ -54,19 +58,11 @@ data class SpotlightTarget(
     return y.toFloat()
   }
 
-  private fun calculateAnchorHeight(): Int {
-    return anchor.height
-  }
+  private fun calculateAnchorHeight(): Int = anchor.height
 
-  private fun calculateAnchorWidth(): Int {
-    return anchor.width
-  }
+  private fun calculateAnchorWidth(): Int = anchor.width
 
-  private fun calculateAnchorCentreX(): Float {
-    return anchorLeft + anchorWidth / 2
-  }
+  private fun calculateAnchorCentreX(): Float = anchorLeft + anchorWidth / 2
 
-  private fun calculateAnchorCentreY(): Float {
-    return anchorTop + anchorHeight / 2
-  }
+  private fun calculateAnchorCentreY(): Float = anchorTop + anchorHeight / 2
 }

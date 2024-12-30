@@ -32,12 +32,13 @@ class GitHubClient(
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
   private val commandExecutor: CommandExecutor = CommandExecutorImpl(scriptBgDispatcher),
   private val repoOwner: String = "oppia",
-  private val repoName: String = "oppia-android"
+  private val repoName: String = "oppia-android",
 ) {
   private val okHttpClient by lazy { OkHttpClient.Builder().build() }
   private val moshi by lazy { Moshi.Builder().build() }
   private val retrofit by lazy {
-    Retrofit.Builder()
+    Retrofit
+      .Builder()
       .baseUrl(remoteApiUrl)
       .addConverterFactory(MoshiConverterFactory.create(moshi))
       .client(okHttpClient)
@@ -49,18 +50,19 @@ class GitHubClient(
   /**
    * Asynchronously returns all [GitHubIssue]s currently open in the Oppia Android GitHub project.
    */
-  fun fetchAllOpenIssuesAsync(): Deferred<List<GitHubIssue>> {
-    return CoroutineScope(scriptBgDispatcher).async {
+  fun fetchAllOpenIssuesAsync(): Deferred<List<GitHubIssue>> =
+    CoroutineScope(scriptBgDispatcher).async {
       // Fetch issues one page at a time (starting at page 1) until all are found.
       fetchOpenIssuesRecursive(startPageNumber = 1)
     }
-  }
 
   private suspend fun fetchOpenIssuesRecursive(startPageNumber: Int): List<GitHubIssue> {
     val issues = fetchOpenIssues(startPageNumber).await()
     return if (issues.isNotEmpty()) {
       issues + fetchOpenIssuesRecursive(startPageNumber + 1)
-    } else issues
+    } else {
+      issues
+    }
   }
 
   private fun fetchOpenIssues(pageNumber: Int): Deferred<List<GitHubIssue>> {
@@ -88,19 +90,22 @@ class GitHubClient(
         "Failed to interact with gh tool. Please make sure your environment is set up properly" +
           " per https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
           "#todo-open-checks.",
-        e
+        e,
       )
     }
 
     // Retrieve the access token that 'gh' is configured to use (to allow the script to run without
     // being tied to a specific access token).
-    return commandExecutor.executeCommand(rootDirectory, "gh", "auth", "token").also {
-      check(it.exitCode == 0) {
-        "Failed to retrieve auth token from GH tool. Please make sure your environment is set up" +
-          " properly per https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-          "#todo-open-checks. Command output:\n${it.output.joinToString(separator = "\n")}"
-      }
-    }.output.single()
+    return commandExecutor
+      .executeCommand(rootDirectory, "gh", "auth", "token")
+      .also {
+        check(it.exitCode == 0) {
+          "Failed to retrieve auth token from GH tool. Please make sure your environment is set up" +
+            " properly per https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
+            "#todo-open-checks. Command output:\n${it.output.joinToString(separator = "\n")}"
+        }
+      }.output
+      .single()
   }
 
   companion object {

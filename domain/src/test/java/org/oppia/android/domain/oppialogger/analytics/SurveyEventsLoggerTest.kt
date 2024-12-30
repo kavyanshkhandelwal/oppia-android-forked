@@ -100,7 +100,7 @@ class SurveyEventsLoggerTest {
       profileId,
       UserTypeAnswer.LEARNER,
       MarketFitAnswer.DISAPPOINTED,
-      npsScore = 8
+      npsScore = 8,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -122,7 +122,7 @@ class SurveyEventsLoggerTest {
     surveyEventsLogger.logOptionalResponse(
       TEST_SURVEY_ID,
       profileId,
-      TEST_ANSWER
+      TEST_ANSWER,
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -138,7 +138,8 @@ class SurveyEventsLoggerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerSurveyEventsLoggerTest_TestApplicationComponent.builder()
+    DaggerSurveyEventsLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -149,9 +150,7 @@ class SurveyEventsLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -193,22 +192,26 @@ class SurveyEventsLoggerTest {
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       ApplicationLifecycleModule::class, AssetModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: SurveyEventsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyEventsLoggerTest_TestApplicationComponent.builder()
+      DaggerSurveyEventsLoggerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

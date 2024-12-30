@@ -37,250 +37,252 @@ import javax.inject.Inject
  * View once Gradle has been removed.
  */
 // TODO(#1619): Remove file post-Gradle
-class ViewBindingShimImpl @Inject constructor(
-  private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler
-) : ViewBindingShim {
+class ViewBindingShimImpl
+  @Inject
+  constructor(
+    private val translationController: TranslationController,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
+  ) : ViewBindingShim {
+    override fun providePromotedStoryCardInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      PromotedStoryCardBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          attachToParent,
+        ).root
 
-  override fun providePromotedStoryCardInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return PromotedStoryCardBinding.inflate(
-      LayoutInflater.from(parent.context), parent, attachToParent
-    ).root
+    override fun providePromotedStoryViewModel(
+      view: View,
+      viewModel: PromotedStoryViewModel,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!
+      binding.viewModel = viewModel
+    }
+
+    override fun provideComingSoonTopicViewInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      ComingSoonTopicViewBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          attachToParent,
+        ).root
+
+    override fun provideComingSoonTopicsViewViewModel(
+      view: View,
+      viewModel: ComingSoonTopicsViewModel,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<ComingSoonTopicViewBinding>(view)!!
+      binding.viewModel = viewModel
+    }
+
+    override fun provideSelectionInteractionViewInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      ItemSelectionInteractionItemsBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          // attachToParent=
+          false,
+        ).root
+
+    override fun provideSelectionInteractionViewModel(
+      view: View,
+      viewModel: SelectionInteractionContentViewModel,
+      htmlParserFactory: HtmlParser.Factory,
+      resourceBucketName: String,
+      entityType: String,
+      entityId: String,
+      writtenTranslationContext: WrittenTranslationContext,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
+      binding.htmlContent =
+        htmlParserFactory
+          .create(
+            resourceBucketName,
+            entityType,
+            entityId,
+            false,
+            displayLocale = appLanguageResourceHandler.getDisplayLocale(),
+          ).parseOppiaHtml(
+            translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
+            binding.itemSelectionContentsTextView,
+          )
+      binding.viewModel = viewModel
+    }
+
+    override fun provideMultipleChoiceInteractionItemsInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      MultipleChoiceInteractionItemsBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false,
+        ).root
+
+    override fun provideMultipleChoiceInteractionItemsViewModel(
+      view: View,
+      viewModel: SelectionInteractionContentViewModel,
+      htmlParserFactory: HtmlParser.Factory,
+      resourceBucketName: String,
+      entityType: String,
+      entityId: String,
+      writtenTranslationContext: WrittenTranslationContext,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
+      binding.htmlContent =
+        htmlParserFactory
+          .create(
+            resourceBucketName,
+            entityType,
+            entityId, // imageCenterAlign=
+            false,
+            displayLocale = appLanguageResourceHandler.getDisplayLocale(),
+          ).parseOppiaHtml(
+            translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
+            binding.multipleChoiceContentTextView,
+          )
+      binding.viewModel = viewModel
+    }
+
+    override fun provideMultipleChoiceItemsInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      SurveyMultipleChoiceItemBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false,
+        ).root
+
+    override fun provideMultipleChoiceOptionViewModel(
+      view: View,
+      viewModel: MultipleChoiceOptionContentViewModel,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<SurveyMultipleChoiceItemBinding>(view)!!
+      binding.optionContent = viewModel.optionContent
+      binding.viewModel = viewModel
+    }
+
+    override fun provideNpsItemsInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      SurveyNpsItemBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent,
+          false,
+        ).root
+
+    override fun provideNpsItemsViewModel(
+      view: View,
+      viewModel: MultipleChoiceOptionContentViewModel,
+    ) {
+      val binding =
+        DataBindingUtil.findBinding<SurveyNpsItemBinding>(view)!!
+      binding.scoreContent = viewModel.optionContent
+      binding.viewModel = viewModel
+    }
+
+    override fun provideDragDropSortInteractionInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      DragDropInteractionItemsBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent, // attachToParent=
+          false,
+        ).root
+
+    private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
+
+    override fun setDragDropInteractionItemsBinding(view: View) {
+      dragDropInteractionItemsBinding =
+        DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
+    }
+
+    override fun setDragDropInteractionItemsBindingAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+      dragDropInteractionItemsBinding.adapter = adapter
+    }
+
+    override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView = dragDropInteractionItemsBinding.dragDropItemRecyclerview
+
+    override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton = dragDropInteractionItemsBinding.dragDropContentGroupItem
+
+    override fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton = dragDropInteractionItemsBinding.dragDropContentUnlinkItems
+
+    override fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout =
+      dragDropInteractionItemsBinding.dragDropAccessibleContainer
+
+    override fun setDragDropInteractionItemsBindingViewModel(viewModel: DragDropInteractionContentViewModel) {
+      dragDropInteractionItemsBinding.viewModel = viewModel
+    }
+
+    override fun provideDragDropSingleItemInflatedView(
+      inflater: LayoutInflater,
+      parent: ViewGroup,
+      attachToParent: Boolean,
+    ): View =
+      DragDropSingleItemBinding
+        .inflate(
+          LayoutInflater.from(parent.context),
+          parent, // attachToParent=
+          false,
+        ).root
+
+    // TODO(#1692): Fix implementation to not use cache binding.
+    private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
+
+    override fun setDragDropSingleItemBinding(view: View) {
+      dragDropSingleItemBinding =
+        DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
+    }
+
+    override fun setDragDropSingleItemBindingHtmlContent(
+      htmlParserFactory: HtmlParser.Factory,
+      resourceBucketName: String,
+      entityType: String,
+      entityId: String,
+      viewModel: String,
+    ) {
+      dragDropSingleItemBinding.htmlContent =
+        htmlParserFactory
+          .create(
+            resourceBucketName,
+            entityType,
+            entityId,
+            // imageCenterAlign=
+            false,
+            displayLocale = appLanguageResourceHandler.getDisplayLocale(),
+          ).parseOppiaHtml(
+            viewModel,
+            dragDropSingleItemBinding.dragDropContentTextView,
+          )
+    }
+
+    override fun getDefaultRegion(parentView: FrameLayout): View = parentView.findViewById<View>(R.id.default_selected_region)
   }
-
-  override fun providePromotedStoryViewModel(
-    view: View,
-    viewModel: PromotedStoryViewModel
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<PromotedStoryCardBinding>(view)!!
-    binding.viewModel = viewModel
-  }
-
-  override fun provideComingSoonTopicViewInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return ComingSoonTopicViewBinding.inflate(
-      LayoutInflater.from(parent.context), parent, attachToParent
-    ).root
-  }
-
-  override fun provideComingSoonTopicsViewViewModel(
-    view: View,
-    viewModel: ComingSoonTopicsViewModel
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<ComingSoonTopicViewBinding>(view)!!
-    binding.viewModel = viewModel
-  }
-
-  override fun provideSelectionInteractionViewInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return ItemSelectionInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      /* attachToParent= */ false
-    ).root
-  }
-
-  override fun provideSelectionInteractionViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String,
-    writtenTranslationContext: WrittenTranslationContext
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<ItemSelectionInteractionItemsBinding>(view)!!
-    binding.htmlContent =
-      htmlParserFactory.create(
-        resourceBucketName,
-        entityType,
-        entityId,
-        false,
-        displayLocale = appLanguageResourceHandler.getDisplayLocale()
-      ).parseOppiaHtml(
-        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.itemSelectionContentsTextView
-      )
-    binding.viewModel = viewModel
-  }
-
-  override fun provideMultipleChoiceInteractionItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return MultipleChoiceInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      false
-    ).root
-  }
-
-  override fun provideMultipleChoiceInteractionItemsViewModel(
-    view: View,
-    viewModel: SelectionInteractionContentViewModel,
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String,
-    writtenTranslationContext: WrittenTranslationContext
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<MultipleChoiceInteractionItemsBinding>(view)!!
-    binding.htmlContent =
-      htmlParserFactory.create(
-        resourceBucketName, entityType, entityId, /* imageCenterAlign= */ false,
-        displayLocale = appLanguageResourceHandler.getDisplayLocale()
-      ).parseOppiaHtml(
-        translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
-        binding.multipleChoiceContentTextView
-      )
-    binding.viewModel = viewModel
-  }
-
-  override fun provideMultipleChoiceItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return SurveyMultipleChoiceItemBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      false
-    ).root
-  }
-
-  override fun provideMultipleChoiceOptionViewModel(
-    view: View,
-    viewModel: MultipleChoiceOptionContentViewModel
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<SurveyMultipleChoiceItemBinding>(view)!!
-    binding.optionContent = viewModel.optionContent
-    binding.viewModel = viewModel
-  }
-
-  override fun provideNpsItemsInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return SurveyNpsItemBinding.inflate(
-      LayoutInflater.from(parent.context),
-      parent,
-      false
-    ).root
-  }
-
-  override fun provideNpsItemsViewModel(
-    view: View,
-    viewModel: MultipleChoiceOptionContentViewModel
-  ) {
-    val binding =
-      DataBindingUtil.findBinding<SurveyNpsItemBinding>(view)!!
-    binding.scoreContent = viewModel.optionContent
-    binding.viewModel = viewModel
-  }
-
-  override fun provideDragDropSortInteractionInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return DragDropInteractionItemsBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-    ).root
-  }
-
-  private lateinit var dragDropInteractionItemsBinding: DragDropInteractionItemsBinding
-
-  override fun setDragDropInteractionItemsBinding(
-    view: View
-  ) {
-    dragDropInteractionItemsBinding =
-      DataBindingUtil.findBinding<DragDropInteractionItemsBinding>(view)!!
-  }
-
-  override fun setDragDropInteractionItemsBindingAdapter(
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-  ) {
-    dragDropInteractionItemsBinding.adapter = adapter
-  }
-
-  override fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView {
-    return dragDropInteractionItemsBinding.dragDropItemRecyclerview
-  }
-
-  override fun getDragDropInteractionItemsBindingGroupItem(): ImageButton {
-    return dragDropInteractionItemsBinding.dragDropContentGroupItem
-  }
-
-  override fun getDragDropInteractionItemsBindingUnlinkItems(): ImageButton {
-    return dragDropInteractionItemsBinding.dragDropContentUnlinkItems
-  }
-
-  override fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout {
-    return dragDropInteractionItemsBinding.dragDropAccessibleContainer
-  }
-
-  override fun setDragDropInteractionItemsBindingViewModel(
-    viewModel: DragDropInteractionContentViewModel
-  ) {
-    dragDropInteractionItemsBinding.viewModel = viewModel
-  }
-
-  override fun provideDragDropSingleItemInflatedView(
-    inflater: LayoutInflater,
-    parent: ViewGroup,
-    attachToParent: Boolean
-  ): View {
-    return DragDropSingleItemBinding.inflate(
-      LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
-    ).root
-  }
-
-  // TODO(#1692): Fix implementation to not use cache binding.
-  private lateinit var dragDropSingleItemBinding: DragDropSingleItemBinding
-
-  override fun setDragDropSingleItemBinding(
-    view: View
-  ) {
-    dragDropSingleItemBinding =
-      DataBindingUtil.findBinding<DragDropSingleItemBinding>(view)!!
-  }
-
-  override fun setDragDropSingleItemBindingHtmlContent(
-    htmlParserFactory: HtmlParser.Factory,
-    resourceBucketName: String,
-    entityType: String,
-    entityId: String,
-    viewModel: String
-  ) {
-    dragDropSingleItemBinding.htmlContent = htmlParserFactory.create(
-      resourceBucketName,
-      entityType,
-      entityId,
-      /* imageCenterAlign= */ false,
-      displayLocale = appLanguageResourceHandler.getDisplayLocale()
-    ).parseOppiaHtml(
-      viewModel, dragDropSingleItemBinding.dragDropContentTextView
-    )
-  }
-
-  override fun getDefaultRegion(parentView: FrameLayout): View {
-    return parentView.findViewById<View>(R.id.default_selected_region)
-  }
-}

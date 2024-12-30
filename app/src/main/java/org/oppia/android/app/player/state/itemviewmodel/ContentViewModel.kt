@@ -9,9 +9,8 @@ class ContentViewModel(
   val gcsEntityId: String,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  val supportsConceptCards: Boolean
+  val supportsConceptCards: Boolean,
 ) : StateItemViewModel(ViewType.CONTENT) {
-
   private val underscoreRegex = Regex("(?<=\\s|[,.;?!])_{3,}(?=\\s|[,.;?!])")
   private val replacementText = "Blank"
 

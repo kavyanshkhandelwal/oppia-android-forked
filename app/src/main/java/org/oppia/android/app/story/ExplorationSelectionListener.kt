@@ -16,6 +16,6 @@ interface ExplorationSelectionListener {
     canExplorationBeResumed: Boolean,
     canHavePartialProgressSaved: Boolean,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   )
 }

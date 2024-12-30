@@ -96,7 +96,7 @@ class RatioExtensionsTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Before
@@ -110,8 +110,8 @@ class RatioExtensionsTest {
       val ratio = createRatio(listOf(1, 2, 3))
       assertThat(
         ratio.toAccessibleAnswerString(
-          activity.appLanguageResourceHandler
-        )
+          activity.appLanguageResourceHandler,
+        ),
       ).isEqualTo("1 to 2 to 3")
     }
   }
@@ -122,8 +122,8 @@ class RatioExtensionsTest {
       val ratio = createRatio(listOf(1, 2))
       assertThat(
         ratio.toAccessibleAnswerString(
-          activity.appLanguageResourceHandler
-        )
+          activity.appLanguageResourceHandler,
+        ),
       ).isEqualTo("1 to 2")
     }
   }
@@ -132,9 +132,7 @@ class RatioExtensionsTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createRatio(element: List<Int>): RatioExpression {
-    return RatioExpression.newBuilder().addAllRatioComponent(element).build()
-  }
+  private fun createRatio(element: List<Int>): RatioExpression = RatioExpression.newBuilder().addAllRatioComponent(element).build()
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -165,8 +163,8 @@ class RatioExtensionsTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -177,9 +175,13 @@ class RatioExtensionsTest {
     fun inject(ratioExtensionsTest: RatioExtensionsTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRatioExtensionsTest_TestApplicationComponent.builder()
+      DaggerRatioExtensionsTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -188,9 +190,12 @@ class RatioExtensionsTest {
       component.inject(ratioExtensionsTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

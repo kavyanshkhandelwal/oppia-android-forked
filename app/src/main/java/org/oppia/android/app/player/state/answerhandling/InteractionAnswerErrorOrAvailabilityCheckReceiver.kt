@@ -5,7 +5,6 @@ package org.oppia.android.app.player.state.answerhandling
  * Handlers can either require an additional user action before the submit button UI can be updated.
  */
 interface InteractionAnswerErrorOrAvailabilityCheckReceiver {
-
   /**
    * Called when an error was detected upon answer submission or if the input answer availability changes.
    * Implementations are recommended to prevent further answer submission until the pending answer itself changes.
@@ -13,6 +12,6 @@ interface InteractionAnswerErrorOrAvailabilityCheckReceiver {
    */
   fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {}
 }

@@ -13,10 +13,12 @@ import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
 /** Test Activity used for testing [PoliciesFragment]. */
-class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
-
+class PoliciesFragmentTestActivity :
+  TestActivity(),
+  RouteToPoliciesListener {
   @Inject
   lateinit var policiesFragmentTestActivityPresenter: PoliciesFragmentTestActivityPresenter
+
   /**
    * [RouteToPoliciesListener] that must be initialized by the test, and is presumed to be a
    * Mockito mock (though this is not, strictly speaking, required).
@@ -32,8 +34,8 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
     policiesFragmentTestActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
         POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
-        PoliciesActivityParams.getDefaultInstance()
-      )
+        PoliciesActivityParams.getDefaultInstance(),
+      ),
     )
   }
 
@@ -43,7 +45,10 @@ class PoliciesFragmentTestActivity : TestActivity(), RouteToPoliciesListener {
       "PoliciesFragmentTestActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesFragmentTestActivity] for the specified [policyPage]. */
-    fun createPoliciesFragmentTestActivity(context: Context, policyPage: PolicyPage): Intent {
+    fun createPoliciesFragmentTestActivity(
+      context: Context,
+      policyPage: PolicyPage,
+    ): Intent {
       val policiesActivityParams =
         PoliciesActivityParams
           .newBuilder()

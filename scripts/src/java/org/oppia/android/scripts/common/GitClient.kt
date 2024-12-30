@@ -10,7 +10,7 @@ import java.io.File
 class GitClient(
   private val workingDirectory: File,
   private val baseCommit: String,
-  private val commandExecutor: CommandExecutor
+  private val commandExecutor: CommandExecutor,
 ) {
   /** The commit hash of the HEAD of the local Git repository. */
   val currentCommit: String by lazy { retrieveCurrentCommit() }
@@ -33,21 +33,16 @@ class GitClient(
       retrieveRenamedFiles()
   }
 
-  private fun retrieveCurrentCommit(): String {
-    return executeGitCommandWithOneLineOutput("rev-parse HEAD")
-  }
+  private fun retrieveCurrentCommit(): String = executeGitCommandWithOneLineOutput("rev-parse HEAD")
 
-  private fun retrieveCurrentBranch(): String {
-    return executeGitCommandWithOneLineOutput("rev-parse --abbrev-ref HEAD")
-  }
+  private fun retrieveCurrentBranch(): String = executeGitCommandWithOneLineOutput("rev-parse --abbrev-ref HEAD")
 
-  private fun retrieveBranchMergeBase(): String {
-    return executeGitCommandWithOneLineOutput("merge-base $baseCommit HEAD").also {
+  private fun retrieveBranchMergeBase(): String =
+    executeGitCommandWithOneLineOutput("merge-base $baseCommit HEAD").also {
       if (baseCommit != it) {
         println("WARNING: Provided base commit $baseCommit doesn't match merge-base: $it.")
       }
     }
-  }
 
   private fun retrieveChangedFilesWithPotentialDuplicates(): List<String> =
     retrieveChangedCommittedFiles() +
@@ -55,25 +50,18 @@ class GitClient(
       retrieveChangedUnstagedFiles() +
       retrieveChangedUntrackedFiles()
 
-  private fun retrieveChangedCommittedFiles(): List<String> {
-    return executeGitCommand("diff --name-only ${computeCommitRange()}")
-  }
+  private fun retrieveChangedCommittedFiles(): List<String> = executeGitCommand("diff --name-only ${computeCommitRange()}")
 
-  private fun retrieveChangedStagedFiles(): List<String> {
-    return executeGitCommand("diff --name-only --cached")
-  }
+  private fun retrieveChangedStagedFiles(): List<String> = executeGitCommand("diff --name-only --cached")
 
-  private fun retrieveChangedUnstagedFiles(): List<String> {
-    return executeGitCommand("diff --name-only")
-  }
+  private fun retrieveChangedUnstagedFiles(): List<String> = executeGitCommand("diff --name-only")
 
-  private fun retrieveChangedUntrackedFiles(): List<String> {
-    return executeGitCommand("ls-files --others --exclude-standard")
-  }
+  private fun retrieveChangedUntrackedFiles(): List<String> = executeGitCommand("ls-files --others --exclude-standard")
 
   private fun retrieveRenamedFiles(): List<String> {
     val renamedFilesCommand = executeGitCommand("diff -M --name-status ${computeCommitRange()}")
-    return renamedFilesCommand.filter { it.startsWith("R") }
+    return renamedFilesCommand
+      .filter { it.startsWith("R") }
       .map { it.split("\t")[1] }
   }
 
@@ -88,7 +76,9 @@ class GitClient(
   private fun executeGitCommand(argumentsLine: String): List<String> {
     val result =
       commandExecutor.executeCommand(
-        workingDirectory, command = "git", *argumentsLine.split(" ").toTypedArray()
+        workingDirectory,
+        command = "git",
+        *argumentsLine.split(" ").toTypedArray(),
       )
     check(result.exitCode == 0) {
       "Expected non-zero exit code (not ${result.exitCode}) for command: ${result.command}." +

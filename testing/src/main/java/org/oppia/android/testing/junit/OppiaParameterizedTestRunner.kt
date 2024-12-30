@@ -75,7 +75,9 @@ import kotlin.reflect.KClass
  * treated as undefined outside of tests that specific define their value via [Iteration]).
  */
 @RequiresApi(Build.VERSION_CODES.N)
-class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(testClass, listOf()) {
+class OppiaParameterizedTestRunner(
+  private val testClass: Class<*>,
+) : Suite(testClass, listOf()) {
   private val parameterizedMethods = computeParameterizedMethods()
   private val selectedRunnerClass by lazy { fetchSelectedRunnerPlatformClass() }
   private val childrenRunners by lazy {
@@ -84,139 +86,157 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     parameterizedMethods.flatMap { (methodName, method) ->
       method.iterationNames.map { iterationName ->
         ProxyParameterizedTestRunner(
-          selectedRunnerClass, testClass, parameterizedMethods, methodName, iterationName
+          selectedRunnerClass,
+          testClass,
+          parameterizedMethods,
+          methodName,
+          iterationName,
         )
       }
-    } + ProxyParameterizedTestRunner(
-      selectedRunnerClass, testClass, parameterizedMethods, methodName = null
-    )
+    } +
+      ProxyParameterizedTestRunner(
+        selectedRunnerClass,
+        testClass,
+        parameterizedMethods,
+        methodName = null,
+      )
   }
 
   override fun getChildren(): MutableList<Runner> = childrenRunners.toMutableList()
 
   @RequiresApi(Build.VERSION_CODES.N)
   private fun computeParameterizedMethods(): Map<String, ParameterizedMethod> {
-    val fieldsAndParsers = fetchParameterizedFields().map { field ->
-      val valueParser = ParameterValue.createParserForField(field)
-      checkNotNull(valueParser) {
-        "Unsupported field type: ${field.type} for parameterized field ${field.name}"
-      }
-      return@map field to valueParser
-    }.associateBy { (field, _) -> field.name }
+    val fieldsAndParsers =
+      fetchParameterizedFields()
+        .map { field ->
+          val valueParser = ParameterValue.createParserForField(field)
+          checkNotNull(valueParser) {
+            "Unsupported field type: ${field.type} for parameterized field ${field.name}"
+          }
+          return@map field to valueParser
+        }.associateBy { (field, _) -> field.name }
 
     val fields = fieldsAndParsers.map { (_, fieldAndParser) -> fieldAndParser.first }
     val methodDeclarations = fetchParameterizedMethodDeclarations()
-    return methodDeclarations.map { (method, rawValues) ->
-      val allValues = rawValues.mapValues { (_, values) ->
-        values.map { rawValuePair ->
-          check('=' in rawValuePair) {
-            "Expect all parameter values to be of the form propertyField=value (encountered:" +
-              " $rawValuePair)"
-          }
+    return methodDeclarations
+      .map { (method, rawValues) ->
+        val allValues =
+          rawValues
+            .mapValues { (_, values) ->
+              values.map { rawValuePair ->
+                check('=' in rawValuePair) {
+                  "Expect all parameter values to be of the form propertyField=value (encountered:" +
+                    " $rawValuePair)"
+                }
 
-          // Use substringBefore/After since values should be allowed to contain '='.
-          val fieldName = rawValuePair.substringBefore(delimiter = '=')
-          val rawValue = rawValuePair.substringAfter(delimiter = '=')
-          check(fieldName in fieldsAndParsers) {
-            "Property key does not correspond to any class fields: $fieldName (available:" +
-              " ${fieldsAndParsers.keys})"
-          }
+                // Use substringBefore/After since values should be allowed to contain '='.
+                val fieldName = rawValuePair.substringBefore(delimiter = '=')
+                val rawValue = rawValuePair.substringAfter(delimiter = '=')
+                check(fieldName in fieldsAndParsers) {
+                  "Property key does not correspond to any class fields: $fieldName (available:" +
+                    " ${fieldsAndParsers.keys})"
+                }
 
-          val (field, parser) = fieldsAndParsers.getValue(fieldName)
-          val value = parser.parseParameter(fieldName, rawValue)
-          checkNotNull(value) {
-            "Parameterized field ${field.name}'s type is incompatible with raw parameter value:" +
-              " $rawValue"
-          }
-        }
-      }.also { allValues ->
-        // Validate no duplicate keys.
-        allValues.forEach { (iterationName, values) ->
-          val allKeys = values.map { it.key }
-          val uniqueKeys = allKeys.toSet()
-          check(allKeys.size == uniqueKeys.size) {
-            val duplicateKeys = allKeys.toMutableList()
-            uniqueKeys.forEach { duplicateKeys.remove(it) }
-            return@check "Encountered duplicate keys in iteration $iterationName for method" +
-              " ${method.name}: ${duplicateKeys.toSet()}"
-          }
-        }
-
-        // Validate key consistency.
-        val allKeys = allValues.values.flatten().map(ParameterValue::key).toSet()
-        allValues.forEach { (iterationName, values) ->
-          val iterationKeys = values.map { it.key }.toSet()
-          check(iterationKeys == allKeys) {
-            "Iteration $iterationName in method ${method.name} has missing keys compared with" +
-              " other iterations: ${allKeys - iterationKeys}"
-          }
-        }
-
-        // Validate value ordering.
-        val iterationKeys = allValues.mapValues { (_, values) -> values.map { it.key } }
-        val expectedOrder = iterationKeys.values.first()
-        iterationKeys.forEach { (iterationName, keys) ->
-          check(keys == expectedOrder) {
-            "Iteration $iterationName in method ${method.name} lists its keys in the order: $keys" +
-              " whereas $expectedOrder (for the first iteration) is expected for consistency." +
-              " Please pick an order and ensure all iterations are consistent."
-          }
-        }
-
-        // Validate that all value sets are unique (to detect redundant iterations).
-        allValues.entries.forEach { (outerIterationName, outerValues) ->
-          allValues.entries.forEach { (innerIterationName, innerValues) ->
-            if (outerIterationName != innerIterationName) {
-              // Order & counts have been verified above, so the values can be checked in order.
-              val differentValues = outerValues.zip(innerValues).any { (outerValue, innerValue) ->
-                outerValue.value != innerValue.value
+                val (field, parser) = fieldsAndParsers.getValue(fieldName)
+                val value = parser.parseParameter(fieldName, rawValue)
+                checkNotNull(value) {
+                  "Parameterized field ${field.name}'s type is incompatible with raw parameter value:" +
+                    " $rawValue"
+                }
               }
-              check(differentValues) {
-                "Iterations $outerIterationName and $innerIterationName in method ${method.name}" +
-                  " have the same values and are thus redundant. Please remove one of them or" +
-                  " update the values."
+            }.also { allValues ->
+              // Validate no duplicate keys.
+              allValues.forEach { (iterationName, values) ->
+                val allKeys = values.map { it.key }
+                val uniqueKeys = allKeys.toSet()
+                check(allKeys.size == uniqueKeys.size) {
+                  val duplicateKeys = allKeys.toMutableList()
+                  uniqueKeys.forEach { duplicateKeys.remove(it) }
+                  return@check "Encountered duplicate keys in iteration $iterationName for method" +
+                    " ${method.name}: ${duplicateKeys.toSet()}"
+                }
+              }
+
+              // Validate key consistency.
+              val allKeys =
+                allValues.values
+                  .flatten()
+                  .map(ParameterValue::key)
+                  .toSet()
+              allValues.forEach { (iterationName, values) ->
+                val iterationKeys = values.map { it.key }.toSet()
+                check(iterationKeys == allKeys) {
+                  "Iteration $iterationName in method ${method.name} has missing keys compared with" +
+                    " other iterations: ${allKeys - iterationKeys}"
+                }
+              }
+
+              // Validate value ordering.
+              val iterationKeys = allValues.mapValues { (_, values) -> values.map { it.key } }
+              val expectedOrder = iterationKeys.values.first()
+              iterationKeys.forEach { (iterationName, keys) ->
+                check(keys == expectedOrder) {
+                  "Iteration $iterationName in method ${method.name} lists its keys in the order: $keys" +
+                    " whereas $expectedOrder (for the first iteration) is expected for consistency." +
+                    " Please pick an order and ensure all iterations are consistent."
+                }
+              }
+
+              // Validate that all value sets are unique (to detect redundant iterations).
+              allValues.entries.forEach { (outerIterationName, outerValues) ->
+                allValues.entries.forEach { (innerIterationName, innerValues) ->
+                  if (outerIterationName != innerIterationName) {
+                    // Order & counts have been verified above, so the values can be checked in order.
+                    val differentValues =
+                      outerValues.zip(innerValues).any { (outerValue, innerValue) ->
+                        outerValue.value != innerValue.value
+                      }
+                    check(differentValues) {
+                      "Iterations $outerIterationName and $innerIterationName in method ${method.name}" +
+                        " have the same values and are thus redundant. Please remove one of them or" +
+                        " update the values."
+                    }
+                  }
+                }
               }
             }
-          }
-        }
-      }
-      return@map ParameterizedMethod(method.name, allValues, fields)
-    }.associateBy { it.methodName }
+        return@map ParameterizedMethod(method.name, allValues, fields)
+      }.associateBy { it.methodName }
   }
 
   @RequiresApi(Build.VERSION_CODES.N)
-  private fun fetchParameterizedFields(): List<Field> {
-    return testClass.declaredFields.mapNotNull { field ->
+  private fun fetchParameterizedFields(): List<Field> =
+    testClass.declaredFields.mapNotNull { field ->
       field.getDeclaredAnnotation(Parameter::class.java)?.let { field }
     }
-  }
 
   @RequiresApi(Build.VERSION_CODES.N)
-  private fun fetchParameterizedMethodDeclarations(): List<ParameterizedMethodDeclaration> {
-    return testClass.declaredMethods.mapNotNull { method ->
-      method.getDeclaredAnnotationsByType(Iteration::class.java).map { parameters ->
-        parameters.name to parameters.keyValuePairs.toList()
-      }.takeIf { it.isNotEmpty() }?.let { rawValues ->
-        val groupedValues = rawValues.groupBy({ it.first }, { it.second })
-        // Verify there are no duplicate iteration names.
-        groupedValues.forEach { (iterationName, iterations) ->
-          check(iterations.size == 1) {
-            "Encountered duplicate iteration name: $iterationName in method ${method.name}"
+  private fun fetchParameterizedMethodDeclarations(): List<ParameterizedMethodDeclaration> =
+    testClass.declaredMethods.mapNotNull { method ->
+      method
+        .getDeclaredAnnotationsByType(Iteration::class.java)
+        .map { parameters ->
+          parameters.name to parameters.keyValuePairs.toList()
+        }.takeIf { it.isNotEmpty() }
+        ?.let { rawValues ->
+          val groupedValues = rawValues.groupBy({ it.first }, { it.second })
+          // Verify there are no duplicate iteration names.
+          groupedValues.forEach { (iterationName, iterations) ->
+            check(iterations.size == 1) {
+              "Encountered duplicate iteration name: $iterationName in method ${method.name}"
+            }
           }
+          val mappedValues = groupedValues.mapValues { (_, iterations) -> iterations.first() }
+          ParameterizedMethodDeclaration(method, mappedValues)
         }
-        val mappedValues = groupedValues.mapValues { (_, iterations) -> iterations.first() }
-        ParameterizedMethodDeclaration(method, mappedValues)
-      }
     }
-  }
 
   @RequiresApi(Build.VERSION_CODES.N)
-  private fun fetchSelectedRunnerPlatformClass(): Class<*> {
-    return checkNotNull(testClass.getDeclaredAnnotation(SelectRunnerPlatform::class.java)) {
+  private fun fetchSelectedRunnerPlatformClass(): Class<*> =
+    checkNotNull(testClass.getDeclaredAnnotation(SelectRunnerPlatform::class.java)) {
       "All suites using OppiaParameterizedTestRunner must declare their base platform runner" +
         " using SelectRunnerPlatform."
     }.runnerType.java
-  }
 
   /**
    * Defines which [OppiaParameterizedBaseRunner] should be used for running individual
@@ -225,7 +245,9 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    * See base classes for options.
    */
   @Target(AnnotationTarget.CLASS)
-  annotation class SelectRunnerPlatform(val runnerType: KClass<out OppiaParameterizedBaseRunner>)
+  annotation class SelectRunnerPlatform(
+    val runnerType: KClass<out OppiaParameterizedBaseRunner>,
+  )
 
   /**
    * Defines a parameter that may have an injected value that comes from per-test [Iteration]
@@ -242,7 +264,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    * - [Float]s
    * - [Double]s
    */
-  @Target(AnnotationTarget.FIELD) annotation class Parameter
+  @Target(AnnotationTarget.FIELD)
+  annotation class Parameter
 
   /**
    * Defines an iteration to run as part of a parameterized test method.
@@ -257,11 +280,14 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
    */
   @Repeatable
   @Target(AnnotationTarget.FUNCTION)
-  annotation class Iteration(val name: String, vararg val keyValuePairs: String)
+  annotation class Iteration(
+    val name: String,
+    vararg val keyValuePairs: String,
+  )
 
   private data class ParameterizedMethodDeclaration(
     val method: Method,
-    val rawValues: Map<String, List<String>>
+    val rawValues: Map<String, List<String>>,
   )
 
   private class ProxyParameterizedTestRunner(
@@ -269,8 +295,10 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     private val testClass: Class<*>,
     private val parameterizedMethods: Map<String, ParameterizedMethod>,
     private val methodName: String?,
-    private val iterationName: String? = null
-  ) : Runner(), Filterable, Sortable {
+    private val iterationName: String? = null,
+  ) : Runner(),
+    Filterable,
+    Sortable {
     private val delegate by lazy { constructDelegate() }
     private val delegateRunner by lazy {
       checkNotNull(delegate as? Runner) { "Delegate runner isn't a JUnit runner: $delegate" }
@@ -293,7 +321,10 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
     private fun constructDelegate(): Any {
       val constructor =
         runnerClass.getConstructor(
-          Class::class.java, Map::class.java, String::class.java, String::class.java
+          Class::class.java,
+          Map::class.java,
+          String::class.java,
+          String::class.java,
         )
       return constructor.newInstance(testClass, parameterizedMethods, methodName, iterationName)
     }

@@ -9,9 +9,10 @@ import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
 // https://github.com/dbottillo/Blog/blob/espresso_match_imageview/app/src/androidTest/java/com/danielebottillo/blog/config/DrawableMatcher.java
+
 /** This class mainly provides a custom matcher to test whether the drawable-image is correctly shown in ImageView. */
 class DrawableMatcher constructor(
-  private val expectedId: Int
+  private val expectedId: Int,
 ) : TypeSafeMatcher<View>(View::class.java) {
   companion object {
     const val NONE = -1
@@ -44,11 +45,12 @@ class DrawableMatcher constructor(
   }
 
   private fun getBitmap(drawable: Drawable): Bitmap {
-    val targetBitmap = Bitmap.createBitmap(
-      drawable.intrinsicWidth,
-      drawable.intrinsicHeight,
-      Bitmap.Config.ARGB_8888
-    )
+    val targetBitmap =
+      Bitmap.createBitmap(
+        drawable.intrinsicWidth,
+        drawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888,
+      )
     val canvas = Canvas(targetBitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)
     drawable.draw(canvas)

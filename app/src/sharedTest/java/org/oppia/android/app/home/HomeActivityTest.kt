@@ -173,12 +173,12 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = HomeActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 @DefineAppLanguageLocaleContext(
   oppiaLanguageEnumId = ENGLISH_VALUE,
   appStringIetfTag = "en",
-  appStringAndroidLanguageId = "en"
+  appStringAndroidLanguageId = "en",
 )
 class HomeActivityTest {
   @get:Rule
@@ -255,8 +255,8 @@ class HomeActivityTest {
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_fragment_progress_bar)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -270,9 +270,9 @@ class HomeActivityTest {
       onView(withId(R.id.home_fragment_progress_bar)).check(
         matches(
           not(
-            isDisplayed()
-          )
-        )
+            isDisplayed(),
+          ),
+        ),
       )
     }
   }
@@ -299,7 +299,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good evening, Admin!"
+        stringToMatch = "Good evening, Admin!",
       )
     }
   }
@@ -315,7 +315,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning, Admin!"
+        stringToMatch = "Good morning, Admin!",
       )
     }
   }
@@ -331,7 +331,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good afternoon, Admin!"
+        stringToMatch = "Good afternoon, Admin!",
       )
     }
   }
@@ -347,7 +347,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good evening, Admin!"
+        stringToMatch = "Good evening, Admin!",
       )
     }
   }
@@ -402,11 +402,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -415,7 +415,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recently_played_stories)
+        stringToMatch = context.getString(R.string.recently_played_stories),
       )
     }
   }
@@ -426,11 +426,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -440,7 +440,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.view_all_text_view,
-        stringToMatch = context.getString(R.string.view_all)
+        stringToMatch = context.getString(R.string.view_all),
       )
     }
   }
@@ -451,12 +451,12 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     testCoroutineDispatchers.runCurrent()
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -465,7 +465,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.last_played_stories)
+        stringToMatch = context.getString(R.string.last_played_stories),
       )
     }
   }
@@ -476,29 +476,28 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "First Test Topic",
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
     }
   }
@@ -509,7 +508,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -518,13 +517,13 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Fractions",
       )
     }
   }
@@ -539,19 +538,19 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Fractions",
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
     }
   }
@@ -562,7 +561,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -571,8 +570,8 @@ class HomeActivityTest {
       onView(
         allOf(
           withId(R.id.view_all_text_view),
-          withEffectiveVisibility(Visibility.GONE)
-        )
+          withEffectiveVisibility(Visibility.GONE),
+        ),
       )
     }
   }
@@ -583,11 +582,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -596,13 +595,13 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Second Test Topic",
       )
     }
   }
@@ -613,19 +612,19 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsTopic(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -634,13 +633,13 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon),
       )
       scrollToPositionOfComingSoonList(position = 1)
       verifyTextOnComingSoonItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Third Test Topic"
+        stringToMatch = "Third Test Topic",
       )
     }
   }
@@ -651,7 +650,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -660,12 +659,12 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon),
       )
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Third Test Topic"
+        stringToMatch = "Third Test Topic",
       )
     }
   }
@@ -694,15 +693,15 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -711,25 +710,25 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.stories_for_you)
+        stringToMatch = context.getString(R.string.stories_for_you),
       )
       scrollToPositionOfPromotedList(position = 0)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Second Test Topic",
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Fractions",
       )
       scrollToPositionOfPromotedList(position = 2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
     }
   }
@@ -740,19 +739,19 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic1(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -761,13 +760,13 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.coming_soon_topic_text_view,
-        stringToMatch = context.getString(R.string.coming_soon)
+        stringToMatch = context.getString(R.string.coming_soon),
       )
       scrollToPositionOfComingSoonList(position = 1)
       verifyTextOnComingSoonItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Third Test Topic"
+        stringToMatch = "Third Test Topic",
       )
     }
   }
@@ -778,7 +777,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -787,13 +786,13 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
     }
   }
@@ -804,7 +803,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -813,19 +812,19 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recommended_stories)
+        stringToMatch = context.getString(R.string.recommended_stories),
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "First Test Topic",
       )
       scrollToPositionOfPromotedList(position = 1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
     }
   }
@@ -837,15 +836,15 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -855,8 +854,8 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.view_all_text_view
-        )
+          targetViewId = R.id.view_all_text_view,
+        ),
       ).perform(click())
       intended(hasComponent(RecentlyPlayedActivity::class.java.name))
     }
@@ -868,7 +867,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -877,7 +876,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.chapter_name_text_view,
-        stringToMatch = "What is a Fraction?"
+        stringToMatch = "What is a Fraction?",
       )
     }
   }
@@ -888,7 +887,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -897,7 +896,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -908,11 +907,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -922,7 +921,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -933,11 +932,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -946,19 +945,19 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.stories_for_you)
+        stringToMatch = context.getString(R.string.stories_for_you),
       )
       scrollToPositionOfPromotedList(1)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Ratios and Proportional Reasoning"
+        stringToMatch = "Ratios and Proportional Reasoning",
       )
       scrollToPositionOfPromotedList(2)
       verifyTextOnPromotedListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "First Test Topic",
       )
     }
   }
@@ -970,7 +969,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -980,15 +979,18 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.promoted_story_list_recycler_view
-        )
+          targetViewId = R.id.promoted_story_list_recycler_view,
+        ),
       ).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_1
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.storyId = FRACTIONS_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_1
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.storyId = FRACTIONS_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -1002,7 +1004,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -1012,17 +1014,18 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.promoted_story_list_recycler_view
-        )
+          targetViewId = R.id.promoted_story_list_recycler_view,
+        ),
       ).check { view, _ ->
         val promotedStoryCard =
           view.findViewById<LessonThumbnailImageView>(R.id.lesson_thumbnail)
         val promotedStoryCardWidth = promotedStoryCard?.width?.toFloat()
-        val expectedWidthInPixels = TypedValue.applyDimension(
-          TypedValue.COMPLEX_UNIT_SP,
-          280F,
-          context.resources.displayMetrics
-        )
+        val expectedWidthInPixels =
+          TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            280F,
+            context.resources.displayMetrics,
+          )
         assertThat(promotedStoryCardWidth).isWithin(1e-5f).of(expectedWidthInPixels)
       }
     }
@@ -1034,11 +1037,11 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -1047,7 +1050,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Fractions"
+        stringToMatch = "Fractions",
       )
     }
   }
@@ -1064,15 +1067,18 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           5,
-          R.id.topic_name_text_view
-        )
+          R.id.topic_name_text_view,
+        ),
       ).check(matches(withText(containsString("Fractions")))).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_1
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.storyId = FRACTIONS_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_1
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.storyId = FRACTIONS_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -1088,7 +1094,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "First Test Topic"
+        stringToMatch = "First Test Topic",
       )
     }
   }
@@ -1103,7 +1109,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 3,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "3 Lessons"
+        stringToMatch = "3 Lessons",
       )
     }
   }
@@ -1114,7 +1120,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -1123,7 +1129,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "Second Test Topic"
+        stringToMatch = "Second Test Topic",
       )
     }
   }
@@ -1138,7 +1144,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "1 Lesson"
+        stringToMatch = "1 Lesson",
       )
     }
   }
@@ -1156,8 +1162,8 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
-        )
+          R.id.welcome_text_view,
+        ),
       ).check(matches(not(isEllipsized())))
     }
   }
@@ -1176,8 +1182,8 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
-        )
+          R.id.welcome_text_view,
+        ),
       ).check(matches(not(isEllipsized())))
     }
   }
@@ -1195,8 +1201,8 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
-        )
+          R.id.welcome_text_view,
+        ),
       ).check(matches(not(isEllipsized())))
     }
   }
@@ -1215,8 +1221,8 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           0,
-          R.id.welcome_text_view
-        )
+          R.id.welcome_text_view,
+        ),
       ).check(matches(not(isEllipsized())))
     }
   }
@@ -1232,7 +1238,7 @@ class HomeActivityTest {
       verifyTextOnHomeListItemAtPosition(
         itemPosition = 4,
         targetViewId = R.id.lesson_count_text_view,
-        stringToMatch = "1 Lesson"
+        stringToMatch = "1 Lesson",
       )
     }
   }
@@ -1247,11 +1253,14 @@ class HomeActivityTest {
       scrollToPosition(position = 3)
       onView(atPosition(R.id.home_recycler_view, 3)).perform(click())
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_0
-        this.topicId = TEST_TOPIC_ID_0
-        this.storyId = TEST_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_0
+            this.topicId = TEST_TOPIC_ID_0
+            this.storyId = TEST_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -1273,7 +1282,6 @@ class HomeActivityTest {
   fun testHomeActivity_onBackPressed_configChange_exitToProfileChooserDialogIsDisplayed() {
     setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
-
       testCoroutineDispatchers.runCurrent()
       pressBack()
       onView(isRoot()).perform(orientationLandscape())
@@ -1334,7 +1342,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1344,8 +1352,8 @@ class HomeActivityTest {
         atPositionOnView(
           R.id.home_recycler_view,
           2,
-          R.id.promoted_story_list_recycler_view
-        )
+          R.id.promoted_story_list_recycler_view,
+        ),
       ).check(doesNotExist())
     }
   }
@@ -1356,15 +1364,15 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1373,7 +1381,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.recently_played_stories_text_view,
-        stringToMatch = context.getString(R.string.recently_played_stories)
+        stringToMatch = context.getString(R.string.recently_played_stories),
       )
     }
   }
@@ -1384,7 +1392,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = createProfileId(internalProfileId),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1393,7 +1401,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.select_a_topic_to_start))
+        stringToMatch = context.getString((R.string.select_a_topic_to_start)),
       )
     }
   }
@@ -1405,7 +1413,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1422,7 +1430,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1439,7 +1447,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1456,7 +1464,7 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1477,7 +1485,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.all_topics_text_view,
-        stringToMatch = context.getString((R.string.select_a_topic_to_start))
+        stringToMatch = context.getString((R.string.select_a_topic_to_start)),
       )
     }
   }
@@ -1564,22 +1572,23 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1Story2Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId1, timestampOlderThanOneWeek = false
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1589,8 +1598,8 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.promoted_story_list_recycler_view
-        )
+          targetViewId = R.id.promoted_story_list_recycler_view,
+        ),
       ).check(hasItemCount(count = 3))
     }
   }
@@ -1602,23 +1611,24 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressNotSavedTestTopic1Story2Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     val profileId1 = createProfileId(internalProfileId)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId1, timestampOlderThanOneWeek = false
+      profileId = profileId1,
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1628,8 +1638,8 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.promoted_story_list_recycler_view
-        )
+          targetViewId = R.id.promoted_story_list_recycler_view,
+        ),
       ).check(hasItemCount(count = 3))
     }
   }
@@ -1641,22 +1651,23 @@ class HomeActivityTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedTestTopic0Story0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedTestTopic1Story2Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId, timestampOlderThanOneWeek = false
+      profileId = profileId,
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1667,8 +1678,8 @@ class HomeActivityTest {
         atPositionOnView(
           recyclerViewId = R.id.home_recycler_view,
           position = 1,
-          targetViewId = R.id.promoted_story_list_recycler_view
-        )
+          targetViewId = R.id.promoted_story_list_recycler_view,
+        ),
       ).check(hasItemCount(count = 4))
     }
   }
@@ -1680,15 +1691,16 @@ class HomeActivityTest {
     // (see https://github.com/oppia/oppia-android/pull/2246#pullrequestreview-565964462)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
-      profileId = profileId, timestampOlderThanOneWeek = false
+      profileId = profileId,
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     logIntoAdminTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1715,7 +1727,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Good morning, Admin!"
+        stringToMatch = "Good morning, Admin!",
       )
     }
   }
@@ -1778,7 +1790,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia, Admin!"
+        stringToMatch = "Bom dia, Admin!",
       )
       assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(1)
       // Verify that the display locale is set up correctly (for string formatting).
@@ -1792,7 +1804,7 @@ class HomeActivityTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_displaysStringsInArabic() {
@@ -1809,7 +1821,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "صباح الخير \u200F\u202AAdmin\u202C\u200F!"
+        stringToMatch = "صباح الخير \u200F\u202AAdmin\u202C\u200F!",
       )
     }
   }
@@ -1818,7 +1830,7 @@ class HomeActivityTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialArabicContext_isInRtlLayout() {
@@ -1841,7 +1853,7 @@ class HomeActivityTest {
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = ARABIC_VALUE,
     appStringIetfTag = "ar",
-    appStringAndroidLanguageId = "ar"
+    appStringAndroidLanguageId = "ar",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
@@ -1865,7 +1877,7 @@ class HomeActivityTest {
     oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
     appStringIetfTag = "pt-BR",
     appStringAndroidLanguageId = "pt",
-    appStringAndroidRegionId = "BR"
+    appStringAndroidRegionId = "BR",
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_displayStringsInPortuguese() {
@@ -1882,7 +1894,7 @@ class HomeActivityTest {
       verifyExactTextOnHomeListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.welcome_text_view,
-        stringToMatch = "Bom dia, Admin!"
+        stringToMatch = "Bom dia, Admin!",
       )
     }
   }
@@ -1892,7 +1904,7 @@ class HomeActivityTest {
     oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
     appStringIetfTag = "pt-BR",
     appStringAndroidLanguageId = "pt",
-    appStringAndroidRegionId = "BR"
+    appStringAndroidRegionId = "BR",
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialBrazilianPortugueseContext_isInLtrLayout() {
@@ -1916,7 +1928,7 @@ class HomeActivityTest {
     oppiaLanguageEnumId = BRAZILIAN_PORTUGUESE_VALUE,
     appStringIetfTag = "pt-BR",
     appStringAndroidLanguageId = "pt",
-    appStringAndroidRegionId = "BR"
+    appStringAndroidRegionId = "BR",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
@@ -1940,7 +1952,7 @@ class HomeActivityTest {
     oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
     appStringIetfTag = "pcm",
     appStringAndroidLanguageId = "pcm",
-    appStringAndroidRegionId = "NG"
+    appStringAndroidRegionId = "NG",
   )
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3840): Make this test work on Espresso & Robolectric.
   fun testHomeActivity_initialNigerianPidginContext_isInLtrLayout() {
@@ -1964,7 +1976,7 @@ class HomeActivityTest {
     oppiaLanguageEnumId = NIGERIAN_PIDGIN_VALUE,
     appStringIetfTag = "pcm",
     appStringAndroidLanguageId = "pcm",
-    appStringAndroidRegionId = "NG"
+    appStringAndroidRegionId = "NG",
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
@@ -2079,100 +2091,102 @@ class HomeActivityTest {
   }
 
   // Reference - https://stackoverflow.com/a/61455336/12215015
-  private fun isEllipsized() = object : TypeSafeMatcher<View>() {
-    override fun describeTo(description: Description) {
-      description.appendText("with ellipsized text")
-    }
-
-    override fun matchesSafely(view: View): Boolean {
-      return view is TextView && with((view).layout) {
-        lineCount > 0 && getEllipsisCount(lineCount - 1) > 0
+  private fun isEllipsized() =
+    object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("with ellipsized text")
       }
+
+      override fun matchesSafely(view: View): Boolean =
+        view is TextView &&
+          with((view).layout) {
+            lineCount > 0 && getEllipsisCount(lineCount - 1) > 0
+          }
     }
-  }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.home_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
   private fun scrollToPositionOfPromotedList(position: Int) {
     onView(withId(R.id.promoted_story_list_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
   private fun scrollToPositionOfComingSoonList(position: Int) {
     onView(withId(R.id.coming_soon_topic_list_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
   private fun verifyTextOnHomeListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         R.id.home_recycler_view,
         itemPosition,
-        targetViewId
-      )
+        targetViewId,
+      ),
     ).check(matches(withText(containsString(stringToMatch))))
   }
 
   private fun verifyTextOnPromotedListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         R.id.promoted_story_list_recycler_view,
         itemPosition,
-        targetViewId
-      )
+        targetViewId,
+      ),
     ).check(matches(withText(containsString(stringToMatch))))
   }
 
   private fun verifyTextOnComingSoonItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         R.id.coming_soon_topic_list_recycler_view,
         itemPosition,
-        targetViewId
-      )
+        targetViewId,
+      ),
     ).check(matches(withText(containsString(stringToMatch))))
   }
 
   private fun verifyExactTextOnHomeListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         R.id.home_recycler_view,
         itemPosition,
-        targetViewId
-      )
+        targetViewId,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
@@ -2180,9 +2194,7 @@ class HomeActivityTest {
     onView(withId(R.id.home_recycler_view)).check(hasGridColumnCount(columnCount))
   }
 
-  private fun createProfileId(internalProfileId: Int): ProfileId {
-    return ProfileId.newBuilder().setInternalId(internalProfileId).build()
-  }
+  private fun createProfileId(internalProfileId: Int): ProfileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
   private fun logIntoAdminTwice() {
     dataProviderTestMonitor.waitForNextSuccessfulResult(profileTestHelper.logIntoAdmin())
@@ -2223,8 +2235,8 @@ class HomeActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -2235,9 +2247,13 @@ class HomeActivityTest {
     fun inject(homeActivityTest: HomeActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHomeActivityTest_TestApplicationComponent.builder()
+      DaggerHomeActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -2246,9 +2262,12 @@ class HomeActivityTest {
       component.inject(homeActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
     println(
       "Usage: bazel run //scripts:retrieve_changed_files --" +
         " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
-        " <path_to_file_list_output_file> <path_to_test_target_list_output_file>"
+        " <path_to_file_list_output_file> <path_to_test_target_list_output_file>",
     )
     exitProcess(1)
   }
@@ -62,7 +62,9 @@ fun main(args: Array<String>) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor: CommandExecutor =
       CommandExecutorImpl(
-        scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+        scriptBgDispatcher,
+        processTimeout = 5,
+        processTimeoutUnit = TimeUnit.MINUTES,
       )
 
     val bazelClient = BazelClient(rootDirectory, commandExecutor)
@@ -70,14 +72,15 @@ fun main(args: Array<String>) {
     val changedFilesBucket =
       ChangedFilesBucket.getDefaultInstance().mergeFromCompressedBase64(protoBase64)
 
-    val changedFilesTestFiles = changedFilesBucket.changedFilesList.flatMap { changedFile ->
-      val exemption = testFileExemptionList[changedFile]
-      if (exemption != null && exemption.testFileNotRequired) {
-        emptyList()
-      } else {
-        findTestFile(rootDirectory, changedFile)
+    val changedFilesTestFiles =
+      changedFilesBucket.changedFilesList.flatMap { changedFile ->
+        val exemption = testFileExemptionList[changedFile]
+        if (exemption != null && exemption.testFileNotRequired) {
+          emptyList()
+        } else {
+          findTestFile(rootDirectory, changedFile)
+        }
       }
-    }
     val changedFilesTestTargets = bazelClient.retrieveBazelTargets(changedFilesTestFiles)
     val changedFilesTestTargetWithoutSuffix = changedFilesTestTargets.map { it.removeSuffix(".kt") }
 
@@ -95,22 +98,26 @@ fun main(args: Array<String>) {
   }
 }
 
-private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
-  val possibleTestFilePaths = when {
-    filePath.startsWith("scripts/") -> {
-      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+private fun findTestFile(
+  rootDirectory: File,
+  filePath: String,
+): List<String> {
+  val possibleTestFilePaths =
+    when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+      }
+      filePath.startsWith("app/") -> {
+        listOf(
+          filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt"),
+        )
+      }
+      else -> {
+        listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+      }
     }
-    filePath.startsWith("app/") -> {
-      listOf(
-        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-      )
-    }
-    else -> {
-      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
-    }
-  }
 
   return possibleTestFilePaths
     .map { File(rootDirectory, it) }
@@ -118,10 +125,11 @@ private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
     .map { it.toRelativeString(rootDirectory) }
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
+private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions =
+  File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
+    TestFileExemptions
+      .newBuilder()
+      .also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
   }
-}

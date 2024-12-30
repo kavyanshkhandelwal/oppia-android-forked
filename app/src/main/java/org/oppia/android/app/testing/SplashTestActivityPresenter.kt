@@ -17,43 +17,42 @@ import javax.inject.Provider
 
 /** The presenter for [SplashTestActivity]. */
 @ActivityScope
-class SplashTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val platformParameterController: PlatformParameterController,
-  @SplashScreenWelcomeMsg
-  private val splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
-) {
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.splash_test_activity)
-  }
+class SplashTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val platformParameterController: PlatformParameterController,
+    @SplashScreenWelcomeMsg
+    private val splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>,
+  ) {
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.splash_test_activity)
+    }
 
-  /**
-   * Triggers the loading process for getting platform parameters from cache store to the platform
-   * parameter singleton.
-   */
-  fun loadPlatformParameters() {
-    fetchPlatformParametersFromDatabase().observe(
-      activity,
-      Observer {
-        showToastIfAllowed()
+    /**
+     * Triggers the loading process for getting platform parameters from cache store to the platform
+     * parameter singleton.
+     */
+    fun loadPlatformParameters() {
+      fetchPlatformParametersFromDatabase().observe(
+        activity,
+        Observer {
+          showToastIfAllowed()
+        },
+      )
+    }
+
+    private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> =
+      Transformations.map(
+        platformParameterController.getParameterDatabase().toLiveData(),
+        ::processPlatformParameters,
+      )
+
+    private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean = loadingStatus is AsyncResult.Success
+
+    private fun showToastIfAllowed() {
+      if (splashScreenWelcomeMsgParam.get().value) {
+        Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
       }
-    )
-  }
-
-  private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
-    return Transformations.map(
-      platformParameterController.getParameterDatabase().toLiveData(),
-      ::processPlatformParameters
-    )
-  }
-
-  private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
-    return loadingStatus is AsyncResult.Success
-  }
-
-  private fun showToastIfAllowed() {
-    if (splashScreenWelcomeMsgParam.get().value) {
-      Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
     }
   }
-}

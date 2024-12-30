@@ -116,15 +116,15 @@ class DragDropTestActivityTest {
             position = 0,
             ChildViewCoordinatesProvider(
               childViewId = R.id.text_view_for_string_no_data_binding,
-              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
-            )
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER,
+            ),
           ),
           RecyclerViewCoordinatesProvider(
             position = 1,
-            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT,
           ),
-          precisionDescriber = Press.FINGER
-        )
+          precisionDescriber = Press.FINGER,
+        ),
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
         .check(matches(withText("Item 2")))
@@ -145,15 +145,15 @@ class DragDropTestActivityTest {
             position = 1,
             ChildViewCoordinatesProvider(
               childViewId = R.id.text_view_for_string_no_data_binding,
-              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
-            )
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER,
+            ),
           ),
           RecyclerViewCoordinatesProvider(
             position = 2,
-            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT,
           ),
-          precisionDescriber = Press.FINGER
-        )
+          precisionDescriber = Press.FINGER,
+        ),
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
         .check(matches(withText("Item 3")))
@@ -175,15 +175,15 @@ class DragDropTestActivityTest {
             position = 3,
             ChildViewCoordinatesProvider(
               childViewId = R.id.text_view_for_string_no_data_binding,
-              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
-            )
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER,
+            ),
           ),
           RecyclerViewCoordinatesProvider(
             position = 2,
-            childItemCoordinatesProvider = CustomGeneralLocation.ABOVE_RIGHT
+            childItemCoordinatesProvider = CustomGeneralLocation.ABOVE_RIGHT,
           ),
-          precisionDescriber = Press.FINGER
-        )
+          precisionDescriber = Press.FINGER,
+        ),
       )
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
         .check(matches(withText("Item 4")))
@@ -193,20 +193,20 @@ class DragDropTestActivityTest {
   }
 
   private fun attachDragDropToActivity(activity: DragDropTestActivity) {
-    val dragDragTestFragment: DragDropTestFragment = activity.supportFragmentManager
-      .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
+    val dragDragTestFragment: DragDropTestFragment =
+      activity.supportFragmentManager
+        .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
     val recyclerView: RecyclerView? =
       dragDragTestFragment.view?.findViewById(R.id.drag_drop_recycler_view)
     val itemTouchHelper = ItemTouchHelper(createDragCallback(fragment = dragDragTestFragment))
     itemTouchHelper.attachToRecyclerView(recyclerView)
   }
 
-  private fun createDragCallback(fragment: DragDropTestFragment): ItemTouchHelper.Callback {
-    return DragAndDropItemFacilitator(
+  private fun createDragCallback(fragment: DragDropTestFragment): ItemTouchHelper.Callback =
+    DragAndDropItemFacilitator(
       fragment as OnItemDragListener,
-      fragment as OnDragEndedListener
+      fragment as OnDragEndedListener,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -237,8 +237,8 @@ class DragDropTestActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -249,9 +249,13 @@ class DragDropTestActivityTest {
     fun inject(dragDropTestActivityTest: DragDropTestActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDragDropTestActivityTest_TestApplicationComponent.builder()
+      DaggerDragDropTestActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -260,9 +264,12 @@ class DragDropTestActivityTest {
       component.inject(dragDropTestActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

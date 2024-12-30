@@ -82,268 +82,210 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 class PlatformParameterModule {
   @Provides
   @EnableDownloadsSupport
-  fun provideEnableDownloadsSupport(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
+  fun provideEnableDownloadsSupport(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
-  }
 
   @Provides
   @SplashScreenWelcomeMsg
-  fun provideSplashScreenWelcomeMsgParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(SPLASH_SCREEN_WELCOME_MSG)
+  fun provideSplashScreenWelcomeMsgParam(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(SPLASH_SCREEN_WELCOME_MSG)
       ?: PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-  }
 
   @Provides
   @SyncUpWorkerTimePeriodHours
-  fun provideSyncUpWorkerTimePeriod(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+  fun provideSyncUpWorkerTimePeriod(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableEditAccountsOptionsUi
-  fun provideEnableEditAccountsOptionsUi(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      EDIT_ACCOUNTS_OPTIONS_UI
+  fun provideEnableEditAccountsOptionsUi(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(
+      EDIT_ACCOUNTS_OPTIONS_UI,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableLearnerStudyAnalytics
-  fun provideLearnerStudyAnalytics(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
+  fun provideLearnerStudyAnalytics(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
       ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
-  }
 
   @Provides
   @EnableFastLanguageSwitchingInLesson
-  fun provideFastInLessonLanguageSwitching(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  fun provideFastInLessonLanguageSwitching(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
       ?: PlatformParameterValue.createDefaultParameter(
-        FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
+        FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE,
       )
-  }
 
   @Provides
   @EnableLoggingLearnerStudyIds
-  fun provideLoggingLearnerStudyIds(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
+  fun provideLoggingLearnerStudyIds(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
       ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
-  }
 
   @Provides
   @CacheLatexRendering
-  fun provideCacheLatexRendering(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
+  fun provideCacheLatexRendering(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
-  }
 
   @Provides
   @EnablePerformanceMetricsCollection
-  fun provideEnablePerformanceMetricCollection(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION
+  fun provideEnablePerformanceMetricCollection(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(
+      ENABLE_PERFORMANCE_METRICS_COLLECTION,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @EnableSpotlightUi
-  fun provideEnableSpotlightUi(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
+  fun provideEnableSpotlightUi(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
-  }
 
   @Provides
   @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      EXTRA_TOPIC_TABS_UI
+  fun provideEnableExtraTopicTabsUi(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(
+      EXTRA_TOPIC_TABS_UI,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
+      ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableInteractionConfigChangeStateRetention
   fun provideEnableInteractionConfigChangeStateRetention(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(
+      INTERACTION_CONFIG_CHANGE_STATE_RETENTION,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+      ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableAppAndOsDeprecation
-  fun provideEnableAppAndOsDeprecation(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
+  fun provideEnableAppAndOsDeprecation(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
       ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
+        ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE,
       )
-  }
 
   @Provides
   @OptionalAppUpdateVersionCode
   fun provideOptionalAppUpdateVersionCode(
     platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      OPTIONAL_APP_UPDATE_VERSION_CODE
+    context: Context,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      OPTIONAL_APP_UPDATE_VERSION_CODE,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
+      context.getVersionCode(),
     )
-  }
 
   @Provides
   @ForcedAppUpdateVersionCode
   fun provideForcedAppUpdateVersionCode(
     platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      FORCED_APP_UPDATE_VERSION_CODE
+    context: Context,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      FORCED_APP_UPDATE_VERSION_CODE,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
+      context.getVersionCode(),
     )
-  }
 
   @Provides
   @LowestSupportedApiLevel
-  fun provideLowestSupportedApiLevel(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      LOWEST_SUPPORTED_API_LEVEL
+  fun provideLowestSupportedApiLevel(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      LOWEST_SUPPORTED_API_LEVEL,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @NpsSurveyGracePeriodInDays
-  fun provideNpsSurveyGracePeriodInDays(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+  fun provideNpsSurveyGracePeriodInDays(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+      NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
   fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableNpsSurvey
-  fun provideEnableNpsSurvey(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_NPS_SURVEY)
+  fun provideEnableNpsSurvey(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(ENABLE_NPS_SURVEY)
       ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_NPS_SURVEY_DEFAULT_VALUE
+        ENABLE_NPS_SURVEY_DEFAULT_VALUE,
       )
-  }
 
   @Provides
   @EnableOnboardingFlowV2
-  fun provideEnableOnboardingFlowV2(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
+  fun provideEnableOnboardingFlowV2(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
       ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
+        ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE,
       )
-  }
 
   @Provides
   @EnableMultipleClassrooms
-  fun provideEnableMultipleClassrooms(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
+  fun provideEnableMultipleClassrooms(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
       ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+        ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE,
       )
-  }
 }

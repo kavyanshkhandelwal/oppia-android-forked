@@ -66,10 +66,15 @@ import javax.inject.Singleton
 @Config(application = LoggingIdentifierControllerTest.TestApplication::class)
 class LoggingIdentifierControllerTest {
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+
   @Inject lateinit var asyncDataSubscriptionManager: AsyncDataSubscriptionManager
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @field:[BackgroundDispatcher Inject] lateinit var backgroundDispatcher: CoroutineDispatcher
 
@@ -361,7 +366,10 @@ class LoggingIdentifierControllerTest {
     assertThat(appSessionId).isEqualTo("c9d50545-33dc-3231-a1db-6a2672498c74")
   }
 
-  private fun <T : MessageLite> writeFileCache(cacheName: String, value: T) {
+  private fun <T : MessageLite> writeFileCache(
+    cacheName: String,
+    value: T,
+  ) {
     getCacheFile(cacheName).writeBytes(value.toByteArray())
   }
 
@@ -378,29 +386,28 @@ class LoggingIdentifierControllerTest {
   private fun <T> fetchSuccessfulAsyncValue(block: suspend () -> T) =
     CoroutineScope(backgroundDispatcher).async { block() }.waitForSuccessfulResult()
 
-  private fun <T> Deferred<T>.waitForSuccessfulResult(): T {
-    return when (val result = waitForResult()) {
+  private fun <T> Deferred<T>.waitForSuccessfulResult(): T =
+    when (val result = waitForResult()) {
       is AsyncResult.Pending -> error("Deferred never finished.")
       is AsyncResult.Success -> result.value
       is AsyncResult.Failure -> throw IllegalStateException("Deferred failed", result.error)
     }
-  }
 
   private fun <T> Deferred<T>.waitForResult() = toStateFlow().waitForLatestValue()
 
   private fun <T> Deferred<T>.toStateFlow(): StateFlow<AsyncResult<T>> {
     val deferred = this
     return MutableStateFlow<AsyncResult<T>>(value = AsyncResult.Pending()).also { flow ->
-      CoroutineScope(backgroundDispatcher).async {
-        flow.emit(AsyncResult.Success(deferred.await()))
-      }.invokeOnCompletion {
-        it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
-      }
+      CoroutineScope(backgroundDispatcher)
+        .async {
+          flow.emit(AsyncResult.Success(deferred.await()))
+        }.invokeOnCompletion {
+          it?.let { flow.tryEmit(AsyncResult.Failure(it)) }
+        }
     }
   }
 
-  private fun <T> StateFlow<T>.waitForLatestValue(): T =
-    also { testCoroutineDispatchers.runCurrent() }.value
+  private fun <T> StateFlow<T>.waitForLatestValue(): T = also { testCoroutineDispatchers.runCurrent() }.value
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -410,21 +417,18 @@ class LoggingIdentifierControllerTest {
     createNewTestApplication().inject(this)
   }
 
-  private fun createNewTestApplication(): TestApplication {
-    return Instrumentation.newApplication(
+  private fun createNewTestApplication(): TestApplication =
+    Instrumentation.newApplication(
       TestApplication::class.java,
-      InstrumentationRegistry.getInstrumentation().targetContext
+      InstrumentationRegistry.getInstrumentation().targetContext,
     ) as TestApplication
-  }
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -443,7 +447,6 @@ class LoggingIdentifierControllerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -462,30 +465,26 @@ class LoggingIdentifierControllerTest {
 
   @Module
   class TestPlatformParameterModule {
-
     companion object {
       var forceLearnerAnalyticsStudy: Boolean = false
     }
 
     @Provides
     @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
+    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
 
     @Provides
     @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> =
+      PlatformParameterValue.createDefaultParameter(
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
       )
-    }
 
     @Provides
     @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
+    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> =
+      PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -496,23 +495,27 @@ class LoggingIdentifierControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
-    ]
+      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(loggingIdentifierControllerTest: LoggingIdentifierControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLoggingIdentifierControllerTest_TestApplicationComponent.builder()
+      DaggerLoggingIdentifierControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

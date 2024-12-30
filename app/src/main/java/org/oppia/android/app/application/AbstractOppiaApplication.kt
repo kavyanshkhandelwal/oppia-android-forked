@@ -19,20 +19,22 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 
 /** The root base [Application] of the Oppia app. */
 abstract class AbstractOppiaApplication(
-  createComponentBuilder: () -> ApplicationComponent.Builder
+  createComponentBuilder: () -> ApplicationComponent.Builder,
 ) : MultiDexApplication(),
   ActivityComponentFactory,
   ApplicationInjectorProvider,
   Configuration.Provider {
-
   /** The root [ApplicationComponent]. */
   private val component: ApplicationComponent by lazy {
     createComponentBuilder().setApplication(this).build()
   }
 
-  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-    return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-  }
+  override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+    component
+      .getActivityComponentBuilderProvider()
+      .get()
+      .setActivity(activity)
+      .build()
 
   override fun getApplicationInjector(): ApplicationInjector = component
 
@@ -72,7 +74,5 @@ abstract class AbstractOppiaApplication(
     component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
   }
 
-  override fun getWorkManagerConfiguration(): Configuration {
-    return component.getWorkManagerConfiguration()
-  }
+  override fun getWorkManagerConfiguration(): Configuration = component.getWorkManagerConfiguration()
 }

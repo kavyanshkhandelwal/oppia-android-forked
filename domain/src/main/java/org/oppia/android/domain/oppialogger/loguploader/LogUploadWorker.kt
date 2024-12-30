@@ -33,9 +33,8 @@ class LogUploadWorker private constructor(
   private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
   private val consoleLogger: ConsoleLogger,
   private val syncStatusManager: SyncStatusManager,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
 ) : ListenableWorker(context, params) {
-
   companion object {
     const val WORKER_CASE_KEY = "worker_case_key"
     const val TAG = "LogUploadWorker.tag"
@@ -48,20 +47,21 @@ class LogUploadWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     // TODO(#4463): Add withTimeout() to avoid potential hanging.
-    return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
-        EVENT_WORKER -> uploadEvents()
-        EXCEPTION_WORKER -> uploadExceptions()
-        PERFORMANCE_METRICS_WORKER -> uploadPerformanceMetrics()
-        FIRESTORE_WORKER -> uploadFirestoreData()
-        else -> Result.failure()
-      }
-    }.asListenableFuture()
+    return backgroundScope
+      .async {
+        when (inputData.getStringFromData(WORKER_CASE_KEY)) {
+          EVENT_WORKER -> uploadEvents()
+          EXCEPTION_WORKER -> uploadExceptions()
+          PERFORMANCE_METRICS_WORKER -> uploadPerformanceMetrics()
+          FIRESTORE_WORKER -> uploadFirestoreData()
+          else -> Result.failure()
+        }
+      }.asListenableFuture()
   }
 
   /** Extracts exception logs from the cache store and logs them to the remote service. */
-  private suspend fun uploadExceptions(): Result {
-    return try {
+  private suspend fun uploadExceptions(): Result =
+    try {
       val exceptionLogs = exceptionsController.getExceptionLogStoreList()
       exceptionLogs.let {
         for (exceptionLog in it) {
@@ -74,11 +74,10 @@ class LogUploadWorker private constructor(
       consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
-  }
 
   /** Extracts event logs from the cache store and logs them to the remote service. */
-  private suspend fun uploadEvents(): Result {
-    return try {
+  private suspend fun uploadEvents(): Result =
+    try {
       analyticsController.uploadEventLogsAndWait()
       Result.success()
     } catch (e: Exception) {
@@ -86,11 +85,10 @@ class LogUploadWorker private constructor(
       consoleLogger.e(TAG, "Failed to upload events", e)
       Result.failure()
     }
-  }
 
   /** Extracts performance metric logs from the cache store and logs them to the remote service. */
-  private suspend fun uploadPerformanceMetrics(): Result {
-    return try {
+  private suspend fun uploadPerformanceMetrics(): Result =
+    try {
       val performanceMetricsLogs = performanceMetricsController.getMetricLogStoreList()
       performanceMetricsLogs.forEach { performanceMetricsLog ->
         performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
@@ -101,45 +99,47 @@ class LogUploadWorker private constructor(
       consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
-  }
 
   /** Extracts data from offline storage and logs them to the remote service. */
-  private suspend fun uploadFirestoreData(): Result {
-    return try {
+  private suspend fun uploadFirestoreData(): Result =
+    try {
       dataController.uploadData()
       Result.success()
     } catch (e: Exception) {
       consoleLogger.e(TAG, e.toString(), e)
       Result.failure()
     }
-  }
 
   /** Creates an instance of [LogUploadWorker] by properly injecting dependencies. */
-  class Factory @Inject constructor(
-    private val analyticsController: AnalyticsController,
-    private val exceptionsController: ExceptionsController,
-    private val performanceMetricsController: PerformanceMetricsController,
-    private val exceptionLogger: ExceptionLogger,
-    private val dataController: FirestoreDataController,
-    private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
-    private val consoleLogger: ConsoleLogger,
-    private val syncStatusManager: SyncStatusManager,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) {
-    fun create(context: Context, params: WorkerParameters): ListenableWorker {
-      return LogUploadWorker(
-        context,
-        params,
-        analyticsController,
-        exceptionsController,
-        performanceMetricsController,
-        exceptionLogger,
-        dataController,
-        performanceMetricsEventLogger,
-        consoleLogger,
-        syncStatusManager,
-        backgroundDispatcher
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val analyticsController: AnalyticsController,
+      private val exceptionsController: ExceptionsController,
+      private val performanceMetricsController: PerformanceMetricsController,
+      private val exceptionLogger: ExceptionLogger,
+      private val dataController: FirestoreDataController,
+      private val performanceMetricsEventLogger: PerformanceMetricsEventLogger,
+      private val consoleLogger: ConsoleLogger,
+      private val syncStatusManager: SyncStatusManager,
+      @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+    ) {
+      fun create(
+        context: Context,
+        params: WorkerParameters,
+      ): ListenableWorker =
+        LogUploadWorker(
+          context,
+          params,
+          analyticsController,
+          exceptionsController,
+          performanceMetricsController,
+          exceptionLogger,
+          dataController,
+          performanceMetricsEventLogger,
+          consoleLogger,
+          syncStatusManager,
+          backgroundDispatcher,
+        )
     }
-  }
 }

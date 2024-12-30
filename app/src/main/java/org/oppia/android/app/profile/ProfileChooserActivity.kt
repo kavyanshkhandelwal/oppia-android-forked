@@ -19,22 +19,23 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
   lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
-    fun createProfileChooserActivity(context: Context): Intent {
-      return Intent(context, ProfileChooserActivity::class.java).apply {
+    fun createProfileChooserActivity(context: Context): Intent =
+      Intent(context, ProfileChooserActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         decorateWithScreenName(PROFILE_CHOOSER_ACTIVITY)
       }
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileType = intent.getProtoExtra(
-      PROFILE_CHOOSER_PARAMS_KEY,
-      ProfileChooserActivityParams.getDefaultInstance()
-    ).profileType
+    val profileType =
+      intent
+        .getProtoExtra(
+          PROFILE_CHOOSER_PARAMS_KEY,
+          ProfileChooserActivityParams.getDefaultInstance(),
+        ).profileType
 
     val profileId = intent.extractCurrentUserProfileId()
 

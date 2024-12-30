@@ -35,7 +35,6 @@ private const val DEFAULT_TEST_BYTES_RECEIVED = 0L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakePerformanceMetricAssessorTest {
-
   @Inject
   lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
 
@@ -120,7 +119,7 @@ class FakePerformanceMetricAssessorTest {
     val defaultTestDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 
     assertThat(fakePerformanceMetricAssessor.getDeviceStorageTier()).isEqualTo(
-      defaultTestDeviceStorageTier
+      defaultTestDeviceStorageTier,
     )
   }
 
@@ -137,12 +136,13 @@ class FakePerformanceMetricAssessorTest {
     val defaultTestDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 
     assertThat(fakePerformanceMetricAssessor.getDeviceMemoryTier()).isEqualTo(
-      defaultTestDeviceMemoryTier
+      defaultTestDeviceMemoryTier,
     )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakePerformanceMetricAssessorTest_TestApplicationComponent.builder()
+    DaggerFakePerformanceMetricAssessorTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -153,9 +153,7 @@ class FakePerformanceMetricAssessorTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -166,6 +164,7 @@ class FakePerformanceMetricAssessorTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

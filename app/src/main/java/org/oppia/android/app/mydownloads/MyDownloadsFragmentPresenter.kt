@@ -15,40 +15,52 @@ import javax.inject.Inject
 
 /** The presenter for [MyDownloadsFragment]. */
 @FragmentScope
-class MyDownloadsFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = MyDownloadsFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-    binding.lifecycleOwner = fragment
-    val tabLayout = binding
-      .root
-      .findViewById(
-        R.id.my_downloads_tabs_container
-      ) as TabLayout
-    val viewPager = binding
-      .root
-      .findViewById(
-        R.id.my_downloads_tabs_viewpager
-      ) as ViewPager2
-    setUpViewPager(tabLayout, viewPager)
-    return binding.root
-  }
+class MyDownloadsFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      val binding =
+        MyDownloadsFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+      binding.lifecycleOwner = fragment
+      val tabLayout =
+        binding
+          .root
+          .findViewById(
+            R.id.my_downloads_tabs_container,
+          ) as TabLayout
+      val viewPager =
+        binding
+          .root
+          .findViewById(
+            R.id.my_downloads_tabs_viewpager,
+          ) as ViewPager2
+      setUpViewPager(tabLayout, viewPager)
+      return binding.root
+    }
 
-  private fun setUpViewPager(tabLayout: TabLayout, viewPager2: ViewPager2) {
-    val adapter = MyDownloadsViewPagerAdapter(fragment)
-    viewPager2.adapter = adapter
+    private fun setUpViewPager(
+      tabLayout: TabLayout,
+      viewPager2: ViewPager2,
+    ) {
+      val adapter = MyDownloadsViewPagerAdapter(fragment)
+      viewPager2.adapter = adapter
 
-    TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      when (position) {
-        0 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_downloads)
-        1 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_updates)
-      }
-    }.attach()
+      TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+        when (position) {
+          0 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_downloads)
+          1 -> tab.text = resourceHandler.getStringInLocale(R.string.tab_updates)
+        }
+      }.attach()
+    }
   }
-}

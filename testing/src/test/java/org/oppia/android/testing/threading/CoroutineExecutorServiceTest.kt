@@ -93,14 +93,14 @@ class CoroutineExecutorServiceTest {
 
   private val testDispatcher by lazy {
     testDispatcherFactory.createDispatcher(
-      Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+      Executors.newSingleThreadExecutor().asCoroutineDispatcher(),
     )
   }
   private val testDispatcherScope by lazy { CoroutineScope(testDispatcher) }
 
   private val testDispatcher2 by lazy {
     testDispatcherFactory.createDispatcher(
-      Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+      Executors.newSingleThreadExecutor().asCoroutineDispatcher(),
     )
   }
   private val testDispatcherScope2 by lazy { CoroutineScope(testDispatcher2) }
@@ -137,7 +137,7 @@ class CoroutineExecutorServiceTest {
   fun testExecute_nullParameter_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows<NullPointerException>() { executorService.execute(/* command= */ null) }
+    assertThrows<NullPointerException> { executorService.execute(/* command= */ null) }
   }
 
   @Test
@@ -145,7 +145,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows<RejectedExecutionException>() { executorService.execute(mockRunnable) }
+    assertThrows<RejectedExecutionException> { executorService.execute(mockRunnable) }
   }
 
   @Test
@@ -153,7 +153,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows<RejectedExecutionException>() { executorService.execute(mockRunnable) }
+    assertThrows<RejectedExecutionException> { executorService.execute(mockRunnable) }
   }
 
   @Test
@@ -180,7 +180,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullRunnable: Runnable? = null
-    assertThrows<NullPointerException>() { executorService.submit(nullRunnable) }
+    assertThrows<NullPointerException> { executorService.submit(nullRunnable) }
   }
 
   @Test
@@ -188,7 +188,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows<RejectedExecutionException>() { executorService.submit(mockRunnable) }
+    assertThrows<RejectedExecutionException> { executorService.submit(mockRunnable) }
   }
 
   @Test
@@ -196,7 +196,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows<RejectedExecutionException>() { executorService.submit(mockRunnable) }
+    assertThrows<RejectedExecutionException> { executorService.submit(mockRunnable) }
   }
 
   @Test
@@ -223,7 +223,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullCallable: Callable<String>? = null
-    assertThrows<NullPointerException>() { executorService.submit(nullCallable) }
+    assertThrows<NullPointerException> { executorService.submit(nullCallable) }
   }
 
   @Test
@@ -231,7 +231,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows<RejectedExecutionException>() { executorService.submit(mockCallable) }
+    assertThrows<RejectedExecutionException> { executorService.submit(mockCallable) }
   }
 
   @Test
@@ -239,7 +239,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows<RejectedExecutionException>() { executorService.submit(mockCallable) }
+    assertThrows<RejectedExecutionException> { executorService.submit(mockCallable) }
   }
 
   @Test
@@ -272,7 +272,7 @@ class CoroutineExecutorServiceTest {
     testCoroutineDispatchers.runCurrent()
 
     assertThat(callableFuture.isDone).isTrue()
-    val exception = assertThrows<ExecutionException>() { callableFuture.get() }
+    val exception = assertThrows<ExecutionException> { callableFuture.get() }
     assertThat(exception).hasCauseThat().isInstanceOf(Exception::class.java)
     assertThat(exception).hasCauseThat().hasMessageThat().contains("Task failed")
   }
@@ -304,9 +304,10 @@ class CoroutineExecutorServiceTest {
     val callable = Callable { "Task" }
     val callableFuture = executorService.submit(callable)
 
-    val getResult = testDispatcherScope.async {
-      callableFuture.get()
-    }
+    val getResult =
+      testDispatcherScope.async {
+        callableFuture.get()
+      }
 
     // The getter should not return since the task isn't yet completed.
     assertThat(getResult.isCompleted).isFalse()
@@ -319,9 +320,10 @@ class CoroutineExecutorServiceTest {
     val callable = Callable { "Task" }
     val callableFuture = executorService.submit(callable)
 
-    val getResult = testDispatcherScope.async {
-      callableFuture.get()
-    }
+    val getResult =
+      testDispatcherScope.async {
+        callableFuture.get()
+      }
     testCoroutineDispatchers.runCurrent()
     testDispatcher.runUntilIdle()
 
@@ -337,13 +339,14 @@ class CoroutineExecutorServiceTest {
     val callable = Callable { "Task" }
     val callableFuture = executorService.submit(callable)
 
-    val getResult = testDispatcherScope.async {
-      try {
-        AsyncResult.Success(callableFuture.get(/* timeout = */ 1, TimeUnit.SECONDS))
-      } catch (e: Exception) {
-        AsyncResult.Failure<String>(e)
+    val getResult =
+      testDispatcherScope.async {
+        try {
+          AsyncResult.Success(callableFuture.get(/* timeout = */ 1, TimeUnit.SECONDS))
+        } catch (e: Exception) {
+          AsyncResult.Failure<String>(e)
+        }
       }
-    }
     testDispatcher.runUntilIdle()
 
     // The getter should return since the task has finished.
@@ -360,9 +363,10 @@ class CoroutineExecutorServiceTest {
     val callable = Callable { "Task" }
     val callableFuture = executorService.submit(callable)
 
-    val getResult = realDispatcherScope.async {
-      callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS)
-    }
+    val getResult =
+      realDispatcherScope.async {
+        callableFuture.get(/* timeout= */ 1, TimeUnit.SECONDS)
+      }
     testCoroutineDispatchers.runCurrent()
     waitForDeferredWithDispatcher1(getResult)
 
@@ -417,7 +421,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
 
     val nullRunnable: Runnable? = null
-    assertThrows<NullPointerException>() {
+    assertThrows<NullPointerException> {
       executorService.submit(nullRunnable, /* result= */ "Task")
     }
   }
@@ -427,7 +431,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdown()
 
-    assertThrows<RejectedExecutionException>() {
+    assertThrows<RejectedExecutionException> {
       executorService.submit(mockRunnable, /* result= */ "Task")
     }
   }
@@ -437,7 +441,7 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     executorService.shutdownNow()
 
-    assertThrows<RejectedExecutionException>() {
+    assertThrows<RejectedExecutionException> {
       executorService.submit(mockRunnable, /* result= */ "Task")
     }
   }
@@ -454,7 +458,7 @@ class CoroutineExecutorServiceTest {
     assertThat(resultFuture.get()).isEqualTo("Task")
   }
 
-  /* Note that the tests to verify shutdown-before-execution fails are elsewhere in the suite. */
+  // Note that the tests to verify shutdown-before-execution fails are elsewhere in the suite.
   @Test
   fun testShutdown_afterExecute_doNotRunPendingTasks_doesNotRunTask() {
     val executorService = createExecutorService()
@@ -546,11 +550,12 @@ class CoroutineExecutorServiceTest {
 
     // Kick-off the task, but don't complete it. Note that this is done via a real dispatcher since
     // it will block until the test dispatcher is run.
-    val syncDeferred = realDispatcherScope.async {
-      // Run in a real thread to avoid races against task availability within the executor service.
-      executorService.shutdownNow()
-      testCoroutineDispatchers.runCurrent()
-    }
+    val syncDeferred =
+      realDispatcherScope.async {
+        // Run in a real thread to avoid races against task availability within the executor service.
+        executorService.shutdownNow()
+        testCoroutineDispatchers.runCurrent()
+      }
     testDispatcher.runUntilIdle() // Allow the task to complete.
     waitForDeferredWithDispatcher1(syncDeferred)
 
@@ -642,7 +647,7 @@ class CoroutineExecutorServiceTest {
     // Note that this is not documented in the ExecutorService documentation, it seems necessary
     // since it doesn't make sense to return false (per the documentation) or block unless a
     // shutdown request was actually initiated.
-    assertThrows<IllegalStateException>() {
+    assertThrows<IllegalStateException> {
       executorService.awaitTermination(/* timeout= */ 1, TimeUnit.SECONDS)
     }
   }
@@ -666,15 +671,17 @@ class CoroutineExecutorServiceTest {
     // against flakes, a long timeout is picked.
     executorService.submit(
       lateFinishingCallableWithDispatcher2(
-        Callable { "Task 1" }, timeToWaitMillis = 1000L
-      )
+        Callable { "Task 1" },
+        timeToWaitMillis = 1000L,
+      ),
     )
     executorService.shutdown()
     autoSettleServiceBeforeBlocking(executorService)
 
-    val terminationDeferred = realDispatcherScope.async {
-      executorService.awaitTermination(/* timeout= */ 1, TimeUnit.MILLISECONDS)
-    }
+    val terminationDeferred =
+      realDispatcherScope.async {
+        executorService.awaitTermination(/* timeout= */ 1, TimeUnit.MILLISECONDS)
+      }
     waitForDeferredWithDispatcher1(terminationDeferred)
 
     // The long task did not not complete in time, so the awaitTermination should fail.
@@ -689,15 +696,17 @@ class CoroutineExecutorServiceTest {
     val delayMs = 10L
     executorService.submit(
       lateFinishingCallableWithDispatcher2(
-        Callable { "Task 1" }, timeToWaitMillis = delayMs
-      )
+        Callable { "Task 1" },
+        timeToWaitMillis = delayMs,
+      ),
     )
     executorService.shutdown()
     autoSettleServiceBeforeBlocking(executorService)
 
-    val terminationDeferred = realDispatcherScope.async {
-      executorService.awaitTermination(delayMs * 10, TimeUnit.MILLISECONDS)
-    }
+    val terminationDeferred =
+      realDispatcherScope.async {
+        executorService.awaitTermination(delayMs * 10, TimeUnit.MILLISECONDS)
+      }
     waitForDeferredWithDispatcher1(terminationDeferred)
 
     // The long task did not not complete in time, so the awaitTermination should fail.
@@ -712,9 +721,10 @@ class CoroutineExecutorServiceTest {
     val callable1 = Callable { "Task 1" }
     val callable2 = Callable { "Task 2" }
 
-    val deferred = testDispatcherScope2.async {
-      executorService.invokeAll(listOf(callable1, callable2))
-    }
+    val deferred =
+      testDispatcherScope2.async {
+        executorService.invokeAll(listOf(callable1, callable2))
+      }
 
     assertThat(deferred.isCompleted).isFalse()
   }
@@ -727,9 +737,10 @@ class CoroutineExecutorServiceTest {
     val callable2 = Callable { "Task 2" }
     executorService.shutdown()
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(listOf(callable1, callable2))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     assertThat(deferred.getCompletionExceptionOrNull())
@@ -740,7 +751,7 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAll_nullTasks_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows<NullPointerException>() { executorService.invokeAll<Int>(/* tasks= */ null) }
+    assertThrows<NullPointerException> { executorService.invokeAll<Int>(/* tasks= */ null) }
   }
 
   @Test
@@ -751,9 +762,10 @@ class CoroutineExecutorServiceTest {
     val callable2 = Callable { "Task 2" }
     executorService.shutdownNow()
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(listOf(callable1, callable2))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     assertThat(deferred.getCompletionExceptionOrNull())
@@ -768,9 +780,10 @@ class CoroutineExecutorServiceTest {
     val callable2 = Callable { "Task 2" }
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(listOf(callable1, callable2))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     // Since the executor finished execution, the invokeAll() call should return.
@@ -789,16 +802,17 @@ class CoroutineExecutorServiceTest {
     val callable2 = Callable { "Task 2" }
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(listOf(callable1, callable2))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     // Since the executor finished execution, the invokeAll() call should return.
     val (future1, future2) = deferred.getCompleted()
     assertThat(future1.isDone).isTrue()
     assertThat(future2.isDone).isTrue()
-    assertThrows<ExecutionException>() { future1.get() }
+    assertThrows<ExecutionException> { future1.get() }
     assertThat(future2.get()).isEqualTo("Task 2")
   }
 
@@ -809,17 +823,22 @@ class CoroutineExecutorServiceTest {
     // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
     // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
     // against flakes, a long timeout is picked.
-    val callable1 = lateFinishingCallableWithDispatcher2(
-      Callable { "Task 1" }, timeToWaitMillis = 2500L
-    )
+    val callable1 =
+      lateFinishingCallableWithDispatcher2(
+        Callable { "Task 1" },
+        timeToWaitMillis = 2500L,
+      )
     val callable2 = Callable { "Task 2" }
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(
-        listOf(callable1, callable2), /* timeout= */ 500, TimeUnit.MILLISECONDS
-      )
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(
+          listOf(callable1, callable2), // timeout=
+          500,
+          TimeUnit.MILLISECONDS,
+        )
+      }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
     waitForDeferredWithDispatcher1(deferred)
@@ -840,16 +859,21 @@ class CoroutineExecutorServiceTest {
     // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
     // against flakes, a long timeout is picked.
     val callable1 = Callable { "Task 1" }
-    val callable2 = lateFinishingCallableWithDispatcher2(
-      Callable { "Task 2" }, timeToWaitMillis = 2500L
-    )
+    val callable2 =
+      lateFinishingCallableWithDispatcher2(
+        Callable { "Task 2" },
+        timeToWaitMillis = 2500L,
+      )
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAll(
-        listOf(callable1, callable2), /* timeout= */ 500, TimeUnit.MILLISECONDS
-      )
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAll(
+          listOf(callable1, callable2), // timeout=
+          500,
+          TimeUnit.MILLISECONDS,
+        )
+      }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
     waitForDeferredWithDispatcher1(deferred)
@@ -868,9 +892,10 @@ class CoroutineExecutorServiceTest {
     val executorService = createExecutorService()
     val callable = Callable { "Task 1" }
 
-    val deferred = testDispatcherScope2.async {
-      executorService.invokeAny(listOf(callable))
-    }
+    val deferred =
+      testDispatcherScope2.async {
+        executorService.invokeAny(listOf(callable))
+      }
 
     assertThat(deferred.isCompleted).isFalse()
   }
@@ -882,9 +907,10 @@ class CoroutineExecutorServiceTest {
     val callable = Callable { "Task 1" }
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     assertThat(deferred.getCompleted()).isEqualTo("Task 1")
@@ -894,7 +920,7 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAny_nullTasks_throwsException() {
     val executorService = createExecutorService()
 
-    assertThrows<NullPointerException>() { executorService.invokeAny<Int>(/* tasks= */ null) }
+    assertThrows<NullPointerException> { executorService.invokeAny<Int>(/* tasks= */ null) }
   }
 
   @Test
@@ -905,9 +931,10 @@ class CoroutineExecutorServiceTest {
     executorService.shutdown()
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     assertThat(deferred.getCompletionExceptionOrNull())
@@ -922,9 +949,10 @@ class CoroutineExecutorServiceTest {
     executorService.shutdownNow()
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable))
+      }
     waitForDeferredWithDispatcher1(deferred)
 
     assertThat(deferred.getCompletionExceptionOrNull())
@@ -936,9 +964,11 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAny_oneShortTask_oneLongTask_runTasks_returnsValueOfShortTask() {
     val executorService = createExecutorService()
     val delayMs = 10L
-    val callable1 = lateFinishingCallableWithDispatcher2(
-      Callable { "Long task" }, timeToWaitMillis = delayMs * 10
-    )
+    val callable1 =
+      lateFinishingCallableWithDispatcher2(
+        Callable { "Long task" },
+        timeToWaitMillis = delayMs * 10,
+      )
     val callable2 = Callable { "Short task" }
     // Wait for the invokeAny selection to be fully arranged before executing, otherwise the delayed
     // task is guaranteed to be finished before selection happens (invalidating the selection
@@ -946,9 +976,10 @@ class CoroutineExecutorServiceTest {
     // force execution order to verify the service is doing the right thing for invokeAny.
     autoSettleServiceAfterSelection(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable1, callable2))
+      }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
     waitForDeferredWithDispatcher1(deferred)
@@ -961,15 +992,18 @@ class CoroutineExecutorServiceTest {
   fun testInvokeAny_oneShortTask_oneLongTask_shortTaskFails_runTasks_returnsValueOfLongTask() {
     val executorService = createExecutorService()
     val delayMs = 10L
-    val callable1 = lateFinishingCallableWithDispatcher2(
-      Callable { "Long task" }, timeToWaitMillis = delayMs * 10
-    )
+    val callable1 =
+      lateFinishingCallableWithDispatcher2(
+        Callable { "Long task" },
+        timeToWaitMillis = delayMs * 10,
+      )
     val callable2 = Callable<String> { throw Exception("Failed task") }
     autoSettleServiceBeforeBlocking(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable1, callable2))
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable1, callable2))
+      }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
     waitForDeferredWithDispatcher1(deferred)
@@ -986,14 +1020,17 @@ class CoroutineExecutorServiceTest {
     // Note that a longer delay is used here since testing for timeouts is inherently flaky: slower
     // machines are more likely to trigger a flake since this relies on a real dispatcher. To guard
     // against flakes, a long timeout is picked.
-    val callable = lateFinishingCallableWithDispatcher2(
-      Callable { "Long task" }, timeToWaitMillis = 2500L
-    )
+    val callable =
+      lateFinishingCallableWithDispatcher2(
+        Callable { "Long task" },
+        timeToWaitMillis = 2500L,
+      )
     autoSettleServiceAfterSelection(executorService)
 
-    val deferred = realDispatcherScope.async {
-      executorService.invokeAny(listOf(callable), /* timeout= */ 500, TimeUnit.MILLISECONDS)
-    }
+    val deferred =
+      realDispatcherScope.async {
+        executorService.invokeAny(listOf(callable), /* timeout= */ 500, TimeUnit.MILLISECONDS)
+      }
     // Note that this must be different than the dispatcher used to block callable1 to prevent
     // deadlocking.
     waitForDeferredWithDispatcher1(deferred)
@@ -1003,19 +1040,16 @@ class CoroutineExecutorServiceTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCoroutineExecutorServiceTest_TestApplicationComponent.builder()
+    DaggerCoroutineExecutorServiceTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
   }
 
-  private fun createExecutorService(): ExecutorService {
-    return CoroutineExecutorService(backgroundCoroutineDispatcher)
-  }
+  private fun createExecutorService(): ExecutorService = CoroutineExecutorService(backgroundCoroutineDispatcher)
 
-  private fun createExecutorServiceAsExecutor(): Executor {
-    return CoroutineExecutorService(backgroundCoroutineDispatcher)
-  }
+  private fun createExecutorServiceAsExecutor(): Executor = CoroutineExecutorService(backgroundCoroutineDispatcher)
 
   private fun autoSettleServiceBeforeBlocking(executorService: ExecutorService) {
     (executorService as CoroutineExecutorService).setPriorToBlockingCallback {
@@ -1029,39 +1063,35 @@ class CoroutineExecutorServiceTest {
     }
   }
 
-  private fun wrapRunnableWithOneSecondDelayUsingDispatcher1(runnable: Runnable): Runnable {
-    return Runnable {
+  private fun wrapRunnableWithOneSecondDelayUsingDispatcher1(runnable: Runnable): Runnable =
+    Runnable {
       wrapCallableWithOneSecondDelayUsingDispatcher1(Callable { runnable.run() }).call()
     }
-  }
 
-  private fun <T> wrapCallableWithOneSecondDelayUsingDispatcher1(
-    callable: Callable<T>
-  ): Callable<T> {
-    return wrapCallableWithOneSecondDelay(callable, testDispatcherScope)
-  }
+  private fun <T> wrapCallableWithOneSecondDelayUsingDispatcher1(callable: Callable<T>): Callable<T> =
+    wrapCallableWithOneSecondDelay(callable, testDispatcherScope)
 
   private fun <T> wrapCallableWithOneSecondDelay(
     callable: Callable<T>,
-    coroutineScope: CoroutineScope
-  ): Callable<T> {
-    return Callable {
+    coroutineScope: CoroutineScope,
+  ): Callable<T> =
+    Callable {
       val deferred = coroutineScope.async { delay(TimeUnit.SECONDS.toMillis(1)) }
       runBlocking {
         deferred.await()
         callable.call()
       }
     }
-  }
 
   /** Waits for the specified deferred, or times out according to the test coroutine dispatchers. */
   private fun <T> waitForDeferredWithDispatcher1(deferred: Deferred<T>) {
     @Suppress("BlockingMethodInNonBlockingContext") // Intentional to test blocking.
-    val deferredWait = testDispatcherScope.async {
-      runBlocking {
-        deferred.await()
+    val deferredWait =
+      testDispatcherScope.async {
+        runBlocking {
+          deferred.await()
+        }
       }
-    }
     testDispatcher.runUntilIdle()
     assertThat(deferredWait.isCompleted).isTrue() // Sanity check.
   }
@@ -1069,9 +1099,9 @@ class CoroutineExecutorServiceTest {
   @Suppress("DeferredResultUnused") // Deferred is indirectly blocked on via withContext.
   private fun <T> lateFinishingCallableWithDispatcher2(
     callable: Callable<T>,
-    timeToWaitMillis: Long
-  ): Callable<T> {
-    return Callable {
+    timeToWaitMillis: Long,
+  ): Callable<T> =
+    Callable {
       runBlocking {
         realDispatcherScope.async {
           delay(timeToWaitMillis)
@@ -1082,7 +1112,6 @@ class CoroutineExecutorServiceTest {
         }
       }
     }
-  }
 
   private fun TestCoroutineDispatcher.runUntilIdle() {
     var nextTaskTimeMillis: Long?
@@ -1101,9 +1130,7 @@ class CoroutineExecutorServiceTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1111,14 +1138,15 @@ class CoroutineExecutorServiceTest {
   @Component(
     modules = [
       TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

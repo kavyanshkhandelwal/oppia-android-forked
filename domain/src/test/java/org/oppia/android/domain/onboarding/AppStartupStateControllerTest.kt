@@ -86,11 +86,17 @@ import javax.inject.Singleton
 @Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
   @Inject lateinit var context: Context
+
   @Inject lateinit var appStartupStateController: AppStartupStateController
+
   @Inject lateinit var platformParameterController: PlatformParameterController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Parameter lateinit var initialFlavorName: String
 
   // TODO(#3792): Remove this usage of Locale (probably by introducing a test utility in the locale
@@ -164,10 +170,11 @@ class AppStartupStateControllerTest {
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
-      val onboardingFlowStore = testComponent.getCacheFactory().create(
-        "on_boarding_flow",
-        OnboardingState.getDefaultInstance()
-      )
+      val onboardingFlowStore =
+        testComponent.getCacheFactory().create(
+          "on_boarding_flow",
+          OnboardingState.getDefaultInstance(),
+        )
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
       // Clear, then recreate the controller.
@@ -234,7 +241,7 @@ class AppStartupStateControllerTest {
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
-        expDate = dateStringAfterToday()
+        expDate = dateStringAfterToday(),
       )
     }
     setUpTestApplicationComponent()
@@ -252,7 +259,7 @@ class AppStartupStateControllerTest {
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
-        expDate = dateStringBeforeToday()
+        expDate = dateStringBeforeToday(),
       )
     }
     setUpTestApplicationComponent()
@@ -270,7 +277,7 @@ class AppStartupStateControllerTest {
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
-        expDate = dateStringAfterToday()
+        expDate = dateStringAfterToday(),
       )
 
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -292,7 +299,7 @@ class AppStartupStateControllerTest {
       setUpOppiaApplicationForContext(
         context = testComponent.getContext(),
         expirationEnabled = true,
-        expDate = dateStringBeforeToday()
+        expDate = dateStringBeforeToday(),
       )
 
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -308,7 +315,7 @@ class AppStartupStateControllerTest {
     assertThat(mode.startupMode).isEqualTo(APP_IS_DEPRECATED)
   }
 
-  /* Tests to verify that beta & no notices are shown at the expected times. */
+  // Tests to verify that beta & no notices are shown at the expected times.
 
   @Test
   fun testController_initialState_testingBuild_showsUnspecifiedNotice() {
@@ -516,7 +523,7 @@ class AppStartupStateControllerTest {
     assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
   }
 
-  /* Tests to verify that changing from one build flavor to another can cause notices to show. */
+  // Tests to verify that changing from one build flavor to another can cause notices to show.
 
   @Test
   fun testController_userOnboarded_changeToTestingBuild_showsUnspecifiedNotice() {
@@ -695,7 +702,7 @@ class AppStartupStateControllerTest {
     assertThat(mode.buildFlavorNoticeMode).isEqualTo(NO_NOTICE)
   }
 
-  /* Tests to verify that notices can be permanently dismissed. */
+  // Tests to verify that notices can be permanently dismissed.
 
   @Test
   fun testController_dismissBetaNoticePermanently_scenariosWithoutBetaNotice_showNoNotice() {
@@ -795,7 +802,7 @@ class AppStartupStateControllerTest {
   fun testController_appAndOsDeprecationEnabled_initialLaunch_startupModeIsUserNotOnboarded() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        listOf(enableAppAndOsDeprecation)
+        listOf(enableAppAndOsDeprecation),
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -823,7 +830,7 @@ class AppStartupStateControllerTest {
   @Test
   fun testController_osIsDeprecated_returnsOsDeprecatedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
-      platformParameterToEnable = lowestApiLevel
+      platformParameterToEnable = lowestApiLevel,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -836,7 +843,7 @@ class AppStartupStateControllerTest {
   fun testController_osIsDeprecated_previousResponseExists_returnsUserOnboardedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(osDeprecationResponse),
-      platformParameterToEnable = lowestApiLevel
+      platformParameterToEnable = lowestApiLevel,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -848,7 +855,7 @@ class AppStartupStateControllerTest {
   @Test
   fun testController_optionalUpdateAvailable_returnsOptionalUpdateStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
-      platformParameterToEnable = optionalAppUpdateVersion
+      platformParameterToEnable = optionalAppUpdateVersion,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -858,11 +865,10 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_optionalUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode
-  () {
+  fun testController_optionalUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(appDeprecationResponse),
-      platformParameterToEnable = optionalAppUpdateVersion
+      platformParameterToEnable = optionalAppUpdateVersion,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -874,7 +880,7 @@ class AppStartupStateControllerTest {
   @Test
   fun testController_forcedUpdateAvailable_returnsAppDeprecatedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
-      platformParameterToEnable = forcedAppUpdateVersion
+      platformParameterToEnable = forcedAppUpdateVersion,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -884,11 +890,10 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testController_forcedUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode
-  () {
+  fun testController_forcedUpdateAvailable_previousResponseExists_returnsUserOnboardedStartupMode() {
     setUpTestApplicationWithAppAndOSDeprecationEnabled(
       previousResponses = listOf(appDeprecationResponse),
-      platformParameterToEnable = forcedAppUpdateVersion
+      platformParameterToEnable = forcedAppUpdateVersion,
     )
 
     val appStartupState = appStartupStateController.getAppStartupState()
@@ -910,7 +915,7 @@ class AppStartupStateControllerTest {
 
   private fun setUpTestApplicationWithAppAndOSDeprecationEnabled(
     previousResponses: List<DeprecationResponse> = emptyList(),
-    platformParameterToEnable: PlatformParameter? = null
+    platformParameterToEnable: PlatformParameter? = null,
   ) {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -923,7 +928,7 @@ class AppStartupStateControllerTest {
 
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
         platformParameterToEnable?.let { listOf(it, enableAppAndOsDeprecation) }
-          ?: listOf(enableAppAndOsDeprecation)
+          ?: listOf(enableAppAndOsDeprecation),
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -949,46 +954,41 @@ class AppStartupStateControllerTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
+      DaggerAppStartupStateControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build()
+        .build(),
     )
   }
 
   /** Returns a date string occurring before today. */
-  private fun dateStringBeforeToday(): String {
-    return computeDateString(Instant.now() - Duration.ofDays(1))
-  }
+  private fun dateStringBeforeToday(): String = computeDateString(Instant.now() - Duration.ofDays(1))
 
-  private fun dateStringForToday(): String {
-    return computeDateString(Instant.now())
-  }
+  private fun dateStringForToday(): String = computeDateString(Instant.now())
 
   /** Returns a date string occurring after today. */
-  private fun dateStringAfterToday(): String {
-    return computeDateString(Instant.now() + Duration.ofDays(1))
-  }
+  private fun dateStringAfterToday(): String = computeDateString(Instant.now() + Duration.ofDays(1))
 
-  private fun computeDateString(instant: Instant): String {
-    return computeDateString(Date.from(instant))
-  }
+  private fun computeDateString(instant: Instant): String = computeDateString(Date.from(instant))
 
-  private fun computeDateString(date: Date): String {
-    return expirationDateFormat.format(date)
-  }
+  private fun computeDateString(date: Date): String = expirationDateFormat.format(date)
 
-  private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
+  private fun setUpOppiaApplication(
+    expirationEnabled: Boolean,
+    expDate: String,
+  ) {
     setUpOppiaApplicationForContext(context, expirationEnabled, expDate)
   }
 
   private fun setUpOppiaApplicationForContext(
     context: Context,
     expirationEnabled: Boolean,
-    expDate: String
+    expDate: String,
   ) {
     val packageManager = shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setName("Oppia")
         .build()
@@ -996,7 +996,8 @@ class AppStartupStateControllerTest {
     applicationInfo.metaData.putBoolean("automatic_app_expiration_enabled", expirationEnabled)
     applicationInfo.metaData.putString("expiration_date", expDate)
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -1009,46 +1010,56 @@ class AppStartupStateControllerTest {
     companion object {
       var buildFlavor = BuildFlavor.BUILD_FLAVOR_UNSPECIFIED
 
-      val lowestApiLevel: PlatformParameter = PlatformParameter.newBuilder()
-        .setName(LOWEST_SUPPORTED_API_LEVEL)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
-        .build()
+      val lowestApiLevel: PlatformParameter =
+        PlatformParameter
+          .newBuilder()
+          .setName(LOWEST_SUPPORTED_API_LEVEL)
+          .setInteger(Int.MAX_VALUE)
+          .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+          .build()
 
-      val optionalAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-        .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
-        .build()
+      val optionalAppUpdateVersion: PlatformParameter =
+        PlatformParameter
+          .newBuilder()
+          .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
+          .setInteger(Int.MAX_VALUE)
+          .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+          .build()
 
-      val forcedAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-        .setName(FORCED_APP_UPDATE_VERSION_CODE)
-        .setInteger(Int.MAX_VALUE)
-        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
-        .build()
+      val forcedAppUpdateVersion: PlatformParameter =
+        PlatformParameter
+          .newBuilder()
+          .setName(FORCED_APP_UPDATE_VERSION_CODE)
+          .setInteger(Int.MAX_VALUE)
+          .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+          .build()
 
-      val enableAppAndOsDeprecation: PlatformParameter = PlatformParameter.newBuilder()
-        .setName(APP_AND_OS_DEPRECATION)
-        .setBoolean(true)
-        .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
-        .build()
+      val enableAppAndOsDeprecation: PlatformParameter =
+        PlatformParameter
+          .newBuilder()
+          .setName(APP_AND_OS_DEPRECATION)
+          .setBoolean(true)
+          .setSyncStatus(PlatformParameter.SyncStatus.SYNCED_FROM_SERVER)
+          .build()
 
-      val osDeprecationResponse: DeprecationResponse = DeprecationResponse.newBuilder()
-        .setDeprecationNoticeType(DeprecationNoticeType.OS_DEPRECATION)
-        .setDeprecatedVersion(Int.MAX_VALUE)
-        .build()
+      val osDeprecationResponse: DeprecationResponse =
+        DeprecationResponse
+          .newBuilder()
+          .setDeprecationNoticeType(DeprecationNoticeType.OS_DEPRECATION)
+          .setDeprecatedVersion(Int.MAX_VALUE)
+          .build()
 
-      val appDeprecationResponse: DeprecationResponse = DeprecationResponse.newBuilder()
-        .setDeprecationNoticeType(DeprecationNoticeType.APP_DEPRECATION)
-        .setDeprecatedVersion(Int.MAX_VALUE)
-        .build()
+      val appDeprecationResponse: DeprecationResponse =
+        DeprecationResponse
+          .newBuilder()
+          .setDeprecationNoticeType(DeprecationNoticeType.APP_DEPRECATION)
+          .setDeprecatedVersion(Int.MAX_VALUE)
+          .build()
     }
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -1079,8 +1090,8 @@ class AppStartupStateControllerTest {
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, AssetModule::class
-    ]
+      PlatformParameterSingletonModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -1106,9 +1117,12 @@ class AppStartupStateControllerTest {
     fun inject(appStartupStateControllerTest: AppStartupStateControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppStartupStateControllerTest_TestApplicationComponent.builder()
+      DaggerAppStartupStateControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

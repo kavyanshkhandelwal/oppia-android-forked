@@ -125,9 +125,12 @@ class FAQSingleActivityTest {
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
-    FAQSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  var activityTestRule: ActivityTestRule<FAQSingleActivity> =
+    ActivityTestRule(
+      FAQSingleActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -177,21 +180,24 @@ class FAQSingleActivityTest {
 
   @Test
   fun openFAQSingleActivity_checkAnswer_isCorrectlyParsed() {
-    val answerTextView = activityTestRule.activity.findViewById(
-      R.id.faq_answer_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false,
-      customOppiaTagActionListener = null,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_whats_oppia),
-      answerTextView
-    )
+    val answerTextView =
+      activityTestRule.activity.findViewById(
+        R.id.faq_answer_text_view,
+      ) as TextView
+    val htmlParser =
+      htmlParserFactory.create(
+        resourceBucketName,
+        entityType = "",
+        entityId = "",
+        imageCenterAlign = false,
+        customOppiaTagActionListener = null,
+        displayLocale = appLanguageLocaleHandler.getDisplayLocale(),
+      )
+    val htmlResult: Spannable =
+      htmlParser.parseOppiaHtml(
+        getResources().getString(R.string.faq_answer_whats_oppia),
+        answerTextView,
+      )
     assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
   }
 
@@ -199,17 +205,14 @@ class FAQSingleActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFAQSingleActivity(): Intent {
-    return FAQSingleActivity.createFAQSingleActivityIntent(
+  private fun createFAQSingleActivity(): Intent =
+    FAQSingleActivity.createFAQSingleActivityIntent(
       ApplicationProvider.getApplicationContext(),
       getResources().getString(R.string.faq_question_whats_oppia),
-      getResources().getString(R.string.faq_answer_whats_oppia)
+      getResources().getString(R.string.faq_answer_whats_oppia),
     )
-  }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
+  private fun getResources(): Resources = ApplicationProvider.getApplicationContext<Context>().resources
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -240,8 +243,8 @@ class FAQSingleActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -252,9 +255,13 @@ class FAQSingleActivityTest {
     fun inject(faqSingleActivityTest: FAQSingleActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFAQSingleActivityTest_TestApplicationComponent.builder()
+      DaggerFAQSingleActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -263,9 +270,12 @@ class FAQSingleActivityTest {
       component.inject(faqSingleActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

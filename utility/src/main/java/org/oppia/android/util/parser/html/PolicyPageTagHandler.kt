@@ -21,14 +21,14 @@ private const val TERMS_OF_SERVICE = "Terms of Service"
  */
 class PolicyPageTagHandler(
   private val listener: PolicyPageLinkClickListener,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
 ) : CustomHtmlContentHandler.CustomTagHandler {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
     output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
@@ -40,7 +40,7 @@ class PolicyPageTagHandler(
             output,
             openIndex,
             closeIndex,
-            PolicyType.TERMS_OF_SERVICE
+            PolicyType.TERMS_OF_SERVICE,
           )
         }
         PRIVACY_POLICY_PAGE -> {
@@ -49,11 +49,13 @@ class PolicyPageTagHandler(
             output,
             openIndex,
             closeIndex,
-            PolicyType.PRIVACY_POLICY
+            PolicyType.PRIVACY_POLICY,
           )
         }
       }
-    } else consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
+    } else {
+      consoleLogger.e("PolicyPageTagHandler", "Failed to parse policy page tag")
+    }
   }
 
   private fun addPolicyPageClickableSpan(
@@ -61,7 +63,7 @@ class PolicyPageTagHandler(
     output: Editable,
     openIndex: Int,
     closeIndex: Int,
-    policyType: PolicyType
+    policyType: PolicyType,
   ) {
     val spannableBuilder = SpannableStringBuilder(policyLink)
     spannableBuilder.setSpan(
@@ -70,7 +72,10 @@ class PolicyPageTagHandler(
           listener.onPolicyPageLinkClicked(policyType)
         }
       },
-      /* start= */ 0, /* end= */ policyLink.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      // start=
+      0, // end=
+      policyLink.length,
+      Spannable.SPAN_INCLUSIVE_EXCLUSIVE,
     )
     output.replace(openIndex, closeIndex, spannableBuilder)
   }

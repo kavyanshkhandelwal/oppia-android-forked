@@ -55,12 +55,14 @@ class ClassroomListActivity :
 
   companion object {
     /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
-    fun createClassroomListActivity(context: Context, profileId: ProfileId?): Intent {
-      return Intent(context, ClassroomListActivity::class.java).apply {
+    fun createClassroomListActivity(
+      context: Context,
+      profileId: ProfileId?,
+    ): Intent =
+      Intent(context, ClassroomListActivity::class.java).apply {
         decorateWithScreenName(CLASSROOM_LIST_ACTIVITY)
         profileId?.let { decorateWithUserProfileId(profileId) }
       }
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +85,9 @@ class ClassroomListActivity :
         .newBuilder()
         .setHighlightItem(HighlightItem.NONE)
         .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+    val dialogFragment =
+      ExitProfileDialogFragment
+        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
@@ -93,19 +96,24 @@ class ClassroomListActivity :
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(profileId)
-        .setActivityTitle(recentlyPlayedActivityTitle).build()
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
 
     activityRouter.routeToScreen(
       DestinationScreen
         .newBuilder()
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-        .build()
+        .build(),
     )
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+  ) {
     startActivity(
-      createTopicActivityIntent(this, profileId, classroomId, topicId)
+      createTopicActivityIntent(this, profileId, classroomId, topicId),
     )
   }
 
@@ -113,7 +121,7 @@ class ClassroomListActivity :
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
     startActivity(
       createTopicPlayStoryActivityIntent(
@@ -121,8 +129,8 @@ class ClassroomListActivity :
         profileId,
         classroomId,
         topicId,
-        storyId
-      )
+        storyId,
+      ),
     )
   }
 
@@ -134,15 +142,16 @@ class ClassroomListActivity :
     }
     val exitProfileDialogArguments =
       ExitProfileDialogArguments
-        .newBuilder().apply {
+        .newBuilder()
+        .apply {
           if (enableOnboardingFlowV2.value) {
             this.profileType = profileType
           }
           this.highlightItem = HighlightItem.NONE
-        }
-        .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+        }.build()
+    val dialogFragment =
+      ExitProfileDialogFragment
+        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

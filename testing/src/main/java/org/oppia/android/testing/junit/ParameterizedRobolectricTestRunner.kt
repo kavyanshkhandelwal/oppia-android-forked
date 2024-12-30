@@ -15,7 +15,7 @@ class ParameterizedRobolectricTestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
-  private val iterationName: String?
+  private val iterationName: String?,
 ) : RobolectricTestRunner(testClass),
   OppiaParameterizedBaseRunner,
   ParameterizedRunnerOverrideMethods {
@@ -23,7 +23,7 @@ class ParameterizedRobolectricTestRunner internal constructor(
     ParameterizedRunnerDelegate(
       parameterizedMethods,
       methodName,
-      iterationName
+      iterationName,
     ).also { delegate ->
       delegate.fetchChildrenFromParent = { super.getChildren() }
       delegate.fetchTestNameFromParent = { method -> super.testName(method) }
@@ -34,15 +34,17 @@ class ParameterizedRobolectricTestRunner internal constructor(
 
   override fun testName(method: FrameworkMethod?): String = delegate.testName(method)
 
-  override fun methodInvoker(method: FrameworkMethod?, test: Any?): Nothing {
-    throw Exception("Expected this to never be executed in the Robolectric environment.")
-  }
+  override fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Nothing = throw Exception("Expected this to never be executed in the Robolectric environment.")
 
-  override fun getHelperTestRunner(
-    bootstrappedTestClass: Class<*>?
-  ): HelperTestRunner {
+  override fun getHelperTestRunner(bootstrappedTestClass: Class<*>?): HelperTestRunner {
     return object : HelperTestRunner(bootstrappedTestClass) {
-      override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement {
+      override fun methodInvoker(
+        method: FrameworkMethod?,
+        test: Any?,
+      ): Statement {
         delegate.fetchMethodInvokerFromParent = { innerMethod, innerParent ->
           super.methodInvoker(innerMethod, innerParent)
         }

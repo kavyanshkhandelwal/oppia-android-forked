@@ -25,9 +25,6 @@ class HintsAndSolutionQuestionManagerFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-
-    return hintsAndSolutionQuestionManagerFragmentPresenter.handleCreateView()
-  }
+    savedInstanceState: Bundle?,
+  ): View? = hintsAndSolutionQuestionManagerFragmentPresenter.handleCreateView()
 }

@@ -92,27 +92,33 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = PromotedStoryViewModelTest.TestApplication::class,
-  manifest = Config.NONE
+  manifest = Config.NONE,
 )
 class PromotedStoryViewModelTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var translationController: TranslationController
 
-  private val promotedStory1 = PromotedStory.newBuilder()
-    .setStoryId("id_1")
-    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 1"))
-    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
-    .setTotalChapterCount(1)
-    .build()
-  private val promotedStory2 = PromotedStory.newBuilder()
-    .setStoryId("id_2")
-    .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 2"))
-    .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
-    .setTotalChapterCount(1)
-    .build()
+  private val promotedStory1 =
+    PromotedStory
+      .newBuilder()
+      .setStoryId("id_1")
+      .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 1"))
+      .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
+      .setTotalChapterCount(1)
+      .build()
+  private val promotedStory2 =
+    PromotedStory
+      .newBuilder()
+      .setStoryId("id_2")
+      .setStoryTitle(SubtitledHtml.newBuilder().setContentId("story_title").setHtml("Story 2"))
+      .setTopicTitle(SubtitledHtml.newBuilder().setContentId("topic_title").setHtml("topic_name"))
+      .setTotalChapterCount(1)
+      .build()
 
   @Before
   fun setUp() {
@@ -122,7 +128,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_reflexiveBasicPromotedStoryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -136,7 +142,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_symmetricBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -152,7 +158,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_transitiveBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModelCopy1 =
@@ -173,7 +179,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_consistentBasicPromotedStoryViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -190,7 +196,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_basicPromotedStoryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -203,27 +209,29 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_profileId1AndProfileId2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryViewModelProfile1 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
-        val promotedStoryViewModelProfile2 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 2,
-          totalStoryCount = 3,
-          entityType = "entity",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
+        val promotedStoryViewModelProfile1 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
+        val promotedStoryViewModelProfile2 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 2,
+            totalStoryCount = 3,
+            entityType = "entity",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
 
         assertThat(promotedStoryViewModelProfile1).isNotEqualTo(promotedStoryViewModelProfile2)
       }
@@ -233,27 +241,29 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_storyCount2AndStoryCount3_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryViewModelStoryCount2 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 2,
-          entityType = "entity",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
-        val promotedStoryViewModelStoryCount3 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
+        val promotedStoryViewModelStoryCount2 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 2,
+            entityType = "entity",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
+        val promotedStoryViewModelStoryCount3 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
 
         assertThat(promotedStoryViewModelStoryCount2)
           .isNotEqualTo(promotedStoryViewModelStoryCount3)
@@ -264,27 +274,29 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
-        val promotedStoryViewModelEntity1 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity_1",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
-        val promotedStoryViewModelEntity2 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity_2",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
+        val promotedStoryViewModelEntity1 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity_1",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
+        val promotedStoryViewModelEntity2 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity_2",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
 
         assertThat(promotedStoryViewModelEntity1).isNotEqualTo(promotedStoryViewModelEntity2)
       }
@@ -294,29 +306,31 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelEquals_story1AndStory2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         assertThat(promotedStory1.equals(promotedStory2)).isFalse()
 
-        val promotedStoryViewModelStory1 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity",
-          promotedStory = promotedStory1,
-          translationController,
-          index = 0
-        )
-        val promotedStoryViewModelStory2 = PromotedStoryViewModel(
-          activity = homeFragmentTestActivity,
-          internalProfileId = 1,
-          totalStoryCount = 3,
-          entityType = "entity",
-          promotedStory = promotedStory2,
-          translationController,
-          index = 0
-        )
+        val promotedStoryViewModelStory1 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity",
+            promotedStory = promotedStory1,
+            translationController,
+            index = 0,
+          )
+        val promotedStoryViewModelStory2 =
+          PromotedStoryViewModel(
+            activity = homeFragmentTestActivity,
+            internalProfileId = 1,
+            totalStoryCount = 3,
+            entityType = "entity",
+            promotedStory = promotedStory2,
+            translationController,
+            index = 0,
+          )
 
         assertThat(promotedStoryViewModelStory1).isNotEqualTo(promotedStoryViewModelStory2)
       }
@@ -326,7 +340,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -343,7 +357,7 @@ class PromotedStoryViewModelTest {
   @Test
   fun testPromotedStoryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { homeFragmentTestActivityScenario ->
       homeFragmentTestActivityScenario.onActivity { homeFragmentTestActivity ->
         val promotedStoryViewModel = createBasicPromotedStoryViewModel(homeFragmentTestActivity)
@@ -360,19 +374,16 @@ class PromotedStoryViewModelTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createBasicPromotedStoryViewModel(
-    activity: AppCompatActivity
-  ): PromotedStoryViewModel {
-    return PromotedStoryViewModel(
+  private fun createBasicPromotedStoryViewModel(activity: AppCompatActivity): PromotedStoryViewModel =
+    PromotedStoryViewModel(
       activity = activity,
       internalProfileId = 1,
       totalStoryCount = 3,
       entityType = "entity",
       promotedStory = promotedStory1,
       translationController,
-      index = 0
+      index = 0,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -402,8 +413,8 @@ class PromotedStoryViewModelTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -414,9 +425,13 @@ class PromotedStoryViewModelTest {
     fun inject(promotedStoryViewModelTest: PromotedStoryViewModelTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPromotedStoryViewModelTest_TestApplicationComponent.builder()
+      DaggerPromotedStoryViewModelTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -425,9 +440,12 @@ class PromotedStoryViewModelTest {
       component.inject(promotedStoryViewModelTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

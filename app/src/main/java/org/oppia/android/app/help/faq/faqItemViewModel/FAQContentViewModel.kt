@@ -8,9 +8,8 @@ class FAQContentViewModel(
   private val activity: AppCompatActivity,
   val question: String,
   val answer: String,
-  val showDivider: Boolean
+  val showDivider: Boolean,
 ) : FAQItemViewModel() {
-
   fun clickOnFAQQuestion() {
     val routeToFAQSingleListener = activity as RouteToFAQSingleListener
     routeToFAQSingleListener.onRouteToFAQSingle(question, answer)

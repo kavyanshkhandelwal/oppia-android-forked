@@ -21,100 +21,109 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileRenameFragment]. */
 @FragmentScope
-class ProfileRenameFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val profileManagementController: ProfileManagementController,
-  private val renameViewModel: ProfileRenameViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
-  private lateinit var binding: ProfileRenameFragmentBinding
+class ProfileRenameFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val profileManagementController: ProfileManagementController,
+    private val renameViewModel: ProfileRenameViewModel,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    private lateinit var binding: ProfileRenameFragmentBinding
 
-  /** Handles onCreateView() method of [ProfileRenameFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: Int
-  ): View? {
-    binding = ProfileRenameFragmentBinding.inflate(
-      inflater,
-      container,
-      false
-    )
-    binding.apply {
-      viewModel = renameViewModel
-      lifecycleOwner = fragment
-    }
-    binding.profileRenameSaveButton.setOnClickListener {
-      renameViewModel.nameErrorMsg.set("")
-      if (binding.profileRenameInputEditText.text.toString().isEmpty()) {
-        renameViewModel
-          .nameErrorMsg
-          .set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_empty
-            )
-          )
-        return@setOnClickListener
-      }
-      profileManagementController
-        .updateName(
-          ProfileId.newBuilder().setInternalId(profileId).build(),
-          binding.profileRenameInputEditText.text.toString()
-        ).toLiveData()
-        .observe(
-          fragment,
-          {
-            handleAddProfileResult(it, profileId)
-          }
+    /** Handles onCreateView() method of [ProfileRenameFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileId: Int,
+    ): View? {
+      binding =
+        ProfileRenameFragmentBinding.inflate(
+          inflater,
+          container,
+          false,
         )
+      binding.apply {
+        viewModel = renameViewModel
+        lifecycleOwner = fragment
+      }
+      binding.profileRenameSaveButton.setOnClickListener {
+        renameViewModel.nameErrorMsg.set("")
+        if (binding.profileRenameInputEditText.text
+            .toString()
+            .isEmpty()
+        ) {
+          renameViewModel
+            .nameErrorMsg
+            .set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_empty,
+              ),
+            )
+          return@setOnClickListener
+        }
+        profileManagementController
+          .updateName(
+            ProfileId.newBuilder().setInternalId(profileId).build(),
+            binding.profileRenameInputEditText.text.toString(),
+          ).toLiveData()
+          .observe(
+            fragment,
+            {
+              handleAddProfileResult(it, profileId)
+            },
+          )
+      }
+
+      binding.profileRenameInputEditText.onTextChanged { name ->
+        name?.let {
+          if (
+            renameViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
+            renameViewModel.inputName.get() == it
+          ) {
+            renameViewModel.inputName.set(it)
+          } else {
+            renameViewModel.nameErrorMsg.set("")
+            renameViewModel.inputName.set(it)
+          }
+        }
+      }
+
+      binding.profileRenameInputEditText.setOnEditorActionListener { _, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_DONE ||
+          (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+        ) {
+          binding.profileRenameSaveButton.callOnClick()
+        }
+        false
+      }
+      return binding.root
     }
 
-    binding.profileRenameInputEditText.onTextChanged { name ->
-      name?.let {
-        if (
-          renameViewModel.nameErrorMsg.get()?.isNotEmpty()!! &&
-          renameViewModel.inputName.get() == it
-        ) {
-          renameViewModel.inputName.set(it)
-        } else {
-          renameViewModel.nameErrorMsg.set("")
-          renameViewModel.inputName.set(it)
+    private fun handleAddProfileResult(
+      result: AsyncResult<Any?>,
+      profileId: Int,
+    ) {
+      if (result is AsyncResult.Success) {
+        val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        activity.startActivity(intent)
+      } else if (result is AsyncResult.Failure) {
+        when (result.error) {
+          is ProfileManagementController.ProfileNameNotUniqueException ->
+            renameViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_not_unique,
+              ),
+            )
+          is ProfileManagementController.ProfileNameOnlyLettersException ->
+            renameViewModel.nameErrorMsg.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters,
+              ),
+            )
         }
       }
     }
-
-    binding.profileRenameInputEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        binding.profileRenameSaveButton.callOnClick()
-      }
-      false
-    }
-    return binding.root
   }
-
-  private fun handleAddProfileResult(result: AsyncResult<Any?>, profileId: Int) {
-    if (result is AsyncResult.Success) {
-      val intent = ProfileEditActivity.createProfileEditActivity(activity, profileId)
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      activity.startActivity(intent)
-    } else if (result is AsyncResult.Failure) {
-      when (result.error) {
-        is ProfileManagementController.ProfileNameNotUniqueException ->
-          renameViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_not_unique
-            )
-          )
-        is ProfileManagementController.ProfileNameOnlyLettersException ->
-          renameViewModel.nameErrorMsg.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_name_only_letters
-            )
-          )
-      }
-    }
-  }
-}

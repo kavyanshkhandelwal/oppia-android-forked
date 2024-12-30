@@ -19,19 +19,23 @@ class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
   companion object {
     /** Params key for AdminAuthActivity. */
     const val ADMIN_AUTH_ACTIVITY_PARAMS_KEY = "AdminAuthActivity.params"
+
     fun createAdminAuthActivityIntent(
       context: Context,
       adminPin: String,
       profileId: Int,
       colorRgb: Int,
-      adminPinEnum: Int
+      adminPinEnum: Int,
     ): Intent {
-      val args = AdminAuthActivityParams.newBuilder().apply {
-        this.adminPin = adminPin
-        this.internalProfileId = profileId
-        this.colorRgb = colorRgb
-        this.adminPinEnum = adminPinEnum
-      }.build()
+      val args =
+        AdminAuthActivityParams
+          .newBuilder()
+          .apply {
+            this.adminPin = adminPin
+            this.internalProfileId = profileId
+            this.colorRgb = colorRgb
+            this.adminPinEnum = adminPinEnum
+          }.build()
       return Intent(context, AdminAuthActivity::class.java).apply {
         putProtoExtra(ADMIN_AUTH_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADMIN_AUTH_ACTIVITY)

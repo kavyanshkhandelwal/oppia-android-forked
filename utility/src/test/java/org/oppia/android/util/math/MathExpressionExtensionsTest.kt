@@ -38,6 +38,7 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionExtensionsTest {
   @Parameter lateinit var exp1: String
+
   @Parameter lateinit var exp2: String
 
   @Test
@@ -144,7 +145,7 @@ class MathExpressionExtensionsTest {
     }
   }
 
-  /* Equality checks. Note that these are symmetrical to reduce the number of needed test cases. */
+  // Equality checks. Note that these are symmetrical to reduce the number of needed test cases.
 
   @Test
   fun testIsApproximatelyEqualTo_oneIsDefault_otherIsConstInt2_returnsFalse() {
@@ -272,24 +273,26 @@ class MathExpressionExtensionsTest {
   }
 
   private companion object {
-    private fun parseNumericExpression(expression: String): MathExpression {
-      return parseNumericExpression(expression, ALL_ERRORS).retrieveExpectedSuccessfulResult()
-    }
+    private fun parseNumericExpression(expression: String): MathExpression =
+      parseNumericExpression(expression, ALL_ERRORS).retrieveExpectedSuccessfulResult()
 
     private fun parseAlgebraicExpression(
       expression: String,
-      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS
-    ): MathExpression {
-      return parseAlgebraicExpression(
-        expression, allowedVariables = listOf("x", "y", "z"), errorCheckingMode
+      errorCheckingMode: ErrorCheckingMode = ALL_ERRORS,
+    ): MathExpression =
+      parseAlgebraicExpression(
+        expression,
+        allowedVariables = listOf("x", "y", "z"),
+        errorCheckingMode,
       ).retrieveExpectedSuccessfulResult()
-    }
 
-    private fun parseAlgebraicEquation(expression: String): MathEquation {
-      return MathExpressionParser.parseAlgebraicEquation(
-        expression, allowedVariables = listOf("x", "y", "z"), ALL_ERRORS
-      ).retrieveExpectedSuccessfulResult()
-    }
+    private fun parseAlgebraicEquation(expression: String): MathEquation =
+      MathExpressionParser
+        .parseAlgebraicEquation(
+          expression,
+          allowedVariables = listOf("x", "y", "z"),
+          ALL_ERRORS,
+        ).retrieveExpectedSuccessfulResult()
 
     private fun <T> MathParsingResult<T>.retrieveExpectedSuccessfulResult(): T {
       assertThat(this).isInstanceOf(MathParsingResult.Success::class.java)

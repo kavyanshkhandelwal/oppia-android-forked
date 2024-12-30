@@ -116,7 +116,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = DeveloperOptionsFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class DeveloperOptionsFragmentTest {
   @get:Rule
@@ -134,11 +134,14 @@ class DeveloperOptionsFragmentTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    DeveloperOptionsTestActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      DeveloperOptionsTestActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -163,28 +166,28 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_modifyLessonProgressIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 0,
-        targetView = R.id.modify_lesson_progress_text_view
+        targetView = R.id.modify_lesson_progress_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_chapters_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_chapters_completed
+        stringIdToMatch = R.string.developer_options_mark_chapters_completed,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_stories_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_stories_completed
+        stringIdToMatch = R.string.developer_options_mark_stories_completed,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_topics_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_topics_completed
+        stringIdToMatch = R.string.developer_options_mark_topics_completed,
       )
     }
   }
@@ -192,29 +195,29 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_modifyLessonProgressIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 0,
-        targetView = R.id.modify_lesson_progress_text_view
+        targetView = R.id.modify_lesson_progress_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_chapters_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_chapters_completed
+        stringIdToMatch = R.string.developer_options_mark_chapters_completed,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_stories_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_stories_completed
+        stringIdToMatch = R.string.developer_options_mark_stories_completed,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 0,
         targetViewId = R.id.mark_topics_completed_text_view,
-        stringIdToMatch = R.string.developer_options_mark_topics_completed
+        stringIdToMatch = R.string.developer_options_mark_topics_completed,
       )
     }
   }
@@ -222,18 +225,18 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_viewLogsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 1,
-        targetView = R.id.view_logs_text_view
+        targetView = R.id.view_logs_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.event_logs_text_view,
-        stringIdToMatch = R.string.developer_options_event_logs
+        stringIdToMatch = R.string.developer_options_event_logs,
       )
     }
   }
@@ -241,19 +244,19 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_viewLogsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 1)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 1,
-        targetView = R.id.view_logs_text_view
+        targetView = R.id.view_logs_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 1,
         targetViewId = R.id.event_logs_text_view,
-        stringIdToMatch = R.string.developer_options_event_logs
+        stringIdToMatch = R.string.developer_options_event_logs,
       )
     }
   }
@@ -261,28 +264,28 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 2,
-        targetView = R.id.override_app_behaviors_text_view
+        targetView = R.id.override_app_behaviors_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.show_all_hints_solution_text_view,
-        stringIdToMatch = R.string.developer_options_show_all_hints_solution
+        stringIdToMatch = R.string.developer_options_show_all_hints_solution,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.force_network_type_text_view,
-        stringIdToMatch = R.string.developer_options_force_network_type
+        stringIdToMatch = R.string.developer_options_force_network_type,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.force_crash_text_view,
-        stringIdToMatch = R.string.developer_options_force_crash
+        stringIdToMatch = R.string.developer_options_force_crash,
       )
     }
   }
@@ -290,29 +293,29 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_overrideAppBehaviorsIsDisplayed() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 2)
       verifyItemDisplayedOnDeveloperOptionsListItem(
         itemPosition = 2,
-        targetView = R.id.override_app_behaviors_text_view
+        targetView = R.id.override_app_behaviors_text_view,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.show_all_hints_solution_text_view,
-        stringIdToMatch = R.string.developer_options_show_all_hints_solution
+        stringIdToMatch = R.string.developer_options_show_all_hints_solution,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.force_network_type_text_view,
-        stringIdToMatch = R.string.developer_options_force_network_type
+        stringIdToMatch = R.string.developer_options_force_network_type,
       )
       verifyTextOnDeveloperOptionsListItemAtPosition(
         itemPosition = 2,
         targetViewId = R.id.force_crash_text_view,
-        stringIdToMatch = R.string.developer_options_force_crash
+        stringIdToMatch = R.string.developer_options_force_crash,
       )
     }
   }
@@ -320,7 +323,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_hintsSwitchIsUnchecked() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -328,8 +331,8 @@ class DeveloperOptionsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
+          targetViewId = R.id.show_all_hints_solution_switch,
+        ),
       ).check(matches(not(isChecked())))
     }
   }
@@ -337,7 +340,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickShowAllHints_hintsSwitchIsChecked() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -346,8 +349,8 @@ class DeveloperOptionsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
+          targetViewId = R.id.show_all_hints_solution_switch,
+        ),
       ).check(matches(isChecked()))
     }
   }
@@ -355,7 +358,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickShowAllHints_configChange_hintsSwitchIsChecked() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -366,8 +369,8 @@ class DeveloperOptionsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
+          targetViewId = R.id.show_all_hints_solution_switch,
+        ),
       ).check(matches(isChecked()))
     }
   }
@@ -375,7 +378,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_hintsSwitchIsDisabled_showAllHintsAndSolutionIsFalse() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -383,8 +386,8 @@ class DeveloperOptionsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
+          targetViewId = R.id.show_all_hints_solution_switch,
+        ),
       ).check(matches(not(isChecked())))
       assertThat(showAllHintsAndSolutionController.getShowAllHintsAndSolution()).isFalse()
     }
@@ -393,7 +396,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_hintsSwitchIsEnabled_showAllHintsAndSolutionIsTrue() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -403,8 +406,8 @@ class DeveloperOptionsFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.developer_options_list,
           position = 2,
-          targetViewId = R.id.show_all_hints_solution_switch
-        )
+          targetViewId = R.id.show_all_hints_solution_switch,
+        ),
       ).check(matches(isChecked()))
       assertThat(showAllHintsAndSolutionController.getShowAllHintsAndSolution()).isTrue()
     }
@@ -413,13 +416,14 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val exception = assertThrows<RuntimeException>() {
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_crash_text_view)).perform(click())
-      }
+      val exception =
+        assertThrows<RuntimeException> {
+          scrollToPosition(position = 2)
+          onView(withId(R.id.force_crash_text_view)).perform(click())
+        }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
     }
   }
@@ -427,14 +431,15 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_clickForceCrash_throwsRuntimeException() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
-      val exception = assertThrows<RuntimeException>() {
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_crash_text_view)).perform(click())
-      }
+      val exception =
+        assertThrows<RuntimeException> {
+          scrollToPosition(position = 2)
+          onView(withId(R.id.force_crash_text_view)).perform(click())
+        }
       assertThat(exception.cause).hasMessageThat().contains("Force crash occurred")
     }
   }
@@ -442,7 +447,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickForceNetworkType_opensForceNetworkTypeActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2)
@@ -454,7 +459,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_clickForceNetworkType_opensForceNetworkTypeActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -467,7 +472,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickEventLogs_opensViewEventLogsActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
@@ -479,7 +484,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_clickEventLogs_opensViewEventLogsActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -492,7 +497,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -504,7 +509,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_land_clickMarkChaptersCompleted_opensMarkChaptersCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -517,7 +522,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -529,7 +534,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_land_clickMarkStoriesCompleted_opensMarkStoriesCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -542,7 +547,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 0)
@@ -554,7 +559,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptions_land_clickMarkTopicsCompleted_opensMarkTopicsCompletedActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -567,7 +572,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_clickMathExpressionsEquations_opensMathExpParserActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -581,7 +586,7 @@ class DeveloperOptionsFragmentTest {
   @Test
   fun testDeveloperOptionsFragment_land_clickMathExpressionsEquations_opensMathExpParserActivity() {
     launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
+      createDeveloperOptionsTestActivityIntent(internalProfileId),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -594,42 +599,41 @@ class DeveloperOptionsFragmentTest {
     }
   }
 
-  private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
-    return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
-  }
+  private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent =
+    DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
 
   private fun verifyItemDisplayedOnDeveloperOptionsListItem(
     itemPosition: Int,
-    targetView: Int
+    targetView: Int,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.developer_options_list,
         position = itemPosition,
-        targetViewId = targetView
-      )
+        targetViewId = targetView,
+      ),
     ).check(matches(isDisplayed()))
   }
 
   private fun verifyTextOnDeveloperOptionsListItemAtPosition(
     itemPosition: Int,
     targetViewId: Int,
-    @StringRes stringIdToMatch: Int
+    @StringRes stringIdToMatch: Int,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.developer_options_list,
         position = itemPosition,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(withText(context.getString(stringIdToMatch))))
   }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.developer_options_list)).perform(
       scrollToPosition<ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
@@ -662,8 +666,8 @@ class DeveloperOptionsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -674,9 +678,13 @@ class DeveloperOptionsFragmentTest {
     fun inject(developerOptionsFragmentTest: DeveloperOptionsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDeveloperOptionsFragmentTest_TestApplicationComponent.builder()
+      DaggerDeveloperOptionsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -685,9 +693,12 @@ class DeveloperOptionsFragmentTest {
       component.inject(developerOptionsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

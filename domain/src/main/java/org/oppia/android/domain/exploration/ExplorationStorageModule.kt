@@ -12,7 +12,5 @@ class ExplorationStorageModule {
   fun provideExplorationStorageDatabaseSize(): Int = 2097152
 
   @Provides
-  fun provideProductionExplorationRetriever(
-    impl: ExplorationRetrieverImpl
-  ): ExplorationRetriever = impl
+  fun provideProductionExplorationRetriever(impl: ExplorationRetrieverImpl): ExplorationRetriever = impl
 }

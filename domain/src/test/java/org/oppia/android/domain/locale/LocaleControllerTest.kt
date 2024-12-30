@@ -90,7 +90,7 @@ class LocaleControllerTest {
     setUpTestApplicationComponent()
   }
 
-  /* Tests for getLikelyDefaultAppStringLocaleContext & reconstituteDisplayLocale. */
+  // Tests for getLikelyDefaultAppStringLocaleContext & reconstituteDisplayLocale.
 
   @Test
   fun testGetLikelyDefaultAppStringLocaleContext_returnsAppStringContextForEnglish() {
@@ -117,9 +117,10 @@ class LocaleControllerTest {
   fun testReconstituteDisplayLocale_defaultContext_throwsException() {
     val context = OppiaLocaleContext.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() {
-      localeController.reconstituteDisplayLocale(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        localeController.reconstituteDisplayLocale(context)
+      }
 
     // A default locale context isn't valid by itself (though it can represent the root locale when
     // at least the app strings context is present & default).
@@ -135,15 +136,16 @@ class LocaleControllerTest {
     assertThat(locale.localeContext).isEqualTo(context)
   }
 
-  /* Tests for retrieveAppStringDisplayLocale. */
+  // Tests for retrieveAppStringDisplayLocale.
 
   @Test
   fun testAppStringLocale_rootLocale_noConfigLocale_printsErrorForDefaulting() {
-    context.applicationContext.resources.configuration.setLocale(null)
+    context.applicationContext.resources.configuration
+      .setLocale(null)
     Locale.setDefault(Locale.ROOT)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveAppStringDisplayLocale(ENGLISH)
+      localeController.retrieveAppStringDisplayLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
@@ -190,13 +192,13 @@ class LocaleControllerTest {
     forceDefaultLocale(INDIA_HINDI_LOCALE)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveAppStringDisplayLocale(ENGLISH)
+      localeController.retrieveAppStringDisplayLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
       .contains(
         "Notice: selected language $ENGLISH is not part of the corresponding region matched to" +
-          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]"
+          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]",
       )
   }
 
@@ -221,7 +223,7 @@ class LocaleControllerTest {
     forceDefaultLocale(Locale.US)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveAppStringDisplayLocale(LANGUAGE_UNSPECIFIED)
+      localeController.retrieveAppStringDisplayLocale(LANGUAGE_UNSPECIFIED),
     )
 
     assertThat(retrieveLogcatLogs())
@@ -361,15 +363,16 @@ class LocaleControllerTest {
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("MC")
   }
 
-  /* Tests for retrieveWrittenTranslationsLocale. */
+  // Tests for retrieveWrittenTranslationsLocale.
 
   @Test
   fun testContentLocale_rootLocale_noConfigLocale_printsErrorForDefaulting() {
-    context.applicationContext.resources.configuration.setLocale(null)
+    context.applicationContext.resources.configuration
+      .setLocale(null)
     Locale.setDefault(Locale.ROOT)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveWrittenTranslationsLocale(ENGLISH)
+      localeController.retrieveWrittenTranslationsLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
@@ -416,13 +419,13 @@ class LocaleControllerTest {
     forceDefaultLocale(INDIA_HINDI_LOCALE)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveWrittenTranslationsLocale(ENGLISH)
+      localeController.retrieveWrittenTranslationsLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
       .contains(
         "Notice: selected language $ENGLISH is not part of the corresponding region matched to" +
-          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]"
+          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]",
       )
   }
 
@@ -443,9 +446,10 @@ class LocaleControllerTest {
   fun testContentLocale_englishUsLocale_defaultLang_printsError() {
     forceDefaultLocale(Locale.US)
 
-    val monitor = monitorFactory.createMonitor(
-      localeController.retrieveWrittenTranslationsLocale(LANGUAGE_UNSPECIFIED)
-    )
+    val monitor =
+      monitorFactory.createMonitor(
+        localeController.retrieveWrittenTranslationsLocale(LANGUAGE_UNSPECIFIED),
+      )
     monitor.waitForNextResult()
 
     assertThat(retrieveLogcatLogs())
@@ -512,15 +516,16 @@ class LocaleControllerTest {
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("CA")
   }
 
-  /* Tests for retrieveAudioTranslationsLocale. */
+  // Tests for retrieveAudioTranslationsLocale.
 
   @Test
   fun testAudioLocale_rootLocale_noConfigLocale_printsErrorForDefaulting() {
-    context.applicationContext.resources.configuration.setLocale(null)
+    context.applicationContext.resources.configuration
+      .setLocale(null)
     Locale.setDefault(Locale.ROOT)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveAudioTranslationsLocale(ENGLISH)
+      localeController.retrieveAudioTranslationsLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
@@ -567,13 +572,13 @@ class LocaleControllerTest {
     forceDefaultLocale(INDIA_HINDI_LOCALE)
 
     monitorFactory.waitForNextSuccessfulResult(
-      localeController.retrieveAudioTranslationsLocale(ENGLISH)
+      localeController.retrieveAudioTranslationsLocale(ENGLISH),
     )
 
     assertThat(retrieveLogcatLogs())
       .contains(
         "Notice: selected language $ENGLISH is not part of the corresponding region matched to" +
-          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]"
+          " this locale: $INDIA (ID: IN) (supported languages: [$HINDI, $HINGLISH]",
       )
   }
 
@@ -589,7 +594,7 @@ class LocaleControllerTest {
       .hasMessageThat()
       .contains(
         "Language $LANGUAGE_UNSPECIFIED for usage $AUDIO_TRANSLATIONS doesn't match supported" +
-          " language definitions"
+          " language definitions",
       )
   }
 
@@ -597,9 +602,10 @@ class LocaleControllerTest {
   fun testAudioLocale_englishUsLocale_defaultLang_printsError() {
     forceDefaultLocale(Locale.US)
 
-    val monitor = monitorFactory.createMonitor(
-      localeController.retrieveAudioTranslationsLocale(LANGUAGE_UNSPECIFIED)
-    )
+    val monitor =
+      monitorFactory.createMonitor(
+        localeController.retrieveAudioTranslationsLocale(LANGUAGE_UNSPECIFIED),
+      )
     monitor.waitForNextResult()
 
     assertThat(retrieveLogcatLogs())
@@ -664,7 +670,7 @@ class LocaleControllerTest {
     assertThat(context.regionDefinition.regionId.ietfRegionTag).isEqualTo("CA")
   }
 
-  /* Tests for getSystemLocaleProfile. */
+  // Tests for getSystemLocaleProfile.
 
   @Test
   fun testSystemLanguage_rootLocale_returnsUnspecifiedLanguage() {
@@ -794,13 +800,14 @@ class LocaleControllerTest {
     monitor.verifyProviderIsNotUpdated()
   }
 
-  /* Tests for setAsDefault. */
+  // Tests for setAsDefault.
 
   @Test
   fun testSetAsDefault_customLocaleImpl_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      localeController.setAsDefault(mockDisplayLocale, Configuration())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        localeController.setAsDefault(mockDisplayLocale, Configuration())
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid display locale type passed in")
   }
@@ -868,7 +875,8 @@ class LocaleControllerTest {
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -884,9 +892,7 @@ class LocaleControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -898,8 +904,8 @@ class LocaleControllerTest {
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -913,9 +919,12 @@ class LocaleControllerTest {
     fun inject(localeControllerTest: LocaleControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLocaleControllerTest_TestApplicationComponent.builder()
+      DaggerLocaleControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -934,7 +943,7 @@ class LocaleControllerTest {
     private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
 
     private fun LocaleList.toList(): List<Locale> = (0 until size()).map { this[it] }
-    private fun LocaleList.hasLanguage(languageCode: String): Boolean =
-      toList().any { it.language == languageCode }
+
+    private fun LocaleList.hasLanguage(languageCode: String): Boolean = toList().any { it.language == languageCode }
   }
 }

@@ -38,7 +38,6 @@ class QuestionPlayerFragment :
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
   ShowHintAvailabilityListener {
-
   @Inject
   lateinit var questionPlayerFragmentPresenter: QuestionPlayerFragmentPresenter
 
@@ -51,21 +50,26 @@ class QuestionPlayerFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val args = checkNotNull(arguments) {
-      "Expected arguments to be passed to QuestionPlayerFragment"
-    }
-    val userAnswerState = savedInstanceState?.getProto(
-      QUESTION_PLAYER_FRAGMENT_STATE_KEY,
-      UserAnswerState.getDefaultInstance()
-    ) ?: UserAnswerState.getDefaultInstance()
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to QuestionPlayerFragment"
+      }
+    val userAnswerState =
+      savedInstanceState?.getProto(
+        QUESTION_PLAYER_FRAGMENT_STATE_KEY,
+        UserAnswerState.getDefaultInstance(),
+      ) ?: UserAnswerState.getDefaultInstance()
 
     val arguments =
       args.getProto(ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance())
     val profileId = arguments.profileId
     return questionPlayerFragmentPresenter.handleCreateView(
-      inflater, container, profileId, userAnswerState
+      inflater,
+      container,
+      profileId,
+      userAnswerState,
     )
   }
 
@@ -79,22 +83,21 @@ class QuestionPlayerFragment :
 
   override fun onReplayButtonClicked() = questionPlayerFragmentPresenter.onReplayButtonClicked()
 
-  override fun onReturnToTopicButtonClicked() =
-    questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
+  override fun onReturnToTopicButtonClicked() = questionPlayerFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = questionPlayerFragmentPresenter.onSubmitButtonClicked()
 
-  override fun onResponsesHeaderClicked() =
-    questionPlayerFragmentPresenter.onResponsesHeaderClicked()
+  override fun onResponsesHeaderClicked() = questionPlayerFragmentPresenter.onResponsesHeaderClicked()
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
-  ) =
-    questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
+    inputAnswerAvailable: Boolean,
+  ) = questionPlayerFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
 
-  override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
-    questionPlayerFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
+  override fun onHintAvailable(
+    helpIndex: HelpIndex,
+    isCurrentStatePendingState: Boolean,
+  ) = questionPlayerFragmentPresenter.onHintAvailable(helpIndex, isCurrentStatePendingState)
 
   fun handleKeyboardAction() = questionPlayerFragmentPresenter.handleKeyboardAction()
 
@@ -107,7 +110,6 @@ class QuestionPlayerFragment :
   }
 
   companion object {
-
     /** Arguments key for [QuestionPlayerFragment]. */
     const val ARGUMENTS_KEY = "QuestionPlayerFragment.arguments"
 
@@ -120,25 +122,31 @@ class QuestionPlayerFragment :
      * @param profileId the profile in which the question play session will be played
      * @return a new [QuestionPlayerFragment] to start a question play session
      */
-    fun newInstance(profileId: ProfileId, readingTextSize: ReadingTextSize):
-      QuestionPlayerFragment {
-        val args = QuestionPlayerFragmentArguments.newBuilder().apply {
-          this.profileId = profileId
-          this.readingTextSize = readingTextSize
-        }.build()
-        return QuestionPlayerFragment().apply {
-          arguments = Bundle().apply {
+    fun newInstance(
+      profileId: ProfileId,
+      readingTextSize: ReadingTextSize,
+    ): QuestionPlayerFragment {
+      val args =
+        QuestionPlayerFragmentArguments
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.readingTextSize = readingTextSize
+          }.build()
+      return QuestionPlayerFragment().apply {
+        arguments =
+          Bundle().apply {
             putProto(ARGUMENTS_KEY, args)
           }
-        }
       }
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     outState.putProto(
       QUESTION_PLAYER_FRAGMENT_STATE_KEY,
-      questionPlayerFragmentPresenter.getUserAnswerState()
+      questionPlayerFragmentPresenter.getUserAnswerState(),
     )
   }
 }

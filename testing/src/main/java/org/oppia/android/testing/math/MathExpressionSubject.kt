@@ -84,7 +84,7 @@ import org.oppia.android.util.math.toRawLatex
  */
 class MathExpressionSubject private constructor(
   metadata: FailureMetadata,
-  val actual: MathExpression
+  val actual: MathExpression,
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Begins the structure syntax matcher.
@@ -112,8 +112,7 @@ class MathExpressionSubject private constructor(
    * Note that this should only be used for numeric expressions as variable expressions cannot be
    * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
    */
-  fun evaluatesToIrrationalThat(): DoubleSubject =
-    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
+  fun evaluatesToIrrationalThat(): DoubleSubject = assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.IRRATIONAL).irrational)
 
   /**
    * Assumes that this expression evaluates to an integer (i.e. [Real.getInteger]) and returns an
@@ -122,8 +121,7 @@ class MathExpressionSubject private constructor(
    * Note that this should only be used for numeric expressions as variable expressions cannot be
    * evaluated. For more context on expression evaluation, see [evaluateAsNumericExpression].
    */
-  fun evaluatesToIntegerThat(): IntegerSubject =
-    assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
+  fun evaluatesToIntegerThat(): IntegerSubject = assertThat(evaluateAsReal(expectedType = Real.RealTypeCase.INTEGER).integer)
 
   /**
    * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
@@ -131,8 +129,7 @@ class MathExpressionSubject private constructor(
    * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
    * [convertsWithFractionsToLatexStringThat], retains division operations as-is.
    */
-  fun convertsToLatexStringThat(): StringSubject =
-    assertThat(convertToLatex(divAsFraction = false))
+  fun convertsToLatexStringThat(): StringSubject = assertThat(convertToLatex(divAsFraction = false))
 
   /**
    * Returns a [StringSubject] to verify the LaTeX conversion of the tested [MathExpression].
@@ -140,8 +137,7 @@ class MathExpressionSubject private constructor(
    * For more details on LaTeX conversion, see [toRawLatex]. Note that this method, in contrast to
    * [convertsToLatexStringThat], treats divisions as fractions.
    */
-  fun convertsWithFractionsToLatexStringThat(): StringSubject =
-    assertThat(convertToLatex(divAsFraction = true))
+  fun convertsWithFractionsToLatexStringThat(): StringSubject = assertThat(convertToLatex(divAsFraction = true))
 
   private fun evaluateAsReal(expectedType: Real.RealTypeCase): Real {
     val real = actual.evaluateAsNumericExpression()
@@ -175,7 +171,9 @@ class MathExpressionSubject private constructor(
    * a nested expression (such as through groups).
    */
   @ExpressionComparatorMarker
-  class ExpressionComparator private constructor(private val expression: MathExpression) {
+  class ExpressionComparator private constructor(
+    private val expression: MathExpression,
+  ) {
     /**
      * Begins structure matching for this expression as a constant per [MathExpression.getConstant].
      *
@@ -204,10 +202,11 @@ class MathExpressionSubject private constructor(
      * operation. See [BinaryOperationComparator] for example syntax.
      */
     fun addition(init: BinaryOperationComparator.() -> Unit) {
-      BinaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathBinaryOperation.Operator.ADD
-      ).also(init)
+      BinaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathBinaryOperation.Operator.ADD,
+        ).also(init)
     }
 
     /**
@@ -218,10 +217,11 @@ class MathExpressionSubject private constructor(
      * operation. See [BinaryOperationComparator] for example syntax.
      */
     fun subtraction(init: BinaryOperationComparator.() -> Unit) {
-      BinaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathBinaryOperation.Operator.SUBTRACT
-      ).also(init)
+      BinaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathBinaryOperation.Operator.SUBTRACT,
+        ).also(init)
     }
 
     /**
@@ -234,15 +234,19 @@ class MathExpressionSubject private constructor(
      * This verifies that the multiplication operation is explicit by default, and this behavior can
      * be overwritten using [isImplicit].
      */
-    fun multiplication(isImplicit: Boolean = false, init: BinaryOperationComparator.() -> Unit) {
-      BinaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathBinaryOperation.Operator.MULTIPLY
-      ).also {
-        assertWithMessage(
-          "Expected multiplication to be ${if (isImplicit) "implicit" else "explicit" }"
-        ).that(expression.binaryOperation.isImplicit).isEqualTo(isImplicit)
-      }.also(init)
+    fun multiplication(
+      isImplicit: Boolean = false,
+      init: BinaryOperationComparator.() -> Unit,
+    ) {
+      BinaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathBinaryOperation.Operator.MULTIPLY,
+        ).also {
+          assertWithMessage(
+            "Expected multiplication to be ${if (isImplicit) "implicit" else "explicit" }",
+          ).that(expression.binaryOperation.isImplicit).isEqualTo(isImplicit)
+        }.also(init)
     }
 
     /**
@@ -253,10 +257,11 @@ class MathExpressionSubject private constructor(
      * operation. See [BinaryOperationComparator] for example syntax.
      */
     fun division(init: BinaryOperationComparator.() -> Unit) {
-      BinaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathBinaryOperation.Operator.DIVIDE
-      ).also(init)
+      BinaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathBinaryOperation.Operator.DIVIDE,
+        ).also(init)
     }
 
     /**
@@ -267,10 +272,11 @@ class MathExpressionSubject private constructor(
      * operation. See [BinaryOperationComparator] for example syntax.
      */
     fun exponentiation(init: BinaryOperationComparator.() -> Unit) {
-      BinaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathBinaryOperation.Operator.EXPONENTIATE
-      ).also(init)
+      BinaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathBinaryOperation.Operator.EXPONENTIATE,
+        ).also(init)
     }
 
     /**
@@ -281,10 +287,11 @@ class MathExpressionSubject private constructor(
      * operation. See [UnaryOperationComparator] for example syntax.
      */
     fun negation(init: UnaryOperationComparator.() -> Unit) {
-      UnaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathUnaryOperation.Operator.NEGATE
-      ).also(init)
+      UnaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathUnaryOperation.Operator.NEGATE,
+        ).also(init)
     }
 
     /**
@@ -295,10 +302,11 @@ class MathExpressionSubject private constructor(
      * operation. See [UnaryOperationComparator] for example syntax.
      */
     fun positive(init: UnaryOperationComparator.() -> Unit) {
-      UnaryOperationComparator.createFromExpression(
-        expression,
-        expectedOperator = MathUnaryOperation.Operator.POSITIVE
-      ).also(init)
+      UnaryOperationComparator
+        .createFromExpression(
+          expression,
+          expectedOperator = MathUnaryOperation.Operator.POSITIVE,
+        ).also(init)
     }
 
     /**
@@ -310,11 +318,13 @@ class MathExpressionSubject private constructor(
      */
     fun functionCallTo(
       type: MathFunctionCall.FunctionType,
-      init: FunctionCallComparator.() -> Unit
+      init: FunctionCallComparator.() -> Unit,
     ) {
-      FunctionCallComparator.createFromExpression(
-        expression, expectedFunctionType = type
-      ).also(init)
+      FunctionCallComparator
+        .createFromExpression(
+          expression,
+          expectedFunctionType = type,
+        ).also(init)
     }
 
     /**
@@ -338,8 +348,7 @@ class MathExpressionSubject private constructor(
 
     internal companion object {
       /** Returns a new [ExpressionComparator] corresponding to the specified [MathExpression]. */
-      fun createFromExpression(expression: MathExpression): ExpressionComparator =
-        ExpressionComparator(expression)
+      fun createFromExpression(expression: MathExpression): ExpressionComparator = ExpressionComparator(expression)
     }
   }
 
@@ -357,7 +366,9 @@ class MathExpressionSubject private constructor(
    * This comparator provides access to a [RealSubject] to verify the actual constant value.
    */
   @ExpressionComparatorMarker
-  class ConstantComparator private constructor(private val constant: Real) {
+  class ConstantComparator private constructor(
+    private val constant: Real,
+  ) {
     /**
      * Returns a [RealSubject] to verify the constant that's being represented by this comparator.
      */
@@ -389,7 +400,9 @@ class MathExpressionSubject private constructor(
    * This comparator provides access to a [StringSubject] to verify the actual variable value.
    */
   @ExpressionComparatorMarker
-  class VariableComparator private constructor(private val variableName: String) {
+  class VariableComparator private constructor(
+    private val variableName: String,
+  ) {
     /**
      * Returns a [StringSubject] to verify the variable that's being represented by this comparator.
      */
@@ -428,7 +441,7 @@ class MathExpressionSubject private constructor(
    */
   @ExpressionComparatorMarker
   class BinaryOperationComparator private constructor(
-    private val operation: MathBinaryOperation
+    private val operation: MathBinaryOperation,
   ) {
     /**
      * Begins structure matching this operation's left operand per
@@ -459,7 +472,7 @@ class MathExpressionSubject private constructor(
        */
       fun createFromExpression(
         expression: MathExpression,
-        expectedOperator: MathBinaryOperation.Operator
+        expectedOperator: MathBinaryOperation.Operator,
       ): BinaryOperationComparator {
         assertThat(expression.expressionTypeCase).isEqualTo(BINARY_OPERATION)
         assertWithMessage("Expected binary operation with operator: $expectedOperator")
@@ -487,7 +500,7 @@ class MathExpressionSubject private constructor(
    */
   @ExpressionComparatorMarker
   class UnaryOperationComparator private constructor(
-    private val operation: MathUnaryOperation
+    private val operation: MathUnaryOperation,
   ) {
     /**
      * Begins structure matching this operation's operand per [MathUnaryOperation.getOperand] for
@@ -507,7 +520,7 @@ class MathExpressionSubject private constructor(
        */
       fun createFromExpression(
         expression: MathExpression,
-        expectedOperator: MathUnaryOperation.Operator
+        expectedOperator: MathUnaryOperation.Operator,
       ): UnaryOperationComparator {
         assertThat(expression.expressionTypeCase).isEqualTo(UNARY_OPERATION)
         assertWithMessage("Expected unary operation with operator: $expectedOperator")
@@ -535,7 +548,7 @@ class MathExpressionSubject private constructor(
    */
   @ExpressionComparatorMarker
   class FunctionCallComparator private constructor(
-    private val functionCall: MathFunctionCall
+    private val functionCall: MathFunctionCall,
   ) {
     /**
      * Begins structure matching the function call's argument per [MathFunctionCall.getArgument] for
@@ -555,7 +568,7 @@ class MathExpressionSubject private constructor(
        */
       fun createFromExpression(
         expression: MathExpression,
-        expectedFunctionType: MathFunctionCall.FunctionType
+        expectedFunctionType: MathFunctionCall.FunctionType,
       ): FunctionCallComparator {
         assertThat(expression.expressionTypeCase).isEqualTo(FUNCTION_CALL)
         assertWithMessage("Expected function call to: $expectedFunctionType")
@@ -574,7 +587,6 @@ class MathExpressionSubject private constructor(
      * Returns a new [MathExpressionSubject] to verify aspects of the specified [MathExpression]
      * value.
      */
-    fun assertThat(actual: MathExpression): MathExpressionSubject =
-      assertAbout(::MathExpressionSubject).that(actual)
+    fun assertThat(actual: MathExpression): MathExpressionSubject = assertAbout(::MathExpressionSubject).that(actual)
   }
 }

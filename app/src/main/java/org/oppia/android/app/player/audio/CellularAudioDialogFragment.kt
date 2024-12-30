@@ -21,9 +21,7 @@ class CellularAudioDialogFragment : InjectableDialogFragment() {
      *
      * @return [CellularAudioDialogFragment]: DialogFragment
      */
-    fun newInstance(): CellularAudioDialogFragment {
-      return CellularAudioDialogFragment()
-    }
+    fun newInstance(): CellularAudioDialogFragment = CellularAudioDialogFragment()
   }
 
   override fun onAttach(context: Context) {
@@ -45,11 +43,9 @@ class CellularAudioDialogFragment : InjectableDialogFragment() {
       .setPositiveButton(R.string.cellular_data_alert_dialog_okay_button) { _, _ ->
         cellularDataInterface.enableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
-      }
-      .setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
+      }.setNegativeButton(R.string.cellular_data_alert_dialog_cancel_button) { _, _ ->
         cellularDataInterface.disableAudioWhileOnCellular(checkBox.isChecked)
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

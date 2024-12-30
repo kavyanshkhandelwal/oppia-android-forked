@@ -49,10 +49,15 @@ private const val TEST_TIMESTAMP_IN_MILLIS_FOUR = 1556094000000
 @Config(application = ExceptionsControllerTest.TestApplication::class)
 class ExceptionsControllerTest {
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var exceptionsController: ExceptionsController
+
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -139,19 +144,19 @@ class ExceptionsControllerTest {
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
-      TEST_TIMESTAMP_IN_MILLIS_ONE
+      TEST_TIMESTAMP_IN_MILLIS_ONE,
     )
     exceptionsController.logNonFatalException(
       Exception("TEST2", Throwable("TWO")),
-      TEST_TIMESTAMP_IN_MILLIS_TWO
+      TEST_TIMESTAMP_IN_MILLIS_TWO,
     )
     exceptionsController.logFatalException(
       Exception("TEST3", Throwable("THREE")),
-      TEST_TIMESTAMP_IN_MILLIS_THREE
+      TEST_TIMESTAMP_IN_MILLIS_THREE,
     )
     exceptionsController.logFatalException(
       Exception("TEST4", Throwable("FOUR")),
-      TEST_TIMESTAMP_IN_MILLIS_FOUR
+      TEST_TIMESTAMP_IN_MILLIS_FOUR,
     )
 
     val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
@@ -185,15 +190,15 @@ class ExceptionsControllerTest {
 
     exceptionsController.logFatalException(
       Exception("TEST1", Throwable("ONE")),
-      TEST_TIMESTAMP_IN_MILLIS_ONE
+      TEST_TIMESTAMP_IN_MILLIS_ONE,
     )
     exceptionsController.logNonFatalException(
       Exception("TEST2", Throwable("TWO")),
-      TEST_TIMESTAMP_IN_MILLIS_TWO
+      TEST_TIMESTAMP_IN_MILLIS_TWO,
     )
     exceptionsController.logFatalException(
       Exception("TEST3", Throwable("THREE")),
-      TEST_TIMESTAMP_IN_MILLIS_THREE
+      TEST_TIMESTAMP_IN_MILLIS_THREE,
     )
 
     val cachedExceptionsProvider = exceptionsController.getExceptionLogStore()
@@ -294,7 +299,7 @@ class ExceptionsControllerTest {
         element.fileName,
         element.methodName,
         element.lineNumber,
-        element.className
+        element.className,
       )
     }
   }
@@ -308,9 +313,7 @@ class ExceptionsControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -329,7 +332,6 @@ class ExceptionsControllerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @ExceptionLogStorageCacheSize
     fun provideExceptionLogStorageCacheSize(): Int = 2
@@ -341,23 +343,27 @@ class ExceptionsControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
       TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
-    ]
+      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(exceptionsControllerTest: ExceptionsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExceptionsControllerTest_TestApplicationComponent.builder()
+      DaggerExceptionsControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

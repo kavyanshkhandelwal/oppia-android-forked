@@ -21,9 +21,7 @@ class StopExplorationDialogFragment : InjectableDialogFragment() {
      *
      * @return [StopExplorationDialogFragment]: DialogFragment
      */
-    fun newInstance(): StopExplorationDialogFragment {
-      return StopExplorationDialogFragment()
-    }
+    fun newInstance(): StopExplorationDialogFragment = StopExplorationDialogFragment()
   }
 
   override fun onAttach(context: Context) {
@@ -42,10 +40,8 @@ class StopExplorationDialogFragment : InjectableDialogFragment() {
       .setPositiveButton(R.string.stop_exploration_dialog_leave_button) { _, _ ->
         stopStatePlayingSessionListener.stopSession()
         dismiss()
-      }
-      .setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { _, _ ->
+      }.setNegativeButton(R.string.stop_exploration_dialog_cancel_button) { _, _ ->
         dismiss()
-      }
-      .create()
+      }.create()
   }
 }

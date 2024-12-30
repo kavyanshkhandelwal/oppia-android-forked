@@ -18,36 +18,37 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/TextInput/directives/text-input-rules.service.ts#L64
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class TextInputStartsWithRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val translationController: TranslationController
-) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
-
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createMultiTypeSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
-      InteractionObject.ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING,
-      "x",
-      this
-    )
-  }
-
-  override fun matches(
-    answer: String,
-    input: TranslatableSetOfNormalizedString,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val normalizedAnswer = machineLocale.run { answer.normalizeWhitespace().toMachineLowerCase() }
-    val inputStringList =
-      translationController.extractStringList(
-        input, classificationContext.writtenTranslationContext
+class TextInputStartsWithRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val machineLocale: OppiaLocale.MachineLocale,
+    private val translationController: TranslationController,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeSingleInputMatcher<String, TranslatableSetOfNormalizedString> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createMultiTypeSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.NORMALIZED_STRING,
+        InteractionObject.ObjectTypeCase.TRANSLATABLE_SET_OF_NORMALIZED_STRING,
+        "x",
+        this,
       )
-    return inputStringList.any {
-      normalizedAnswer.startsWith(
-        machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() }
-      )
+
+    override fun matches(
+      answer: String,
+      input: TranslatableSetOfNormalizedString,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val normalizedAnswer = machineLocale.run { answer.normalizeWhitespace().toMachineLowerCase() }
+      val inputStringList =
+        translationController.extractStringList(
+          input,
+          classificationContext.writtenTranslationContext,
+        )
+      return inputStringList.any {
+        normalizedAnswer.startsWith(
+          machineLocale.run { it.normalizeWhitespace().toMachineLowerCase() },
+        )
+      }
     }
   }
-}

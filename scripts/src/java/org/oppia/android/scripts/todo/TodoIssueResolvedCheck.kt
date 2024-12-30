@@ -35,23 +35,24 @@ fun main(vararg args: String) {
 
   val allTodos = TodoCollector.collectCorrectlyFormattedTodos(TodoCollector.collectTodos(repoPath))
 
-  val todoIssueResolvedFailures = allTodos.filter { todo ->
-    checkIfTodoIssueResolvedFailure(
-      codeLine = todo.lineContent,
-      closedIssueNumber = closedIssueNumber
-    )
-  }
+  val todoIssueResolvedFailures =
+    allTodos.filter { todo ->
+      checkIfTodoIssueResolvedFailure(
+        codeLine = todo.lineContent,
+        closedIssueNumber = closedIssueNumber,
+      )
+    }
 
   logFailures(
     repoRoot,
     todoIssueResolvedFailures = todoIssueResolvedFailures,
-    failureMessage = "The following TODOs are unresolved for the closed issue:"
+    failureMessage = "The following TODOs are unresolved for the closed issue:",
   )
 
   if (todoIssueResolvedFailures.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#todo-issue-resolved-check for more details on how to fix this.\n"
+        "#todo-issue-resolved-check for more details on how to fix this.\n",
     )
   }
 
@@ -69,7 +70,10 @@ fun main(vararg args: String) {
  * @param codeLine line content corresponding to the todo
  * @param closedIssueNumber issue number of the closed issue
  */
-private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber: Int): Boolean {
+private fun checkIfTodoIssueResolvedFailure(
+  codeLine: String,
+  closedIssueNumber: Int,
+): Boolean {
   val parsedIssueNumberFromTodo = TodoCollector.parseIssueNumberFromTodo(codeLine)
   return parsedIssueNumberFromTodo == closedIssueNumber
 }
@@ -85,14 +89,15 @@ private fun checkIfTodoIssueResolvedFailure(codeLine: String, closedIssueNumber:
 private fun generateTodoListFile(
   repoRoot: File,
   todoIssueResolvedFailures: List<Todo>,
-  githubPermalinkUrl: String
+  githubPermalinkUrl: String,
 ) {
   val todoListFile = File(repoRoot, "script_failures.txt")
   todoListFile.appendText("The issue is reopened because of the following unresolved TODOs:\n")
-  todoIssueResolvedFailures.sortedWith(compareBy({ it.file.path }, { it.lineNumber }))
+  todoIssueResolvedFailures
+    .sortedWith(compareBy({ it.file.path }, { it.lineNumber }))
     .forEach { todo ->
       todoListFile.appendText(
-        "$githubPermalinkUrl/${(todo.file.toRelativeString(repoRoot))}#L${todo.lineNumber}\n"
+        "$githubPermalinkUrl/${(todo.file.toRelativeString(repoRoot))}#L${todo.lineNumber}\n",
       )
     }
 }
@@ -107,7 +112,7 @@ private fun generateTodoListFile(
 private fun logFailures(
   repoRoot: File,
   todoIssueResolvedFailures: List<Todo>,
-  failureMessage: String
+  failureMessage: String,
 ) {
   if (todoIssueResolvedFailures.isNotEmpty()) {
     println(failureMessage)

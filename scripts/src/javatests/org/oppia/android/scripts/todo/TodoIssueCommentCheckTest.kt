@@ -49,9 +49,10 @@ class TodoIssueCommentCheckTest {
     latestCommentFile.writeText(latestCommentContent)
     scriptFailureCommentFile.writeText(scriptFailureCommentContent)
 
-    val exception = assertThrows<Exception>() {
-      main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
+      }
     assertThat(exception).hasMessageThat().contains("NEW COMMENT SHOULD BE POSTED")
   }
 
@@ -78,9 +79,10 @@ class TodoIssueCommentCheckTest {
     latestCommentFile.writeText(latestCommentContent)
     scriptFailureCommentFile.writeText(scriptFailureCommentContent)
 
-    val exception = assertThrows<Exception>() {
-      main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
+      }
     assertThat(exception).hasMessageThat().contains("NEW COMMENT SHOULD BE POSTED")
   }
 
@@ -107,9 +109,10 @@ class TodoIssueCommentCheckTest {
     latestCommentFile.writeText(latestCommentContent)
     scriptFailureCommentFile.writeText(scriptFailureCommentContent)
 
-    val exception = assertThrows<Exception>() {
-      main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
-    }
+    val exception =
+      assertThrows<Exception> {
+        main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
+      }
     assertThat(exception).hasMessageThat().contains("NEW COMMENT SHOULD BE POSTED")
   }
 
@@ -138,7 +141,7 @@ class TodoIssueCommentCheckTest {
     main(tempFolder.root.toString(), "latest_comment.txt", "script_failures.txt")
 
     assertThat(outContent.toString().trim()).isEqualTo(
-      "LATEST COMMENT IS SAME AS THE FAILURE COMMENT"
+      "LATEST COMMENT IS SAME AS THE FAILURE COMMENT",
     )
   }
 }

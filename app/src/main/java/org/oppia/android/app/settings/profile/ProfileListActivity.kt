@@ -32,17 +32,16 @@ class ProfileListActivity :
       ProfileEditActivity.createProfileEditActivity(
         context = this,
         profileId = profileId,
-        isMultipane = false
-      )
+        isMultipane = false,
+      ),
     )
   }
 
   companion object {
     /** Returns a new [Intent] to route to [ProfileListActivity]. */
-    fun createProfileListActivityIntent(context: Context): Intent {
-      return Intent(context, ProfileListActivity::class.java).apply {
+    fun createProfileListActivityIntent(context: Context): Intent =
+      Intent(context, ProfileListActivity::class.java).apply {
         decorateWithScreenName(PROFILE_LIST_ACTIVITY)
       }
-    }
   }
 }

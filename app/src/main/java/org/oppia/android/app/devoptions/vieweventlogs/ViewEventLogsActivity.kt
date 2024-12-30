@@ -27,10 +27,9 @@ class ViewEventLogsActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    fun createViewEventLogsActivityIntent(context: Context): Intent {
-      return Intent(context, ViewEventLogsActivity::class.java).apply {
+    fun createViewEventLogsActivityIntent(context: Context): Intent =
+      Intent(context, ViewEventLogsActivity::class.java).apply {
         decorateWithScreenName(VIEW_EVENT_LOGS_ACTIVITY)
       }
-    }
   }
 }

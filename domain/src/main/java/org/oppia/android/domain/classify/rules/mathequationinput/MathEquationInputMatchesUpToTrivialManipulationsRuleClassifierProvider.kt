@@ -26,62 +26,61 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraic
  * See this class's tests for a list of supported cases (both for matching and not matching).
  */
 class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
-@Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val consoleLogger: ConsoleLogger
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val consoleLogger: ConsoleLogger,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<String> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun matches(
-    answer: String,
-    input: String,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val allowedVariables = classificationContext.extractAllowedVariables()
-    val (answerLhs, answerRhs) =
-      parseComparableLists(answer, allowedVariables, ALL_ERRORS) ?: return false
-    val (inputLhs, inputRhs) =
-      parseComparableLists(input, allowedVariables, REQUIRED_ONLY) ?: return false
+    override fun matches(
+      answer: String,
+      input: String,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val allowedVariables = classificationContext.extractAllowedVariables()
+      val (answerLhs, answerRhs) =
+        parseComparableLists(answer, allowedVariables, ALL_ERRORS) ?: return false
+      val (inputLhs, inputRhs) =
+        parseComparableLists(input, allowedVariables, REQUIRED_ONLY) ?: return false
 
-    // Sides must match (reordering around the '=' is not allowed by this classifier).
-    return answerLhs.isApproximatelyEqualTo(inputLhs) && answerRhs.isApproximatelyEqualTo(inputRhs)
-  }
+      // Sides must match (reordering around the '=' is not allowed by this classifier).
+      return answerLhs.isApproximatelyEqualTo(inputLhs) && answerRhs.isApproximatelyEqualTo(inputRhs)
+    }
 
-  private fun parseComparableLists(
-    rawEquation: String,
-    allowedVariables: List<String>,
-    checkingMode: ErrorCheckingMode
-  ): Pair<ComparableOperation, ComparableOperation>? {
-    return when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
-      is MathParsingResult.Success -> {
-        val lhsExp = eqResult.result.leftSide
-        val rhsExp = eqResult.result.rightSide
-        lhsExp.toComparableOperation() to rhsExp.toComparableOperation()
+    private fun parseComparableLists(
+      rawEquation: String,
+      allowedVariables: List<String>,
+      checkingMode: ErrorCheckingMode,
+    ): Pair<ComparableOperation, ComparableOperation>? =
+      when (val eqResult = parseEquation(rawEquation, allowedVariables, checkingMode)) {
+        is MathParsingResult.Success -> {
+          val lhsExp = eqResult.result.leftSide
+          val rhsExp = eqResult.result.rightSide
+          lhsExp.toComparableOperation() to rhsExp.toComparableOperation()
+        }
+        is MathParsingResult.Failure -> {
+          consoleLogger.e(
+            "AlgebraEqTrivialManips",
+            "Encountered equation that failed parsing. Equation: $rawEquation." +
+              " Failure: ${eqResult.error}.",
+          )
+          null
+        }
       }
-      is MathParsingResult.Failure -> {
-        consoleLogger.e(
-          "AlgebraEqTrivialManips",
-          "Encountered equation that failed parsing. Equation: $rawEquation." +
-            " Failure: ${eqResult.error}."
-        )
-        null
-      }
+
+    private companion object {
+      private fun ClassificationContext.extractAllowedVariables(): List<String> =
+        customizationArgs["customOskLetters"]
+          ?.schemaObjectList
+          ?.schemaObjectList
+          ?.map { it.normalizedString }
+          ?: listOf()
     }
   }
-
-  private companion object {
-    private fun ClassificationContext.extractAllowedVariables(): List<String> {
-      return customizationArgs["customOskLetters"]
-        ?.schemaObjectList
-        ?.schemaObjectList
-        ?.map { it.normalizedString }
-        ?: listOf()
-    }
-  }
-}

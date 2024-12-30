@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 /** Fragment that contains third-party dependency list in the app. */
 class ThirdPartyDependencyListFragment : InjectableFragment() {
-
   @Inject
   lateinit var thirdPartyDependencyListFragmentPresenter: ThirdPartyDependencyListFragmentPresenter
 
@@ -29,9 +28,10 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
         ThirdPartyDependencyListFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
 
       return ThirdPartyDependencyListFragment().apply {
-        arguments = Bundle().apply {
-          putProto(THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -44,20 +44,22 @@ class ThirdPartyDependencyListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to ThirdPartyDependencyListFragment"
-    }
-    val args = arguments.getProto(
-      THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY,
-      ThirdPartyDependencyListFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to ThirdPartyDependencyListFragment"
+      }
+    val args =
+      arguments.getProto(
+        THIRD_PARTY_DEPENDENCY_LIST_FRAGMENT_ARGUMENTS_KEY,
+        ThirdPartyDependencyListFragmentArguments.getDefaultInstance(),
+      )
     val isMultipane = args?.isMultipane ?: false
     return thirdPartyDependencyListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      isMultipane
+      isMultipane,
     )
   }
 }

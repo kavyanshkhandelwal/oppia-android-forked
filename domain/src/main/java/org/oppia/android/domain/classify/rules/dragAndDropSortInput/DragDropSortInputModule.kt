@@ -15,7 +15,7 @@ class DragDropSortInputModule {
   @StringKey("HasElementXAtPositionY")
   @DragDropSortInputRules
   internal fun provideDragDropSortInputHasElementXAtPositionYRuleClassifier(
-    classifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider
+    classifierProvider: DragDropSortInputHasElementXAtPositionYClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,7 +23,7 @@ class DragDropSortInputModule {
   @StringKey("IsEqualToOrdering")
   @DragDropSortInputRules
   internal fun provideDragDropSortInputIsEqualToOrderingRuleClassifier(
-    classifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider
+    classifierProvider: DragDropSortInputIsEqualToOrderingClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -31,15 +31,15 @@ class DragDropSortInputModule {
   @StringKey("HasElementXBeforeElementY")
   @DragDropSortInputRules
   internal fun provideDragDropSortInputHasElementXBeforeElementYRuleClassifier(
-    classifierProvider: DragDropSortInputHasElementXBeforeElementYClassifierProvider
+    classifierProvider: DragDropSortInputHasElementXBeforeElementYClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
   @IntoMap
   @StringKey("IsEqualToOrderingWithOneItemAtIncorrectPosition")
   @DragDropSortInputRules
-  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier( // ktlint-disable max-line-length
-    classifierProvider:
-      DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
+  internal fun provideDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionRuleClassifier(
+    @Suppress("ktlint:standard:max-line-length")
+    classifierProvider: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

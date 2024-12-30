@@ -13,37 +13,40 @@ import javax.inject.Inject
 
 /** The presenter for [SpotlightFragmentTestActivity]. */
 @ActivityScope
-class SpotlightFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
+class SpotlightFragmentTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    private lateinit var binding: SpotlightFragmentTestActivityBinding
 
-  private lateinit var binding: SpotlightFragmentTestActivityBinding
+    /** Handles onCreate() method of the [SpotlightFragmentTestActivity]. */
+    fun handleOnCreate(internalProfileId: Int) {
+      binding = SpotlightFragmentTestActivityBinding.inflate(activity.layoutInflater)
+      activity.setContentView(binding.root)
 
-  /** Handles onCreate() method of the [SpotlightFragmentTestActivity]. */
-  fun handleOnCreate(internalProfileId: Int) {
-    binding = SpotlightFragmentTestActivityBinding.inflate(activity.layoutInflater)
-    activity.setContentView(binding.root)
-
-    if (getSpotlightFragment() == null) {
-      val spotlightFragment = SpotlightFragment()
-      val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
-      val args = Bundle()
-      args.decorateWithUserProfileId(profileId)
-      spotlightFragment.arguments = args
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.test_spotlight_overlay_placeholder,
-        spotlightFragment, SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-      ).commitNow()
+      if (getSpotlightFragment() == null) {
+        val spotlightFragment = SpotlightFragment()
+        val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
+        val args = Bundle()
+        args.decorateWithUserProfileId(profileId)
+        spotlightFragment.arguments = args
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.test_spotlight_overlay_placeholder,
+            spotlightFragment,
+            SpotlightManager.SPOTLIGHT_FRAGMENT_TAG,
+          ).commitNow()
+      }
     }
-  }
 
-  /** Returns the spotlight fragment. */
-  fun getSpotlightFragment(): SpotlightFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightFragment
-  }
+    /** Returns the spotlight fragment. */
+    fun getSpotlightFragment(): SpotlightFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG,
+      ) as? SpotlightFragment
 
-  /** Returns a view to be used as a spotlight anchor. */
-  fun getSampleSpotlightTarget() = binding.sampleSpotlightTarget
-}
+    /** Returns a view to be used as a spotlight anchor. */
+    fun getSampleSpotlightTarget() = binding.sampleSpotlightTarget
+  }

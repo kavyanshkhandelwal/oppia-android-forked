@@ -32,9 +32,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakePerformanceMetricsEventLoggerTest {
-
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
   @Inject
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
 
@@ -78,7 +78,7 @@ class FakePerformanceMetricsEventLoggerTest {
 
   @Test
   fun testFakeMetricsEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
   }
@@ -88,7 +88,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     }
   }
@@ -133,12 +133,14 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
 
-    val eventLogStatus1 = fakePerformanceMetricsEventLogger.hasPerformanceMetricsEventLogged(
-      metricLog1
-    )
-    val eventLogStatus2 = fakePerformanceMetricsEventLogger.hasPerformanceMetricsEventLogged(
-      metricLog2
-    )
+    val eventLogStatus1 =
+      fakePerformanceMetricsEventLogger.hasPerformanceMetricsEventLogged(
+        metricLog1,
+      )
+    val eventLogStatus2 =
+      fakePerformanceMetricsEventLogger.hasPerformanceMetricsEventLogged(
+        metricLog2,
+      )
     val eventListStatus = fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()
 
     assertThat(eventListStatus).isFalse()
@@ -148,7 +150,7 @@ class FakePerformanceMetricsEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       fakePerformanceMetricsEventLogger.getOldestPerformanceMetricsEvent()
     }
   }
@@ -178,7 +180,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       fakePerformanceMetricsEventLogger.getOldestPerformanceMetricsEvent()
     }
   }
@@ -196,9 +198,10 @@ class FakePerformanceMetricsEventLoggerTest {
 
   @Test
   fun testGetMostRecentEvents_twoEvents_noEventsLogged_returnsEmptyList() {
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 2
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 2,
+      )
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -207,9 +210,10 @@ class FakePerformanceMetricsEventLoggerTest {
   fun testGetMostRecentEvents_twoEvents_oneEventLogged_returnsOneItemList() {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 2
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 2,
+      )
 
     assertThat(mostRecentEvents).containsExactly(metricLog1)
   }
@@ -219,9 +223,10 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 2
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 2,
+      )
 
     assertThat(mostRecentEvents).containsExactly(metricLog2, metricLog1).inOrder()
   }
@@ -231,9 +236,10 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 1
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 1,
+      )
 
     assertThat(mostRecentEvents).containsExactly(metricLog1)
   }
@@ -243,9 +249,10 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 0
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 0,
+      )
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -255,7 +262,7 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
 
-    assertThrows<IllegalArgumentException>() {
+    assertThrows<IllegalArgumentException> {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(count = -1)
     }
   }
@@ -266,9 +273,10 @@ class FakePerformanceMetricsEventLoggerTest {
     performanceMetricsEventLogger.logPerformanceMetric(metricLog1)
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 2
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 2,
+      )
 
     assertThat(mostRecentEvents).isEmpty()
   }
@@ -279,15 +287,17 @@ class FakePerformanceMetricsEventLoggerTest {
     fakePerformanceMetricsEventLogger.clearAllPerformanceMetricsEvents()
     performanceMetricsEventLogger.logPerformanceMetric(metricLog2)
 
-    val mostRecentEvents = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-      count = 2
-    )
+    val mostRecentEvents =
+      fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+        count = 2,
+      )
 
     assertThat(mostRecentEvents).containsExactly(metricLog2)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakePerformanceMetricsEventLoggerTest_TestApplicationComponent.builder()
+    DaggerFakePerformanceMetricsEventLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -298,9 +308,7 @@ class FakePerformanceMetricsEventLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -308,14 +316,15 @@ class FakePerformanceMetricsEventLoggerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
-    ]
+      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

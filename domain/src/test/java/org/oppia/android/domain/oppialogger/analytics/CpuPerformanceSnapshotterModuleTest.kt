@@ -78,7 +78,6 @@ class CpuPerformanceSnapshotterModuleTest {
 
   @Module
   class TestLoggingIdentifierModule {
-
     companion object {
       const val applicationIdSeed = 1L
     }
@@ -97,23 +96,27 @@ class CpuPerformanceSnapshotterModuleTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
-    ]
+      LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: CpuPerformanceSnapshotterModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCpuPerformanceSnapshotterModuleTest_TestApplicationComponent.builder()
+      DaggerCpuPerformanceSnapshotterModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

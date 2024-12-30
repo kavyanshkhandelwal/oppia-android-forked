@@ -12,13 +12,12 @@ import javax.inject.Singleton
 /** Provides [Configuration] for the work manager. */
 @Module
 class WorkManagerConfigurationModule {
-
   @Singleton
   @Provides
   fun provideWorkManagerConfiguration(
     logUploadWorkerFactory: LogUploadWorkerFactory,
     platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory,
-    metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory
+    metricLogSchedulingWorkerFactory: MetricLogSchedulingWorkerFactory,
   ): Configuration {
     val delegatingWorkerFactory = DelegatingWorkerFactory()
     delegatingWorkerFactory.addFactory(logUploadWorkerFactory)

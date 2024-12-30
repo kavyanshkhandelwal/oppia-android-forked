@@ -128,7 +128,7 @@ private const val TEST_SUB_TOPIC_ID = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ViewEventLogsFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ViewEventLogsFragmentTest {
   @get:Rule
@@ -219,37 +219,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Optional Response",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Home",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = "Open Profile Chooser",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
     }
   }
@@ -263,37 +263,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Optional Response",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Open Home",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = "Open Profile Chooser",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
     }
   }
@@ -305,42 +305,42 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 0,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Optional Response",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 1)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 1,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 2)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 2,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 3)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 3,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
     }
   }
@@ -353,42 +353,42 @@ class ViewEventLogsFragmentTest {
       scrollToPosition(position = 0)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 0,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Optional Response",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 1)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 1,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Open Revision Card",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 2)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 2,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Open Story Activity",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       scrollToPosition(position = 3)
       verifyItemDisplayedOnEventLogItemViewAtPosition(
         position = 3,
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Open Lessons Tab",
-        targetViewId = R.id.view_event_logs_context_text_view
+        targetViewId = R.id.view_event_logs_context_text_view,
       )
     }
   }
@@ -401,37 +401,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
     }
   }
@@ -445,37 +445,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 50000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 40000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 30000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 20000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP + 10000),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = scenario.convertTimeStampToDateAndTime(TEST_TIMESTAMP),
-        targetViewId = R.id.view_event_logs_time_text_view
+        targetViewId = R.id.view_event_logs_time_text_view,
       )
     }
   }
@@ -488,37 +488,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
     }
   }
@@ -532,37 +532,37 @@ class ViewEventLogsFragmentTest {
       verifyTextOnEventLogItemViewAtPosition(
         position = 0,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 1)
       verifyTextOnEventLogItemViewAtPosition(
         position = 1,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 2)
       verifyTextOnEventLogItemViewAtPosition(
         position = 2,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 3)
       verifyTextOnEventLogItemViewAtPosition(
         position = 3,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 4)
       verifyTextOnEventLogItemViewAtPosition(
         position = 4,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
       scrollToPosition(position = 5)
       verifyTextOnEventLogItemViewAtPosition(
         position = 5,
         stringToMatch = "Essential",
-        targetViewId = R.id.view_event_logs_priority_text_view
+        targetViewId = R.id.view_event_logs_priority_text_view,
       )
     }
   }
@@ -573,40 +573,46 @@ class ViewEventLogsFragmentTest {
   private fun logMultipleEvents() {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenProfileChooserContext(), profileId = null
+      oppiaLogger.createOpenProfileChooserContext(),
+      profileId = null,
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 10000)
     analyticsController.logImportantEvent(
-      eventContext = oppiaLogger.createOpenHomeContext(), profileId = null
+      eventContext = oppiaLogger.createOpenHomeContext(),
+      profileId = null,
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 20000)
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID), profileId = null
+      oppiaLogger.createOpenLessonsTabContext(TEST_TOPIC_ID),
+      profileId = null,
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 30000)
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID), profileId = null
+      oppiaLogger.createOpenStoryActivityContext(TEST_TOPIC_ID, TEST_STORY_ID),
+      profileId = null,
     )
 
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP + 40000)
     analyticsController.logImportantEvent(
-      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID), profileId = null
+      oppiaLogger.createOpenRevisionCardContext(TEST_TOPIC_ID, TEST_SUB_TOPIC_ID),
+      profileId = null,
     )
 
-    val eventLog = EventLog.newBuilder()
-      .setContext(
-        createOptionalSurveyResponseContext(
-          "survey_id",
-          profileId = null,
-          answer = "some response"
-        )
-      )
-      .setPriority(EventLog.Priority.ESSENTIAL)
-      .setTimestamp(TEST_TIMESTAMP + 50000)
-      .build()
+    val eventLog =
+      EventLog
+        .newBuilder()
+        .setContext(
+          createOptionalSurveyResponseContext(
+            "survey_id",
+            profileId = null,
+            answer = "some response",
+          ),
+        ).setPriority(EventLog.Priority.ESSENTIAL)
+        .setTimestamp(TEST_TIMESTAMP + 50000)
+        .build()
 
     firestoreEventLogger.uploadEvent(eventLog)
   }
@@ -614,52 +620,51 @@ class ViewEventLogsFragmentTest {
   private fun createOptionalSurveyResponseContext(
     surveyId: String,
     profileId: ProfileId?,
-    answer: String
-  ): EventLog.Context {
-    return EventLog.Context.newBuilder()
+    answer: String,
+  ): EventLog.Context =
+    EventLog.Context
+      .newBuilder()
       .setOptionalResponse(
-        EventLog.OptionalSurveyResponseContext.newBuilder()
+        EventLog.OptionalSurveyResponseContext
+          .newBuilder()
           .setFeedbackAnswer(answer)
           .setSurveyDetails(
-            EventLog.SurveyResponseContext.newBuilder()
+            EventLog.SurveyResponseContext
+              .newBuilder()
               .setProfileId(profileId?.internalId.toString())
               .setSurveyId(surveyId)
-              .build()
-          )
-      )
-      .build()
-  }
+              .build(),
+          ),
+      ).build()
 
   private fun verifyTextOnEventLogItemViewAtPosition(
     position: Int,
     stringToMatch: String,
-    targetViewId: Int
+    targetViewId: Int,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.view_event_logs_recycler_view,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
   private fun verifyItemDisplayedOnEventLogItemViewAtPosition(
     position: Int,
-    targetViewId: Int
+    targetViewId: Int,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.view_event_logs_recycler_view,
         position = position,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(isDisplayed()))
   }
 
-  private fun ActivityScenario<ViewEventLogsTestActivity>.convertTimeStampToDateAndTime(
-    timestampMillis: Long
-  ): String {
+  private fun ActivityScenario<ViewEventLogsTestActivity>.convertTimeStampToDateAndTime(timestampMillis: Long): String {
     lateinit var dateTimeString: String
     onActivity { activity ->
       val resourceHandler = activity.appLanguageResourceHandler
@@ -671,8 +676,8 @@ class ViewEventLogsFragmentTest {
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.view_event_logs_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(
-        position
-      )
+        position,
+      ),
     )
   }
 
@@ -699,34 +704,29 @@ class ViewEventLogsFragmentTest {
   class TestLogReportingModule {
     @Provides
     @Singleton
-    fun provideExceptionLogger(): ExceptionLogger =
-      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+    fun provideExceptionLogger(): ExceptionLogger = FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
 
     @Provides
     @Singleton
-    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
-      AnalyticsEventLogger = debugAnalyticsEventLogger
+    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger): AnalyticsEventLogger = debugAnalyticsEventLogger
 
     @Provides
     @Singleton
-    fun providePerformanceMetricsEventLogger(
-      factory: FirebaseAnalyticsEventLogger.Factory
-    ): PerformanceMetricsEventLogger =
+    fun providePerformanceMetricsEventLogger(factory: FirebaseAnalyticsEventLogger.Factory): PerformanceMetricsEventLogger =
       factory.createPerformanceMetricEventLogger()
 
     @Provides
     @Singleton
-    fun provideDebugFirestoreEventLogger(
-      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
-    ): FirestoreEventLogger = debugFirestoreEventLogger
+    fun provideDebugFirestoreEventLogger(debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl): FirestoreEventLogger =
+      debugFirestoreEventLogger
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
-      FirestoreInstanceWrapper = wrapperImpl
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl): FirestoreInstanceWrapper = wrapperImpl
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** [ApplicationComponent] for [ViewEventLogsFragmentTest]. */
   @Singleton
   @Component(
     modules = [
@@ -757,12 +757,9 @@ class ViewEventLogsFragmentTest {
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class,
-    ]
+    ],
   )
-
-  /** [ApplicationComponent] for [ViewEventLogsFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
-
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
@@ -777,9 +774,13 @@ class ViewEventLogsFragmentTest {
   }
 
   /** [Application] class for [ViewEventLogsFragmentTest]. */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerViewEventLogsFragmentTest_TestApplicationComponent.builder()
+      DaggerViewEventLogsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -794,9 +795,12 @@ class ViewEventLogsFragmentTest {
       component.inject(viewEventLogsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

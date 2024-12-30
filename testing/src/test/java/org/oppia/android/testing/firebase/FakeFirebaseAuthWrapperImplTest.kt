@@ -74,7 +74,8 @@ class FakeFirebaseAuthWrapperImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -82,9 +83,7 @@ class FakeFirebaseAuthWrapperImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -94,7 +93,7 @@ class FakeFirebaseAuthWrapperImplTest {
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, TestDispatcherModule::class,
       TestAuthenticationModule::class, TestLogReportingModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -108,9 +107,12 @@ class FakeFirebaseAuthWrapperImplTest {
     fun inject(test: FakeFirebaseAuthWrapperImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeFirebaseAuthWrapperImplTest_TestApplicationComponent.builder()
+      DaggerFakeFirebaseAuthWrapperImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

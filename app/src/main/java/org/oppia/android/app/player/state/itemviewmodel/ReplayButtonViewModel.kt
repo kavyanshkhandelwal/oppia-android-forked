@@ -6,5 +6,5 @@ import org.oppia.android.app.player.state.listener.ReplayButtonListener
 class ReplayButtonViewModel(
   val hasConversationView: Boolean,
   val replayButtonListener: ReplayButtonListener,
-  val isSplitView: Boolean
+  val isSplitView: Boolean,
 ) : StateItemViewModel(ViewType.REPLAY_NAVIGATION_BUTTON)

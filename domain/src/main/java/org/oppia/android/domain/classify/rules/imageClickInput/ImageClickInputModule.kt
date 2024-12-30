@@ -15,6 +15,6 @@ class ImageClickInputModule {
   @StringKey("IsInRegion")
   @ImageClickInputRules
   internal fun provideImageClickInputIsInRegionRuleClassifier(
-    classifierProvider: ImageClickInputIsInRegionRuleClassifierProvider
+    classifierProvider: ImageClickInputIsInRegionRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

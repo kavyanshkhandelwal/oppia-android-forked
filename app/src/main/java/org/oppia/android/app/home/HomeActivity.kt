@@ -49,15 +49,16 @@ class HomeActivity :
   private var internalProfileId: Int = -1
 
   companion object {
-
-    fun createHomeActivity(context: Context, profileId: ProfileId?): Intent {
-      return Intent(context, HomeActivity::class.java).apply {
+    fun createHomeActivity(
+      context: Context,
+      profileId: ProfileId?,
+    ): Intent =
+      Intent(context, HomeActivity::class.java).apply {
         decorateWithScreenName(HOME_ACTIVITY)
         if (profileId != null) {
           decorateWithUserProfileId(profileId)
         }
       }
-    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,9 +70,13 @@ class HomeActivity :
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+  ) {
     startActivity(
-      TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId)
+      TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId),
     )
   }
 
@@ -79,7 +84,7 @@ class HomeActivity :
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
@@ -87,8 +92,8 @@ class HomeActivity :
         profileId,
         classroomId,
         topicId,
-        storyId
-      )
+        storyId,
+      ),
     )
   }
 
@@ -97,13 +102,14 @@ class HomeActivity :
       RecentlyPlayedActivityParams
         .newBuilder()
         .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .setActivityTitle(recentlyPlayedActivityTitle).build()
+        .setActivityTitle(recentlyPlayedActivityTitle)
+        .build()
 
     activityRouter.routeToScreen(
       DestinationScreen
         .newBuilder()
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-        .build()
+        .build(),
     )
   }
 
@@ -115,15 +121,16 @@ class HomeActivity :
     }
     val exitProfileDialogArguments =
       ExitProfileDialogArguments
-        .newBuilder().apply {
+        .newBuilder()
+        .apply {
           if (enableOnboardingFlowV2.value) {
             this.profileType = profileType
           }
           this.highlightItem = HighlightItem.NONE
-        }
-        .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+        }.build()
+    val dialogFragment =
+      ExitProfileDialogFragment
+        .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
     dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

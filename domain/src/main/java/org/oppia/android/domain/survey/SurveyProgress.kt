@@ -25,17 +25,13 @@ class SurveyProgress {
   }
 
   /** Returns the index of the current question being viewed. */
-  private fun getCurrentQuestionIndex(): Int {
-    return questionDeck.getTopQuestionIndex()
-  }
+  private fun getCurrentQuestionIndex(): Int = questionDeck.getTopQuestionIndex()
 
   /** Returns the first question in the list. */
   private fun getInitialQuestion(): SurveyQuestion = questionsList.first()
 
   /** Returns the number of questions in the survey. */
-  fun getTotalQuestionCount(): Int {
-    return questionsList.size
-  }
+  fun getTotalQuestionCount(): Int = questionsList.size
 
   /** Update the question at the current position of the deck. */
   fun refreshDeck() {
@@ -72,7 +68,7 @@ class SurveyProgress {
         check(
           surveyStage == SurveyStage.LOADING_SURVEY_SESSION ||
             surveyStage == SurveyStage.VIEWING_SURVEY_QUESTION ||
-            surveyStage == SurveyStage.SUBMITTING_ANSWER
+            surveyStage == SurveyStage.SUBMITTING_ANSWER,
         ) {
           "Cannot transition to VIEWING_SURVEY_QUESTION from $surveyStage"
         }
@@ -89,11 +85,10 @@ class SurveyProgress {
   }
 
   private fun isTopQuestionTerminal(
-    @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion
-  ): Boolean {
-    return questionDeck.isCurrentQuestionTopOfDeck() &&
+    @Suppress("UNUSED_PARAMETER") surveyQuestion: SurveyQuestion,
+  ): Boolean =
+    questionDeck.isCurrentQuestionTopOfDeck() &&
       getCurrentQuestionIndex() == getTotalQuestionCount().minus(1)
-  }
 
   /** Different stages in which the progress controller can exist. */
   enum class SurveyStage {
@@ -107,6 +102,6 @@ class SurveyProgress {
     VIEWING_SURVEY_QUESTION,
 
     /** The controller is in the process of submitting an answer. */
-    SUBMITTING_ANSWER
+    SUBMITTING_ANSWER,
   }
 }

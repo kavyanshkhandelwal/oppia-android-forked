@@ -15,51 +15,59 @@ const val TAG_HOME_FRAGMENT = "HOME_FRAGMENT"
 
 /** The presenter for [HomeActivity]. */
 @ActivityScope
-class HomeActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private var navigationDrawerFragment: NavigationDrawerFragment? = null
+class HomeActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    private var navigationDrawerFragment: NavigationDrawerFragment? = null
 
-  fun handleOnCreate(internalProfileId: Int) {
-    activity.setContentView(R.layout.home_activity)
-    setUpNavigationDrawer()
-    if (getHomeFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
+    fun handleOnCreate(internalProfileId: Int) {
+      activity.setContentView(R.layout.home_activity)
+      setUpNavigationDrawer()
+      if (getHomeFragment() == null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.home_fragment_placeholder,
+            HomeFragment(),
+            TAG_HOME_FRAGMENT,
+          ).commitNow()
+      }
+
+      if (getSpotlightFragment() == null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.home_spotlight_fragment_placeholder,
+            SpotlightFragment.newInstance(internalProfileId),
+            SpotlightManager.SPOTLIGHT_FRAGMENT_TAG,
+          ).commitNow()
+      }
+    }
+
+    private fun setUpNavigationDrawer() {
+      val toolbar = activity.findViewById<View>(R.id.home_activity_toolbar) as Toolbar
+      activity.setSupportActionBar(toolbar)
+      activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+      navigationDrawerFragment =
+        activity
+          .supportFragmentManager
+          .findFragmentById(R.id.home_activity_fragment_navigation_drawer) as NavigationDrawerFragment
+      navigationDrawerFragment!!.setUpDrawer(
+        activity.findViewById<View>(R.id.home_activity_drawer_layout) as DrawerLayout,
+        toolbar,
+        R.id.nav_home,
+      )
+    }
+
+    private fun getHomeFragment(): HomeFragment? =
+      activity.supportFragmentManager.findFragmentById(
         R.id.home_fragment_placeholder,
-        HomeFragment(),
-        TAG_HOME_FRAGMENT
-      ).commitNow()
-    }
+      ) as HomeFragment?
 
-    if (getSpotlightFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().add(
+    private fun getSpotlightFragment(): SpotlightFragment? =
+      activity.supportFragmentManager.findFragmentById(
         R.id.home_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(internalProfileId),
-        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-      ).commitNow()
-    }
+      ) as? SpotlightFragment
   }
-
-  private fun setUpNavigationDrawer() {
-    val toolbar = activity.findViewById<View>(R.id.home_activity_toolbar) as Toolbar
-    activity.setSupportActionBar(toolbar)
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    navigationDrawerFragment = activity
-      .supportFragmentManager
-      .findFragmentById(R.id.home_activity_fragment_navigation_drawer) as NavigationDrawerFragment
-    navigationDrawerFragment!!.setUpDrawer(
-      activity.findViewById<View>(R.id.home_activity_drawer_layout) as DrawerLayout,
-      toolbar, R.id.nav_home
-    )
-  }
-
-  private fun getHomeFragment(): HomeFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.home_fragment_placeholder
-    ) as HomeFragment?
-  }
-
-  private fun getSpotlightFragment(): SpotlightFragment? {
-    return activity.supportFragmentManager.findFragmentById(
-      R.id.home_spotlight_fragment_placeholder
-    ) as? SpotlightFragment
-  }
-}

@@ -5,7 +5,6 @@ package org.oppia.android.app.walkthrough
  * fragment.
  */
 interface WalkthroughPageChanger {
-
   /** Navigates user to the next page in a walkthrough flow's welcome fragment. */
   fun changePage()
 }

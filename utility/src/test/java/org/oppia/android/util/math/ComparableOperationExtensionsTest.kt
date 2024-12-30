@@ -237,10 +237,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsConstantInt2_secondIsSumOfInt2And3_returnFalse() {
     val first = createConstantOp(constant = 2)
-    val second = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val second =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -252,10 +253,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsVariableX_secondIsSumOfInt2And3_returnFalse() {
     val first = createVariableOp(name = "x")
-    val second = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val second =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -267,10 +269,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsConstantInt2_secondIsProductOfInt2And3_returnFalse() {
     val first = createConstantOp(constant = 2)
-    val second = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val second =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -282,10 +285,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsVariableX_secondIsProductOfInt2And3_returnFalse() {
     val first = createVariableOp(name = "x")
-    val second = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val second =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -296,14 +300,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsSumOfInt2And3_secondIsSumOfInt2And3_returnsTrue() {
-    val first = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val first =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -314,14 +320,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsSumOfInt2And3_secondIsSumOfInt3And2_returnsFalse() {
-    val first = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createSumOp(
-      createConstantOp(constant = 3),
-      createConstantOp(constant = 2)
-    )
+    val first =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createSumOp(
+        createConstantOp(constant = 3),
+        createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -333,14 +341,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsSumOfInt2And3_secondIsProductOfInt2And3_returnsFalse() {
-    val first = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val first =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -353,14 +363,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsProductOfInt2And3_secondIsProductOfInt2And3_returnsTrue() {
-    val first = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val first =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -371,14 +383,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsProductOfInt2And3_secondIsProductOfInt3And2_returnsFalse() {
-    val first = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createProductOp(
-      createConstantOp(constant = 3),
-      createConstantOp(constant = 2)
-    )
+    val first =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createProductOp(
+        createConstantOp(constant = 3),
+        createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -414,10 +428,11 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsSumOfInt2And3_secondIsSquareRootOfInt2_returnsFalse() {
-    val first = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val first =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
     val second = createSquareRootOp(arg = createConstantOp(constant = 2))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -429,10 +444,11 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsProductOfInt2And3_secondIsSquareRootOfInt2_returnsFalse() {
-    val first = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
+    val first =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
     val second = createSquareRootOp(arg = createConstantOp(constant = 2))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -445,10 +461,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsConstantInt2_secondIsExpOfXAnd2_returnsFalse() {
     val first = createConstantOp(constant = 2)
-    val second = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
+    val second =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -460,10 +477,11 @@ class ComparableOperationExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsVariableX_secondIsExpOfXAnd2_returnsFalse() {
     val first = createVariableOp(name = "x")
-    val second = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
+    val second =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -474,14 +492,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsSumOfInt2And3_secondIsExpOfInt2And3_returnsFalse() {
-    val first = createSumOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createExpOp(
-      lhs = createConstantOp(constant = 2),
-      rhs = createConstantOp(constant = 3)
-    )
+    val first =
+      createSumOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createExpOp(
+        lhs = createConstantOp(constant = 2),
+        rhs = createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -492,14 +512,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsProductOfInt2And3_secondIsExpOfInt2And3_returnsFalse() {
-    val first = createProductOp(
-      createConstantOp(constant = 2),
-      createConstantOp(constant = 3)
-    )
-    val second = createExpOp(
-      lhs = createConstantOp(constant = 2),
-      rhs = createConstantOp(constant = 3)
-    )
+    val first =
+      createProductOp(
+        createConstantOp(constant = 2),
+        createConstantOp(constant = 3),
+      )
+    val second =
+      createExpOp(
+        lhs = createConstantOp(constant = 2),
+        rhs = createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -510,14 +532,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsExpOfXAnd2_secondIsExpOfXAnd2_returnsTrue() {
-    val first = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
-    val second = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
+    val first =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
+    val second =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -528,14 +552,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsExpOfXAnd2_secondIsExpOfXAnd3_returnsFalse() {
-    val first = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
-    val second = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 3)
-    )
+    val first =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
+    val second =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 3),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -546,14 +572,16 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsExpOfXAnd2_secondIsExpOfYAnd2_returnsFalse() {
-    val first = createExpOp(
-      lhs = createVariableOp(name = "x"),
-      rhs = createConstantOp(constant = 2)
-    )
-    val second = createExpOp(
-      lhs = createVariableOp(name = "y"),
-      rhs = createConstantOp(constant = 2)
-    )
+    val first =
+      createExpOp(
+        lhs = createVariableOp(name = "x"),
+        rhs = createConstantOp(constant = 2),
+      )
+    val second =
+      createExpOp(
+        lhs = createVariableOp(name = "y"),
+        rhs = createConstantOp(constant = 2),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -564,10 +592,11 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsExpOfInt2AndThree_secondIsSquareRootOfInt2_returnsFalse() {
-    val first = createExpOp(
-      lhs = createConstantOp(constant = 2),
-      rhs = createConstantOp(constant = 3)
-    )
+    val first =
+      createExpOp(
+        lhs = createConstantOp(constant = 2),
+        rhs = createConstantOp(constant = 3),
+      )
     val second = createSquareRootOp(arg = createConstantOp(constant = 2))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -579,10 +608,11 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsExpOfInt2AndOneHalf_secondIsSqRootOfInt2_returnsFalse() {
-    val first = createExpOp(
-      lhs = createConstantOp(constant = 2),
-      rhs = createConstantOp(constantFraction = "1/2")
-    )
+    val first =
+      createExpOp(
+        lhs = createConstantOp(constant = 2),
+        rhs = createConstantOp(constantFraction = "1/2"),
+      )
     val second = createSquareRootOp(arg = createConstantOp(constant = 2))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -620,18 +650,19 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_fullOperation_withNesting_allMatching_returnsTrue() {
-    val complexOp = createSumOp(
-      createProductOp(
-        createSumOp(
-          createVariableOp(name = "x"),
-          createConstantOp(constant = 3.14)
+    val complexOp =
+      createSumOp(
+        createProductOp(
+          createSumOp(
+            createVariableOp(name = "x"),
+            createConstantOp(constant = 3.14),
+          ),
+          createExpOp(
+            lhs = createConstantOp(constant = 3).toNegated(),
+            rhs = createSquareRootOp(arg = createConstantOp(3)),
+          ).toInverted(),
         ),
-        createExpOp(
-          lhs = createConstantOp(constant = 3).toNegated(),
-          rhs = createSquareRootOp(arg = createConstantOp(3))
-        ).toInverted()
       )
-    )
 
     val result = complexOp.isApproximatelyEqualTo(complexOp)
 
@@ -640,30 +671,32 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_fullOperation_withNesting_innerDifference_returnsFalse() {
-    val first = createSumOp(
-      createProductOp(
-        createSumOp(
-          createVariableOp(name = "x"),
-          createConstantOp(constant = 3.14)
+    val first =
+      createSumOp(
+        createProductOp(
+          createSumOp(
+            createVariableOp(name = "x"),
+            createConstantOp(constant = 3.14),
+          ),
+          createExpOp(
+            lhs = createConstantOp(constant = 3).toNegated(),
+            rhs = createSquareRootOp(arg = createConstantOp(3)),
+          ).toInverted(),
         ),
-        createExpOp(
-          lhs = createConstantOp(constant = 3).toNegated(),
-          rhs = createSquareRootOp(arg = createConstantOp(3))
-        ).toInverted()
       )
-    )
-    val second = createSumOp(
-      createProductOp(
-        createSumOp(
-          createVariableOp(name = "x"),
-          createConstantOp(constant = 3.14)
+    val second =
+      createSumOp(
+        createProductOp(
+          createSumOp(
+            createVariableOp(name = "x"),
+            createConstantOp(constant = 3.14),
+          ),
+          createExpOp(
+            lhs = createConstantOp(constant = 2).toNegated(),
+            rhs = createSquareRootOp(arg = createConstantOp(3)),
+          ).toInverted(),
         ),
-        createExpOp(
-          lhs = createConstantOp(constant = 2).toNegated(),
-          rhs = createSquareRootOp(arg = createConstantOp(3))
-        ).toInverted()
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -674,18 +707,19 @@ class ComparableOperationExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_fullOperation_comparedToDefault_returnsFalse() {
-    val first = createSumOp(
-      createProductOp(
-        createSumOp(
-          createVariableOp(name = "x"),
-          createConstantOp(constant = 3.14)
+    val first =
+      createSumOp(
+        createProductOp(
+          createSumOp(
+            createVariableOp(name = "x"),
+            createConstantOp(constant = 3.14),
+          ),
+          createExpOp(
+            lhs = createConstantOp(constant = 3).toNegated(),
+            rhs = createSquareRootOp(arg = createConstantOp(3)),
+          ).toInverted(),
         ),
-        createExpOp(
-          lhs = createConstantOp(constant = 3).toNegated(),
-          rhs = createSquareRootOp(arg = createConstantOp(3))
-        ).toInverted()
       )
-    )
     val second = ComparableOperation.getDefaultInstance()
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -695,77 +729,122 @@ class ComparableOperationExtensionsTest {
     assertThat(result2).isFalse()
   }
 
-  private fun createConstantOp(constant: Int) = ComparableOperation.newBuilder().apply {
-    constantTerm = createIntegerReal(constant)
-  }.build()
+  private fun createConstantOp(constant: Int) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        constantTerm = createIntegerReal(constant)
+      }.build()
 
-  private fun createConstantOp(constantFraction: String) = ComparableOperation.newBuilder().apply {
-    constantTerm = createRationalReal(rawFractionExpression = constantFraction)
-  }.build()
+  private fun createConstantOp(constantFraction: String) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        constantTerm = createRationalReal(rawFractionExpression = constantFraction)
+      }.build()
 
-  private fun createConstantOp(constant: Double) = ComparableOperation.newBuilder().apply {
-    constantTerm = createIrrationalReal(constant)
-  }.build()
+  private fun createConstantOp(constant: Double) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        constantTerm = createIrrationalReal(constant)
+      }.build()
 
-  private fun createVariableOp(name: String) = ComparableOperation.newBuilder().apply {
-    variableTerm = name
-  }.build()
+  private fun createVariableOp(name: String) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        variableTerm = name
+      }.build()
 
-  private fun createSumOp(
-    vararg ops: ComparableOperation
-  ) = ComparableOperation.newBuilder().apply {
-    commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
-      accumulationType = CommutativeAccumulation.AccumulationType.SUMMATION
-      addAllCombinedOperations(ops.asIterable())
-    }.build()
-  }.build()
+  private fun createSumOp(vararg ops: ComparableOperation) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        commutativeAccumulation =
+          CommutativeAccumulation
+            .newBuilder()
+            .apply {
+              accumulationType = CommutativeAccumulation.AccumulationType.SUMMATION
+              addAllCombinedOperations(ops.asIterable())
+            }.build()
+      }.build()
 
-  private fun createProductOp(
-    vararg ops: ComparableOperation
-  ) = ComparableOperation.newBuilder().apply {
-    commutativeAccumulation = CommutativeAccumulation.newBuilder().apply {
-      accumulationType = CommutativeAccumulation.AccumulationType.PRODUCT
-      addAllCombinedOperations(ops.asIterable())
-    }.build()
-  }.build()
+  private fun createProductOp(vararg ops: ComparableOperation) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        commutativeAccumulation =
+          CommutativeAccumulation
+            .newBuilder()
+            .apply {
+              accumulationType = CommutativeAccumulation.AccumulationType.PRODUCT
+              addAllCombinedOperations(ops.asIterable())
+            }.build()
+      }.build()
 
-  private fun createSquareRootOp(
-    arg: ComparableOperation
-  ) = ComparableOperation.newBuilder().apply {
-    nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
-      squareRoot = arg
-    }.build()
-  }.build()
+  private fun createSquareRootOp(arg: ComparableOperation) =
+    ComparableOperation
+      .newBuilder()
+      .apply {
+        nonCommutativeOperation =
+          NonCommutativeOperation
+            .newBuilder()
+            .apply {
+              squareRoot = arg
+            }.build()
+      }.build()
 
   private fun createExpOp(
     lhs: ComparableOperation,
-    rhs: ComparableOperation
-  ) = ComparableOperation.newBuilder().apply {
-    nonCommutativeOperation = NonCommutativeOperation.newBuilder().apply {
-      exponentiation = NonCommutativeOperation.BinaryOperation.newBuilder().apply {
-        leftOperand = lhs
-        rightOperand = rhs
-      }.build()
+    rhs: ComparableOperation,
+  ) = ComparableOperation
+    .newBuilder()
+    .apply {
+      nonCommutativeOperation =
+        NonCommutativeOperation
+          .newBuilder()
+          .apply {
+            exponentiation =
+              NonCommutativeOperation.BinaryOperation
+                .newBuilder()
+                .apply {
+                  leftOperand = lhs
+                  rightOperand = rhs
+                }.build()
+          }.build()
     }.build()
-  }.build()
 
-  private fun ComparableOperation.toNegated() = toBuilder().apply {
-    isNegated = true
-  }.build()
+  private fun ComparableOperation.toNegated() =
+    toBuilder()
+      .apply {
+        isNegated = true
+      }.build()
 
-  private fun ComparableOperation.toInverted() = toBuilder().apply {
-    isInverted = true
-  }.build()
+  private fun ComparableOperation.toInverted() =
+    toBuilder()
+      .apply {
+        isInverted = true
+      }.build()
 
-  private fun createIntegerReal(value: Int) = Real.newBuilder().apply {
-    integer = value
-  }.build()
+  private fun createIntegerReal(value: Int) =
+    Real
+      .newBuilder()
+      .apply {
+        integer = value
+      }.build()
 
-  private fun createRationalReal(rawFractionExpression: String) = Real.newBuilder().apply {
-    rational = fractionParser.parseFractionFromString(rawFractionExpression)
-  }.build()
+  private fun createRationalReal(rawFractionExpression: String) =
+    Real
+      .newBuilder()
+      .apply {
+        rational = fractionParser.parseFractionFromString(rawFractionExpression)
+      }.build()
 
-  private fun createIrrationalReal(value: Double) = Real.newBuilder().apply {
-    irrational = value
-  }.build()
+  private fun createIrrationalReal(value: Double) =
+    Real
+      .newBuilder()
+      .apply {
+        irrational = value
+      }.build()
 }

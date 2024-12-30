@@ -15,13 +15,18 @@ class ProtoStringEncoder private constructor() {
   private val base64Decoder by lazy { Base64.getDecoder() }
 
   private fun <M : MessageLite> encodeToCompressedBase64(message: M): String {
-    val compressedMessage = ByteArrayOutputStream().also { byteOutputStream ->
-      GZIPOutputStream(byteOutputStream).use { message.writeTo(it) }
-    }.toByteArray()
+    val compressedMessage =
+      ByteArrayOutputStream()
+        .also { byteOutputStream ->
+          GZIPOutputStream(byteOutputStream).use { message.writeTo(it) }
+        }.toByteArray()
     return base64Encoder.encodeToString(compressedMessage)
   }
 
-  private fun <M : MessageLite> decodeFromCompressedBase64(base64: String, exampleMessage: M): M {
+  private fun <M : MessageLite> decodeFromCompressedBase64(
+    base64: String,
+    exampleMessage: M,
+  ): M {
     val compressedMessage = base64Decoder.decode(base64)
     return GZIPInputStream(compressedMessage.inputStream()).use {
       @Suppress("UNCHECKED_CAST") // Proto guarantees type safety here.
@@ -36,8 +41,7 @@ class ProtoStringEncoder private constructor() {
      * Returns a compressed Base64 representation of this proto that can later be decoded using
      * [mergeFromCompressedBase64].
      */
-    fun <M : MessageLite> M.toCompressedBase64(): String =
-      protoStringEncoder.encodeToCompressedBase64(this)
+    fun <M : MessageLite> M.toCompressedBase64(): String = protoStringEncoder.encodeToCompressedBase64(this)
 
     /**
      * Merges this proto into a new proto decoded from the specified Base64 string. It's expected

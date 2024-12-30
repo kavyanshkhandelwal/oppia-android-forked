@@ -108,7 +108,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileAndDeviceIdActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileAndDeviceIdActivityTest {
   private companion object {
@@ -118,29 +118,37 @@ class ProfileAndDeviceIdActivityTest {
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityRule =
     ActivityScenarioRule<ProfileAndDeviceIdActivity>(
-      ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
+      ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var oppiaLogger: OppiaLogger
+
   @Inject
   lateinit var oppiaClock: OppiaClock
+
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+
   @Inject
   lateinit var syncStatusManager: SyncStatusManager
 
@@ -150,10 +158,12 @@ class ProfileAndDeviceIdActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
 
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(logUploadWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -175,9 +185,11 @@ class ProfileAndDeviceIdActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = ProfileAndDeviceIdActivity.createIntent(
-      ApplicationProvider.getApplicationContext()
-    ).extractCurrentAppScreenName()
+    val screenName =
+      ProfileAndDeviceIdActivity
+        .createIntent(
+          ApplicationProvider.getApplicationContext(),
+        ).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.PROFILE_AND_DEVICE_ID_ACTIVITY)
   }
@@ -229,8 +241,8 @@ class ProfileAndDeviceIdActivityTest {
       TestingBuildFlavorModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
       ApplicationLifecycleModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -241,9 +253,13 @@ class ProfileAndDeviceIdActivityTest {
     fun inject(test: ProfileAndDeviceIdActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileAndDeviceIdActivityTest_TestApplicationComponent.builder()
+      DaggerProfileAndDeviceIdActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -252,9 +268,12 @@ class ProfileAndDeviceIdActivityTest {
       component.inject(test)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

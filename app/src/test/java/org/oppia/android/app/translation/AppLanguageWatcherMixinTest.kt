@@ -110,7 +110,7 @@ import javax.inject.Singleton
   appStringAndroidLanguageId = "en",
   oppiaRegionEnumId = OppiaRegion.UNITED_STATES_VALUE,
   regionLanguageEnumIds = [OppiaLanguage.ENGLISH_VALUE],
-  regionIetfTag = "US"
+  regionIetfTag = "US",
 )
 class AppLanguageWatcherMixinTest {
   // TODO(#1720): Add a test to verify that the mixin does nothing when a language change occurs
@@ -129,11 +129,17 @@ class AppLanguageWatcherMixinTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject lateinit var testActivityRecreator: TestActivityRecreator
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -245,12 +251,16 @@ class AppLanguageWatcherMixinTest {
   }
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
-    val updateLanguageSelection = AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-    }.build()
+    val updateLanguageSelection =
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = language
+        }.build()
     val updateProvider =
       translationController.updateAppLanguage(
-        ProfileId.getDefaultInstance(), updateLanguageSelection
+        ProfileId.getDefaultInstance(),
+        updateLanguageSelection,
       )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
@@ -279,9 +289,7 @@ class AppLanguageWatcherMixinTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -312,8 +320,8 @@ class AppLanguageWatcherMixinTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -327,9 +335,13 @@ class AppLanguageWatcherMixinTest {
     fun inject(appLanguageWatcherMixinTest: AppLanguageWatcherMixinTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppLanguageWatcherMixinTest_TestApplicationComponent.builder()
+      DaggerAppLanguageWatcherMixinTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -338,9 +350,12 @@ class AppLanguageWatcherMixinTest {
       component.inject(appLanguageWatcherMixinTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -16,23 +16,25 @@ class AdministratorControlsDownloadPermissionsViewModel(
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
   private val userProfileId: ProfileId,
-  deviceSettings: DeviceSettings
+  deviceSettings: DeviceSettings,
 ) : AdministratorControlsItemViewModel() {
   /**
    * [Boolean] observable value showing if topic downloads and updates should happen only on Wifi.
    */
   val isTopicWifiUpdatePermission =
     ObservableField<Boolean>(deviceSettings.allowDownloadAndUpdateOnlyOnWifi)
+
   /** [Boolean] observable value showing if topic updates should happen automatically. */
   val isTopicAutoUpdatePermission =
     ObservableField<Boolean>(deviceSettings.automaticallyUpdateTopics)
 
   /** Called when topic wifi update permission changes. */
   fun onTopicWifiUpdatePermissionChanged() {
-    profileManagementController.updateWifiPermissionDeviceSettings(
-      userProfileId,
-      !isTopicWifiUpdatePermission.get()!!
-    ).toLiveData()
+    profileManagementController
+      .updateWifiPermissionDeviceSettings(
+        userProfileId,
+        !isTopicWifiUpdatePermission.get()!!,
+      ).toLiveData()
       .observe(
         fragment,
         Observer {
@@ -40,29 +42,31 @@ class AdministratorControlsDownloadPermissionsViewModel(
             oppiaLogger.e(
               "AdministratorControlsFragment",
               "Failed to update topic update on wifi permission",
-              it.error
+              it.error,
             )
           }
-        }
+        },
       )
   }
 
   /** Called when topic auto update permission changes. */
   fun onTopicAutoUpdatePermissionChanged() {
-    profileManagementController.updateTopicAutomaticallyPermissionDeviceSettings(
-      userProfileId,
-      !isTopicAutoUpdatePermission.get()!!
-    ).toLiveData().observe(
-      fragment,
-      Observer {
-        if (it is AsyncResult.Failure) {
-          oppiaLogger.e(
-            "AdministratorControlsFragment",
-            "Failed to update topic auto update permission",
-            it.error
-          )
-        }
-      }
-    )
+    profileManagementController
+      .updateTopicAutomaticallyPermissionDeviceSettings(
+        userProfileId,
+        !isTopicAutoUpdatePermission.get()!!,
+      ).toLiveData()
+      .observe(
+        fragment,
+        Observer {
+          if (it is AsyncResult.Failure) {
+            oppiaLogger.e(
+              "AdministratorControlsFragment",
+              "Failed to update topic auto update permission",
+              it.error,
+            )
+          }
+        },
+      )
   }
 }

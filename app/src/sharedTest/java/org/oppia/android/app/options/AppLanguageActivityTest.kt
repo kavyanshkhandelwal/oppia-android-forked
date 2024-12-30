@@ -92,7 +92,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AppLanguageActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AppLanguageActivityTest {
   @get:Rule
@@ -102,9 +102,12 @@ class AppLanguageActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<AppLanguageActivity> = ActivityTestRule(
-    AppLanguageActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<AppLanguageActivity> =
+    ActivityTestRule(
+      AppLanguageActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -129,7 +132,7 @@ class AppLanguageActivityTest {
   @Test
   fun testAppLanguageActivity_hasCorrectActivityLabel() {
     activityTestRule.launchActivity(
-      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH)
+      createAppLanguageActivityIntent(OppiaLanguage.ENGLISH),
     )
     val title = activityTestRule.activity.title
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -137,13 +140,12 @@ class AppLanguageActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.app_language_activity_title))
   }
 
-  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
-    return AppLanguageActivity.createAppLanguageActivityIntent(
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent =
+    AppLanguageActivity.createAppLanguageActivityIntent(
       ApplicationProvider.getApplicationContext(),
       oppiaLanguage,
-      internalProfileId
+      internalProfileId,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -174,8 +176,8 @@ class AppLanguageActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -186,9 +188,13 @@ class AppLanguageActivityTest {
     fun inject(appLanguageActivityTest: AppLanguageActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppLanguageActivityTest_TestApplicationComponent.builder()
+      DaggerAppLanguageActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -197,9 +203,12 @@ class AppLanguageActivityTest {
       component.inject(appLanguageActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

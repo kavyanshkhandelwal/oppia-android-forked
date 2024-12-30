@@ -60,28 +60,30 @@ class AdministratorControlsActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val args = savedInstanceState?.getProto(
-      ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY,
-      AdministratorControlActivityStateBundle.getDefaultInstance()
-    )
+    val args =
+      savedInstanceState?.getProto(
+        ADMINISTRATOR_CONTROLS_ACTIVITY_STATE_KEY,
+        AdministratorControlActivityStateBundle.getDefaultInstance(),
+      )
 
     val extraControlsTitle = args?.selectedControlsTitle
 
     isProfileDeletionDialogVisible =
       args?.isProfileDeletionDialogVisible ?: false
-    lastLoadedFragment = if (savedInstanceState != null) {
-      args?.lastLoadedFragment as String
-    } else {
-      // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
-      PROFILE_LIST_FRAGMENT
-    }
+    lastLoadedFragment =
+      if (savedInstanceState != null) {
+        args?.lastLoadedFragment as String
+      } else {
+        // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
+        PROFILE_LIST_FRAGMENT
+      }
     val selectedProfileId = args?.selectedProfileId ?: -1
 
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
       lastLoadedFragment,
       selectedProfileId,
-      isProfileDeletionDialogVisible
+      isProfileDeletionDialogVisible,
     )
     title = resourceHandler.getStringInLocale(R.string.administrator_controls)
 
@@ -91,7 +93,7 @@ class AdministratorControlsActivity :
         override fun handleOnBackPressed() {
           this@AdministratorControlsActivity.handleBackPress()
         }
-      }
+      },
     )
   }
 
@@ -107,7 +109,10 @@ class AdministratorControlsActivity :
     startActivity(ProfileAndDeviceIdActivity.createIntent(this))
   }
 
-  override fun loadProfileEdit(profileId: Int, profileName: String) {
+  override fun loadProfileEdit(
+    profileId: Int,
+    profileName: String,
+  ) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
   }
@@ -118,10 +123,11 @@ class AdministratorControlsActivity :
   }
 
   companion object {
-
     /** Returns an [Intent] to start this activity. */
-    fun createAdministratorControlsActivityIntent(context: Context, profileId: ProfileId?): Intent {
-
+    fun createAdministratorControlsActivityIntent(
+      context: Context,
+      profileId: ProfileId?,
+    ): Intent {
       val intent = Intent(context, AdministratorControlsActivity::class.java)
       intent.decorateWithScreenName(ADMINISTRATOR_CONTROLS_ACTIVITY)
       if (profileId != null) {
@@ -134,7 +140,7 @@ class AdministratorControlsActivity :
   private fun handleBackPress() {
     val fragment =
       supportFragmentManager.findFragmentById(
-        R.id.administrator_controls_fragment_multipane_placeholder
+        R.id.administrator_controls_fragment_multipane_placeholder,
       )
     /*
      * If the current fragment is ProfileListFragment then the activity should end on back press.
@@ -152,7 +158,7 @@ class AdministratorControlsActivity :
     lastLoadedFragment = PROFILE_LIST_FRAGMENT
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles)
+        resourceHandler.getStringInLocale(R.string.administrator_controls_edit_profiles),
       )
     administratorControlsActivityPresenter.loadProfileList()
   }
@@ -161,7 +167,7 @@ class AdministratorControlsActivity :
     lastLoadedFragment = APP_VERSION_FRAGMENT
     administratorControlsActivityPresenter
       .setExtraControlsTitle(
-        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version)
+        resourceHandler.getStringInLocale(R.string.administrator_controls_app_version),
       )
     administratorControlsActivityPresenter.loadAppVersion()
   }
@@ -169,13 +175,14 @@ class AdministratorControlsActivity :
   override fun loadLearnerAnalyticsData() {
     lastLoadedFragment = PROFILE_AND_DEVICE_ID_FRAGMENT
     administratorControlsActivityPresenter.setExtraControlsTitle(
-      resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title)
+      resourceHandler.getStringInLocale(R.string.profile_and_device_id_activity_title),
     )
     administratorControlsActivityPresenter.loadLearnerAnalyticsData()
   }
 
   override fun showLogoutDialog() {
-    LogoutDialogFragment.newInstance()
+    LogoutDialogFragment
+      .newInstance()
       .showNow(supportFragmentManager, LogoutDialogFragment.TAG_LOGOUT_DIALOG_FRAGMENT)
   }
 

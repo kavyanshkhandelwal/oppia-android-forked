@@ -27,17 +27,20 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     /** Returns a new [MarkChaptersCompletedFragment]. */
     fun newInstance(
       internalProfileId: Int,
-      showConfirmationNotice: Boolean
+      showConfirmationNotice: Boolean,
     ): MarkChaptersCompletedFragment {
-      val args = MarkChaptersCompletedFragmentArguments.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-        this.showConfirmationNotice = showConfirmationNotice
-      }
-        .build()
+      val args =
+        MarkChaptersCompletedFragmentArguments
+          .newBuilder()
+          .apply {
+            this.internalProfileId = internalProfileId
+            this.showConfirmationNotice = showConfirmationNotice
+          }.build()
       return MarkChaptersCompletedFragment().apply {
-        arguments = Bundle().apply {
-          putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -50,28 +53,30 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to MarkChaptersCompletedFragment" }
-    val args = arguments.getProto(
-      MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
-      MarkChaptersCompletedFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        MARK_CHAPTERS_COMPLETED_FRAGMENT_ARGUMENTS_KEY,
+        MarkChaptersCompletedFragmentArguments.getDefaultInstance(),
+      )
     val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
 
-    val savedStateArgs = savedInstanceState?.getProto(
-      MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY,
-      MarkChaptersCompletedFragmentStateBundle.getDefaultInstance()
-    )
+    val savedStateArgs =
+      savedInstanceState?.getProto(
+        MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY,
+        MarkChaptersCompletedFragmentStateBundle.getDefaultInstance(),
+      )
     return markChaptersCompletedFragmentPresenter.handleCreateView(
       inflater,
       container,
       internalProfileId,
       showConfirmationNotice,
       savedStateArgs?.explorationIdsList ?: listOf(),
-      savedStateArgs?.explorationTitlesList ?: listOf()
+      savedStateArgs?.explorationTitlesList ?: listOf(),
     )
   }
 
@@ -79,15 +84,17 @@ class MarkChaptersCompletedFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     outState.apply {
-      val args = MarkChaptersCompletedFragmentStateBundle.newBuilder().apply {
-        addAllExplorationIds(
-          markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
-        )
-        addAllExplorationTitles(
-          markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles
-        )
-      }
-        .build()
+      val args =
+        MarkChaptersCompletedFragmentStateBundle
+          .newBuilder()
+          .apply {
+            addAllExplorationIds(
+              markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds,
+            )
+            addAllExplorationTitles(
+              markChaptersCompletedFragmentPresenter.serializableSelectedExplorationTitles,
+            )
+          }.build()
       putProto(MARK_CHAPTERS_COMPLETED_FRAGMENT_STATE_KEY, args)
     }
   }

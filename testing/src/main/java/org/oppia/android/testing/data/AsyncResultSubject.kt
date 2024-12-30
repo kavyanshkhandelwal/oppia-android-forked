@@ -29,7 +29,7 @@ import org.oppia.android.util.data.AsyncResult
  */
 class AsyncResultSubject<T>(
   failureMetadata: FailureMetadata?,
-  @PublishedApi internal val actual: AsyncResult<T>
+  @PublishedApi internal val actual: AsyncResult<T>,
 ) : Subject(failureMetadata, actual) {
   /** Verifies that the [AsyncResult] under test is of type [AsyncResult.Pending]. */
   fun isPending() {
@@ -68,8 +68,7 @@ class AsyncResultSubject<T>(
    * Note that this does not perform type checking, so it's up to the caller to ensure that the [T]
    * type used by the [AsyncResult] is correct.
    */
-  fun hasSuccessValueWhere(block: T.() -> Unit) =
-    ensureActualIsType<AsyncResult.Success<T>>().value.block()
+  fun hasSuccessValueWhere(block: T.() -> Unit) = ensureActualIsType<AsyncResult.Success<T>>().value.block()
 
   /**
    * Returns a [Subject] that can be used to perform additional assertions about the
@@ -78,15 +77,14 @@ class AsyncResultSubject<T>(
    */
   fun isSuccessThat(): Subject = assertThat(ensureActualIsType<AsyncResult.Success<T>>().value)
 
-  /* NOTE TO DEVELOPERS: Add more subject types below, as needed. */
+  // NOTE TO DEVELOPERS: Add more subject types below, as needed.
 
   /**
    * Returns a [ComparableSubject] of type [C] using the same considerations as [isSuccessThat],
    * except this also verifies that the success value is a [Comparable] (though it can't verify
    * [C] due to type erasure).
    */
-  inline fun <reified C : Comparable<C>> isComparableSuccessThat(): ComparableSubject<C> =
-    assertThat(extractSuccessValue<C>())
+  inline fun <reified C : Comparable<C>> isComparableSuccessThat(): ComparableSubject<C> = assertThat(extractSuccessValue<C>())
 
   /**
    * Returns a [StringSubject] using the same considerations as [isSuccessThat], except this also
@@ -150,8 +148,7 @@ class AsyncResultSubject<T>(
    * Verifies that the result under test is a failure (similar to [isFailure]) and returns a
    * [ThrowableSubject] to verify details about the [AsyncResult.Failure.error].
    */
-  fun isFailureThat(): ThrowableSubject =
-    assertThat(ensureActualIsType<AsyncResult.Failure<T>>().error)
+  fun isFailureThat(): ThrowableSubject = assertThat(ensureActualIsType<AsyncResult.Failure<T>>().error)
 
   /**
    * Verifies that the result under test is newer or the same age as [other] (per
@@ -173,8 +170,7 @@ class AsyncResultSubject<T>(
    * Returns a [BooleanSubject] for verifying whether the [AsyncResult] under test and [other]
    * effectively have the same value per [AsyncResult.hasSameEffectiveValueAs].
    */
-  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): BooleanSubject =
-    assertThat(actual.hasSameEffectiveValueAs(other))
+  fun <O> hasSameEffectiveValueAs(other: AsyncResult<O>): BooleanSubject = assertThat(actual.hasSameEffectiveValueAs(other))
 
   /**
    * Verifies the result under test is successful (per [ensureActualIsType]) and returns its
@@ -184,11 +180,10 @@ class AsyncResultSubject<T>(
    * should never be called outside this class.
    */
   @PublishedApi // See: https://stackoverflow.com/a/41905907/3689782.
-  internal inline fun <reified T> extractSuccessValue(): T {
-    return ensureActualIsType<AsyncResult.Success<T>>().value.also {
+  internal inline fun <reified T> extractSuccessValue(): T =
+    ensureActualIsType<AsyncResult.Success<T>>().value.also {
       assertThat(it).isInstanceOf(T::class.java)
     }
-  }
 
   /**
    * Verifies that the result under test is of type [T] (which can be useful when generally checking
@@ -213,10 +208,9 @@ class AsyncResultSubject<T>(
     /**
      * Returns a new [AsyncResultSubject] to verify aspects of the specified [AsyncResult] value.
      */
-    fun <T> assertThat(actual: AsyncResult<T>): AsyncResultSubject<T> {
-      return assertAbout(
-        Factory<AsyncResultSubject<T>, AsyncResult<T>>(::AsyncResultSubject)
+    fun <T> assertThat(actual: AsyncResult<T>): AsyncResultSubject<T> =
+      assertAbout(
+        Factory<AsyncResultSubject<T>, AsyncResult<T>>(::AsyncResultSubject),
       ).that(actual)
-    }
   }
 }

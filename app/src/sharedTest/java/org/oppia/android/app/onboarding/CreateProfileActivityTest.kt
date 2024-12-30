@@ -93,7 +93,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = CreateProfileActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class CreateProfileActivityTest {
   @get:Rule
@@ -122,7 +122,8 @@ class CreateProfileActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      CreateProfileActivity.createProfileActivityIntent(context)
+      CreateProfileActivity
+        .createProfileActivityIntent(context)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.CREATE_PROFILE_ACTIVITY)
@@ -140,14 +141,14 @@ class CreateProfileActivityTest {
     }
   }
 
-  private fun launchNewLearnerProfileActivity():
-    ActivityScenario<CreateProfileActivity>? {
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
+  private fun launchNewLearnerProfileActivity(): ActivityScenario<CreateProfileActivity>? {
+    val scenario =
+      ActivityScenario.launch<CreateProfileActivity>(
+        CreateProfileActivity.createProfileActivityIntent(context),
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -182,10 +183,9 @@ class CreateProfileActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
@@ -193,9 +193,13 @@ class CreateProfileActivityTest {
     fun inject(newLearnerProfileActivityTest: CreateProfileActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCreateProfileActivityTest_TestApplicationComponent.builder()
+      DaggerCreateProfileActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -204,9 +208,12 @@ class CreateProfileActivityTest {
       component.inject(newLearnerProfileActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

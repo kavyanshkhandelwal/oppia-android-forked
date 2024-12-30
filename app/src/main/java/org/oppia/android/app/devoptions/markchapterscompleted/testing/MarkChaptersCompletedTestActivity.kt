@@ -20,27 +20,29 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.mark_chapters_completed_activity)
 
-    val args = intent.getProtoExtra(
-      MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY,
-      MarkChaptersCompletedTestActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY,
+        MarkChaptersCompletedTestActivityParams.getDefaultInstance(),
+      )
 
     val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
     if (getMarkChaptersCompletedFragment() == null) {
       val markChaptersCompletedFragment =
         MarkChaptersCompletedFragment.newInstance(internalProfileId, showConfirmationNotice)
-      supportFragmentManager.beginTransaction().add(
-        R.id.mark_chapters_completed_container,
-        markChaptersCompletedFragment
-      ).commitNow()
+      supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.mark_chapters_completed_container,
+          markChaptersCompletedFragment,
+        ).commitNow()
     }
   }
 
-  private fun getMarkChaptersCompletedFragment(): MarkChaptersCompletedFragment? {
-    return supportFragmentManager
+  private fun getMarkChaptersCompletedFragment(): MarkChaptersCompletedFragment? =
+    supportFragmentManager
       .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment?
-  }
 
   companion object {
     /** Params key for MarkChaptersCompletedTestActivity. */
@@ -51,15 +53,17 @@ class MarkChaptersCompletedTestActivity : InjectableSystemLocalizedAppCompatActi
     fun createMarkChaptersCompletedTestIntent(
       context: Context,
       internalProfileId: Int,
-      showConfirmationNotice: Boolean
+      showConfirmationNotice: Boolean,
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedTestActivity::class.java)
 
-      val args = MarkChaptersCompletedTestActivityParams.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-        this.showConfirmationNotice = showConfirmationNotice
-      }
-        .build()
+      val args =
+        MarkChaptersCompletedTestActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = internalProfileId
+            this.showConfirmationNotice = showConfirmationNotice
+          }.build()
 
       intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_TEST_ACTIVITY_PARAMS_KEY, args)
       return intent

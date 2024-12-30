@@ -4,7 +4,9 @@ import androidx.databinding.ListChangeRegistry
 import androidx.databinding.ObservableList
 
 /** A version of Android's ObservableArrayList, except with correct Kotlin overrides. */
-class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
+class ObservableArrayList<T> :
+  ArrayList<T>(),
+  ObservableList<T> {
   private val listeners: ListChangeRegistry by lazy(::ListChangeRegistry)
 
   override fun add(element: T): Boolean {
@@ -13,7 +15,10 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
     return true
   }
 
-  override fun add(index: Int, element: T) {
+  override fun add(
+    index: Int,
+    element: T,
+  ) {
     super.add(index, element)
     notifyAdd(index, 1)
   }
@@ -27,7 +32,10 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
     return added
   }
 
-  override fun addAll(index: Int, elements: Collection<T>): Boolean {
+  override fun addAll(
+    index: Int,
+    elements: Collection<T>,
+  ): Boolean {
     val added = super.addAll(index, elements)
     if (added) {
       notifyAdd(index, elements.size)
@@ -52,34 +60,42 @@ class ObservableArrayList<T> : ArrayList<T>(), ObservableList<T> {
     }
   }
 
-  override fun set(index: Int, element: T): T {
+  override fun set(
+    index: Int,
+    element: T,
+  ): T {
     val `val` = super.set(index, element)
     listeners.notifyChanged(this, index, 1)
     return `val`
   }
 
-  override fun removeRange(fromIndex: Int, toIndex: Int) {
+  override fun removeRange(
+    fromIndex: Int,
+    toIndex: Int,
+  ) {
     super.removeRange(fromIndex, toIndex)
     notifyRemove(fromIndex, toIndex - fromIndex)
   }
 
-  override fun addOnListChangedCallback(
-    callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?
-  ) {
+  override fun addOnListChangedCallback(callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?) {
     listeners.add(callback)
   }
 
-  override fun removeOnListChangedCallback(
-    callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?
-  ) {
+  override fun removeOnListChangedCallback(callback: ObservableList.OnListChangedCallback<out ObservableList<T>>?) {
     listeners.remove(callback)
   }
 
-  private fun notifyAdd(start: Int, count: Int) {
+  private fun notifyAdd(
+    start: Int,
+    count: Int,
+  ) {
     listeners.notifyInserted(this, start, count)
   }
 
-  private fun notifyRemove(start: Int, count: Int) {
+  private fun notifyRemove(
+    start: Int,
+    count: Int,
+  ) {
     listeners.notifyRemoved(this, start, count)
   }
 }

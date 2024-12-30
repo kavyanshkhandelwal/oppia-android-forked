@@ -7,15 +7,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 class StoryHeaderViewModel(
   private val completedChapters: Int,
   private val totalChapters: Int,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : StoryItemViewModel() {
   /** Returns the user-readable progress completion text corresponding to chapters in a story. */
-  fun computeStoryProgressChapterCompletedText(): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+  fun computeStoryProgressChapterCompletedText(): String =
+    resourceHandler.getQuantityStringInLocaleWithWrapping(
       R.plurals.story_total_chapters,
       totalChapters,
       completedChapters.toString(),
-      totalChapters.toString()
+      totalChapters.toString(),
     )
-  }
 }

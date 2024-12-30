@@ -12,18 +12,22 @@ import javax.inject.Inject
  * necessary configuration files. The rest of the locale & translation systems are expected to
  * gracefully fail in this case.
  */
-class LanguageConfigRetriever @Inject constructor(private val assetRepository: AssetRepository) {
-  /** Returns the [SupportedLanguages] configuration for the app, or default instance if none. */
-  fun loadSupportedLanguages(): SupportedLanguages {
-    return assetRepository.tryLoadProtoFromLocalAssets(
-      "supported_languages", SupportedLanguages.getDefaultInstance()
-    )
-  }
+class LanguageConfigRetriever
+  @Inject
+  constructor(
+    private val assetRepository: AssetRepository,
+  ) {
+    /** Returns the [SupportedLanguages] configuration for the app, or default instance if none. */
+    fun loadSupportedLanguages(): SupportedLanguages =
+      assetRepository.tryLoadProtoFromLocalAssets(
+        "supported_languages",
+        SupportedLanguages.getDefaultInstance(),
+      )
 
-  /** Returns the [SupportedRegions] configuration for the app, or default instance if none. */
-  fun loadSupportedRegions(): SupportedRegions {
-    return assetRepository.tryLoadProtoFromLocalAssets(
-      "supported_regions", SupportedRegions.getDefaultInstance()
-    )
+    /** Returns the [SupportedRegions] configuration for the app, or default instance if none. */
+    fun loadSupportedRegions(): SupportedRegions =
+      assetRepository.tryLoadProtoFromLocalAssets(
+        "supported_regions",
+        SupportedRegions.getDefaultInstance(),
+      )
   }
-}

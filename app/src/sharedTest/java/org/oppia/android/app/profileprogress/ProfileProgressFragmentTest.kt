@@ -144,7 +144,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileProgressFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileProgressFragmentTest {
   @get:Rule
@@ -192,12 +192,11 @@ class ProfileProgressFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfileProgressActivityIntent(profileId: Int): Intent {
-    return ProfileProgressActivity.createProfileProgressActivityIntent(
+  private fun createProfileProgressActivityIntent(profileId: Int): Intent =
+    ProfileProgressActivity.createProfileProgressActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      profileId,
     )
-  }
 
   @Test
   fun testProfileProgressFragment_checkProfileName_profileNameIsCorrect() {
@@ -206,7 +205,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.profile_name_text_view,
-        stringToMatch = "Admin"
+        stringToMatch = "Admin",
       )
     }
   }
@@ -219,7 +218,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.profile_name_text_view,
-        stringToMatch = "Admin"
+        stringToMatch = "Admin",
       )
     }
   }
@@ -227,7 +226,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(internalProfileId)
+      createProfileProgressActivityIntent(internalProfileId),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -236,19 +235,19 @@ class ProfileProgressFragmentTest {
         val rootView =
           headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
         assertThat(rootView.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO,
         )
 
         val ongoingTopicsContainer =
           headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
         assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
 
         val completedStoriesContainer =
           headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
         assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
       }
     }
@@ -257,7 +256,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_configChange_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(internalProfileId)
+      createProfileProgressActivityIntent(internalProfileId),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -267,19 +266,19 @@ class ProfileProgressFragmentTest {
         val rootView =
           headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
         assertThat(rootView.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO,
         )
 
         val ongoingTopicsContainer =
           headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
         assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
 
         val completedStoriesContainer =
           headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
         assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
       }
     }
@@ -289,7 +288,7 @@ class ProfileProgressFragmentTest {
   @Test
   fun testProfileProgressFragment_tablet_checkAccessibilityFlowIsCorrect() {
     launch<ProfileProgressActivity>(
-      createProfileProgressActivityIntent(internalProfileId)
+      createProfileProgressActivityIntent(internalProfileId),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -298,19 +297,19 @@ class ProfileProgressFragmentTest {
         val rootView =
           headerView.findViewById<ConstraintLayout>(R.id.profile_progress_header_container)
         assertThat(rootView.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_NO
+          View.IMPORTANT_FOR_ACCESSIBILITY_NO,
         )
 
         val ongoingTopicsContainer =
           headerView.findViewById<MaterialCardView>(R.id.ongoing_topics_container)
         assertThat(ongoingTopicsContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
 
         val completedStoriesContainer =
           headerView.findViewById<MaterialCardView>(R.id.completed_stories_container)
         assertThat(completedStoriesContainer.importantForAccessibility).isEqualTo(
-          View.IMPORTANT_FOR_ACCESSIBILITY_YES
+          View.IMPORTANT_FOR_ACCESSIBILITY_YES,
         )
       }
     }
@@ -339,10 +338,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_checkGalleryIntent() {
-    val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_GET_CONTENT),
-      hasType("image/*")
-    )
+    val expectedIntent: Matcher<Intent> =
+      allOf(
+        hasAction(Intent.ACTION_GET_CONTENT),
+        hasType("image/*"),
+      )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -357,10 +357,11 @@ class ProfileProgressFragmentTest {
 
   @Test
   fun testProfileProgressFragment_imageSelectAvatar_configChange_checkGalleryIntent() {
-    val expectedIntent: Matcher<Intent> = allOf(
-      hasAction(Intent.ACTION_GET_CONTENT),
-      hasType("image/*")
-    )
+    val expectedIntent: Matcher<Intent> =
+      allOf(
+        hasAction(Intent.ACTION_GET_CONTENT),
+        hasType("image/*"),
+      )
     val activityResult = createGalleryPickActivityResultStub()
     intending(expectedIntent).respondWith(activityResult)
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -394,7 +395,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
-        stringToMatch = "0"
+        stringToMatch = "0",
       )
     }
   }
@@ -403,15 +404,15 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -419,7 +420,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
-        stringToMatch = "2"
+        stringToMatch = "2",
       )
     }
   }
@@ -428,15 +429,15 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_twoPartialStoryProgress_ongoingTopicCountIsTwo() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -446,7 +447,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_count,
-        stringToMatch = "2"
+        stringToMatch = "2",
       )
     }
   }
@@ -458,7 +459,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.topics_in_progress),
       )
     }
   }
@@ -467,15 +468,15 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -483,7 +484,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.topics_in_progress),
       )
     }
   }
@@ -492,15 +493,15 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_ongoingTopicDescriptionIsCorrect() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -510,7 +511,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.ongoing_topics_description_text_view,
-        stringToMatch = context.getString(R.string.topics_in_progress)
+        stringToMatch = context.getString(R.string.topics_in_progress),
       )
     }
   }
@@ -522,7 +523,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_count,
-        stringToMatch = "0"
+        stringToMatch = "0",
       )
     }
   }
@@ -531,11 +532,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesCountIsTwo() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -543,7 +544,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_count,
-        stringToMatch = "2"
+        stringToMatch = "2",
       )
     }
   }
@@ -555,7 +556,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
-        stringToMatch = context.getString(R.string.stories_completed)
+        stringToMatch = context.getString(R.string.stories_completed),
       )
     }
   }
@@ -564,18 +565,18 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_twoPartialStoryProgress_completedStoriesDescriptionIsCorrect() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.completed_stories_description_text_view,
-        stringToMatch = context.getString(R.string.stories_completed)
+        stringToMatch = context.getString(R.string.stories_completed),
       )
     }
   }
@@ -584,7 +585,7 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_configChange_fractionStory_storyNameIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -595,7 +596,7 @@ class ProfileProgressFragmentTest {
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -604,19 +605,19 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_fractionsStory_storyNameIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.story_name_text_view,
-        stringToMatch = "Matthew Goes to the Bakery"
+        stringToMatch = "Matthew Goes to the Bakery",
       )
     }
   }
@@ -625,19 +626,19 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_fractionsStory_topicNameIsCorrect() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 1,
         targetViewId = R.id.topic_name_text_view,
-        stringToMatch = "FRACTIONS"
+        stringToMatch = "FRACTIONS",
       )
     }
   }
@@ -646,23 +647,26 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickFractionsStory_opensTopicActivity() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_progress_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       testCoroutineDispatchers.runCurrent()
       clickProfileProgressItem(itemPosition = 1, targetViewId = R.id.topic_name_text_view)
 
-      val args = TopicActivityParams.newBuilder().apply {
-        this.classroomId = TEST_CLASSROOM_ID_1
-        this.topicId = FRACTIONS_TOPIC_ID
-        this.storyId = FRACTIONS_STORY_ID_0
-      }.build()
+      val args =
+        TopicActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = TEST_CLASSROOM_ID_1
+            this.topicId = FRACTIONS_TOPIC_ID
+            this.storyId = FRACTIONS_STORY_ID_0
+          }.build()
       intended(hasComponent(TopicActivity::class.java.name))
       intended(hasProtoExtra(TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY, args))
     }
@@ -672,26 +676,27 @@ class ProfileProgressFragmentTest {
   fun testClickViewAll_withLessThanTwoStories_opensRecentlyPlayedActivityWithStoriesForYouTitle() {
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.view_all_text_view,
-        stringToMatch = "View All"
+        stringToMatch = "View All",
       )
-      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
-        .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
-        .build()
+      val recentlyPlayedActivityParams =
+        RecentlyPlayedActivityParams
+          .newBuilder()
+          .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+          .setActivityTitle(RecentlyPlayedActivityTitle.STORIES_FOR_YOU)
+          .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(
         allOf(
           hasProtoExtra(RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY, recentlyPlayedActivityParams),
-          hasComponent(RecentlyPlayedActivity::class.java.name)
-        )
+          hasComponent(RecentlyPlayedActivity::class.java.name),
+        ),
       )
     }
   }
@@ -700,34 +705,35 @@ class ProfileProgressFragmentTest {
   fun testClickViewAll_threeStoriesStarted_opensRecentlyPlayedActivityWithRecentlyPlayedTitle() {
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressNotSavedTestTopic0Story0(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
       testCoroutineDispatchers.runCurrent()
       verifyItemDisplayedOnProfileProgressListItem(
         itemPosition = 0,
         targetViewId = R.id.view_all_text_view,
-        stringToMatch = "View All"
+        stringToMatch = "View All",
       )
-      val recentlyPlayedActivityParams = RecentlyPlayedActivityParams
-        .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-        .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
-        .build()
+      val recentlyPlayedActivityParams =
+        RecentlyPlayedActivityParams
+          .newBuilder()
+          .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+          .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
+          .build()
       clickProfileProgressItem(itemPosition = 0, targetViewId = R.id.view_all_text_view)
       intended(
         allOf(
           hasProtoExtra(RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY, recentlyPlayedActivityParams),
-          hasComponent(RecentlyPlayedActivity::class.java.name)
-        )
+          hasComponent(RecentlyPlayedActivity::class.java.name),
+        ),
       )
     }
   }
@@ -740,8 +746,8 @@ class ProfileProgressFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_progress_list,
           position = 0,
-          targetViewId = R.id.ongoing_topics_container
-        )
+          targetViewId = R.id.ongoing_topics_container,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
@@ -754,8 +760,8 @@ class ProfileProgressFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_progress_list,
           position = 0,
-          targetViewId = R.id.completed_stories_container
-        )
+          targetViewId = R.id.completed_stories_container,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
@@ -770,8 +776,8 @@ class ProfileProgressFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.profile_progress_list,
           position = 0,
-          targetViewId = R.id.completed_stories_container
-        )
+          targetViewId = R.id.completed_stories_container,
+        ),
       ).check(matches(not(isClickable())))
     }
   }
@@ -780,15 +786,15 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickTopicCount_opensOngoingTopicListActivity() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -804,11 +810,11 @@ class ProfileProgressFragmentTest {
   fun testProfileProgressFragment_clickStoryCount_opensCompletedStoryListActivity() {
     storyProgressTestHelper.markCompletedRatiosStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markCompletedFractionsStory0(
       profileId = profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     testCoroutineDispatchers.runCurrent()
     launch<ProfileProgressActivity>(createProfileProgressActivityIntent(internalProfileId)).use {
@@ -819,20 +825,21 @@ class ProfileProgressFragmentTest {
       intended(
         hasProtoExtra(
           PROFILE_ID_INTENT_DECORATOR,
-          profileId
-        )
+          profileId,
+        ),
       )
     }
   }
 
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
-    val imageUri = Uri.parse(
-      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-        resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
-        resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
-        resources.getResourceEntryName(R.mipmap.launcher_icon)
-    )
+    val imageUri =
+      Uri.parse(
+        ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+          resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
+          resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
+          resources.getResourceEntryName(R.mipmap.launcher_icon),
+      )
     val resultIntent = Intent()
     resultIntent.data = imageUri
     return Instrumentation.ActivityResult(RESULT_OK, resultIntent)
@@ -841,24 +848,27 @@ class ProfileProgressFragmentTest {
   private fun verifyItemDisplayedOnProfileProgressListItem(
     itemPosition: Int,
     targetViewId: Int,
-    stringToMatch: String
+    stringToMatch: String,
   ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.profile_progress_list,
         position = itemPosition,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
-  private fun clickProfileProgressItem(itemPosition: Int, targetViewId: Int) {
+  private fun clickProfileProgressItem(
+    itemPosition: Int,
+    targetViewId: Int,
+  ) {
     onView(
       atPositionOnView(
         recyclerViewId = R.id.profile_progress_list,
         position = itemPosition,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
@@ -915,8 +925,8 @@ class ProfileProgressFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -927,9 +937,13 @@ class ProfileProgressFragmentTest {
     fun inject(profileProgressFragmentTest: ProfileProgressFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileProgressFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileProgressFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -938,9 +952,12 @@ class ProfileProgressFragmentTest {
       component.inject(profileProgressFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -70,10 +70,15 @@ import javax.inject.Singleton
 @Config(application = ExplorationCheckpointTestHelperTest.TestApplication::class)
 class ExplorationCheckpointTestHelperTest {
   @Inject lateinit var context: Context
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -92,7 +97,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testSaveCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -106,7 +111,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testUpdateCheckpointForFractionsStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -117,7 +122,7 @@ class ExplorationCheckpointTestHelperTest {
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration0(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -131,7 +136,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testSaveCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -145,7 +150,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testUpdateCheckpointForFractionsStory0Exploration1_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForFractionsStory0Exploration1(
       profileId = profileId,
-      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION
+      version = FRACTIONS_STORY_0_EXPLORATION_1_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -153,7 +158,7 @@ class ExplorationCheckpointTestHelperTest {
     assertThat(checkpoint.explorationTitle).isEqualTo(FRACTIONS_EXPLORATION_1_TITLE)
     assertThat(checkpoint.pendingStateName)
       .isEqualTo(
-        FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME
+        FRACTIONS_STORY_0_EXPLORATION_1_FIRST_STATE_NAME,
       )
 
     explorationCheckpointTestHelper.updateCheckpointForFractionsStory0Exploration1(
@@ -172,7 +177,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testSaveCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -185,7 +190,7 @@ class ExplorationCheckpointTestHelperTest {
   fun testUpdateCheckpointForRatiosStory0Exploration0_checkCheckpointIsSaved() {
     explorationCheckpointTestHelper.saveCheckpointForRatiosStory0Exploration0(
       profileId = profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -195,7 +200,7 @@ class ExplorationCheckpointTestHelperTest {
 
     explorationCheckpointTestHelper.updateCheckpointForRatiosStory0Exploration0(
       profileId = profileId,
-      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION
+      version = RATIOS_STORY_0_EXPLORATION_0_CURRENT_VERSION,
     )
 
     // Verify saved checkpoint has correct exploration title and pending state name.
@@ -207,7 +212,7 @@ class ExplorationCheckpointTestHelperTest {
 
   private fun retrieveCheckpoint(
     profileId: ProfileId,
-    explorationId: String
+    explorationId: String,
   ): ExplorationCheckpoint {
     val retrieveCheckpointProvider =
       explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
@@ -219,9 +224,7 @@ class ExplorationCheckpointTestHelperTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -239,8 +242,7 @@ class ExplorationCheckpointTestHelperTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -257,8 +259,8 @@ class ExplorationCheckpointTestHelperTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class
-    ]
+      RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -272,9 +274,12 @@ class ExplorationCheckpointTestHelperTest {
     fun inject(explorationCheckpointTestHelperTest: ExplorationCheckpointTestHelperTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationCheckpointTestHelperTest_TestApplicationComponent.builder()
+      DaggerExplorationCheckpointTestHelperTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

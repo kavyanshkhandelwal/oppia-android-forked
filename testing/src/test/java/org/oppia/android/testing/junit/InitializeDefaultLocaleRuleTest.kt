@@ -151,8 +151,8 @@ class InitializeDefaultLocaleRuleTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -166,9 +166,13 @@ class InitializeDefaultLocaleRuleTest {
     fun inject(initializeDefaultLocaleRuleTest: InitializeDefaultLocaleRuleTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerInitializeDefaultLocaleRuleTest_TestApplicationComponent.builder()
+      DaggerInitializeDefaultLocaleRuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -177,9 +181,12 @@ class InitializeDefaultLocaleRuleTest {
       component.inject(initializeDefaultLocaleRuleTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

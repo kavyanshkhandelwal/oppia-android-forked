@@ -20,25 +20,30 @@ import javax.inject.Inject
 private const val SKILL_ID_ARGUMENT_KEY = "ConceptCardFragment.skill_id"
 private const val PROFILE_ID_ARGUMENT_KEY = "ConceptCardFragment.profile_id"
 
-/* Fragment that displays a fullscreen dialog for concept cards */
+// Fragment that displays a fullscreen dialog for concept cards
 class ConceptCardFragment : InjectableDialogFragment() {
-
   companion object {
-
     const val CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY = "ConceptCardFragment.arguments"
 
     /** The fragment tag corresponding to the concept card dialog fragment. */
     private const val CONCEPT_CARD_DIALOG_FRAGMENT_TAG = "CONCEPT_CARD_FRAGMENT"
 
-    private fun newInstance(skillId: String, profileId: ProfileId): ConceptCardFragment {
-      val args = ConceptCardFragmentArguments.newBuilder().apply {
-        this.skillId = skillId
-      }.build()
+    private fun newInstance(
+      skillId: String,
+      profileId: ProfileId,
+    ): ConceptCardFragment {
+      val args =
+        ConceptCardFragmentArguments
+          .newBuilder()
+          .apply {
+            this.skillId = skillId
+          }.build()
       return ConceptCardFragment().apply {
-        arguments = Bundle().apply {
-          putProto(CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
 
@@ -54,7 +59,7 @@ class ConceptCardFragment : InjectableDialogFragment() {
     fun bringToFrontOrCreateIfNew(
       skillId: String,
       profileId: ProfileId,
-      fragmentManager: FragmentManager
+      fragmentManager: FragmentManager,
     ) {
       // Concept cards are keyed by profileId and skillId. However, in this method we are only
       // using the skillId for equality checks. The reason is that when the user switches profiles
@@ -117,16 +122,18 @@ class ConceptCardFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     super.onCreateView(inflater, container, savedInstanceState)
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to ConceptCardFragment"
-    }
-    val args = arguments.getProto(
-      CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
-      ConceptCardFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to ConceptCardFragment"
+      }
+    val args =
+      arguments.getProto(
+        CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+        ConceptCardFragmentArguments.getDefaultInstance(),
+      )
 
     val skillId =
       checkNotNull(args.skillId) {
@@ -141,10 +148,10 @@ class ConceptCardFragment : InjectableDialogFragment() {
     dialog?.window?.setWindowAnimations(R.style.FullScreenDialogStyle)
   }
 
-  private fun getSkillId(): String? {
-    return arguments?.getProto(
-      CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
-      ConceptCardFragmentArguments.getDefaultInstance()
-    )?.skillId
-  }
+  private fun getSkillId(): String? =
+    arguments
+      ?.getProto(
+        CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+        ConceptCardFragmentArguments.getDefaultInstance(),
+      )?.skillId
 }

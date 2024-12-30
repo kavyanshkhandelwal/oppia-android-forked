@@ -13,8 +13,11 @@ import androidx.test.espresso.action.Tap
  *
  * Reference: https://stackoverflow.com/a/22798043
  */
-fun clickPoint(pointX: Float, pointY: Float): ViewAction {
-  return GeneralClickAction(
+fun clickPoint(
+  pointX: Float,
+  pointY: Float,
+): ViewAction =
+  GeneralClickAction(
     Tap.SINGLE,
     CoordinatesProvider { view ->
       val screenPos = IntArray(2)
@@ -30,6 +33,7 @@ fun clickPoint(pointX: Float, pointY: Float): ViewAction {
 
       floatArrayOf(screenX, screenY)
     },
-    Press.FINGER, /* inputDevice= */ 0, /* deviceState= */ 0
+    Press.FINGER, // inputDevice=
+    0, // deviceState=
+    0,
   )
-}

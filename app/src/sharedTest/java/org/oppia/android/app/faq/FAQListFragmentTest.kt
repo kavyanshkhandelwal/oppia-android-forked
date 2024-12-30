@@ -129,14 +129,14 @@ class FAQListFragmentTest {
   fun openFAQListActivity_scrollRVToZeroPosition_checkFeaturedQuestionsDisplayedSuccessfully() {
     launch(FAQListActivity::class.java).use {
       onView(withId(R.id.faq_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.faq_fragment_recycler_view,
           position = 0,
-          targetViewId = R.id.faq_question_text_view
-        )
+          targetViewId = R.id.faq_question_text_view,
+        ),
       ).check(matches(withText(R.string.featured_questions)))
     }
   }
@@ -147,21 +147,22 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).perform(click())
-      val args = getFAQSingleActivityParams(
-        question = getResources().getString(R.string.faq_question_create_profile),
-        answer = getResources().getString(R.string.faq_answer_create_profile)
-      )
+      val args =
+        getFAQSingleActivityParams(
+          question = getResources().getString(R.string.faq_question_create_profile),
+          answer = getResources().getString(R.string.faq_answer_create_profile),
+        )
       intended(
         allOf(
           hasProtoExtra(
             FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
-            args
+            args,
           ),
-          hasComponent(FAQSingleActivity::class.java.name)
-        )
+          hasComponent(FAQSingleActivity::class.java.name),
+        ),
       )
     }
   }
@@ -173,22 +174,23 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).perform(click())
-      val args = getFAQSingleActivityParams(
-        question = getResources().getString(R.string.faq_question_create_profile),
-        answer = getResources().getString(R.string.faq_answer_create_profile)
-      )
+      val args =
+        getFAQSingleActivityParams(
+          question = getResources().getString(R.string.faq_question_create_profile),
+          answer = getResources().getString(R.string.faq_answer_create_profile),
+        )
 
       intended(
         allOf(
           hasProtoExtra(
             FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
-            args
+            args,
           ),
-          hasComponent(FAQSingleActivity::class.java.name)
-        )
+          hasComponent(FAQSingleActivity::class.java.name),
+        ),
       )
     }
   }
@@ -199,36 +201,39 @@ class FAQListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.faq_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
-      val args = getFAQSingleActivityParams(
-        question = getResources().getString(R.string.faq_question_whats_oppia, getAppName()),
-        answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName())
-      )
+      val args =
+        getFAQSingleActivityParams(
+          question = getResources().getString(R.string.faq_question_whats_oppia, getAppName()),
+          answer = getResources().getString(R.string.faq_answer_whats_oppia, getAppName()),
+        )
       intended(
         allOf(
           hasProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args),
-          hasComponent(FAQSingleActivity::class.java.name)
-        )
+          hasComponent(FAQSingleActivity::class.java.name),
+        ),
       )
     }
   }
 
-  private fun getFAQSingleActivityParams(question: String, answer: String):
-    FAQSingleActivityParams {
-      return FAQSingleActivityParams.newBuilder().apply {
+  private fun getFAQSingleActivityParams(
+    question: String,
+    answer: String,
+  ): FAQSingleActivityParams =
+    FAQSingleActivityParams
+      .newBuilder()
+      .apply {
         this.question = question
         this.answer = answer
       }.build()
-    }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getResources(): Resources =
-    ApplicationProvider.getApplicationContext<Context>().resources
+  private fun getResources(): Resources = ApplicationProvider.getApplicationContext<Context>().resources
 
   private fun getAppName(): String = getResources().getString(R.string.app_name)
 
@@ -261,8 +266,8 @@ class FAQListFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -273,9 +278,13 @@ class FAQListFragmentTest {
     fun inject(faqListFragmentTest: FAQListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFAQListFragmentTest_TestApplicationComponent.builder()
+      DaggerFAQListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -284,9 +293,12 @@ class FAQListFragmentTest {
       component.inject(faqListFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

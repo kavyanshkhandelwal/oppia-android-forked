@@ -6,5 +6,5 @@ class FeedbackViewModel(
   val gcsEntityId: String,
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  val supportsConceptCards: Boolean
+  val supportsConceptCards: Boolean,
 ) : StateItemViewModel(ViewType.FEEDBACK)

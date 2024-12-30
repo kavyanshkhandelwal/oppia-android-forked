@@ -33,7 +33,7 @@ class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
         override fun handleOnBackPressed() {
           finish()
         }
-      }
+      },
     )
   }
 
@@ -46,10 +46,9 @@ class ProfileAndDeviceIdActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns an [Intent] to launch [ProfileAndDeviceIdActivity]. */
-    fun createIntent(context: Context): Intent {
-      return Intent(context, ProfileAndDeviceIdActivity::class.java).apply {
+    fun createIntent(context: Context): Intent =
+      Intent(context, ProfileAndDeviceIdActivity::class.java).apply {
         decorateWithScreenName(PROFILE_AND_DEVICE_ID_ACTIVITY)
       }
-    }
   }
 }

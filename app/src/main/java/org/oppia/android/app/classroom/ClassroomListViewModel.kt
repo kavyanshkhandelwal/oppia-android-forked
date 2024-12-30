@@ -61,12 +61,12 @@ class ClassroomListViewModel(
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
-  private val translationController: TranslationController
+  private val translationController: TranslationController,
 ) : ObservableViewModel() {
-
-  private val promotedStoryListLimit = activity.resources.getInteger(
-    R.integer.promoted_story_list_limit
-  )
+  private val promotedStoryListLimit =
+    activity.resources.getInteger(
+      R.integer.promoted_story_list_limit,
+    )
 
   /** An observable boolean property indicating the visibility state of the progress bar. */
   val isProgressBarVisible = ObservableField(true)
@@ -99,24 +99,25 @@ class ClassroomListViewModel(
     // This will block until all data providers return initial results (which may be default
     // instances). If any of the data providers are pending or failed, the combined result will also
     // be pending or failed.
-    profileDataProvider.combineWith(
-      promotedActivityListSummaryDataProvider,
-      PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID
-    ) { profile, promotedActivityList ->
-      if (profile.numberOfLogins > 1) {
-        listOfNotNull(
-          computeWelcomeViewModel(profile),
-          computePromotedActivityListViewModel(promotedActivityList)
-        )
-      } else {
-        listOfNotNull(computeWelcomeViewModel(profile))
+    profileDataProvider
+      .combineWith(
+        promotedActivityListSummaryDataProvider,
+        PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID,
+      ) { profile, promotedActivityList ->
+        if (profile.numberOfLogins > 1) {
+          listOfNotNull(
+            computeWelcomeViewModel(profile),
+            computePromotedActivityListViewModel(promotedActivityList),
+          )
+        } else {
+          listOfNotNull(computeWelcomeViewModel(profile))
+        }
+      }.combineWith(
+        classroomSummaryListDataProvider,
+        CLASSROOM_LIST_FRAGMENT_COMBINED_PROVIDER_ID,
+      ) { homeItemViewModelList, classroomSummaryList ->
+        homeItemViewModelList + computeClassroomItemViewModelList(classroomSummaryList)
       }
-    }.combineWith(
-      classroomSummaryListDataProvider,
-      CLASSROOM_LIST_FRAGMENT_COMBINED_PROVIDER_ID
-    ) { homeItemViewModelList, classroomSummaryList ->
-      homeItemViewModelList + computeClassroomItemViewModelList(classroomSummaryList)
-    }
   }
 
   /**
@@ -132,7 +133,7 @@ class ClassroomListViewModel(
           oppiaLogger.e(
             "ClassroomListFragment",
             "No classroom list fragment available -- failed to retrieve fragment data.",
-            itemListResult.error
+            itemListResult.error,
           )
           listOf()
         }
@@ -149,11 +150,12 @@ class ClassroomListViewModel(
    * Returns a [HomeItemViewModel] corresponding to the welcome message (see [WelcomeViewModel]), or null if
    * the specified profile has insufficient information to show the welcome message.
    */
-  private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? {
-    return if (profile.name.isNotEmpty()) {
+  private fun computeWelcomeViewModel(profile: Profile): HomeItemViewModel? =
+    if (profile.name.isNotEmpty()) {
       WelcomeViewModel(profile.name, resourceHandler, dateTimeUtil)
-    } else null
-  }
+    } else {
+      null
+    }
 
   /**
    * Returns a [HomeItemViewModel] corresponding to the promoted stories(Recommended, Recently-played and
@@ -161,32 +163,36 @@ class ClassroomListViewModel(
    * to be displayed for this learner or null if this profile does not have any promoted stories.
    * Promoted stories are determined by any recent stories last-played stories or suggested stories started by this profile.
    */
-  private fun computePromotedActivityListViewModel(
-    promotedActivityList: PromotedActivityList
-  ): HomeItemViewModel? {
+  private fun computePromotedActivityListViewModel(promotedActivityList: PromotedActivityList): HomeItemViewModel? {
     when (promotedActivityList.recommendationTypeCase) {
       PromotedActivityList.RecommendationTypeCase.PROMOTED_STORY_LIST -> {
-        val storyViewModelList = computePromotedStoryViewModelList(
-          promotedActivityList.promotedStoryList
-        )
+        val storyViewModelList =
+          computePromotedStoryViewModelList(
+            promotedActivityList.promotedStoryList,
+          )
         return if (storyViewModelList.isNotEmpty()) {
           return PromotedStoryListViewModel(
             activity,
             storyViewModelList,
             promotedActivityList,
-            resourceHandler
+            resourceHandler,
           )
-        } else null
+        } else {
+          null
+        }
       }
       PromotedActivityList.RecommendationTypeCase.COMING_SOON_TOPIC_LIST -> {
-        val comingSoonTopicsList = computeComingSoonTopicViewModelList(
-          promotedActivityList.comingSoonTopicList
-        )
+        val comingSoonTopicsList =
+          computeComingSoonTopicViewModelList(
+            promotedActivityList.comingSoonTopicList,
+          )
         return if (comingSoonTopicsList.isNotEmpty()) {
           return ComingSoonTopicListViewModel(
-            comingSoonTopicsList
+            comingSoonTopicsList,
           )
-        } else null
+        } else {
+          null
+        }
       }
       else -> return null
     }
@@ -197,32 +203,32 @@ class ClassroomListViewModel(
    * for this profile (see [PromotedStoryViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
-  private fun computePromotedStoryViewModelList(
-    promotedStoryList: PromotedStoryList
-  ): List<PromotedStoryViewModel> {
+  private fun computePromotedStoryViewModelList(promotedStoryList: PromotedStoryList): List<PromotedStoryViewModel> {
     with(promotedStoryList) {
-      val storyList = when {
-        suggestedStoryList.isNotEmpty() -> {
-          if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
-            recentlyPlayedStoryList +
-              olderPlayedStoryList +
+      val storyList =
+        when {
+          suggestedStoryList.isNotEmpty() -> {
+            if (recentlyPlayedStoryList.isNotEmpty() || olderPlayedStoryList.isNotEmpty()) {
+              recentlyPlayedStoryList +
+                olderPlayedStoryList +
+                suggestedStoryList
+            } else {
               suggestedStoryList
-          } else {
-            suggestedStoryList
+            }
+          }
+          recentlyPlayedStoryList.isNotEmpty() -> {
+            recentlyPlayedStoryList
+          }
+          else -> {
+            olderPlayedStoryList
           }
         }
-        recentlyPlayedStoryList.isNotEmpty() -> {
-          recentlyPlayedStoryList
-        }
-        else -> {
-          olderPlayedStoryList
-        }
-      }
 
       // Check if at least one story in topic is completed. Prioritize recommended story over
       // completed story topic.
       val sortedStoryList = storyList.sortedByDescending { !it.isTopicLearned }
-      return sortedStoryList.take(promotedStoryListLimit)
+      return sortedStoryList
+        .take(promotedStoryListLimit)
         .mapIndexed { index, promotedStory ->
           PromotedStoryViewModel(
             activity,
@@ -231,7 +237,7 @@ class ClassroomListViewModel(
             storyEntityType,
             promotedStory,
             translationController,
-            index
+            index,
           )
         }
     }
@@ -242,19 +248,16 @@ class ClassroomListViewModel(
    * displayed for this profile (see [ComingSoonTopicsViewModel]), or an empty list if the profile does not have any
    * ongoing stories at all.
    */
-  private fun computeComingSoonTopicViewModelList(
-    comingSoonTopicList: ComingSoonTopicList
-  ): List<ComingSoonTopicsViewModel> {
-    return comingSoonTopicList.upcomingTopicList.map { topicSummary ->
+  private fun computeComingSoonTopicViewModelList(comingSoonTopicList: ComingSoonTopicList): List<ComingSoonTopicsViewModel> =
+    comingSoonTopicList.upcomingTopicList.map { topicSummary ->
       ComingSoonTopicsViewModel(
         activity,
         topicSummary,
         topicEntityType,
         comingSoonTopicList,
-        translationController
+        translationController,
       )
     }
-  }
 
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to all the classroom summaries available
@@ -262,18 +265,15 @@ class ClassroomListViewModel(
    * an empty list if there are no classrooms to display to the learner (caused by either
    * error or pending data providers).
    */
-  private fun computeClassroomItemViewModelList(
-    classroomList: ClassroomList
-  ): List<HomeItemViewModel> {
-    return listOf(AllClassroomsViewModel) +
+  private fun computeClassroomItemViewModelList(classroomList: ClassroomList): List<HomeItemViewModel> =
+    listOf(AllClassroomsViewModel) +
       classroomList.classroomSummaryList.map { ephemeralClassroomSummary ->
         ClassroomSummaryViewModel(
           fragment as ClassroomSummaryClickListener,
           ephemeralClassroomSummary,
-          translationController
+          translationController,
         )
       }
-  }
 
   /**
    * Returns a list of [HomeItemViewModel]s corresponding to all the lesson topics available and to
@@ -281,46 +281,50 @@ class ClassroomListViewModel(
    * associated topics list header (see [AllTopicsViewModel]). Returns an empty list if there are
    * no topics to display to the learner (caused by either error or pending data providers).
    */
-  private fun computeAllTopicsItemsViewModelList(
-    topicList: TopicList
-  ): List<HomeItemViewModel> {
-    val allTopicsList = topicList.topicSummaryList.mapIndexed { topicIndex, ephemeralSummary ->
-      TopicSummaryViewModel(
-        activity,
-        ephemeralSummary,
-        topicEntityType,
-        fragment as TopicSummaryClickListener,
-        position = topicIndex,
-        resourceHandler,
-        translationController
-      )
-    }
+  private fun computeAllTopicsItemsViewModelList(topicList: TopicList): List<HomeItemViewModel> {
+    val allTopicsList =
+      topicList.topicSummaryList.mapIndexed { topicIndex, ephemeralSummary ->
+        TopicSummaryViewModel(
+          activity,
+          ephemeralSummary,
+          topicEntityType,
+          fragment as TopicSummaryClickListener,
+          position = topicIndex,
+          resourceHandler,
+          translationController,
+        )
+      }
     return if (allTopicsList.isNotEmpty()) {
       listOf(AllTopicsViewModel) + allTopicsList
-    } else emptyList()
+    } else {
+      emptyList()
+    }
   }
 
   /** Fetches and updates the topic list based on the provided or last selected classroom ID. */
   fun fetchAndUpdateTopicList(classroomId: String = "") {
     if (classroomId.isBlank()) {
       // Retrieve the last selected classroom ID if no specific classroom ID is provided.
-      profileManagementController.retrieveLastSelectedClassroomId(profileId)
-        .toLiveData().observe(fragment) { lastSelectedClassroomIdResult ->
+      profileManagementController
+        .retrieveLastSelectedClassroomId(profileId)
+        .toLiveData()
+        .observe(fragment) { lastSelectedClassroomIdResult ->
           when (lastSelectedClassroomIdResult) {
             is AsyncResult.Success -> {
               val lastSelectedClassroomId = lastSelectedClassroomIdResult.value
               updateTopicList(
-                if (lastSelectedClassroomId.isNullOrBlank())
+                if (lastSelectedClassroomId.isNullOrBlank()) {
                   TEST_CLASSROOM_ID_0
-                else
+                } else {
                   lastSelectedClassroomId
+                },
               )
             }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "ClassroomListFragment",
                 "Failed to retrieve last selected classroom ID",
-                lastSelectedClassroomIdResult.error
+                lastSelectedClassroomIdResult.error,
               )
               // Use a default classroom ID in case of failure.
               updateTopicList(TEST_CLASSROOM_ID_0)
@@ -336,26 +340,28 @@ class ClassroomListViewModel(
 
   private fun updateTopicList(classroomId: String) {
     selectedClassroomId.set(classroomId)
-    classroomController.getTopicList(
-      profileId,
-      classroomId
-    ).toLiveData().observe(fragment) { topicListResult ->
-      when (topicListResult) {
-        is AsyncResult.Success -> {
-          topicList.clear()
-          computeAllTopicsItemsViewModelList(topicListResult.value).map { itemViewModel ->
-            topicList.add(itemViewModel)
+    classroomController
+      .getTopicList(
+        profileId,
+        classroomId,
+      ).toLiveData()
+      .observe(fragment) { topicListResult ->
+        when (topicListResult) {
+          is AsyncResult.Success -> {
+            topicList.clear()
+            computeAllTopicsItemsViewModelList(topicListResult.value).map { itemViewModel ->
+              topicList.add(itemViewModel)
+            }
           }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ClassroomListFragment",
+              "Failed to retrieve topic list.",
+              topicListResult.error,
+            )
+          }
+          is AsyncResult.Pending -> {}
         }
-        is AsyncResult.Failure -> {
-          oppiaLogger.e(
-            "ClassroomListFragment",
-            "Failed to retrieve topic list.",
-            topicListResult.error
-          )
-        }
-        is AsyncResult.Pending -> {}
       }
-    }
   }
 }

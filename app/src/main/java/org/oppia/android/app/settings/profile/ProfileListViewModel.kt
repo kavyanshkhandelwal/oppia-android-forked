@@ -14,42 +14,49 @@ import javax.inject.Inject
 
 /** The ViewModel for [ProfileListActivity]. */
 @ActivityScope
-class ProfileListViewModel @Inject constructor(
-  private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val machineLocale: OppiaLocale.MachineLocale
-) : ObservableViewModel() {
+class ProfileListViewModel
+  @Inject
+  constructor(
+    private val oppiaLogger: OppiaLogger,
+    private val profileManagementController: ProfileManagementController,
+    private val machineLocale: OppiaLocale.MachineLocale,
+  ) : ObservableViewModel() {
+    /** The list of the current profiles registered in the app [ProifleListFragment]. */
+    val profiles: LiveData<List<Profile>> by lazy {
+      Transformations.map(
+        profileManagementController.getProfiles().toLiveData(),
+        ::processGetProfilesResult,
+      )
+    }
 
-  /** The list of the current profiles registered in the app [ProifleListFragment]. */
-  val profiles: LiveData<List<Profile>> by lazy {
-    Transformations.map(
-      profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
-    )
-  }
+    private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
+      val profileList =
+        when (profilesResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ProfileListViewModel",
+              "Failed to retrieve the list of profiles",
+              profilesResult.error,
+            )
+            emptyList()
+          }
+          is AsyncResult.Pending -> emptyList()
+          is AsyncResult.Success -> profilesResult.value
+        }
 
-  private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<Profile> {
-    val profileList = when (profilesResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ProfileListViewModel", "Failed to retrieve the list of profiles", profilesResult.error
-        )
-        emptyList()
+      val sortedProfileList =
+        profileList
+          .sortedBy {
+            machineLocale.run { it.name.toMachineLowerCase() }
+          }.toMutableList()
+
+      val adminProfile = sortedProfileList.find { it.isAdmin }
+
+      adminProfile?.let {
+        sortedProfileList.remove(adminProfile)
+        sortedProfileList.add(0, it)
       }
-      is AsyncResult.Pending -> emptyList()
-      is AsyncResult.Success -> profilesResult.value
+
+      return sortedProfileList
     }
-
-    val sortedProfileList = profileList.sortedBy {
-      machineLocale.run { it.name.toMachineLowerCase() }
-    }.toMutableList()
-
-    val adminProfile = sortedProfileList.find { it.isAdmin }
-
-    adminProfile?.let {
-      sortedProfileList.remove(adminProfile)
-      sortedProfileList.add(0, it)
-    }
-
-    return sortedProfileList
   }
-}

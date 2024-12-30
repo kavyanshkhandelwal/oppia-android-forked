@@ -29,7 +29,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DirectoryManagementUtilTest {
-
   @Inject lateinit var directoryManagementUtil: DirectoryManagementUtil
 
   @Inject lateinit var context: Context
@@ -45,7 +44,8 @@ class DirectoryManagementUtilTest {
   private val TEST_FILE_2 = "TEST_FILE_2"
 
   private fun setUpTestApplicationComponent() {
-    DaggerDirectoryManagementUtilTest_TestApplicationComponent.builder()
+    DaggerDirectoryManagementUtilTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -144,9 +144,7 @@ class DirectoryManagementUtilTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -168,8 +166,8 @@ class DirectoryManagementUtilTest {
   @Component(
     modules = [
       TestModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

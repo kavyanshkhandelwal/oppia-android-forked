@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
  * Reference: https://blog.mindorks.com/using-snaphelper-in-recyclerview-fc616b6833e8
  */
 class StartSnapHelper : LinearSnapHelper() {
-
   private lateinit var mVerticalHelper: OrientationHelper
   private lateinit var mHorizontalHelper: OrientationHelper
 
@@ -22,7 +21,7 @@ class StartSnapHelper : LinearSnapHelper() {
 
   override fun calculateDistanceToFinalSnap(
     layoutManager: RecyclerView.LayoutManager,
-    targetView: View
+    targetView: View,
   ): IntArray? {
     val out = IntArray(2)
     if (layoutManager.canScrollHorizontally()) {
@@ -38,23 +37,25 @@ class StartSnapHelper : LinearSnapHelper() {
     return out
   }
 
-  override fun findSnapView(layoutManager: RecyclerView.LayoutManager): View? {
-    return if (layoutManager is LinearLayoutManager) {
+  override fun findSnapView(layoutManager: RecyclerView.LayoutManager): View? =
+    if (layoutManager is LinearLayoutManager) {
       if (layoutManager.canScrollHorizontally()) {
         getStartView(layoutManager, getHorizontalHelper(layoutManager))
       } else {
         getStartView(layoutManager, getVerticalHelper(layoutManager))
       }
-    } else super.findSnapView(layoutManager)
-  }
+    } else {
+      super.findSnapView(layoutManager)
+    }
 
-  private fun distanceToStart(targetView: View, helper: OrientationHelper): Int {
-    return helper.getDecoratedStart(targetView) - helper.startAfterPadding
-  }
+  private fun distanceToStart(
+    targetView: View,
+    helper: OrientationHelper,
+  ): Int = helper.getDecoratedStart(targetView) - helper.startAfterPadding
 
   private fun getStartView(
     layoutManager: RecyclerView.LayoutManager,
-    helper: OrientationHelper
+    helper: OrientationHelper,
   ): View? {
     if (layoutManager is LinearLayoutManager) {
       val firstChild = layoutManager.findFirstVisibleItemPosition()
@@ -68,7 +69,7 @@ class StartSnapHelper : LinearSnapHelper() {
       return if (helper.getDecoratedEnd(child) >=
         helper.getDecoratedMeasurement(child) / 2 &&
         helper.getDecoratedEnd(
-          child
+          child,
         ) > 0
       ) {
         child

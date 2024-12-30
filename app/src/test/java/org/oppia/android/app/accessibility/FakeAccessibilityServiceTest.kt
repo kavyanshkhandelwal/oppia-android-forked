@@ -76,6 +76,7 @@ class FakeAccessibilityServiceTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -84,7 +85,8 @@ class FakeAccessibilityServiceTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerFakeAccessibilityServiceTest_TestApplicationComponent.builder()
+      DaggerFakeAccessibilityServiceTest_TestApplicationComponent
+        .builder()
         .setApplication(ApplicationProvider.getApplicationContext())
         .build()
     }

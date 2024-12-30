@@ -31,7 +31,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
 ) : StateItemViewModel(ViewType.IMAGE_REGION_SELECTION_INTERACTION),
   InteractionAnswerHandler,
   OnClickableAreaClickedListener {
@@ -60,10 +60,13 @@ class ImageRegionSelectionInteractionViewModel private constructor(
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        override fun onPropertyChanged(
+          sender: Observable,
+          propertyId: Int,
+        ) {
           errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError = pendingAnswerError,
-            inputAnswerAvailable = true // Allow blank answer submission.
+            inputAnswerAvailable = true, // Allow blank answer submission.
           )
         }
       }
@@ -73,7 +76,7 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     // Initializing with default values so that submit button is enabled by default.
     errorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       pendingAnswerError = null,
-      inputAnswerAvailable = true
+      inputAnswerAvailable = true,
     )
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
@@ -106,9 +109,10 @@ class ImageRegionSelectionInteractionViewModel private constructor(
           pendingAnswerError = null
         } else {
           pendingAnswerError =
-            ImageRegionParsingUiError.createFromParsingError(
-              getSubmitTimeError(answerText.toString())
-            ).getErrorMessageFromStringRes(resourceHandler)
+            ImageRegionParsingUiError
+              .createFromParsingError(
+                getSubmitTimeError(answerText.toString()),
+              ).getErrorMessageFromStringRes(resourceHandler)
         }
       }
       else -> {}
@@ -118,14 +122,15 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     return pendingAnswerError
   }
 
-  override fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.newBuilder().apply {
-      if (answerText.isNotEmpty()) {
-        this.imageLabel = answerText.toString()
-      }
-      this.answerErrorCategory = answerErrorCetegory
-    }.build()
-  }
+  override fun getUserAnswerState(): UserAnswerState =
+    UserAnswerState
+      .newBuilder()
+      .apply {
+        if (answerText.isNotEmpty()) {
+          this.imageLabel = answerText.toString()
+        }
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
 
   override fun getPendingAnswer(): UserAnswer {
     // Resetting Observable UserAnswerState to its default instance to ensure that
@@ -134,23 +139,30 @@ class ImageRegionSelectionInteractionViewModel private constructor(
     // the user submits an answer, causing it to retain the old UserAnswerState.
     observableUserAnswrerState.set(UserAnswerState.getDefaultInstance())
 
-    return UserAnswer.newBuilder().apply {
-      val answerTextString = answerText.toString()
-      answer = InteractionObject.newBuilder().apply {
-        clickOnImage = parseClickOnImage(answerTextString)
+    return UserAnswer
+      .newBuilder()
+      .apply {
+        val answerTextString = answerText.toString()
+        answer =
+          InteractionObject
+            .newBuilder()
+            .apply {
+              clickOnImage = parseClickOnImage(answerTextString)
+            }.build()
+        plainAnswer =
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.image_interaction_answer_text,
+            answerTextString,
+          )
+        this.writtenTranslationContext =
+          this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
       }.build()
-      plainAnswer = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.image_interaction_answer_text,
-        answerTextString
-      )
-      this.writtenTranslationContext =
-        this@ImageRegionSelectionInteractionViewModel.writtenTranslationContext
-    }.build()
   }
 
   private fun parseClickOnImage(answerTextString: String): ClickOnImage {
     val region = selectableRegions.find { it.label == answerTextString }
-    return ClickOnImage.newBuilder()
+    return ClickOnImage
+      .newBuilder()
       // The object supports multiple regions in an answer, but neither web nor Android supports this.
       .addClickedRegions(region?.label ?: "")
       .build()
@@ -169,69 +181,68 @@ class ImageRegionSelectionInteractionViewModel private constructor(
 
   /** Represents errors that can occur when parsing region name. */
   enum class ImageRegionParsingError {
-
     /** Indicates that the considered string is a valid. */
     VALID,
 
     /** Indicates that the input text was empty. */
-    EMPTY_INPUT
+    EMPTY_INPUT,
   }
 
-  enum class ImageRegionParsingUiError(@StringRes private var error: Int?) {
+  enum class ImageRegionParsingUiError(
+    @StringRes private var error: Int?,
+  ) {
     /** Corresponds to [ImageRegionParsingError.VALID]. */
     VALID(error = null),
 
     /** Corresponds to [ImageRegionParsingError.EMPTY_INPUT]. */
-    EMPTY_INPUT(error = R.string.image_error_empty_input);
+    EMPTY_INPUT(error = R.string.image_error_empty_input),
+    ;
 
     /**
      * Returns the string corresponding to this error's string resources, or null if there is none.
      */
-    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
-      error?.let(resourceHandler::getStringInLocale)
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? = error?.let(resourceHandler::getStringInLocale)
 
     companion object {
       /**
        * Returns the [ImageRegionParsingUiError] corresponding to the specified [ImageRegionParsingError].
        */
-      fun createFromParsingError(parsingError: ImageRegionParsingError): ImageRegionParsingUiError {
-        return when (parsingError) {
-
+      fun createFromParsingError(parsingError: ImageRegionParsingError): ImageRegionParsingUiError =
+        when (parsingError) {
           ImageRegionParsingError.VALID -> VALID
 
           ImageRegionParsingError.EMPTY_INPUT -> EMPTY_INPUT
         }
-      }
     }
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val resourceHandler: AppLanguageResourceHandler
-  ) : InteractionItemFactory {
-
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return ImageRegionSelectionInteractionViewModel(
-        entityId,
-        hasConversationView,
-        interaction,
-        answerErrorReceiver,
-        isSplitView,
-        writtenTranslationContext,
-        resourceHandler,
-        userAnswerState
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val resourceHandler: AppLanguageResourceHandler,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        ImageRegionSelectionInteractionViewModel(
+          entityId,
+          hasConversationView,
+          interaction,
+          answerErrorReceiver,
+          isSplitView,
+          writtenTranslationContext,
+          resourceHandler,
+          userAnswerState,
+        )
     }
-  }
 }

@@ -27,32 +27,37 @@ class CreateProfileFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    createProfileFragmentPresenter.activityResultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == Activity.RESULT_OK) {
-        createProfileFragmentPresenter.handleOnActivityResult(result.data)
+    createProfileFragmentPresenter.activityResultLauncher =
+      registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+      ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+          createProfileFragmentPresenter.handleOnActivityResult(result.data)
+        }
       }
-    }
 
-    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
-      "Expected CreateProfileFragment to have a profileId argument."
-    }
-    val profileType = checkNotNull(
-      arguments?.getProto(
-        CREATE_PROFILE_FRAGMENT_ARGS, CreateProfileFragmentArguments.getDefaultInstance()
-      )?.profileType
-    ) {
-      "Expected CreateProfileFragment to have a profileType argument."
-    }
+    val profileId =
+      checkNotNull(arguments?.extractCurrentUserProfileId()) {
+        "Expected CreateProfileFragment to have a profileId argument."
+      }
+    val profileType =
+      checkNotNull(
+        arguments
+          ?.getProto(
+            CREATE_PROFILE_FRAGMENT_ARGS,
+            CreateProfileFragmentArguments.getDefaultInstance(),
+          )?.profileType,
+      ) {
+        "Expected CreateProfileFragment to have a profileType argument."
+      }
 
     return createProfileFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
-      profileType
+      profileType,
     )
   }
 }

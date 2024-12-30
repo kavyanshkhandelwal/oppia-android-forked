@@ -9,24 +9,26 @@ import javax.inject.Inject
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
-class AddProfileViewModel @Inject constructor(
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
-) : ObservableViewModel() {
-  val validPin = ObservableField(false)
-  val pinErrorMsg = ObservableField("")
-  val confirmPinErrorMsg = ObservableField("")
-  val nameErrorMsg = ObservableField("")
-  val inputName = ObservableField("")
-  val inputPin = ObservableField("")
-  val inputConfirmPin = ObservableField("")
-  val createPin = ObservableField(false)
-  val isButtonActive = ObservableField(false)
-  val showInfoAlertPopup = ObservableField<Boolean>(false)
-  val showAllowDownloadAccess: Boolean by lazy { enableDownloadsSupport.value }
+class AddProfileViewModel
+  @Inject
+  constructor(
+    @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
+  ) : ObservableViewModel() {
+    val validPin = ObservableField(false)
+    val pinErrorMsg = ObservableField("")
+    val confirmPinErrorMsg = ObservableField("")
+    val nameErrorMsg = ObservableField("")
+    val inputName = ObservableField("")
+    val inputPin = ObservableField("")
+    val inputConfirmPin = ObservableField("")
+    val createPin = ObservableField(false)
+    val isButtonActive = ObservableField(false)
+    val showInfoAlertPopup = ObservableField<Boolean>(false)
+    val showAllowDownloadAccess: Boolean by lazy { enableDownloadsSupport.value }
 
-  fun clearAllErrorMessages() {
-    pinErrorMsg.set("")
-    confirmPinErrorMsg.set("")
-    nameErrorMsg.set("")
+    fun clearAllErrorMessages() {
+      pinErrorMsg.set("")
+      confirmPinErrorMsg.set("")
+      nameErrorMsg.set("")
+    }
   }
-}

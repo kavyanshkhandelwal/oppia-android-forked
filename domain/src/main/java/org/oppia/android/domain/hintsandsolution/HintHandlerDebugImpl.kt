@@ -22,7 +22,7 @@ class HintHandlerDebugImpl private constructor() : HintHandler {
   override suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
-    state: State
+    state: State,
   ) {}
 
   override suspend fun finishState(newState: State) {
@@ -44,27 +44,31 @@ class HintHandlerDebugImpl private constructor() : HintHandler {
   override fun getCurrentHelpIndex(): StateFlow<HelpIndex> = helpIndexFlow
 
   private fun recomputeHelpIndex(pendingState: State) {
-    helpIndexFlow.value = if (!pendingState.offersHelp()) {
-      // If this state has no help to show, do nothing.
-      HelpIndex.getDefaultInstance()
-    } else {
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
-    }
+    helpIndexFlow.value =
+      if (!pendingState.offersHelp()) {
+        // If this state has no help to show, do nothing.
+        HelpIndex.getDefaultInstance()
+      } else {
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build()
+      }
   }
 
   /** Debug implementation of [HintHandler.Factory]. */
-  class FactoryDebugImpl @Inject constructor(
-    private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl,
-    private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
-  ) : HintHandler.Factory {
-    override fun create(): HintHandler {
-      return if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
-        hintHandlerProdImplFactory.create()
-      } else {
-        HintHandlerDebugImpl()
-      }
+  class FactoryDebugImpl
+    @Inject
+    constructor(
+      private val hintHandlerProdImplFactory: HintHandlerProdImpl.FactoryProdImpl,
+      private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+    ) : HintHandler.Factory {
+      override fun create(): HintHandler =
+        if (!showAllHintsAndSolutionController.getShowAllHintsAndSolution()) {
+          hintHandlerProdImplFactory.create()
+        } else {
+          HintHandlerDebugImpl()
+        }
     }
-  }
 }

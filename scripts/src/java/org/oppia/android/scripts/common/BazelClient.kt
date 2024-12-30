@@ -8,39 +8,39 @@ import java.util.Locale
  * Utility class to query & interact with a Bazel workspace on the local filesystem (residing within
  * the specified root directory).
  */
-class BazelClient(private val rootDirectory: File, private val commandExecutor: CommandExecutor) {
+class BazelClient(
+  private val rootDirectory: File,
+  private val commandExecutor: CommandExecutor,
+) {
   /** Returns all Bazel test targets in the workspace. */
-  fun retrieveAllTestTargets(): List<String> {
-    return correctPotentiallyBrokenTargetNames(
-      executeBazelCommand("query", "--noshow_progress", "kind(test, //...)")
+  fun retrieveAllTestTargets(): List<String> =
+    correctPotentiallyBrokenTargetNames(
+      executeBazelCommand("query", "--noshow_progress", "kind(test, //...)"),
     )
-  }
 
   /** Returns all Bazel file targets that correspond to each of the relative file paths provided. */
-  fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> {
-    return correctPotentiallyBrokenTargetNames(
+  fun retrieveBazelTargets(changedFileRelativePaths: Iterable<String>): List<String> =
+    correctPotentiallyBrokenTargetNames(
       runPotentiallyShardedQueryCommand(
         "set(%s)",
         changedFileRelativePaths,
         "--noshow_progress",
         "--keep_going",
-        allowPartialFailures = true
-      )
+        allowPartialFailures = true,
+      ),
     )
-  }
 
   /** Returns all test targets in the workspace that are affected by the list of file targets. */
-  fun retrieveRelatedTestTargets(fileTargets: Iterable<String>): List<String> {
-    return correctPotentiallyBrokenTargetNames(
+  fun retrieveRelatedTestTargets(fileTargets: Iterable<String>): List<String> =
+    correctPotentiallyBrokenTargetNames(
       runPotentiallyShardedQueryCommand(
         "kind(test, allrdeps(set(%s)))",
         fileTargets,
         "--noshow_progress",
         "--universe_scope=//...",
-        "--order_output=no"
-      )
+        "--order_output=no",
+      ),
     )
-  }
 
   /**
    * Returns all test targets transitively tied to the specific Bazel BUILD/WORKSPACE files listed
@@ -60,52 +60,54 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
           "--noshow_progress",
           "--universe_scope=//...",
           "--order_output=no",
-          delimiter = ","
+          delimiter = ",",
         )
       // Compute only test & library siblings for each individual build file. While this is both
       // much slower than a fully combined query & can potentially miss targets, it runs
       // substantially faster per query and helps to avoid potential hanging in CI. Note also that
       // this is more correct than a combined query since it ensures that siblings checks are
       // properly unique for each file being considered (vs. searching for common siblings).
-      val relevantSiblings = referencingBuildFiles.flatMap { buildFileTarget ->
-        retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
-          retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
-      }.toSet()
+      val relevantSiblings =
+        referencingBuildFiles
+          .flatMap { buildFileTarget ->
+            retrieveFilteredSiblings(filterRuleType = "test", buildFileTarget) +
+              retrieveFilteredSiblings(filterRuleType = "android_library", buildFileTarget)
+          }.toSet()
       return correctPotentiallyBrokenTargetNames(
         runPotentiallyShardedQueryCommand(
           "filter('^[^@]', kind(test, allrdeps(set(%s))))",
           relevantSiblings,
           "--noshow_progress",
           "--universe_scope=//...",
-          "--order_output=no"
-        )
+          "--order_output=no",
+        ),
       )
-    } else listOf()
+    } else {
+      listOf()
+    }
   }
 
   /**
    * Returns the list of direct and indirect Maven third-party dependencies on which the specified
    * binary depends.
    */
-  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> {
-    return executeBazelCommand(
+  fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> =
+    executeBazelCommand(
       "query",
-      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//..."
+      "deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//...",
     )
-  }
 
   private fun retrieveFilteredSiblings(
     filterRuleType: String,
-    buildFileTarget: String
-  ): List<String> {
-    return executeBazelCommand(
+    buildFileTarget: String,
+  ): List<String> =
+    executeBazelCommand(
       "query",
       "--noshow_progress",
       "--universe_scope=//...",
       "--order_output=no",
-      "kind($filterRuleType, siblings($buildFileTarget))"
+      "kind($filterRuleType, siblings($buildFileTarget))",
     )
-  }
 
   private fun correctPotentiallyBrokenTargetNames(lines: List<String>): List<String> {
     val correctedTargets = mutableListOf<String>()
@@ -118,12 +120,14 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
             throw IllegalArgumentException("Invalid line: $line (expected to start with '//')")
           }
 
-          val targetBounds: List<Pair<Int, Int>> = indexes.mapIndexed { arrayIndex, lineIndex ->
-            lineIndex to (indexes.getOrNull(arrayIndex + 1) ?: line.length)
-          }
-          correctedTargets += targetBounds.map { (startIndex, endIndex) ->
-            line.substring(startIndex, endIndex)
-          }
+          val targetBounds: List<Pair<Int, Int>> =
+            indexes.mapIndexed { arrayIndex, lineIndex ->
+              lineIndex to (indexes.getOrNull(arrayIndex + 1) ?: line.length)
+            }
+          correctedTargets +=
+            targetBounds.map { (startIndex, endIndex) ->
+              line.substring(startIndex, endIndex)
+            }
         }
       }
     }
@@ -145,11 +149,12 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun runCoverageForTestTarget(bazelTestTarget: String): List<List<String>> {
     val instrumentation = bazelTestTarget.split(":")[0]
     val computeInstrumentation = instrumentation.split("/").let { "//${it[2]}/..." }
-    val coverageCommandOutputLines = executeBazelCommand(
-      "coverage",
-      bazelTestTarget,
-      "--instrumentation_filter=$computeInstrumentation"
-    )
+    val coverageCommandOutputLines =
+      executeBazelCommand(
+        "coverage",
+        bazelTestTarget,
+        "--instrumentation_filter=$computeInstrumentation",
+      )
     return parseCoverageDataFilePath(bazelTestTarget, coverageCommandOutputLines).map { path ->
       File(path).readLines()
     }
@@ -157,7 +162,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
 
   private fun parseCoverageDataFilePath(
     bazelTestTarget: String,
-    coverageCommandOutputLines: List<String>
+    coverageCommandOutputLines: List<String>,
   ): List<String> {
     // Use the test target as the base path for the generated coverage.dat file since the test
     // itself may output lines that look like the coverage.dat line (such as in BazelClientTest).
@@ -179,7 +184,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     values: Iterable<String>,
     vararg prefixArgs: String,
     delimiter: String = " ",
-    allowPartialFailures: Boolean = false
+    allowPartialFailures: Boolean = false,
   ): List<String> {
     // Split up values into partitions to ensure that the argument calls don't over-run the limit.
     var partitionCount = 0
@@ -194,24 +199,28 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
       val lastArgument = queryFormatStr.format(Locale.US, partition.joinToString(delimiter))
       val allArguments = prefixArgs.toList() + lastArgument
       executeBazelCommand(
-        "query", *allArguments.toTypedArray(), allowPartialFailures = allowPartialFailures
+        "query",
+        *allArguments.toTypedArray(),
+        allowPartialFailures = allowPartialFailures,
       )
     }
   }
 
-  private fun computeMaxArgumentLength(partitions: List<List<String>>) =
-    partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
+  private fun computeMaxArgumentLength(partitions: List<List<String>>) = partitions.map(this::computeArgumentLength).maxOrNull() ?: 0
 
   private fun computeArgumentLength(args: List<String>) = args.joinToString(" ").length
 
   @Suppress("SameParameterValue") // This check doesn't work correctly for varargs.
   private fun executeBazelCommand(
     vararg arguments: String,
-    allowPartialFailures: Boolean = false
+    allowPartialFailures: Boolean = false,
   ): List<String> {
     val result =
       commandExecutor.executeCommand(
-        rootDirectory, command = "bazel", *arguments, includeErrorOutput = false
+        rootDirectory,
+        command = "bazel",
+        *arguments,
+        includeErrorOutput = false,
       )
     // Per https://docs.bazel.build/versions/main/guide.html#what-exit-code-will-i-get error code of
     // 3 is expected for queries since it indicates that some of the arguments don't correspond to

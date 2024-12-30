@@ -19,24 +19,23 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProvider
-@Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<Fraction> {
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<Fraction> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.FRACTION,
+        "f",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.FRACTION,
-      "f",
-      this
-    )
+    override fun matches(
+      answer: Fraction,
+      input: Fraction,
+      classificationContext: ClassificationContext,
+    ): Boolean =
+      answer.toDouble().isApproximatelyEqualTo(input.toDouble()) &&
+        answer == input.toSimplestForm()
   }
-
-  override fun matches(
-    answer: Fraction,
-    input: Fraction,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    return answer.toDouble().isApproximatelyEqualTo(input.toDouble()) &&
-      answer == input.toSimplestForm()
-  }
-}

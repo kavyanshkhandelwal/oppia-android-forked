@@ -6,8 +6,7 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 
 /** Test activity for StateAssemblerPaddingBindingAdapters . */
-class StateAssemblerPaddingBindingAdaptersTestActivity :
-  InjectableAutoLocalizedAppCompatActivity() {
+class StateAssemblerPaddingBindingAdaptersTestActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

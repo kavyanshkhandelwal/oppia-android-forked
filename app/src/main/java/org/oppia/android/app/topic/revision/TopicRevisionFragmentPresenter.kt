@@ -19,66 +19,70 @@ import javax.inject.Inject
 
 /** The presenter for [TopicRevisionFragment]. */
 @FragmentScope
-class TopicRevisionFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModel: TopicRevisionViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) : RevisionSubtopicSelector {
-  private lateinit var binding: TopicRevisionFragmentBinding
-  private lateinit var profileId: ProfileId
-  private lateinit var topicId: String
-  private val routeToReviewListener = activity as RouteToRevisionCardListener
-  private var subtopicListSize: Int? = null
+class TopicRevisionFragmentPresenter
+  @Inject
+  constructor(
+    activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val viewModel: TopicRevisionViewModel,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  ) : RevisionSubtopicSelector {
+    private lateinit var binding: TopicRevisionFragmentBinding
+    private lateinit var profileId: ProfileId
+    private lateinit var topicId: String
+    private val routeToReviewListener = activity as RouteToRevisionCardListener
+    private var subtopicListSize: Int? = null
 
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId,
-    topicId: String
-  ): View? {
-    this.profileId = profileId
-    this.topicId = topicId
-    binding = TopicRevisionFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileId: ProfileId,
+      topicId: String,
+    ): View? {
+      this.profileId = profileId
+      this.topicId = topicId
+      binding =
+        TopicRevisionFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    viewModel.setTopicId(this.topicId)
-    viewModel.setProfileId(this.profileId)
+      viewModel.setTopicId(this.topicId)
+      viewModel.setProfileId(this.profileId)
 
-    binding.revisionRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
-      // https://stackoverflow.com/a/50075019/3689782
-      val spanCount = fragment.resources.getInteger(R.integer.topic_revision_span_count)
-      layoutManager = GridLayoutManager(context, spanCount)
+      binding.revisionRecyclerView.apply {
+        adapter = createRecyclerViewAdapter()
+        // https://stackoverflow.com/a/50075019/3689782
+        val spanCount = fragment.resources.getInteger(R.integer.topic_revision_span_count)
+        layoutManager = GridLayoutManager(context, spanCount)
+      }
+      binding.apply {
+        this.viewModel = this@TopicRevisionFragmentPresenter.viewModel
+        lifecycleOwner = fragment
+      }
+
+      viewModel.subtopicLiveData.observe(fragment) {
+        this.subtopicListSize = it.size
+      }
+      return binding.root
     }
-    binding.apply {
-      this.viewModel = this@TopicRevisionFragmentPresenter.viewModel
-      lifecycleOwner = fragment
+
+    override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
+      routeToReviewListener.routeToRevisionCard(
+        profileId,
+        topicId,
+        subtopic.subtopicId,
+        checkNotNull(subtopicListSize) { "Subtopic list size not found." },
+      )
     }
 
-    viewModel.subtopicLiveData.observe(fragment) {
-      this.subtopicListSize = it.size
-    }
-    return binding.root
+    private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> =
+      singleTypeBuilderFactory
+        .create<TopicRevisionItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
+          setViewModel = TopicRevisionSummaryViewBinding::setViewModel,
+        ).build()
   }
-
-  override fun onTopicRevisionSummaryClicked(subtopic: Subtopic) {
-    routeToReviewListener.routeToRevisionCard(
-      profileId,
-      topicId,
-      subtopic.subtopicId,
-      checkNotNull(subtopicListSize) { "Subtopic list size not found." }
-    )
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<TopicRevisionItemViewModel> {
-    return singleTypeBuilderFactory.create<TopicRevisionItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = TopicRevisionSummaryViewBinding::inflate,
-        setViewModel = TopicRevisionSummaryViewBinding::setViewModel
-      ).build()
-  }
-}

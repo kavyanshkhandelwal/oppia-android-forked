@@ -6,7 +6,9 @@ import org.oppia.android.app.notice.BetaNoticeDialogFragment
 import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the beta notice dialog. */
-class BetaNoticeDialogFragmentTestActivity : TestActivity(), BetaNoticeClosedListener {
+class BetaNoticeDialogFragmentTestActivity :
+  TestActivity(),
+  BetaNoticeClosedListener {
   /**
    * [BetaNoticeClosedListener] that must be initialized by the test, and is presumed to be a
    * Mockito mock (though this is not, strictly speaking, required).

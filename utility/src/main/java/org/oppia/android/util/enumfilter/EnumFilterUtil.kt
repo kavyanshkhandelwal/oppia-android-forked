@@ -14,7 +14,5 @@ package org.oppia.android.util.enumfilter
 inline fun <E : Enum<E>, T> filterByEnumCondition(
   collection: Collection<T>,
   enumExtractor: (T) -> E,
-  condition: (E) -> Boolean
-): List<T> {
-  return collection.filter { condition(enumExtractor(it)) }
-}
+  condition: (E) -> Boolean,
+): List<T> = collection.filter { condition(enumExtractor(it)) }

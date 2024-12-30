@@ -22,32 +22,36 @@ import java.nio.ByteBuffer
  */
 @GlideModule
 class RepositoryGlideModule : AppGlideModule() {
-  override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
+  override fun registerComponents(
+    context: Context,
+    glide: Glide,
+    registry: Registry,
+  ) {
     // TODO(#1039): Introduce custom type OppiaImage for rendering Bitmap and Svg.
     registry.register(
       ScalableVectorGraphic::class.java,
       TextPictureDrawable::class.java,
-      TextSvgDrawableTranscoder(context)
+      TextSvgDrawableTranscoder(context),
     )
     registry.register(
       ScalableVectorGraphic::class.java,
       BlockPictureDrawable::class.java,
-      BlockSvgDrawableTranscoder(context)
+      BlockSvgDrawableTranscoder(context),
     )
 
     registry.append(InputStream::class.java, ScalableVectorGraphic::class.java, SvgDecoder())
     registry.append(
       ImageAssetFetcher::class.java,
       InputStream::class.java,
-      RepositoryModelLoader.Factory()
+      RepositoryModelLoader.Factory(),
     )
 
     registry.append(
       MathModel::class.java,
       ByteBuffer::class.java,
       MathBitmapModelLoader.Factory(
-        context as? Application ?: context.applicationContext as Application
-      )
+        context as? Application ?: context.applicationContext as Application,
+      ),
     )
   }
 }

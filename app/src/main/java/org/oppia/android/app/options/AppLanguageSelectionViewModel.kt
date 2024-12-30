@@ -16,46 +16,46 @@ import javax.inject.Inject
 
 /** Language list view model for the recycler view in [AppLanguageFragment]. */
 @FragmentScope
-class AppLanguageSelectionViewModel @Inject constructor(
-  val fragment: Fragment,
-  private val translationController: TranslationController,
-  private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val oppiaLogger: OppiaLogger
-) : ObservableViewModel() {
-  /** The name of the app language currently selected in the radio button list. */
-  val selectedLanguage = MutableLiveData<OppiaLanguage>()
-  private val appLanguageRadioButtonListener = fragment as AppLanguageRadioButtonListener
+class AppLanguageSelectionViewModel
+  @Inject
+  constructor(
+    val fragment: Fragment,
+    private val translationController: TranslationController,
+    private val appLanguageResourceHandler: AppLanguageResourceHandler,
+    private val oppiaLogger: OppiaLogger,
+  ) : ObservableViewModel() {
+    /** The name of the app language currently selected in the radio button list. */
+    val selectedLanguage = MutableLiveData<OppiaLanguage>()
+    private val appLanguageRadioButtonListener = fragment as AppLanguageRadioButtonListener
 
-  /** The list of [AppLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAppLanguageList: LiveData<List<AppLanguageItemViewModel>> by lazy {
-    Transformations.map(
-      translationController.getSupportedAppLanguages().toLiveData(), ::processAppLanguageResult
-    )
-  }
-
-  private fun processAppLanguageResult(
-    asyncResultAppLanguageListData: AsyncResult<List<OppiaLanguage>>
-  ): List<AppLanguageItemViewModel> {
-    return when (asyncResultAppLanguageListData) {
-      is AsyncResult.Success -> {
-        asyncResultAppLanguageListData.value.map {
-          AppLanguageItemViewModel(
-            it,
-            appLanguageResourceHandler.computeLocalizedDisplayName(it),
-            selectedLanguage,
-            appLanguageRadioButtonListener
-          )
-        }
-      }
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "AppLanguageSelectionViewModel",
-          "Failed to retrieve supported app languages",
-          asyncResultAppLanguageListData.error
-        )
-        emptyList()
-      }
-      is AsyncResult.Pending -> emptyList()
+    /** The list of [AppLanguageItemViewModel]s which can be bound to a recycler view. */
+    val recyclerViewAppLanguageList: LiveData<List<AppLanguageItemViewModel>> by lazy {
+      Transformations.map(
+        translationController.getSupportedAppLanguages().toLiveData(),
+        ::processAppLanguageResult,
+      )
     }
+
+    private fun processAppLanguageResult(asyncResultAppLanguageListData: AsyncResult<List<OppiaLanguage>>): List<AppLanguageItemViewModel> =
+      when (asyncResultAppLanguageListData) {
+        is AsyncResult.Success -> {
+          asyncResultAppLanguageListData.value.map {
+            AppLanguageItemViewModel(
+              it,
+              appLanguageResourceHandler.computeLocalizedDisplayName(it),
+              selectedLanguage,
+              appLanguageRadioButtonListener,
+            )
+          }
+        }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "AppLanguageSelectionViewModel",
+            "Failed to retrieve supported app languages",
+            asyncResultAppLanguageListData.error,
+          )
+          emptyList()
+        }
+        is AsyncResult.Pending -> emptyList()
+      }
   }
-}

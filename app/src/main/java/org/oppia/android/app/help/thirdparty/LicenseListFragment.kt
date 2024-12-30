@@ -22,15 +22,22 @@ class LicenseListFragment : InjectableFragment() {
     private const val LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY = "LicenseListFragment.arguments"
 
     /** Returns an instance of [LicenseListFragment]. */
-    fun newInstance(dependencyIndex: Int, isMultipane: Boolean): LicenseListFragment {
-      val args = LicenseListFragmentArguments.newBuilder().apply {
-        this.dependencyIndex = dependencyIndex
-        this.isMultipane = isMultipane
-      }.build()
+    fun newInstance(
+      dependencyIndex: Int,
+      isMultipane: Boolean,
+    ): LicenseListFragment {
+      val args =
+        LicenseListFragmentArguments
+          .newBuilder()
+          .apply {
+            this.dependencyIndex = dependencyIndex
+            this.isMultipane = isMultipane
+          }.build()
       return LicenseListFragment().apply {
-        val bundle = Bundle().apply {
-          putProto(LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        val bundle =
+          Bundle().apply {
+            putProto(LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
+          }
         arguments = bundle
       }
     }
@@ -44,22 +51,24 @@ class LicenseListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to LicenseListFragment"
-    }
-    val args = arguments.getProto(
-      LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY,
-      LicenseListFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to LicenseListFragment"
+      }
+    val args =
+      arguments.getProto(
+        LICENSE_LIST_FRAGMENT_ARGUMENTS_KEY,
+        LicenseListFragmentArguments.getDefaultInstance(),
+      )
     val dependencyIndex = args.dependencyIndex
     val isMultipane = args.isMultipane
     return licenseListFragmentPresenter.handleCreateView(
       inflater,
       container,
       dependencyIndex,
-      isMultipane
+      isMultipane,
     )
   }
 }

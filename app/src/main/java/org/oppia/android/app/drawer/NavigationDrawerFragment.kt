@@ -16,7 +16,6 @@ class NavigationDrawerFragment :
   InjectableFragment(),
   RouteToProfileProgressListener,
   ExitProfileDialogInterface {
-
   private lateinit var drawerLayout: DrawerLayout
   private lateinit var toolbar: Toolbar
   private var menuItemId: Int = 0
@@ -32,17 +31,22 @@ class NavigationDrawerFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = navigationDrawerFragmentPresenter.handleCreateView(inflater, container)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     navigationDrawerFragmentPresenter.setUpDrawer(drawerLayout, toolbar, menuItemId)
   }
 
-  fun setUpDrawer(drawerLayout: DrawerLayout, toolbar: Toolbar, menuItemId: Int) {
+  fun setUpDrawer(
+    drawerLayout: DrawerLayout,
+    toolbar: Toolbar,
+    menuItemId: Int,
+  ) {
     this.drawerLayout = drawerLayout
     this.toolbar = toolbar
     this.menuItemId = menuItemId

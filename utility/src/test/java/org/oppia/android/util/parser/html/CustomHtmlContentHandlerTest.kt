@@ -82,18 +82,21 @@ class CustomHtmlContentHandlerTest {
     setUpTestApplicationComponent()
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val liTaghandler = LiTagHandler(context, displayLocale)
-    tagHandlersWithListTagSupport = mapOf(
-      CUSTOM_LIST_OL_TAG to liTaghandler,
-      CUSTOM_LIST_UL_TAG to liTaghandler,
-      CUSTOM_LIST_LI_TAG to liTaghandler
-    )
+    tagHandlersWithListTagSupport =
+      mapOf(
+        CUSTOM_LIST_OL_TAG to liTaghandler,
+        CUSTOM_LIST_UL_TAG to liTaghandler,
+        CUSTOM_LIST_LI_TAG to liTaghandler,
+      )
   }
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
+        html = "",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(),
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -105,7 +108,7 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -117,7 +120,7 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
     )
 
     verify(mockImageRetriever)!!.getDrawable(anyString())
@@ -131,7 +134,7 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+        customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
       )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -146,7 +149,7 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -165,7 +168,7 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("content")
@@ -177,9 +180,10 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          "custom-tag" to ReplacingTagHandler("custom-attribute")
-        )
+        customTagHandlers =
+          mapOf(
+            "custom-tag" to ReplacingTagHandler("custom-attribute"),
+          ),
       )
 
     // Verify that handlers which wish to replace text can successfully do so.
@@ -195,10 +199,11 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<outer-tag>some <inner-tag>other</inner-tag> content</outer-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          "outer-tag" to outerFakeTagHandler,
-          "inner-tag" to innerFakeTagHandler
-        )
+        customTagHandlers =
+          mapOf(
+            "outer-tag" to outerFakeTagHandler,
+            "inner-tag" to innerFakeTagHandler,
+          ),
       )
 
     // Verify that both tag handlers are called (showing support for nesting).
@@ -213,7 +218,7 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = UL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithListTagSupport
+        customTagHandlers = tagHandlersWithListTagSupport,
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -227,7 +232,7 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = OL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithListTagSupport
+        customTagHandlers = tagHandlersWithListTagSupport,
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -288,7 +293,7 @@ class CustomHtmlContentHandlerTest {
     val attributes = AttributesImpl()
     attributes.addAttribute(
       name = "attrib",
-      value = "{&quot;key&quot;:&quot;value with \\\\frac{1}{2}&quot;}"
+      value = "{&quot;key&quot;:&quot;value with \\\\frac{1}{2}&quot;}",
     )
 
     val jsonObject = attributes.getJsonObjectValue("attrib")
@@ -301,13 +306,20 @@ class CustomHtmlContentHandlerTest {
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
-  private fun AttributesImpl.addAttribute(name: String, value: String) {
+  private fun AttributesImpl.addAttribute(
+    name: String,
+    value: String,
+  ) {
     addAttribute(
-      /* uri= */ null,
-      /* localName= */ null,
-      /* qName= */ name,
-      /* type= */ "string",
-      value
+      // uri=
+      null,
+      // localName=
+      null,
+      // qName=
+      name,
+      // type=
+      "string",
+      value,
     )
   }
 
@@ -331,7 +343,7 @@ class CustomHtmlContentHandlerTest {
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
@@ -340,7 +352,7 @@ class CustomHtmlContentHandlerTest {
 
     override fun handleOpeningTag(
       output: Editable,
-      tag: String
+      tag: String,
     ) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
@@ -349,7 +361,7 @@ class CustomHtmlContentHandlerTest {
     override fun handleClosingTag(
       output: Editable,
       indentation: Int,
-      tag: String
+      tag: String,
     ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
@@ -357,21 +369,22 @@ class CustomHtmlContentHandlerTest {
   }
 
   private class ReplacingTagHandler(
-    private val attributeTextToReplaceWith: String
+    private val attributeTextToReplaceWith: String,
   ) : CustomHtmlContentHandler.CustomTagHandler {
     override fun handleTag(
       attributes: Attributes,
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?,
     ) {
       output.replace(openIndex, closeIndex, attributes.getValue(attributeTextToReplaceWith))
     }
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerCustomHtmlContentHandlerTest_TestApplicationComponent.builder()
+    DaggerCustomHtmlContentHandlerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -381,7 +394,9 @@ class CustomHtmlContentHandlerTest {
    * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
    * [CustomHtmlContentHandler.ImageRetriever].
    */
-  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
+  interface FakeImageRetriever :
+    Html.ImageGetter,
+    CustomHtmlContentHandler.ImageRetriever
 
   @Module
   interface TestModule {
@@ -394,15 +409,15 @@ class CustomHtmlContentHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
-    ]
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class,
+    ],
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -410,24 +425,41 @@ class CustomHtmlContentHandlerTest {
   }
 
   private companion object {
-
-    private val US_ENGLISH_CONTEXT = OppiaLocaleContext.newBuilder().apply {
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        language = OppiaLanguage.ENGLISH
-        minAndroidSdkVersion = 1
-        appStringId = LanguageSupportDefinition.LanguageId.newBuilder().apply {
-          ietfBcp47Id = LanguageSupportDefinition.IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "en"
-          }.build()
+    private val US_ENGLISH_CONTEXT =
+      OppiaLocaleContext
+        .newBuilder()
+        .apply {
+          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
+          languageDefinition =
+            LanguageSupportDefinition
+              .newBuilder()
+              .apply {
+                language = OppiaLanguage.ENGLISH
+                minAndroidSdkVersion = 1
+                appStringId =
+                  LanguageSupportDefinition.LanguageId
+                    .newBuilder()
+                    .apply {
+                      ietfBcp47Id =
+                        LanguageSupportDefinition.IetfBcp47LanguageId
+                          .newBuilder()
+                          .apply {
+                            ietfLanguageTag = "en"
+                          }.build()
+                    }.build()
+              }.build()
+          regionDefinition =
+            RegionSupportDefinition
+              .newBuilder()
+              .apply {
+                region = OppiaRegion.UNITED_STATES
+                regionId =
+                  RegionSupportDefinition.IetfBcp47RegionId
+                    .newBuilder()
+                    .apply {
+                      ietfRegionTag = "US"
+                    }.build()
+              }.build()
         }.build()
-      }.build()
-      regionDefinition = RegionSupportDefinition.newBuilder().apply {
-        region = OppiaRegion.UNITED_STATES
-        regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-          ietfRegionTag = "US"
-        }.build()
-      }.build()
-    }.build()
   }
 }

@@ -11,7 +11,6 @@ import org.oppia.android.app.translation.AppLanguageWatcherMixin
  * user's selected app language.
  */
 abstract class InjectableAutoLocalizedAppCompatActivity : InjectableAppCompatActivity() {
-
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
     appLanguageWatcherMixin.initialize(shouldOnlyUseSystemLanguage = false)
   }

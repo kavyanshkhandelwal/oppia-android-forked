@@ -15,7 +15,7 @@ class MathEquationInputModule {
   @StringKey("MatchesExactlyWith")
   @MathEquationInputRules
   internal fun provideMathEquationInputMatchesExactlyWithRuleClassifier(
-    classifierProvider: MathEquationInputMatchesExactlyWithRuleClassifierProvider
+    classifierProvider: MathEquationInputMatchesExactlyWithRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,8 +23,7 @@ class MathEquationInputModule {
   @StringKey("MatchesUpToTrivialManipulations")
   @MathEquationInputRules
   internal fun provideMathEquationInputMatchesUpToTrivialManipulationsRuleClassifier(
-    classifierProvider:
-      MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider
+    classifierProvider: MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -32,6 +31,6 @@ class MathEquationInputModule {
   @StringKey("IsEquivalentTo")
   @MathEquationInputRules
   internal fun provideMathEquationInputIsEquivalentToRuleClassifier(
-    classifierProvider: MathEquationInputIsEquivalentToRuleClassifierProvider
+    classifierProvider: MathEquationInputIsEquivalentToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

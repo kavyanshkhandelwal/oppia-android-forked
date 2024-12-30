@@ -45,26 +45,29 @@ class InputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
-      this, R.layout.activity_input_interaction_view_test
-    )
+    binding =
+      DataBindingUtil.setContentView<ActivityInputInteractionViewTestBinding>(
+        this,
+        R.layout.activity_input_interaction_view_test,
+      )
 
     val params =
       intent.getProtoExtra(
         TEST_ACTIVITY_PARAMS_ARGUMENT_KEY,
-        InputInteractionViewTestActivityParams.getDefaultInstance()
+        InputInteractionViewTestActivityParams.getDefaultInstance(),
       )
     writtenTranslationContext = params.writtenTranslationContext
 
     binding.numericInputViewModel = numericInputViewModel
-    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    }
+    binding.getPendingAnswerErrorOnSubmitClick =
+      Runnable {
+        numericInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {
     binding.submitButton.isEnabled = pendingAnswerError == null
   }
@@ -76,9 +79,9 @@ class InputInteractionViewTestActivity :
   }
 
   private inline fun <reified T : StateItemViewModel> InteractionItemFactory.create(
-    interaction: Interaction = Interaction.getDefaultInstance()
-  ): T {
-    return create(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+  ): T =
+    create(
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
@@ -87,20 +90,18 @@ class InputInteractionViewTestActivity :
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs = null
+      timeToStartNoticeAnimationMs = null,
     ) as T
-  }
 
   companion object {
     private const val TEST_ACTIVITY_PARAMS_ARGUMENT_KEY = "InputInteractionViewTestActivity.params"
 
     fun createIntent(
       context: Context,
-      extras: InputInteractionViewTestActivityParams
-    ): Intent {
-      return Intent(context, InputInteractionViewTestActivity::class.java).also {
+      extras: InputInteractionViewTestActivityParams,
+    ): Intent =
+      Intent(context, InputInteractionViewTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PARAMS_ARGUMENT_KEY, extras)
       }
-    }
   }
 }

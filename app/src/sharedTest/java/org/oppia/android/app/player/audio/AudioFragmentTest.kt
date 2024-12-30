@@ -131,7 +131,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = AudioFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi"
+  application = AudioFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi",
 )
 class AudioFragmentTest {
   @get:Rule
@@ -177,27 +178,27 @@ class AudioFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createAudioFragmentTestIntent(profileId: Int): Intent {
-    return AudioFragmentTestActivity.createAudioFragmentTestActivity(
-      context, profileId
+  private fun createAudioFragmentTestIntent(profileId: Int): Intent =
+    AudioFragmentTestActivity.createAudioFragmentTestActivity(
+      context,
+      profileId,
     )
-  }
 
   @Test
   fun testAudioFragment_seekbar_hasContentDescription() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_progress_seek_bar)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.audio_player_seekbar_content_description)
-          )
-        )
+            context.getString(R.string.audio_player_seekbar_content_description),
+          ),
+        ),
       )
     }
   }
@@ -207,16 +208,16 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_language_icon)).check(
         matches(
           withContentDescription(
-            context.getString(R.string.audio_language_icon_content_description)
-          )
-        )
+            context.getString(R.string.audio_language_icon_content_description),
+          ),
+        ),
       )
     }
   }
@@ -226,16 +227,16 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
       waitForTheView(
         allOf(
           withId(R.id.play_pause_audio_icon),
-          WithNonZeroDimensionsMatcher()
-        )
+          WithNonZeroDimensionsMatcher(),
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -247,10 +248,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_play_description
-            )
-          )
-        )
+              R.string.audio_play_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -260,8 +261,8 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
@@ -269,10 +270,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_play_description
-            )
-          )
-        )
+              R.string.audio_play_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -284,8 +285,8 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -296,10 +297,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_pause_description
-            )
-          )
-        )
+              R.string.audio_pause_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -309,8 +310,8 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -321,10 +322,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_play_description
-            )
-          )
-        )
+              R.string.audio_play_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -336,8 +337,8 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -350,10 +351,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_pause_description
-            )
-          )
-        )
+              R.string.audio_pause_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -363,8 +364,8 @@ class AudioFragmentTest {
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       invokePreparedListener(shadowMediaPlayer)
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
@@ -374,10 +375,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_pause_description
-            )
-          )
-        )
+              R.string.audio_pause_description,
+            ),
+          ),
+        ),
       )
     }
   }
@@ -387,8 +388,8 @@ class AudioFragmentTest {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -400,7 +401,8 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_language_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
+      onView(withText(R.string.hinglish_localized_language_name))
+        .inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
@@ -411,10 +413,10 @@ class AudioFragmentTest {
         matches(
           withContentDescription(
             context.getString(
-              R.string.audio_play_description
-            )
-          )
-        )
+              R.string.audio_play_description,
+            ),
+          ),
+        ),
       )
       onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
@@ -424,13 +426,14 @@ class AudioFragmentTest {
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     addMediaInfo()
     launch<AudioFragmentTestActivity>(
-      createAudioFragmentTestIntent(internalProfileId)
+      createAudioFragmentTestIntent(internalProfileId),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val audioFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        val audioFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
         val receivedProfileId = audioFragment.arguments?.extractCurrentUserProfileId()
 
         assertThat(receivedProfileId).isEqualTo(profileId)
@@ -438,31 +441,28 @@ class AudioFragmentTest {
     }
   }
 
-  private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
-    override fun describeTo(description: Description) {
-      description.appendText("SeekBar with progress same as $position")
+  private fun withSeekBarPosition(position: Int) =
+    object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("SeekBar with progress same as $position")
+      }
+
+      override fun matchesSafely(view: View): Boolean = view is SeekBar && view.progress == position
     }
 
-    override fun matchesSafely(view: View): Boolean {
-      return view is SeekBar && view.progress == position
-    }
-  }
-
-  private fun setProgress(progress: Int): ViewAction {
-    return object : ViewAction {
-      override fun perform(uiController: UiController, view: View) {
+  private fun setProgress(progress: Int): ViewAction =
+    object : ViewAction {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         (view as SeekBar).progress = progress
       }
 
-      override fun getDescription(): String {
-        return "Set a progress on a SeekBar"
-      }
+      override fun getDescription(): String = "Set a progress on a SeekBar"
 
-      override fun getConstraints(): Matcher<View> {
-        return ViewMatchers.isAssignableFrom(SeekBar::class.java)
-      }
+      override fun getConstraints(): Matcher<View> = ViewMatchers.isAssignableFrom(SeekBar::class.java)
     }
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -472,16 +472,20 @@ class AudioFragmentTest {
     if (isOnRobolectric()) {
       val dataSource = toDataSource(context, Uri.parse(TEST_URL))
       val dataSource2 = toDataSource(context, Uri.parse(TEST_URL2))
-      val mediaInfo = createMediaInfo(
-        /* duration= */ 1000,
-        /* preparationDelay= */ 0
-      )
+      val mediaInfo =
+        createMediaInfo(
+          // duration=
+          1000,
+          // preparationDelay=
+          0,
+        )
       addMediaInfo(dataSource, mediaInfo)
       addMediaInfo(dataSource2, mediaInfo)
 
-      shadowMediaPlayer = checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer())) {
-        "Failed to create shadow for MediaPlayer."
-      }
+      shadowMediaPlayer =
+        checkNotNull(shadowOf(audioPlayerController.getTestMediaPlayer())) {
+          "Failed to create shadow for MediaPlayer."
+        }
       setDataSource(shadowMediaPlayer, toDataSource(context, Uri.parse(TEST_URL)))
 
       invokePreparedListener(shadowMediaPlayer)
@@ -498,14 +502,19 @@ class AudioFragmentTest {
   /** Calls Robolectric's Shadows.shadowOf() using reflection. */
   private fun shadowOf(mediaPlayer: MediaPlayer): Any? {
     val shadowsClass = Class.forName("org.robolectric.Shadows")
-    return shadowsClass.getMethod("shadowOf", MediaPlayer::class.java)
+    return shadowsClass
+      .getMethod("shadowOf", MediaPlayer::class.java)
       .invoke(/* obj = */ null, mediaPlayer)
   }
 
   /** Calls ShadowMediaPlayer.setDataSource() using reflection. */
-  private fun setDataSource(shadowMediaPlayer: Any, dataSource: Any) {
+  private fun setDataSource(
+    shadowMediaPlayer: Any,
+    dataSource: Any,
+  ) {
     val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
-    shadowMediaPlayer.javaClass.getMethod("setDataSource", dataSourceClass)
+    shadowMediaPlayer.javaClass
+      .getMethod("setDataSource", dataSourceClass)
       .invoke(shadowMediaPlayer, dataSource)
   }
 
@@ -515,32 +524,46 @@ class AudioFragmentTest {
   }
 
   /** Returns a new ShadowMediaPlayer.MediaInfo using reflection. */
-  private fun createMediaInfo(duration: Int, preparationDelay: Int): Any {
-    val mediaInfoClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
-    )
-    return mediaInfoClass.getConstructor(Int::class.java, Int::class.java)
+  private fun createMediaInfo(
+    duration: Int,
+    preparationDelay: Int,
+  ): Any {
+    val mediaInfoClass =
+      Class.forName(
+        "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo",
+      )
+    return mediaInfoClass
+      .getConstructor(Int::class.java, Int::class.java)
       .newInstance(duration, preparationDelay)
   }
 
   /** Calls ShadowMediaPlayer.addMediaInfo() using reflection. */
-  private fun addMediaInfo(dataSource: Any, mediaInfo: Any) {
-    val shadowMediaPlayerClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer"
-    )
-    val dataSourceClass = Class.forName(
-      "org.robolectric.shadows.util.DataSource"
-    )
-    val mediaInfoClass = Class.forName(
-      "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo"
-    )
+  private fun addMediaInfo(
+    dataSource: Any,
+    mediaInfo: Any,
+  ) {
+    val shadowMediaPlayerClass =
+      Class.forName(
+        "org.robolectric.shadows.ShadowMediaPlayer",
+      )
+    val dataSourceClass =
+      Class.forName(
+        "org.robolectric.shadows.util.DataSource",
+      )
+    val mediaInfoClass =
+      Class.forName(
+        "org.robolectric.shadows.ShadowMediaPlayer\$MediaInfo",
+      )
     val addMediaInfoMethod =
       shadowMediaPlayerClass.getMethod("addMediaInfo", dataSourceClass, mediaInfoClass)
     addMediaInfoMethod.invoke(/* obj = */ null, dataSource, mediaInfo)
   }
 
   /** Calls DataSource.toDataSource() using reflection. */
-  private fun toDataSource(context: Context, uri: Uri): Any {
+  private fun toDataSource(
+    context: Context,
+    uri: Uri,
+  ): Any {
     val dataSourceClass = Class.forName("org.robolectric.shadows.util.DataSource")
     val toDataSourceMethod =
       dataSourceClass.getMethod("toDataSource", Context::class.java, Uri::class.java)
@@ -549,9 +572,7 @@ class AudioFragmentTest {
     }
   }
 
-  private fun isOnRobolectric(): Boolean {
-    return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
-  }
+  private fun isOnRobolectric(): Boolean = ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -582,8 +603,8 @@ class AudioFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -597,9 +618,13 @@ class AudioFragmentTest {
     fun isOnRobolectric(): Boolean
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAudioFragmentTest_TestApplicationComponent.builder()
+      DaggerAudioFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -610,15 +635,18 @@ class AudioFragmentTest {
 
     fun isOnRobolectric(): Boolean = component.isOnRobolectric()
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
+
   /** Returns a matcher that matches view based on non-zero width and height. */
   private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
-
     override fun matchesSafely(target: View): Boolean {
       val targetWidth = target.width
       val targetHeight = target.height
@@ -630,21 +658,21 @@ class AudioFragmentTest {
     }
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction = onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
 
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
+  private fun waitForMatch(
+    viewMatcher: Matcher<View>,
+    millis: Long,
+  ): ViewAction {
     return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
+      override fun getDescription(): String = "wait for a specific view with matcher <$viewMatcher> during $millis millis."
 
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
+      override fun getConstraints(): Matcher<View> = isRoot()
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         checkNotNull(uiController)
         uiController.loopMainThreadUntilIdle()
         val startTime = System.currentTimeMillis()
@@ -658,8 +686,12 @@ class AudioFragmentTest {
         } while (System.currentTimeMillis() < endTime)
 
         // Couldn't match in time.
-        throw PerformException.Builder().withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view)).withCause(TimeoutException()).build()
+        throw PerformException
+          .Builder()
+          .withActionDescription(description)
+          .withViewDescription(HumanReadables.describe(view))
+          .withCause(TimeoutException())
+          .build()
       }
     }
   }

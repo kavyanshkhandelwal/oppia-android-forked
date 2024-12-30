@@ -22,7 +22,7 @@ interface IntentFactoryShim {
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ): Intent
 
   /**
@@ -32,6 +32,6 @@ interface IntentFactoryShim {
     context: Context,
     internalProfileId: Int,
     classroomId: String,
-    topicId: String
+    topicId: String,
   ): Intent
 }

@@ -11,7 +11,9 @@ sealed class ClassificationResult {
   abstract val outcome: Outcome
 
   /** This is used in the scenario that the classification result has no tagged skill misconception ID. */
-  data class OutcomeOnly(override val outcome: Outcome) : ClassificationResult()
+  data class OutcomeOnly(
+    override val outcome: Outcome,
+  ) : ClassificationResult()
 
   /** This is used in the scenario that the classification result has a tagged skill misconception ID. */
   data class OutcomeWithMisconception(

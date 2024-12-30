@@ -27,7 +27,7 @@ class AppVersionActivity : InjectableAutoLocalizedAppCompatActivity() {
         override fun handleOnBackPressed() {
           finish()
         }
-      }
+      },
     )
   }
 
@@ -40,10 +40,9 @@ class AppVersionActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns an [Intent] to start this activity. */
-    fun createAppVersionActivityIntent(context: Context): Intent {
-      return Intent(context, AppVersionActivity::class.java).apply {
+    fun createAppVersionActivityIntent(context: Context): Intent =
+      Intent(context, AppVersionActivity::class.java).apply {
         decorateWithScreenName(APP_VERSION_ACTIVITY)
       }
-    }
   }
 }

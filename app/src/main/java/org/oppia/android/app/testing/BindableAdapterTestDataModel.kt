@@ -8,9 +8,15 @@ sealed class BindableAdapterTestDataModel {
   val boundIntValue get() = (this as IntModel).intValue
   val boundLiveDataValue get() = (this as LiveDataModel).liveData
 
-  data class StringModel(val stringValue: String) : BindableAdapterTestDataModel()
+  data class StringModel(
+    val stringValue: String,
+  ) : BindableAdapterTestDataModel()
 
-  data class IntModel(val intValue: Int) : BindableAdapterTestDataModel()
+  data class IntModel(
+    val intValue: Int,
+  ) : BindableAdapterTestDataModel()
 
-  data class LiveDataModel(val liveData: LiveData<String>) : BindableAdapterTestDataModel()
+  data class LiveDataModel(
+    val liveData: LiveData<String>,
+  ) : BindableAdapterTestDataModel()
 }

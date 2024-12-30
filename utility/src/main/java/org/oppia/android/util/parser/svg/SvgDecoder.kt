@@ -10,15 +10,16 @@ import java.io.InputStream
 
 /** Decodes an SVG internal representation from an {@link InputStream}. */
 class SvgDecoder : ResourceDecoder<InputStream?, ScalableVectorGraphic?> {
-
-  override fun handles(source: InputStream, options: Options): Boolean =
-    options.get(LOAD_OPPIA_SVG) ?: false
+  override fun handles(
+    source: InputStream,
+    options: Options,
+  ): Boolean = options.get(LOAD_OPPIA_SVG) ?: false
 
   override fun decode(
     source: InputStream,
     width: Int,
     height: Int,
-    options: Options
+    options: Options,
   ): Resource<ScalableVectorGraphic?> {
     val svgSource = source.bufferedReader().readLines().joinToString(separator = "\n")
     return SimpleResource(ScalableVectorGraphic(svgSource))
@@ -34,7 +35,6 @@ class SvgDecoder : ResourceDecoder<InputStream?, ScalableVectorGraphic?> {
      * stream for that request is interpreted as an SVG. This must be used in SVG-based requests or
      * they will not be loaded correctly.
      */
-    fun createLoadSvgFromPipelineOption(): RequestOptions =
-      RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
+    fun createLoadSvgFromPipelineOption(): RequestOptions = RequestOptions.option(LOAD_OPPIA_SVG, /* value= */ true)
   }
 }

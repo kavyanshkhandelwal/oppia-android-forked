@@ -49,7 +49,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterModuleTest.TestApplication::class)
 class PlatformParameterModuleTest {
-
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
 
@@ -78,29 +77,44 @@ class PlatformParameterModuleTest {
   lateinit var lowestSupportedApiLevelProvider: Provider<PlatformParameterValue<Int>>
 
   private val platformParameterMapWithValues by lazy {
-    val mockStringPlatformParameter = PlatformParameter.newBuilder()
-      .setString(TEST_STRING_PARAM_SERVER_VALUE).build()
-    val mockIntegerPlatformParameter = PlatformParameter.newBuilder()
-      .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE).build()
-    val mockBooleanPlatformParameter = PlatformParameter.newBuilder()
-      .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE).build()
+    val mockStringPlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setString(TEST_STRING_PARAM_SERVER_VALUE)
+        .build()
+    val mockIntegerPlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
+        .build()
+    val mockBooleanPlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+        .build()
 
     mapOf<String, PlatformParameter>(
       TEST_STRING_PARAM_NAME to mockStringPlatformParameter,
       TEST_INTEGER_PARAM_NAME to mockIntegerPlatformParameter,
-      TEST_BOOLEAN_PARAM_NAME to mockBooleanPlatformParameter
+      TEST_BOOLEAN_PARAM_NAME to mockBooleanPlatformParameter,
     )
   }
 
   private val partialPlatformParameterMapWithValues by lazy {
-    val mockIntegerPlatformParameter = PlatformParameter.newBuilder()
-      .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE).build()
-    val mockBooleanPlatformParameter = PlatformParameter.newBuilder()
-      .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE).build()
+    val mockIntegerPlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
+        .build()
+    val mockBooleanPlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+        .build()
 
     mapOf<String, PlatformParameter>(
       TEST_INTEGER_PARAM_NAME to mockIntegerPlatformParameter,
-      TEST_BOOLEAN_PARAM_NAME to mockBooleanPlatformParameter
+      TEST_BOOLEAN_PARAM_NAME to mockBooleanPlatformParameter,
     )
   }
 
@@ -196,11 +210,13 @@ class PlatformParameterModuleTest {
   private fun registerTestApplication() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -218,28 +234,26 @@ class PlatformParameterModuleTest {
   @Module
   class TestModule {
     @Provides
-    fun providePlatformParameterSingleton(
-      platformParameterSingletonImpl: PlatformParameterSingletonImpl
-    ): PlatformParameterSingleton = platformParameterSingletonImpl
+    fun providePlatformParameterSingleton(platformParameterSingletonImpl: PlatformParameterSingletonImpl): PlatformParameterSingleton =
+      platformParameterSingletonImpl
 
     @Provides
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestPlatformParameterModule::class
-    ]
+      TestModule::class, TestPlatformParameterModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -248,7 +262,8 @@ class PlatformParameterModuleTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterModuleTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

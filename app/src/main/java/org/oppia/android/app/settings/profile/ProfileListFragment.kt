@@ -25,9 +25,10 @@ class ProfileListFragment : InjectableFragment() {
     fun newInstance(isMultipane: Boolean = false): ProfileListFragment {
       val args = ProfileListFragmentArguments.newBuilder().setIsMultipane(isMultipane).build()
       return ProfileListFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -40,15 +41,17 @@ class ProfileListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected variables to be passed to ProfileListFragment"
-    }
-    val args = arguments.getProto(
-      PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY,
-      ProfileListFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected variables to be passed to ProfileListFragment"
+      }
+    val args =
+      arguments.getProto(
+        PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY,
+        ProfileListFragmentArguments.getDefaultInstance(),
+      )
     val isMultipane = args.isMultipane
     return profileListFragmentPresenter.handleOnCreateView(inflater, container, isMultipane)
   }

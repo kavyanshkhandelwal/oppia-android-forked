@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 /** The FAQ page activity for placement of single FAQ. */
 class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var faqSingleActivityPresenter: FAQSingleActivityPresenter
 
@@ -22,17 +21,20 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
 
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
-      FAQSingleActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        FAQ_SINGLE_ACTIVITY_PARAMS_KEY,
+        FAQSingleActivityParams.getDefaultInstance(),
+      )
 
-    val question = checkNotNull(args?.question) {
-      "Expected $FAQ_SINGLE_ACTIVITY_QUESTION to be in intent extras."
-    }
-    val answer = checkNotNull(args?.answer) {
-      "Expected $FAQ_SINGLE_ACTIVITY_ANSWER to be in intent extras."
-    }
+    val question =
+      checkNotNull(args?.question) {
+        "Expected $FAQ_SINGLE_ACTIVITY_QUESTION to be in intent extras."
+      }
+    val answer =
+      checkNotNull(args?.answer) {
+        "Expected $FAQ_SINGLE_ACTIVITY_ANSWER to be in intent extras."
+      }
     faqSingleActivityPresenter.handleOnCreate(question, answer)
   }
 
@@ -44,16 +46,23 @@ class FAQSingleActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Params key for FAQSingleActivity. */
     const val FAQ_SINGLE_ACTIVITY_PARAMS_KEY = "FAQSingleActivity.params"
 
-    fun createFAQSingleActivityIntent(context: Context, question: String, answer: String): Intent {
-
-      val intent = Intent(context, FAQSingleActivity::class.java).apply {
-        val args = FAQSingleActivityParams.newBuilder().apply {
-          this.question = question
-          this.answer = answer
-        }.build()
-        putProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args)
-        decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
-      }
+    fun createFAQSingleActivityIntent(
+      context: Context,
+      question: String,
+      answer: String,
+    ): Intent {
+      val intent =
+        Intent(context, FAQSingleActivity::class.java).apply {
+          val args =
+            FAQSingleActivityParams
+              .newBuilder()
+              .apply {
+                this.question = question
+                this.answer = answer
+              }.build()
+          putProtoExtra(FAQ_SINGLE_ACTIVITY_PARAMS_KEY, args)
+          decorateWithScreenName(FAQ_SINGLE_ACTIVITY)
+        }
       return intent
     }
   }

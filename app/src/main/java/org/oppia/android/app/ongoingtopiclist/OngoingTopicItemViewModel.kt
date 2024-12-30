@@ -19,8 +19,9 @@ class OngoingTopicItemViewModel(
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
   private val resourceHandler: AppLanguageResourceHandler,
-  translationController: TranslationController
-) : ObservableViewModel(), RouteToTopicListener {
+  translationController: TranslationController,
+) : ObservableViewModel(),
+  RouteToTopicListener {
   val topic = ephemeralTopic.topic
 
   val topicTitle: String by lazy {
@@ -31,23 +32,29 @@ class OngoingTopicItemViewModel(
     routeToTopic(
       profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       classroomId = topic.classroomId,
-      topicId = topic.topicId
+      topicId = topic.topicId,
     )
   }
 
-  fun computeStoryCountText(): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.lesson_count, topic.storyCount, topic.storyCount.toString()
+  fun computeStoryCountText(): String =
+    resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.lesson_count,
+      topic.storyCount,
+      topic.storyCount.toString(),
     )
-  }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
-    val intent = intentFactoryShim.createTopicActivityIntent(
-      activity.applicationContext,
-      internalProfileId,
-      classroomId,
-      topicId
-    )
+  override fun routeToTopic(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+  ) {
+    val intent =
+      intentFactoryShim.createTopicActivityIntent(
+        activity.applicationContext,
+        internalProfileId,
+        classroomId,
+        topicId,
+      )
     activity.startActivity(intent)
   }
 }

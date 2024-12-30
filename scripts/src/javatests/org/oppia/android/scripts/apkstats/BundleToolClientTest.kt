@@ -36,16 +36,18 @@ class BundleToolClientTest {
     val bundleToolClient =
       BundleToolClient(tempFolder.root.absolutePath, scriptBgDispatcher, commandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      bundleToolClient.buildUniversalApk("fake.aab", "fake.apk")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        bundleToolClient.buildUniversalApk("fake.aab", "fake.apk")
+      }
 
     assertThat(exception).hasMessageThat().contains("was not found")
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

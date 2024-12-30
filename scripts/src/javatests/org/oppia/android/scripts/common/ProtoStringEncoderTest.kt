@@ -32,14 +32,14 @@ class ProtoStringEncoderTest {
 
   @Test
   fun testDecode_emptyString_throwsException() {
-    assertThrows<EOFException>() {
+    assertThrows<EOFException> {
       TestMessage.getDefaultInstance().mergeFromCompressedBase64(base64 = "")
     }
   }
 
   @Test
   fun testDecode_badString_throwsException() {
-    assertThrows<ZipException>() {
+    assertThrows<ZipException> {
       TestMessage.getDefaultInstance().mergeFromCompressedBase64(base64 = "asdf")
     }
   }
@@ -57,9 +57,12 @@ class ProtoStringEncoderTest {
 
   @Test
   fun testDecode_encodedNonDefaultProto_mergedFromDefaultProto_producesValidProto() {
-    val testMessage = TestMessage.newBuilder().apply {
-      strValue = "test string"
-    }.build()
+    val testMessage =
+      TestMessage
+        .newBuilder()
+        .apply {
+          strValue = "test string"
+        }.build()
     val encodedTestMessage = testMessage.toCompressedBase64()
 
     val decodedMessage =
@@ -71,15 +74,21 @@ class ProtoStringEncoderTest {
 
   @Test
   fun testDecode_encodedNonDefaultProto_mergedFromNonDefaultProto_producesProtoIgnoringBase() {
-    val testMessage = TestMessage.newBuilder().apply {
-      strValue = "test string"
-    }.build()
+    val testMessage =
+      TestMessage
+        .newBuilder()
+        .apply {
+          strValue = "test string"
+        }.build()
     val encodedTestMessage = testMessage.toCompressedBase64()
 
     val decodedMessage =
-      TestMessage.newBuilder().apply {
-        intValue = 123
-      }.build().mergeFromCompressedBase64(encodedTestMessage)
+      TestMessage
+        .newBuilder()
+        .apply {
+          intValue = 123
+        }.build()
+        .mergeFromCompressedBase64(encodedTestMessage)
 
     // The intValue is not kept when reading the test message.
     assertThat(decodedMessage).isNotEqualToDefaultInstance()

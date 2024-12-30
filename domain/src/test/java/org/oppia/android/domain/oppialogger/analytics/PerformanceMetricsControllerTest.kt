@@ -71,7 +71,6 @@ private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsControllerTest.TestApplication::class)
 class PerformanceMetricsControllerTest {
-
   @Inject
   lateinit var performanceMetricsController: PerformanceMetricsController
 
@@ -93,48 +92,66 @@ class PerformanceMetricsControllerTest {
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
-  private val apkSizeTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setApkSizeMetric(
-      OppiaMetricLog.ApkSizeMetric.newBuilder()
-        .setApkSizeBytes(TEST_APK_SIZE)
-        .build()
-    ).build()
+  private val apkSizeTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setApkSizeMetric(
+        OppiaMetricLog.ApkSizeMetric
+          .newBuilder()
+          .setApkSizeBytes(TEST_APK_SIZE)
+          .build(),
+      ).build()
 
-  private val storageUsageTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setStorageUsageMetric(
-      OppiaMetricLog.StorageUsageMetric.newBuilder()
-        .setStorageUsageBytes(TEST_STORAGE_USAGE)
-        .build()
-    ).build()
+  private val storageUsageTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setStorageUsageMetric(
+        OppiaMetricLog.StorageUsageMetric
+          .newBuilder()
+          .setStorageUsageBytes(TEST_STORAGE_USAGE)
+          .build(),
+      ).build()
 
-  private val startupLatencyTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setStartupLatencyMetric(
-      OppiaMetricLog.StartupLatencyMetric.newBuilder()
-        .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
-        .build()
-    ).build()
+  private val startupLatencyTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setStartupLatencyMetric(
+        OppiaMetricLog.StartupLatencyMetric
+          .newBuilder()
+          .setStartupLatencyMillis(TEST_STARTUP_LATENCY)
+          .build(),
+      ).build()
 
-  private val cpuUsageTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setCpuUsageMetric(
-      OppiaMetricLog.CpuUsageMetric.newBuilder()
-        .setCpuUsageMetric(TEST_CPU_USAGE)
-        .build()
-    ).build()
+  private val cpuUsageTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setCpuUsageMetric(
+        OppiaMetricLog.CpuUsageMetric
+          .newBuilder()
+          .setCpuUsageMetric(TEST_CPU_USAGE)
+          .build(),
+      ).build()
 
-  private val networkUsageTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setNetworkUsageMetric(
-      OppiaMetricLog.NetworkUsageMetric.newBuilder()
-        .setBytesReceived(TEST_NETWORK_USAGE)
-        .setBytesSent(TEST_NETWORK_USAGE)
-        .build()
-    ).build()
+  private val networkUsageTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setNetworkUsageMetric(
+        OppiaMetricLog.NetworkUsageMetric
+          .newBuilder()
+          .setBytesReceived(TEST_NETWORK_USAGE)
+          .setBytesSent(TEST_NETWORK_USAGE)
+          .build(),
+      ).build()
 
-  private val memoryUsageTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setMemoryUsageMetric(
-      OppiaMetricLog.MemoryUsageMetric.newBuilder()
-        .setTotalPssBytes(TEST_MEMORY_USAGE)
-        .build()
-    ).build()
+  private val memoryUsageTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setMemoryUsageMetric(
+        OppiaMetricLog.MemoryUsageMetric
+          .newBuilder()
+          .setTotalPssBytes(TEST_MEMORY_USAGE)
+          .build(),
+      ).build()
 
   @Before
   fun setUp() {
@@ -149,7 +166,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -159,7 +176,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      APK_SIZE_METRIC
+      APK_SIZE_METRIC,
     )
   }
 
@@ -169,7 +186,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       storageUsageTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -179,7 +196,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      STORAGE_USAGE_METRIC
+      STORAGE_USAGE_METRIC,
     )
   }
 
@@ -189,7 +206,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       startupLatencyTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -199,7 +216,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      STARTUP_LATENCY_METRIC
+      STARTUP_LATENCY_METRIC,
     )
   }
 
@@ -209,7 +226,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       memoryUsageTestLoggableMetric,
-      MEDIUM_PRIORITY
+      MEDIUM_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -219,7 +236,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(MEDIUM_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      MEMORY_USAGE_METRIC
+      MEMORY_USAGE_METRIC,
     )
   }
 
@@ -229,7 +246,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       networkUsageTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -239,7 +256,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(HIGH_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      NETWORK_USAGE_METRIC
+      NETWORK_USAGE_METRIC,
     )
   }
 
@@ -249,7 +266,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -259,7 +276,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(HIGH_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      CPU_USAGE_METRIC
+      CPU_USAGE_METRIC,
     )
   }
 
@@ -270,7 +287,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val eventLogsProvider = performanceMetricsController.getMetricLogStore()
@@ -280,7 +297,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.timestampMillis).isEqualTo(TEST_TIMESTAMP)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      APK_SIZE_METRIC
+      APK_SIZE_METRIC,
     )
   }
 
@@ -302,13 +319,13 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
 
     val metricLogsProvider = performanceMetricsController.getMetricLogStore()
@@ -327,14 +344,14 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       cpuUsageTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val metricLogsProvider = performanceMetricsController.getMetricLogStore()
@@ -387,7 +404,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val metricLogsProvider = performanceMetricsController.getMetricLogStore()
@@ -404,7 +421,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -419,7 +436,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val loggedEvent = fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
@@ -443,7 +460,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -453,7 +470,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      APK_SIZE_METRIC
+      APK_SIZE_METRIC,
     )
     assertThat(performanceMetricsLog.isAppInForeground).isTrue()
   }
@@ -474,7 +491,7 @@ class PerformanceMetricsControllerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     val performanceMetricsLog =
@@ -484,7 +501,7 @@ class PerformanceMetricsControllerTest {
     assertThat(performanceMetricsLog.currentScreen).isEqualTo(SCREEN_NAME_UNSPECIFIED)
     assertThat(performanceMetricsLog.priority).isEqualTo(LOW_PRIORITY)
     assertThat(performanceMetricsLog.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      APK_SIZE_METRIC
+      APK_SIZE_METRIC,
     )
     assertThat(performanceMetricsLog.isAppInForeground).isFalse()
   }
@@ -494,35 +511,35 @@ class PerformanceMetricsControllerTest {
       1556094120000,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      LOW_PRIORITY
+      LOW_PRIORITY,
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556090110000,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556092100000,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      MEDIUM_PRIORITY
+      MEDIUM_PRIORITY,
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556093110000,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
 
     performanceMetricsController.logPerformanceMetricsEvent(
       1556094110000,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      HIGH_PRIORITY
+      HIGH_PRIORITY,
     )
   }
 
@@ -535,9 +552,7 @@ class PerformanceMetricsControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -556,7 +571,6 @@ class PerformanceMetricsControllerTest {
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @PerformanceMetricsLogStorageCacheSize
     fun providePerformanceMetricsLogStorageCacheSize(): Int = 2
@@ -574,23 +588,27 @@ class PerformanceMetricsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, MetricLogSchedulerModule::class
-    ]
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, MetricLogSchedulerModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(performanceMetricsControllerTest: PerformanceMetricsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsControllerTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

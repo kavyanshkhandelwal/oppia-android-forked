@@ -96,31 +96,43 @@ private const val TEST_FRAGMENT_TAG = "topic_summary_view_model_test_fragment"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicSummaryViewModelTest.TestApplication::class,
-  manifest = Config.NONE
+  manifest = Config.NONE,
 )
 class TopicSummaryViewModelTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var translationController: TranslationController
 
   private val testFragment by lazy { HomeFragment() }
 
-  private val topicSummary1 = EphemeralTopicSummary.newBuilder().apply {
-    topicSummary = TopicSummary.newBuilder()
-      .setTopicId("id_1")
-      .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
-      .setTotalChapterCount(2)
-      .build()
-  }.build()
-  private val topicSummary2 = EphemeralTopicSummary.newBuilder().apply {
-    topicSummary = TopicSummary.newBuilder()
-      .setTopicId("id_2")
-      .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
-      .setTotalChapterCount(2)
-      .build()
-  }.build()
+  private val topicSummary1 =
+    EphemeralTopicSummary
+      .newBuilder()
+      .apply {
+        topicSummary =
+          TopicSummary
+            .newBuilder()
+            .setTopicId("id_1")
+            .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
+            .setTotalChapterCount(2)
+            .build()
+      }.build()
+  private val topicSummary2 =
+    EphemeralTopicSummary
+      .newBuilder()
+      .apply {
+        topicSummary =
+          TopicSummary
+            .newBuilder()
+            .setTopicId("id_2")
+            .setTitle(SubtitledHtml.newBuilder().setContentId("title").setHtml("topic_name"))
+            .setTotalChapterCount(2)
+            .build()
+      }.build()
 
   @Before
   fun setUp() {
@@ -130,7 +142,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_reflexiveBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -145,7 +157,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_symmetricBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -162,7 +174,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_transitiveBasicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -181,7 +193,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_consistentBasicTopicSummaryViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -199,7 +211,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_basicTopicSummaryViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -214,28 +226,30 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_topicSummary1AndTopicSummary2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
-        val topicSummaryViewModelTopicSummary1 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary1,
-          entityType = "entity_1",
-          topicSummaryClickListener = testFragment,
-          position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
-        val topicSummaryViewModelTopicSummary2 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary2,
-          entityType = "entity_1",
-          topicSummaryClickListener = testFragment,
-          position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
+        val topicSummaryViewModelTopicSummary1 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary1,
+            entityType = "entity_1",
+            topicSummaryClickListener = testFragment,
+            position = 5,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
+        val topicSummaryViewModelTopicSummary2 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary2,
+            entityType = "entity_1",
+            topicSummaryClickListener = testFragment,
+            position = 5,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
 
         assertThat(topicSummaryViewModelTopicSummary1)
           .isNotEqualTo(topicSummaryViewModelTopicSummary2)
@@ -246,28 +260,30 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_entity1AndEntity2_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
-        val topicSummaryViewModelEntity1 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary1,
-          entityType = "entity_1",
-          topicSummaryClickListener = testFragment,
-          position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
-        val topicSummaryViewModelEntity2 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary1,
-          entityType = "entity_2",
-          topicSummaryClickListener = testFragment,
-          position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
+        val topicSummaryViewModelEntity1 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary1,
+            entityType = "entity_1",
+            topicSummaryClickListener = testFragment,
+            position = 5,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
+        val topicSummaryViewModelEntity2 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary1,
+            entityType = "entity_2",
+            topicSummaryClickListener = testFragment,
+            position = 5,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
 
         assertThat(topicSummaryViewModelEntity1).isNotEqualTo(topicSummaryViewModelEntity2)
       }
@@ -277,28 +293,30 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelEquals_position4AndPosition5_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
-        val topicSummaryViewModelPosition4 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary1,
-          entityType = "entity_1",
-          topicSummaryClickListener = testFragment,
-          position = 4,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
-        val topicSummaryViewModelPosition5 = TopicSummaryViewModel(
-          activity = homeFragmentTestActivity,
-          ephemeralTopicSummary = topicSummary1,
-          entityType = "entity_1",
-          topicSummaryClickListener = testFragment,
-          position = 5,
-          homeFragmentTestActivity.appLanguageResourceHandler,
-          translationController
-        )
+        val topicSummaryViewModelPosition4 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary1,
+            entityType = "entity_1",
+            topicSummaryClickListener = testFragment,
+            position = 4,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
+        val topicSummaryViewModelPosition5 =
+          TopicSummaryViewModel(
+            activity = homeFragmentTestActivity,
+            ephemeralTopicSummary = topicSummary1,
+            entityType = "entity_1",
+            topicSummaryClickListener = testFragment,
+            position = 5,
+            homeFragmentTestActivity.appLanguageResourceHandler,
+            translationController,
+          )
 
         assertThat(topicSummaryViewModelPosition4).isNotEqualTo(topicSummaryViewModelPosition5)
       }
@@ -308,7 +326,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -325,7 +343,7 @@ class TopicSummaryViewModelTest {
   @Test
   fun testTopicSummaryViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      HomeFragmentTestActivity.createHomeFragmentTestActivity(context)
+      HomeFragmentTestActivity.createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { homeFragmentTestActivity ->
         setUpTestFragment(homeFragmentTestActivity)
@@ -344,23 +362,22 @@ class TopicSummaryViewModelTest {
   }
 
   private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(testFragment, TEST_FRAGMENT_TAG)
       .commitNow()
   }
 
-  private fun createBasicTopicSummaryViewModel(
-    activity: HomeFragmentTestActivity
-  ): TopicSummaryViewModel {
-    return TopicSummaryViewModel(
+  private fun createBasicTopicSummaryViewModel(activity: HomeFragmentTestActivity): TopicSummaryViewModel =
+    TopicSummaryViewModel(
       activity = activity,
       ephemeralTopicSummary = topicSummary1,
       entityType = "entity",
       topicSummaryClickListener = testFragment,
       position = 5,
       activity.appLanguageResourceHandler,
-      translationController
+      translationController,
     )
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -390,8 +407,8 @@ class TopicSummaryViewModelTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -402,9 +419,13 @@ class TopicSummaryViewModelTest {
     fun inject(topicSummaryViewModelTest: TopicSummaryViewModelTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicSummaryViewModelTest_TestApplicationComponent.builder()
+      DaggerTopicSummaryViewModelTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -413,9 +434,12 @@ class TopicSummaryViewModelTest {
       component.inject(topicSummaryViewModelTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

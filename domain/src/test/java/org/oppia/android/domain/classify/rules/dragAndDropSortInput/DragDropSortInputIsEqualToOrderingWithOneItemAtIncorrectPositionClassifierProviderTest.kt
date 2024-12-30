@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest {
-
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val ITEM_SET_1_ITEMS_12 = listOf("content_id_1", "content_id_2")
   private val ITEM_SET_1_ITEMS_123 = listOf("content_id_1", "content_id_2", "content_id_3")
@@ -35,19 +34,27 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
 
   private val LIST_OF_SETS_12_4_5 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_1_ITEMS_12, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
+      ITEM_SET_1_ITEMS_12,
+      ITEM_SET_2_ITEM_4,
+      ITEM_SET_3_ITEM_5,
     )
   private val LIST_OF_SETS_123_4_5 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_1_ITEMS_123, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
+      ITEM_SET_1_ITEMS_123,
+      ITEM_SET_2_ITEM_4,
+      ITEM_SET_3_ITEM_5,
     )
   private val LIST_OF_SETS_4_5_12 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5, ITEM_SET_1_ITEMS_12
+      ITEM_SET_2_ITEM_4,
+      ITEM_SET_3_ITEM_5,
+      ITEM_SET_1_ITEMS_12,
     )
   private val LIST_OF_SETS_1_4_5 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_1_ITEM_1, ITEM_SET_2_ITEM_4, ITEM_SET_3_ITEM_5
+      ITEM_SET_1_ITEM_1,
+      ITEM_SET_2_ITEM_4,
+      ITEM_SET_3_ITEM_5,
     )
 
   @Inject
@@ -69,18 +76,19 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+          answer = LIST_OF_SETS_12_4_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS"
+        "Expected input value to be of type LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS",
       )
   }
 
@@ -92,7 +100,7 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_12_4_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -106,35 +114,37 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
+  fun testAnswer_testLisOfSetsOfHtmlString_differByOneElement_differentOrder_bothValuesDoNotMatch_failsCorrectly() {
     val inputs = mapOf("x" to LIST_OF_SETS_4_5_12)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() { // ktlint-disable max-line-length
+  fun testAnswer_testLisOfSetsOfHtmlString_differByTwoElements_bothValuesDoNotMatch_failsCorrectly() {
     val inputs = mapOf("x" to LIST_OF_SETS_123_4_5)
 
     val matches =
       isEqualToOrderingWithOneItemIncorrectClassifier.matches(
         answer = LIST_OF_SETS_1_4_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -144,13 +154,14 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_4_5)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isEqualToOrderingWithOneItemIncorrectClassifier.matches(
-        answer = LIST_OF_SETS_12_4_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isEqualToOrderingWithOneItemIncorrectClassifier.matches(
+          answer = LIST_OF_SETS_12_4_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -158,8 +169,12 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest_TestApplicationComponent.builder() // ktlint-disable max-line-length
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+    @Suppress("ktlint:standard:max-line-length")
+    DaggerDragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest_TestApplicationComponent
+      .builder()
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -174,9 +189,6 @@ class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifier
       fun build(): TestApplicationComponent
     }
 
-    fun inject(
-      test:
-        DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest
-    )
+    fun inject(test: DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProviderTest)
   }
 }

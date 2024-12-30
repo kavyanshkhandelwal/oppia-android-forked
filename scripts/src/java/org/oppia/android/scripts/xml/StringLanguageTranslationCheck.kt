@@ -24,9 +24,10 @@ fun main(vararg args: String) {
 
   val parser = StringResourceParser(File(repoPath))
   val baseTranslations = parser.retrieveBaseStringNames()
-  val missingTranslations = parser.retrieveAllNonEnglishTranslations().mapValues { (_, xlations) ->
-    baseTranslations - xlations.strings.keys
-  }
+  val missingTranslations =
+    parser.retrieveAllNonEnglishTranslations().mapValues { (_, xlations) ->
+      baseTranslations - xlations.strings.keys
+    }
   val missingTranslationCount = missingTranslations.values.sumOf { it.size }
   println("$missingTranslationCount translation(s) were found missing.")
   if (missingTranslationCount > 0) {

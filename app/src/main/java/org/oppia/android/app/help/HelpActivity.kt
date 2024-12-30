@@ -43,7 +43,6 @@ class HelpActivity :
   LoadThirdPartyDependencyListFragmentListener,
   LoadLicenseListFragmentListener,
   LoadLicenseTextViewerFragmentListener {
-
   @Inject
   lateinit var helpActivityPresenter: HelpActivityPresenter
 
@@ -60,10 +59,11 @@ class HelpActivity :
       intent.getProtoExtra(HELP_ACTIVITY_PARAMS_KEY, HelpActivityParams.getDefaultInstance())
     val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
 
-    val stateArgs = savedInstanceState?.getProto(
-      HELP_ACTIVITY_STATE_KEY,
-      HelpActivityStateBundle.getDefaultInstance()
-    )
+    val stateArgs =
+      savedInstanceState?.getProto(
+        HELP_ACTIVITY_STATE_KEY,
+        HelpActivityStateBundle.getDefaultInstance(),
+      )
 
     selectedFragment =
       stateArgs?.selectedFragmentTag ?: FAQ_LIST_FRAGMENT_TAG
@@ -82,7 +82,7 @@ class HelpActivity :
       selectedFragment,
       selectedDependencyIndex,
       selectedLicenseIndex,
-      policiesActivityParams
+      policiesActivityParams,
     )
     title = resourceHandler.getStringInLocale(R.string.menu_help)
   }
@@ -99,11 +99,14 @@ class HelpActivity :
     fun createHelpActivityIntent(
       context: Context,
       profileId: ProfileId?,
-      isFromNavigationDrawer: Boolean
+      isFromNavigationDrawer: Boolean,
     ): Intent {
-      val args = HelpActivityParams.newBuilder().apply {
-        this.isFromNavigationDrawer = isFromNavigationDrawer
-      }.build()
+      val args =
+        HelpActivityParams
+          .newBuilder()
+          .apply {
+            this.isFromNavigationDrawer = isFromNavigationDrawer
+          }.build()
       val intent = Intent(context, HelpActivity::class.java)
       intent.putProtoExtra(HELP_ACTIVITY_PARAMS_KEY, args)
       intent.decorateWithScreenName(HELP_ACTIVITY)
@@ -136,7 +139,10 @@ class HelpActivity :
     helpActivityPresenter.handleLoadLicenseListFragment(dependencyIndex)
   }
 
-  override fun loadLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int) {
+  override fun loadLicenseTextViewerFragment(
+    dependencyIndex: Int,
+    licenseIndex: Int,
+  ) {
     helpActivityPresenter.handleLoadLicenseTextViewerFragment(dependencyIndex, licenseIndex)
   }
 
@@ -146,7 +152,10 @@ class HelpActivity :
   }
 
   // TODO(#3681): Add support to display Single FAQ in split mode on tablet devices.
-  override fun onRouteToFAQSingle(question: String, answer: String) {
+  override fun onRouteToFAQSingle(
+    question: String,
+    answer: String,
+  ) {
     startActivity(FAQSingleActivity.createFAQSingleActivityIntent(this, question, answer))
   }
 

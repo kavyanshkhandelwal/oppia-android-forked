@@ -57,7 +57,7 @@ class HintHandlerProdImpl private constructor(
   private val delayShowInitialHintMs: Long,
   private val delayShowAdditionalHintsMs: Long,
   private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
-  private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  private val backgroundCoroutineDispatcher: CoroutineDispatcher,
 ) : HintHandler {
   private val helpIndexFlow by lazy { MutableStateFlow(HelpIndex.getDefaultInstance()) }
 
@@ -79,7 +79,7 @@ class HintHandlerProdImpl private constructor(
   override suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
-    state: State
+    state: State,
   ) {
     when (helpIndex.indexTypeCase) {
       NEXT_AVAILABLE_HINT_INDEX -> {
@@ -127,7 +127,7 @@ class HintHandlerProdImpl private constructor(
     val helpIndex = computeCurrentHelpIndex()
     check(
       helpIndex.indexTypeCase == NEXT_AVAILABLE_HINT_INDEX &&
-        helpIndex.nextAvailableHintIndex == hintIndex
+        helpIndex.nextAvailableHintIndex == hintIndex,
     ) {
       "Cannot reveal hint for current index: ${helpIndex.indexTypeCase} (trying to reveal hint:" +
         " $hintIndex)"
@@ -204,7 +204,7 @@ class HintHandlerProdImpl private constructor(
         // Otherwise, always schedule to show a hint on a new wrong answer for subsequent hints.
         scheduleShowHint(
           delayShowAdditionalHintsFromWrongAnswerMs,
-          nextUnrevealedHelpIndex
+          nextUnrevealedHelpIndex,
         )
       }
       trackedWrongAnswerCount = wrongAnswerCount
@@ -236,30 +236,43 @@ class HintHandlerProdImpl private constructor(
       !pendingState.offersHelp() -> HelpIndex.getDefaultInstance()
 
       // The solution has been revealed.
-      solutionIsRevealed -> HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      solutionIsRevealed ->
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build()
 
       // All hints have been shown and a solution can be shown.
-      hasSeenAllHints && hasViewableSolution -> HelpIndex.newBuilder().apply {
-        showSolution = true
-      }.build()
+      hasSeenAllHints && hasViewableSolution ->
+        HelpIndex
+          .newBuilder()
+          .apply {
+            showSolution = true
+          }.build()
 
       // All hints have been shown & there is no solution.
-      hasSeenAllHints && !hasSolution -> HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      hasSeenAllHints && !hasSolution ->
+        HelpIndex
+          .newBuilder()
+          .apply {
+            everythingRevealed = true
+          }.build()
 
       // Hints are available (though they may have already been seen).
       hasAtLeastOneHintAvailable ->
         if (hasSeenAllAvailableHints) {
-          HelpIndex.newBuilder().apply {
-            latestRevealedHintIndex = lastRevealedHintIndex
-          }.build()
+          HelpIndex
+            .newBuilder()
+            .apply {
+              latestRevealedHintIndex = lastRevealedHintIndex
+            }.build()
         } else {
-          HelpIndex.newBuilder().apply {
-            nextAvailableHintIndex = latestAvailableHintIndex
-          }.build()
+          HelpIndex
+            .newBuilder()
+            .apply {
+              nextAvailableHintIndex = latestAvailableHintIndex
+            }.build()
         }
 
       // No hints are available to be shown yet.
@@ -296,7 +309,10 @@ class HintHandlerProdImpl private constructor(
    * Schedules to allow the hint of the specified index to be shown after the specified delay,
    * cancelling any previously pending hints initiated by calls to this method.
    */
-  private fun scheduleShowHint(delayMs: Long, helpIndexToShow: HelpIndex) {
+  private fun scheduleShowHint(
+    delayMs: Long,
+    helpIndexToShow: HelpIndex,
+  ) {
     val targetSequenceNumber = ++hintSequenceNumber
     CoroutineScope(backgroundCoroutineDispatcher).launch {
       delay(delayMs)
@@ -312,7 +328,10 @@ class HintHandlerProdImpl private constructor(
     showHint(++hintSequenceNumber, helpIndexToShow)
   }
 
-  private suspend fun showHint(targetSequenceNumber: Int, nextHelpIndexToShow: HelpIndex) {
+  private suspend fun showHint(
+    targetSequenceNumber: Int,
+    nextHelpIndexToShow: HelpIndex,
+  ) {
     // Only finish this timer if no other hints were scheduled and no cancellations occurred.
     if (targetSequenceNumber == hintSequenceNumber) {
       val previousHelpIndex = computeCurrentHelpIndex()
@@ -336,22 +355,23 @@ class HintHandlerProdImpl private constructor(
   private suspend fun updateHelpIndex() = helpIndexFlow.emit(computeCurrentHelpIndex())
 
   /** Production implementation of [HintHandler.Factory]. */
-  class FactoryProdImpl @Inject constructor(
-    @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
-    @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
-    @DelayShowAdditionalHintsFromWrongAnswerMillis
-    private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
-    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
-  ) : HintHandler.Factory {
-    override fun create(): HintHandler {
-      return HintHandlerProdImpl(
-        delayShowInitialHintMs,
-        delayShowAdditionalHintsMs,
-        delayShowAdditionalHintsFromWrongAnswerMs,
-        backgroundCoroutineDispatcher
-      )
+  class FactoryProdImpl
+    @Inject
+    constructor(
+      @DelayShowInitialHintMillis private val delayShowInitialHintMs: Long,
+      @DelayShowAdditionalHintsMillis private val delayShowAdditionalHintsMs: Long,
+      @DelayShowAdditionalHintsFromWrongAnswerMillis
+      private val delayShowAdditionalHintsFromWrongAnswerMs: Long,
+      @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+    ) : HintHandler.Factory {
+      override fun create(): HintHandler =
+        HintHandlerProdImpl(
+          delayShowInitialHintMs,
+          delayShowAdditionalHintsMs,
+          delayShowAdditionalHintsFromWrongAnswerMs,
+          backgroundCoroutineDispatcher,
+        )
     }
-  }
 }
 
 /** Returns whether this state has a solution to show. */

@@ -43,9 +43,10 @@ class GitHubClientTest {
     setGitHubServiceNextResponseWithNoIssues()
     val gitHubClient = GitHubClient(tempFolder.root, scriptBgDispatcher, fakeCommandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+      }
 
     assertThat(exception).hasMessageThat().contains("Failed to interact with gh tool.")
   }
@@ -56,9 +57,10 @@ class GitHubClientTest {
     setGitHubServiceNextResponseWithNoIssues()
     val gitHubClient = GitHubClient(tempFolder.root, scriptBgDispatcher, fakeCommandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+      }
 
     assertThat(exception).hasMessageThat().contains("Failed to retrieve auth token from GH tool.")
   }
@@ -69,9 +71,10 @@ class GitHubClientTest {
     setGitHubServiceNextResponseWithFailureCode(errorCode = 401) // Simulate invalid auth token.
     val gitHubClient = GitHubClient(tempFolder.root, scriptBgDispatcher, fakeCommandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+      }
 
     assertThat(exception).hasMessageThat().contains("Failed to fetch issues at page")
   }
@@ -142,9 +145,10 @@ class GitHubClientTest {
     setGitHubServiceNextResponseWithFailureCode(errorCode = 404)
     val gitHubClient = GitHubClient(tempFolder.root, scriptBgDispatcher, fakeCommandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+      }
 
     assertThat(exception).hasMessageThat().contains("Failed to fetch issues at page")
   }
@@ -155,9 +159,10 @@ class GitHubClientTest {
     setGitHubServiceNextResponseWithNullResponse()
     val gitHubClient = GitHubClient(tempFolder.root, scriptBgDispatcher, fakeCommandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runBlocking { gitHubClient.fetchAllOpenIssuesAsync().await() }
+      }
 
     assertThat(exception).hasMessageThat().contains("No issues response from GitHub for page")
   }

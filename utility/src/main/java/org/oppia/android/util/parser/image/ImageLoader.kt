@@ -15,7 +15,7 @@ interface ImageLoader {
   fun loadBitmap(
     imageUrl: String,
     target: ImageTarget<Bitmap>,
-    transformations: List<ImageTransformation> = listOf()
+    transformations: List<ImageTransformation> = listOf(),
   )
 
   /**
@@ -26,7 +26,7 @@ interface ImageLoader {
   fun loadBlockSvg(
     imageUrl: String,
     target: ImageTarget<BlockPictureDrawable>,
-    transformations: List<ImageTransformation> = listOf()
+    transformations: List<ImageTransformation> = listOf(),
   )
 
   /**
@@ -36,7 +36,7 @@ interface ImageLoader {
   fun loadTextSvg(
     imageUrl: String,
     target: ImageTarget<TextPictureDrawable>,
-    transformations: List<ImageTransformation> = listOf()
+    transformations: List<ImageTransformation> = listOf(),
   )
 
   /**
@@ -47,7 +47,7 @@ interface ImageLoader {
   fun loadDrawable(
     @DrawableRes imageDrawableResId: Int,
     target: ImageTarget<Drawable>,
-    transformations: List<ImageTransformation> = listOf()
+    transformations: List<ImageTransformation> = listOf(),
   )
 
   /**
@@ -59,6 +59,6 @@ interface ImageLoader {
     rawLatex: String,
     lineHeight: Float,
     useInlineRendering: Boolean,
-    target: ImageTarget<Bitmap>
+    target: ImageTarget<Bitmap>,
   )
 }

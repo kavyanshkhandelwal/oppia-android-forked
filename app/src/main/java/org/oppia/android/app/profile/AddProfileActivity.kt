@@ -20,7 +20,11 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   companion object {
     /** Params key for AddProfileActivity. */
     const val ADD_PROFILE_ACTIVITY_PARAMS_KEY = "AddProfileActivity.params"
-    fun createAddProfileActivityIntent(context: Context, colorRgb: Int): Intent {
+
+    fun createAddProfileActivityIntent(
+      context: Context,
+      colorRgb: Int,
+    ): Intent {
       val args = AddProfileActivityParams.newBuilder().setColorRgb(colorRgb).build()
       return Intent(context, AddProfileActivity::class.java).apply {
         putProtoExtra(ADD_PROFILE_ACTIVITY_PARAMS_KEY, args)
@@ -34,13 +38,14 @@ class AddProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
     addProfileFragmentPresenter.handleOnCreate()
 
-    addProfileFragmentPresenter.resultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == RESULT_OK) {
-        addProfileFragmentPresenter.updateProfileAvatar(result.data)
+    addProfileFragmentPresenter.resultLauncher =
+      registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+      ) { result ->
+        if (result.resultCode == RESULT_OK) {
+          addProfileFragmentPresenter.updateProfileAvatar(result.data)
+        }
       }
-    }
   }
 
   override fun onSupportNavigateUp(): Boolean {

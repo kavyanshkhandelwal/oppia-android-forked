@@ -8,10 +8,9 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 /** Provides [PlatformParameterSyncUpWorker] related dependencies. */
 @Module
 interface PlatformParameterSyncUpWorkerModule {
-
   @Binds
   @IntoSet
   fun bindLogUploadWorkRequest(
-    platformParameterSyncUpWorkManagerInitializer: PlatformParameterSyncUpWorkManagerInitializer
+    platformParameterSyncUpWorkManagerInitializer: PlatformParameterSyncUpWorkManagerInitializer,
   ): AnalyticsStartupListener
 }

@@ -5,9 +5,9 @@ import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 
 /** Implementation of [FirestoreInstanceWrapper]. */
-class FirestoreInstanceWrapperImpl @Inject constructor() :
-  FirestoreInstanceWrapper {
-
-  override val firestoreInstance: FirestoreInstance
-    get() = FirestoreInstance(Firebase.firestore)
-}
+class FirestoreInstanceWrapperImpl
+  @Inject
+  constructor() : FirestoreInstanceWrapper {
+    override val firestoreInstance: FirestoreInstance
+      get() = FirestoreInstance(Firebase.firestore)
+  }

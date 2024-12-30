@@ -31,7 +31,6 @@ class TopicTestActivityForStory :
   RouteToResumeLessonListener,
   RouteToExplorationListener,
   RouteToRevisionCardListener {
-
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -43,15 +42,17 @@ class TopicTestActivityForStory :
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
-      storyId = TEST_STORY_ID_0
+      storyId = TEST_STORY_ID_0,
     )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList, ProfileId.getDefaultInstance()
-      )
+        this,
+        skillIdList,
+        ProfileId.getDefaultInstance(),
+      ),
     )
   }
 
@@ -59,7 +60,7 @@ class TopicTestActivityForStory :
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
@@ -67,8 +68,8 @@ class TopicTestActivityForStory :
         internalProfileId,
         classroomId,
         topicId,
-        storyId
-      )
+        storyId,
+      ),
     )
   }
 
@@ -79,7 +80,7 @@ class TopicTestActivityForStory :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
@@ -90,8 +91,8 @@ class TopicTestActivityForStory :
         storyId,
         explorationId,
         parentScreen,
-        explorationCheckpoint
-      )
+        explorationCheckpoint,
+      ),
     )
   }
 
@@ -102,7 +103,7 @@ class TopicTestActivityForStory :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -113,8 +114,8 @@ class TopicTestActivityForStory :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
   }
 
@@ -122,12 +123,16 @@ class TopicTestActivityForStory :
     profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int
+    subtopicListSize: Int,
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, profileId, topicId, subtopicId, subtopicListSize
-      )
+        this,
+        profileId,
+        topicId,
+        subtopicId,
+        subtopicListSize,
+      ),
     )
   }
 }

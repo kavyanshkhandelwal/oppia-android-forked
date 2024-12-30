@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeExceptionLoggerTest {
-
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
@@ -69,9 +68,10 @@ class FakeExceptionLoggerTest {
 
   @Test
   fun testFakeExceptionLogger_logNothing_getMostRecent_returnsFailure() {
-    val exception = assertThrows<NoSuchElementException>() {
-      fakeExceptionLogger.getMostRecentException()
-    }
+    val exception =
+      assertThrows<NoSuchElementException> {
+        fakeExceptionLogger.getMostRecentException()
+      }
 
     assertThat(exception).isInstanceOf(NoSuchElementException::class.java)
   }
@@ -81,9 +81,10 @@ class FakeExceptionLoggerTest {
     exceptionLogger.logException(IllegalStateException("Test Exception"))
     fakeExceptionLogger.clearAllExceptions()
 
-    val exception = assertThrows<NoSuchElementException>() {
-      fakeExceptionLogger.getMostRecentException()
-    }
+    val exception =
+      assertThrows<NoSuchElementException> {
+        fakeExceptionLogger.getMostRecentException()
+      }
 
     assertThat(exception).isInstanceOf(NoSuchElementException::class.java)
   }
@@ -141,7 +142,8 @@ class FakeExceptionLoggerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeExceptionLoggerTest_TestApplicationComponent.builder()
+    DaggerFakeExceptionLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -152,9 +154,7 @@ class FakeExceptionLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -165,6 +165,7 @@ class FakeExceptionLoggerTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

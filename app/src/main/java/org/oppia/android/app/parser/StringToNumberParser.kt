@@ -56,17 +56,19 @@ class StringToNumberParser {
   }
 
   /** Enum to store the errors of [NumericInputInteractionView]. */
-  enum class NumericInputParsingError(@StringRes private var error: Int?) {
+  enum class NumericInputParsingError(
+    @StringRes private var error: Int?,
+  ) {
     VALID(error = null),
     INVALID_FORMAT(error = R.string.number_error_invalid_format),
     STARTING_WITH_FLOATING_POINT(error = R.string.number_error_starting_with_floating_point),
     NUMBER_TOO_LONG(error = R.string.number_error_larger_than_fifteen_characters),
-    EMPTY_INPUT(error = R.string.number_error_empty_input);
+    EMPTY_INPUT(error = R.string.number_error_empty_input),
+    ;
 
     /**
      * Returns the string corresponding to this error's string resources, or null if there is none.
      */
-    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
-      error?.let(resourceHandler::getStringInLocale)
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? = error?.let(resourceHandler::getStringInLocale)
   }
 }

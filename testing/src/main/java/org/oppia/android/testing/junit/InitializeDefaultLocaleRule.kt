@@ -25,6 +25,7 @@ import java.util.Locale
 //  testing module on app module since the latter is an Android application rather than a library.
 //  This utility also can't be moved to the app module since it depends on test-only dependencies
 //  like JUnit and AndroidX test.
+
 /**
  * JUnit rule for automatically initializing the application's locale in app layer tests. Note that
  * this is likely needed for all app layer tests that make use of activities which interact with the
@@ -36,8 +37,11 @@ import java.util.Locale
  * Custom locales can defined at the class & method level using [DefineAppLanguageLocaleContext].
  */
 class InitializeDefaultLocaleRule : TestRule {
-  override fun apply(base: Statement?, description: Description?): Statement {
-    return object : Statement() {
+  override fun apply(
+    base: Statement?,
+    description: Description?,
+  ): Statement =
+    object : Statement() {
       override fun evaluate() {
         val context = ApplicationProvider.getApplicationContext<Application>()
         val localeHandler = context.getAppLanguageLocaleHandler()
@@ -54,7 +58,6 @@ class InitializeDefaultLocaleRule : TestRule {
         Locale.setDefault(oldLocale) // Restore the locale to avoid leaking cross-test.
       }
     }
-  }
 
   private companion object {
     private val injectorProviderClass by lazy {
@@ -70,11 +73,9 @@ class InitializeDefaultLocaleRule : TestRule {
       Class.forName("org.oppia.android.util.locale.OppiaLocale\$DisplayLocale")
     }
 
-    private fun Context.asLocaleApplicationInjectorProvider() =
-      this as? LocaleApplicationInjectorProvider
+    private fun Context.asLocaleApplicationInjectorProvider() = this as? LocaleApplicationInjectorProvider
 
-    private fun Context.getLocaleApplicationInjector() =
-      asLocaleApplicationInjectorProvider()?.getLocaleApplicationInjector()
+    private fun Context.getLocaleApplicationInjector() = asLocaleApplicationInjectorProvider()?.getLocaleApplicationInjector()
 
     private fun Context.getAppLanguageLocaleHandler(): Any {
       val getInjectorMethod =
@@ -85,125 +86,152 @@ class InitializeDefaultLocaleRule : TestRule {
           handlerClass.tryCast(getHandlerMethod.invoke(injector))
         }
       } ?: error(
-        "Failed to retrieve locale handler (something is misconfigured in the test application)"
+        "Failed to retrieve locale handler (something is misconfigured in the test application)",
       )
     }
 
-    private fun initializeLocale(localeHandler: Any, defaultLocale: OppiaLocale.DisplayLocale) {
+    private fun initializeLocale(
+      localeHandler: Any,
+      defaultLocale: OppiaLocale.DisplayLocale,
+    ) {
       val initializeLocaleMethod =
         handlerClass.getDeclaredMethod("initializeLocale", displayLocaleClass)
       initializeLocaleMethod.invoke(localeHandler, defaultLocale)
     }
 
-    private fun Context.getLocaleController(): LocaleController {
-      return checkNotNull(getLocaleApplicationInjector()?.getLocaleController()) {
+    private fun Context.getLocaleController(): LocaleController =
+      checkNotNull(getLocaleApplicationInjector()?.getLocaleController()) {
         "Failed to retrieve locale controller (something is misconfigured in the test application)"
       }
-    }
 
-    private fun Description?.getDefineAppLanguageLocaleContext(): DefineAppLanguageLocaleContext? {
-      return this?.getAnnotation(DefineAppLanguageLocaleContext::class.java)
+    private fun Description?.getDefineAppLanguageLocaleContext(): DefineAppLanguageLocaleContext? =
+      this?.getAnnotation(DefineAppLanguageLocaleContext::class.java)
         ?: this?.testClass?.getDefineAppLanguageLocaleContext()
-    }
 
     private fun Class<*>?.getDefineAppLanguageLocaleContext(): DefineAppLanguageLocaleContext? =
       this?.getAnnotation(DefineAppLanguageLocaleContext::class.java)
 
     private fun DefineAppLanguageLocaleContext?.createLocaleContext(): OppiaLocaleContext? {
       return this?.let { defineContext ->
-        return OppiaLocaleContext.newBuilder().apply {
-          languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-            defineContext.getOppiaLanguage()?.let {
-              language = it
-            } ?: error("Invalid enum int used for language: ${defineContext.oppiaLanguageEnumId}")
-            minAndroidSdkVersion = 1
-            defineContext.getAppStringId()?.let {
-              appStringId = it
-            } ?: error("Must define app string ID either through IETF tag or macaronic ID")
-            // Default the content & audio translation IDs. They aren't used for this usage mode,
-            // but with English app strings this can help reduce redundant requests to recreate the
-            // activity upon test startup.
-            contentStringId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
-            audioTranslationId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
+        return OppiaLocaleContext
+          .newBuilder()
+          .apply {
+            languageDefinition =
+              LanguageSupportDefinition
+                .newBuilder()
+                .apply {
+                  defineContext.getOppiaLanguage()?.let {
+                    language = it
+                  } ?: error("Invalid enum int used for language: ${defineContext.oppiaLanguageEnumId}")
+                  minAndroidSdkVersion = 1
+                  defineContext.getAppStringId()?.let {
+                    appStringId = it
+                  } ?: error("Must define app string ID either through IETF tag or macaronic ID")
+                  // Default the content & audio translation IDs. They aren't used for this usage mode,
+                  // but with English app strings this can help reduce redundant requests to recreate the
+                  // activity upon test startup.
+                  contentStringId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
+                  audioTranslationId = constructLanguageId(ietfTag = "en", combinedMacaronicId = null)
+                }.build()
+            defineContext.getRegionDefinition()?.let { regionDefinition = it }
+            usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
           }.build()
-          defineContext.getRegionDefinition()?.let { regionDefinition = it }
-          usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-        }.build()
       }
     }
 
-    private fun DefineAppLanguageLocaleContext.getOppiaLanguage() =
-      OppiaLanguage.values().getOrNull(oppiaLanguageEnumId)
+    private fun DefineAppLanguageLocaleContext.getOppiaLanguage() = OppiaLanguage.values().getOrNull(oppiaLanguageEnumId)
 
-    private fun DefineAppLanguageLocaleContext.getAppStringId(): LanguageId? {
-      return constructLanguageId(
+    private fun DefineAppLanguageLocaleContext.getAppStringId(): LanguageId? =
+      constructLanguageId(
         ietfTag = appStringIetfTag.tryExtractAnnotationStringConstant(),
-        combinedMacaronicId = appStringMacaronicId.tryExtractAnnotationStringConstant()
-      )?.toBuilder()?.apply {
-        val androidLanguageId = appStringAndroidLanguageId.tryExtractAnnotationStringConstant()
-        val androidRegionId = appStringAndroidRegionId.tryExtractAnnotationStringConstant()
-        if (androidLanguageId != null || androidRegionId != null) {
-          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
-            androidLanguageId?.let { languageCode = it }
-            androidRegionId?.let { regionCode = it }
-          }.build()
-        }
-      }?.build()
-    }
+        combinedMacaronicId = appStringMacaronicId.tryExtractAnnotationStringConstant(),
+      )?.toBuilder()
+        ?.apply {
+          val androidLanguageId = appStringAndroidLanguageId.tryExtractAnnotationStringConstant()
+          val androidRegionId = appStringAndroidRegionId.tryExtractAnnotationStringConstant()
+          if (androidLanguageId != null || androidRegionId != null) {
+            androidResourcesLanguageId =
+              AndroidLanguageId
+                .newBuilder()
+                .apply {
+                  androidLanguageId?.let { languageCode = it }
+                  androidRegionId?.let { regionCode = it }
+                }.build()
+          }
+        }?.build()
 
     private fun DefineAppLanguageLocaleContext.getRegionDefinition(): RegionSupportDefinition? {
       val oppiaRegion = getOppiaRegion()
       val regionLanguages = getOppiaRegionLanguages()
       val ietfRegionTag = regionIetfTag.tryExtractAnnotationStringConstant()
       return if (oppiaRegion != null || regionLanguages.isNotEmpty() || ietfRegionTag != null) {
-        RegionSupportDefinition.newBuilder().apply {
-          oppiaRegion?.let { region = it }
-          addAllLanguages(regionLanguages)
-          ietfRegionTag?.let {
-            regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-              this.ietfRegionTag = it
-            }.build()
-          }
-        }.build()
-      } else null
+        RegionSupportDefinition
+          .newBuilder()
+          .apply {
+            oppiaRegion?.let { region = it }
+            addAllLanguages(regionLanguages)
+            ietfRegionTag?.let {
+              regionId =
+                RegionSupportDefinition.IetfBcp47RegionId
+                  .newBuilder()
+                  .apply {
+                    this.ietfRegionTag = it
+                  }.build()
+            }
+          }.build()
+      } else {
+        null
+      }
     }
 
-    private fun DefineAppLanguageLocaleContext.getOppiaRegion() =
-      OppiaRegion.values().getOrNull(oppiaRegionEnumId)
+    private fun DefineAppLanguageLocaleContext.getOppiaRegion() = OppiaRegion.values().getOrNull(oppiaRegionEnumId)
 
     private fun DefineAppLanguageLocaleContext.getOppiaRegionLanguages() =
       regionLanguageEnumIds.toList().mapNotNull { OppiaLanguage.values().getOrNull(it) }
 
     private fun constructLanguageId(
       ietfTag: String?,
-      combinedMacaronicId: String?
+      combinedMacaronicId: String?,
     ): LanguageId? {
-      return LanguageId.newBuilder().apply {
-        when {
-          ietfTag != null -> { // IETF takes precedence.
-            ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-              ietfLanguageTag = ietfTag
-            }.build()
+      return LanguageId
+        .newBuilder()
+        .apply {
+          when {
+            ietfTag != null -> { // IETF takes precedence.
+              ietfBcp47Id =
+                IetfBcp47LanguageId
+                  .newBuilder()
+                  .apply {
+                    ietfLanguageTag = ietfTag
+                  }.build()
+            }
+            combinedMacaronicId != null -> {
+              macaronicId =
+                MacaronicLanguageId
+                  .newBuilder()
+                  .apply {
+                    combinedLanguageCode = combinedMacaronicId
+                  }.build()
+            }
+            else -> return null // A language ID must be defined.
           }
-          combinedMacaronicId != null -> {
-            macaronicId = MacaronicLanguageId.newBuilder().apply {
-              combinedLanguageCode = combinedMacaronicId
-            }.build()
-          }
-          else -> return null // A language ID must be defined.
-        }
-      }.build()
+        }.build()
     }
 
-    private fun String.tryExtractAnnotationStringConstant(): String? = takeIf {
-      it != DefineAppLanguageLocaleContext.DEFAULT_UNDEFINED_STRING_VALUE
-    }
+    private fun String.tryExtractAnnotationStringConstant(): String? =
+      takeIf {
+        it != DefineAppLanguageLocaleContext.DEFAULT_UNDEFINED_STRING_VALUE
+      }
 
     /**
      *  A version of [Class.cast] that simulates Kotlin's "as?" syntax, that is, returns null if the
      *  cast fails rather than throwing an exception.
      */
     private fun Class<*>.tryCast(obj: Any?): Any? =
-      try { cast(obj) } catch (e: ClassCastException) { null }
+      try {
+        cast(obj)
+      } catch (e: ClassCastException) {
+        null
+      }
   }
 }

@@ -25,12 +25,13 @@ fun AllClassroomsHeaderText() {
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Normal,
     fontSize = dimensionResource(id = R.dimen.classrooms_list_header_text_size).value.sp,
-    modifier = Modifier
-      .testTag(ALL_CLASSROOMS_HEADER_TEST_TAG)
-      .padding(
-        start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
-        top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
-        end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
-      ),
+    modifier =
+      Modifier
+        .testTag(ALL_CLASSROOMS_HEADER_TEST_TAG)
+        .padding(
+          start = dimensionResource(id = R.dimen.classrooms_text_margin_start),
+          top = dimensionResource(id = R.dimen.classrooms_text_margin_top),
+          end = dimensionResource(id = R.dimen.classrooms_text_margin_end),
+        ),
   )
 }

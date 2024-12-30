@@ -49,9 +49,13 @@ import javax.inject.Singleton
 @Config(application = ProfileTestHelperTest.TestApplication::class)
 class ProfileTestHelperTest {
   @Inject lateinit var context: Context
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var profileManagementController: ProfileManagementController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
@@ -185,9 +189,7 @@ class ProfileTestHelperTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -212,8 +214,8 @@ class ProfileTestHelperTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, AssetModule::class
-    ]
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -227,9 +229,12 @@ class ProfileTestHelperTest {
     fun inject(profileTestHelperTest: ProfileTestHelperTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileTestHelperTest_TestApplicationComponent.builder()
+      DaggerProfileTestHelperTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -13,21 +13,15 @@ class EndToEndTestImageParsingModule {
   @Provides
   @DefaultGcsPrefix
   @Singleton
-  fun provideDefaultGcsPrefix(): String {
-    return "http://localhost:8181/"
-  }
+  fun provideDefaultGcsPrefix(): String = "http://localhost:8181/"
 
   @Provides
   @ImageDownloadUrlTemplate
   @Singleton
-  fun provideImageDownloadUrlTemplate(): String {
-    return "%s/%s/assets/image/%s"
-  }
+  fun provideImageDownloadUrlTemplate(): String = "%s/%s/assets/image/%s"
 
   @Provides
   @ThumbnailDownloadUrlTemplate
   @Singleton
-  fun provideThumbnailDownloadUrlTemplate(): String {
-    return "%s/%s/assets/thumbnail/%s"
-  }
+  fun provideThumbnailDownloadUrlTemplate(): String = "%s/%s/assets/thumbnail/%s"
 }

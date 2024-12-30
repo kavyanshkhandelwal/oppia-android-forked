@@ -38,9 +38,10 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadTextFileFromLocalAssets_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadTextFileFromLocalAssets("asset.json")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadTextFileFromLocalAssets("asset.json")
+      }
 
     assertThat(exception).hasMessageThat().contains("Local text asset doesn't exist: asset.json")
   }
@@ -57,27 +58,32 @@ class TestNoOpAssetRepositoryTest {
     assetRepository.primeTextFileFromLocalAssets("asset.json")
 
     // Priming doesn't do anything, so the exception is still thrown.
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadTextFileFromLocalAssets("asset.json")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadTextFileFromLocalAssets("asset.json")
+      }
 
     assertThat(exception).hasMessageThat().contains("Local text asset doesn't exist: asset.json")
   }
 
   @Test
   fun testLoadProtoFromLocalAssets_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadProtoFromLocalAssets("test", TestMessage.getDefaultInstance())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadProtoFromLocalAssets("test", TestMessage.getDefaultInstance())
+      }
 
     assertThat(exception).hasMessageThat().contains("Local proto asset doesn't exist: test")
   }
 
   @Test
   fun testTryLoadProtoFromLocalAssets_returnsDefaultProto() {
-    val testMessage = TestMessage.newBuilder().apply {
-      intValue = 12
-    }.build()
+    val testMessage =
+      TestMessage
+        .newBuilder()
+        .apply {
+          intValue = 12
+        }.build()
 
     val result = assetRepository.tryLoadProtoFromLocalAssets("test", testMessage)
 
@@ -87,9 +93,12 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testMaybeLoadProtoFromLocalAssets_returnsDefaultProto() {
-    val testMessage = TestMessage.newBuilder().apply {
-      intValue = 12
-    }.build()
+    val testMessage =
+      TestMessage
+        .newBuilder()
+        .apply {
+          intValue = 12
+        }.build()
 
     val result = assetRepository.maybeLoadProtoFromLocalAssets("test", testMessage)
 
@@ -107,21 +116,25 @@ class TestNoOpAssetRepositoryTest {
 
   @Test
   fun testLoadRemoteBinaryAsset_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Remote asset doesn't exist: https://example.com/test.pb")
   }
 
   @Test
   fun testLoadImageAssetFromLocalAssets_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadImageAssetFromLocalAssets("https://example.com/test.png")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadImageAssetFromLocalAssets("https://example.com/test.png")
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Local image asset doesn't exist: https://example.com/test.png")
   }
 
@@ -137,11 +150,13 @@ class TestNoOpAssetRepositoryTest {
     assetRepository.primeRemoteBinaryAsset("https://example.com/test.pb")
 
     // Priming doesn't do anything, so the exception is still thrown.
-    val exception = assertThrows<IllegalStateException>() {
-      assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        assetRepository.loadRemoteBinaryAsset("https://example.com/test.pb")
+      }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Remote asset doesn't exist: https://example.com/test.pb")
   }
 
@@ -162,7 +177,8 @@ class TestNoOpAssetRepositoryTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestNoOpAssetRepositoryTest_TestApplicationComponent.builder()
+    DaggerTestNoOpAssetRepositoryTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -173,17 +189,15 @@ class TestNoOpAssetRepositoryTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, AssetTestNoOpModule::class
-    ]
+      TestModule::class, AssetTestNoOpModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

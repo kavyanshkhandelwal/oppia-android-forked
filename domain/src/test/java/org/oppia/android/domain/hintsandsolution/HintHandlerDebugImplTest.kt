@@ -62,9 +62,13 @@ class HintHandlerDebugImplTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockHelpIndexFlowMonitor: Runnable
+
   @Inject lateinit var hintHandlerDebugImplFactory: HintHandlerDebugImpl.FactoryDebugImpl
+
   @Inject lateinit var explorationRetriever: ExplorationRetriever
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
   @field:[Inject BlockingDispatcher] lateinit var blockingCoroutineDispatcher: CoroutineDispatcher
 
@@ -79,7 +83,7 @@ class HintHandlerDebugImplTest {
   private val expWithOneHintAndNoSolution by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_one_hint_and_no_solution"
+        "test_single_interactive_state_exp_with_one_hint_and_no_solution",
       )
     }
   }
@@ -87,7 +91,7 @@ class HintHandlerDebugImplTest {
   private val expWithHintsAndSolution by lazy {
     runBlocking {
       explorationRetriever.loadExploration(
-        "test_single_interactive_state_exp_with_hints_and_solution"
+        "test_single_interactive_state_exp_with_hints_and_solution",
       )
     }
   }
@@ -118,7 +122,7 @@ class HintHandlerDebugImplTest {
     assertThat(hintHandler).isInstanceOf(HintHandlerDebugImpl::class.java)
   }
 
-  /* Tests for startWatchingForHintsInNewState */
+  // Tests for startWatchingForHintsInNewState
 
   @Test
   fun testStartWatchingForHints_showAllHelpsEnabled_stateWithoutHints_changesHelpIndex() {
@@ -169,13 +173,15 @@ class HintHandlerDebugImplTest {
     hintHandler.startWatchingForHintsInNewStateSync(state)
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
-  /* Tests for finishState */
+  // Tests for finishState
 
   @Test
   fun testFinishState_showAllHelpsEnabled_defaultState_changesHelpIndex() {
@@ -221,13 +227,15 @@ class HintHandlerDebugImplTest {
     hintHandler.finishStateSync(expWithOneHintAndNoSolution.getInitialState())
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
-  /* Tests for handleWrongAnswerSubmission */
+  // Tests for handleWrongAnswerSubmission
 
   @Test
   fun testWrongAnswerSubmission_showAllHelpsEnabled_stateWithHints_monitorNotCalled() {
@@ -255,9 +263,11 @@ class HintHandlerDebugImplTest {
     hintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount = 1)
 
     assertThat(hintHandler.getCurrentHelpIndex().value).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
@@ -280,7 +290,7 @@ class HintHandlerDebugImplTest {
     verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
-  /* Tests for navigateToPreviousState */
+  // Tests for navigateToPreviousState
 
   @Test
   fun testNavigateToPreviousState_showAllHelpsEnabled_monitorNotCalled() {
@@ -319,7 +329,7 @@ class HintHandlerDebugImplTest {
     verifyNoMoreInteractions(mockHelpIndexFlowMonitor)
   }
 
-  /* Tests for navigateBackToLatestPendingState */
+  // Tests for navigateBackToLatestPendingState
 
   @Test
   fun testNavigateBackToLatestPendingState_showAllHelpsEnabled_fromPrevState_monitorNotCalled() {
@@ -368,37 +378,41 @@ class HintHandlerDebugImplTest {
     val helpIndex = hintHandler.getCurrentHelpIndex().value
 
     assertThat(helpIndex).isEqualTo(
-      HelpIndex.newBuilder().apply {
-        everythingRevealed = true
-      }.build()
+      HelpIndex
+        .newBuilder()
+        .apply {
+          everythingRevealed = true
+        }.build(),
     )
   }
 
-  private fun HintHandler.startWatchingForHintsInNewStateSync(
-    state: State
-  ) = runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
+  private fun HintHandler.startWatchingForHintsInNewStateSync(state: State) =
+    runSynchronouslyInBackground { startWatchingForHintsInNewState(state) }
 
-  private fun HintHandler.finishStateSync(newState: State) = runSynchronouslyInBackground {
-    finishState(newState)
-  }
+  private fun HintHandler.finishStateSync(newState: State) =
+    runSynchronouslyInBackground {
+      finishState(newState)
+    }
 
-  private fun HintHandler.handleWrongAnswerSubmissionSync(
-    wrongAnswerCount: Int
-  ) = runSynchronouslyInBackground { handleWrongAnswerSubmission(wrongAnswerCount) }
+  private fun HintHandler.handleWrongAnswerSubmissionSync(wrongAnswerCount: Int) =
+    runSynchronouslyInBackground { handleWrongAnswerSubmission(wrongAnswerCount) }
 
-  private fun HintHandler.navigateToPreviousStateSync() = runSynchronouslyInBackground {
-    navigateToPreviousState()
-  }
+  private fun HintHandler.navigateToPreviousStateSync() =
+    runSynchronouslyInBackground {
+      navigateToPreviousState()
+    }
 
-  private fun HintHandler.navigateBackToLatestPendingStateSync() = runSynchronouslyInBackground {
-    navigateBackToLatestPendingState()
-  }
+  private fun HintHandler.navigateBackToLatestPendingStateSync() =
+    runSynchronouslyInBackground {
+      navigateBackToLatestPendingState()
+    }
 
   private fun HintHandler.monitorHelpIndex() {
     reset(mockHelpIndexFlowMonitor)
-    getCurrentHelpIndex().onEach {
-      mockHelpIndexFlowMonitor.run()
-    }.launchIn(blockingCoroutineScope)
+    getCurrentHelpIndex()
+      .onEach {
+        mockHelpIndexFlowMonitor.run()
+      }.launchIn(blockingCoroutineScope)
   }
 
   private fun runSynchronouslyInBackground(operation: suspend () -> Unit) {
@@ -420,8 +434,7 @@ class HintHandlerDebugImplTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   @Singleton
@@ -430,8 +443,8 @@ class HintHandlerDebugImplTest {
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
       TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class
-    ]
+      ExplorationStorageTestModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -445,9 +458,12 @@ class HintHandlerDebugImplTest {
     fun inject(hintHandlerDebugImplTest: HintHandlerDebugImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHintHandlerDebugImplTest_TestApplicationComponent.builder()
+      DaggerHintHandlerDebugImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

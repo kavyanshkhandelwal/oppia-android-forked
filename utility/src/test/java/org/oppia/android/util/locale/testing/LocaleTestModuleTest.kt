@@ -50,7 +50,8 @@ class LocaleTestModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLocaleTestModuleTest_TestApplicationComponent.builder()
+    DaggerLocaleTestModuleTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -61,17 +62,15 @@ class LocaleTestModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
-    ]
+      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

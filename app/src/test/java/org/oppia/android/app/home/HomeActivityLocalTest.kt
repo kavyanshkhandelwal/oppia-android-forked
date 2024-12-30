@@ -100,7 +100,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = HomeActivityLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class HomeActivityLocalTest {
   @get:Rule
@@ -155,14 +155,15 @@ class HomeActivityLocalTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
-      profileType = ProfileType.SOLE_LEARNER
+      profileType = ProfileType.SOLE_LEARNER,
     )
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
-      }
+      val hasCompleteAppOnboardingEvent =
+        fakeAnalyticsEventLogger.hasEventLogged {
+          it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+        }
       assertThat(hasCompleteAppOnboardingEvent).isTrue()
     }
   }
@@ -173,14 +174,15 @@ class HomeActivityLocalTest {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
-      profileType = ProfileType.SUPERVISOR
+      profileType = ProfileType.SUPERVISOR,
     )
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val hasCompleteAppOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == COMPLETE_APP_ONBOARDING
-      }
+      val hasCompleteAppOnboardingEvent =
+        fakeAnalyticsEventLogger.hasEventLogged {
+          it.context.activityContextCase == COMPLETE_APP_ONBOARDING
+        }
       assertThat(hasCompleteAppOnboardingEvent).isTrue()
     }
   }
@@ -193,7 +195,7 @@ class HomeActivityLocalTest {
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
     profileTestHelper.updateProfileType(
       profileId = profileId1,
-      profileType = ProfileType.ADDITIONAL_LEARNER
+      profileType = ProfileType.ADDITIONAL_LEARNER,
     )
     launch<HomeActivity>(createHomeActivityIntent(profileId1)).use {
       testCoroutineDispatchers.runCurrent()
@@ -256,9 +258,10 @@ class HomeActivityLocalTest {
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
-      }
+      val hasProfileOnboardingEndedEvent =
+        fakeAnalyticsEventLogger.hasEventLogged {
+          it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+        }
       assertThat(hasProfileOnboardingEndedEvent).isTrue()
     }
   }
@@ -300,15 +303,15 @@ class HomeActivityLocalTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
+      DaggerHomeActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build() as TestApplicationComponent
+        .build() as TestApplicationComponent,
     )
   }
 
-  private fun createHomeActivityIntent(profileId: ProfileId): Intent {
-    return HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
-  }
+  private fun createHomeActivityIntent(profileId: ProfileId): Intent =
+    HomeActivity.createHomeActivity(ApplicationProvider.getApplicationContext(), profileId)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -343,8 +346,8 @@ class HomeActivityLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -361,9 +364,13 @@ class HomeActivityLocalTest {
     fun getProfileTestHelper(): ProfileTestHelper
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHomeActivityLocalTest_TestApplicationComponent.builder()
+      DaggerHomeActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -376,9 +383,12 @@ class HomeActivityLocalTest {
       super.attachBaseContext(base)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -46,7 +46,6 @@ class QuestionPlayerActivity :
   HintsAndSolutionQuestionManagerListener,
   DefaultFontSizeStateListener,
   ConceptCardListener {
-
   @Inject
   lateinit var questionPlayerActivityPresenter: QuestionPlayerActivityPresenter
 
@@ -65,7 +64,7 @@ class QuestionPlayerActivity :
           showStopExplorationDialogFragment()
           questionPlayerActivityPresenter.setReadingTextSizeNormal()
         }
-      }
+      },
     )
   }
 
@@ -96,13 +95,14 @@ class QuestionPlayerActivity :
     fun createQuestionPlayerActivityIntent(
       context: Context,
       skillIdList: ArrayList<String>,
-      profileId: ProfileId
+      profileId: ProfileId,
     ): Intent {
-
-      val args = QuestionPlayerActivityParams.newBuilder().apply {
-        addAllSkillIds(skillIdList)
-      }
-        .build()
+      val args =
+        QuestionPlayerActivityParams
+          .newBuilder()
+          .apply {
+            addAllSkillIds(skillIdList)
+          }.build()
       return Intent(context, QuestionPlayerActivity::class.java).apply {
         putProtoExtra(QUESTION_PLAYER_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
@@ -121,7 +121,7 @@ class QuestionPlayerActivity :
 
   override fun routeToHintsAndSolution(
     id: String,
-    helpIndex: HelpIndex
+    helpIndex: HelpIndex,
   ) {
     questionPlayerActivityPresenter.routeToHintsAndSolution(id, helpIndex)
   }
@@ -130,7 +130,7 @@ class QuestionPlayerActivity :
 
   override fun onQuestionStateLoaded(
     state: State,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
   ) = questionPlayerActivityPresenter.loadQuestionState(state, writtenTranslationContext)
 
   override fun dismissConceptCard() {

@@ -27,17 +27,21 @@ class ProfileEditFragment :
     /** This creates the new instance of [ProfileEditFragment]. */
     fun newInstance(
       internalProfileId: Int,
-      isMultipane: Boolean
+      isMultipane: Boolean,
     ): ProfileEditFragment {
-      val args = ProfileEditFragmentArguments.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-        this.isMultipane = isMultipane
-      }.build()
+      val args =
+        ProfileEditFragmentArguments
+          .newBuilder()
+          .apply {
+            this.internalProfileId = internalProfileId
+            this.isMultipane = isMultipane
+          }.build()
 
       return ProfileEditFragment().apply {
-        arguments = Bundle().apply {
-          putProto(PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -50,15 +54,17 @@ class ProfileEditFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected variables to be passed to ProfileEditFragment"
-    }
-    val args = arguments.getProto(
-      PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
-      ProfileEditFragmentArguments.getDefaultInstance()
-    )
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected variables to be passed to ProfileEditFragment"
+      }
+    val args =
+      arguments.getProto(
+        PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
+        ProfileEditFragmentArguments.getDefaultInstance(),
+      )
 
     val internalProfileId = args.internalProfileId
     val isMultipane = args.isMultipane
@@ -66,7 +72,7 @@ class ProfileEditFragment :
       inflater,
       container,
       internalProfileId,
-      isMultipane
+      isMultipane,
     )
   }
 

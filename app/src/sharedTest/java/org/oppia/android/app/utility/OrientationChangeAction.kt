@@ -12,24 +12,31 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import org.hamcrest.Matcher
 
 // https://gist.github.com/nbarraille/03e8910dc1d415ed9740
+
 /** This class helps in managing orientation changes in test-cases which are visible on device too. */
-class OrientationChangeAction(private val orientation: Int) : ViewAction {
-
+class OrientationChangeAction(
+  private val orientation: Int,
+) : ViewAction {
   companion object {
-    fun orientationLandscape(): ViewAction = OrientationChangeAction(
-      ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    )
+    fun orientationLandscape(): ViewAction =
+      OrientationChangeAction(
+        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
+      )
 
-    fun orientationPortrait(): ViewAction = OrientationChangeAction(
-      ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    )
+    fun orientationPortrait(): ViewAction =
+      OrientationChangeAction(
+        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+      )
   }
 
   override fun getDescription(): String = "change orientation to $orientation"
 
   override fun getConstraints(): Matcher<View> = isRoot()
 
-  override fun perform(uiController: UiController, view: View) {
+  override fun perform(
+    uiController: UiController,
+    view: View,
+  ) {
     uiController.loopMainThreadUntilIdle()
     var activity = getActivity(view.context)
     if (activity == null && view is ViewGroup) {

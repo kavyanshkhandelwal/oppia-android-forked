@@ -22,71 +22,70 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
-
   private val WHOLE_NUMBER_VALUE_TEST_5 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 5
+      value = 5,
     )
   private val WHOLE_NUMBER_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 2
+      value = 2,
     )
   private val NEGATIVE_WHOLE_NUMBER_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = true,
-      value = 2
+      value = 2,
     )
   private val FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val FRACTION_VALUE_TEST_4_OVER_8 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 4,
-      denominator = 8
+      denominator = 8,
     )
   private val NEGATIVE_FRACTION_VALUE_TEST_1_OVER_2 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = true,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 16,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val MIXED_NUMBER_VALUE_TEST_16_AND_2_OVER_4 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 16,
       numerator = 2,
-      denominator = 4
+      denominator = 4,
     )
   private val MIXED_NUMBER_VALUE_TEST_7_AND_1_OVER_7 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = false,
       wholeNumber = 7,
       numerator = 1,
-      denominator = 7
+      denominator = 7,
     )
   private val NEGATIVE_MIXED_NUMBER_VALUE_TEST_16_AND_1_OVER_2 =
     InteractionObjectTestBuilder.createMixedNumber(
       isNegative = true,
       wholeNumber = 16,
       numerator = 1,
-      denominator = 2
+      denominator = 2,
     )
   private val STRING_VALUE_TEST =
     InteractionObjectTestBuilder.createString(
-      value = "test string"
+      value = "test string",
     )
 
   @Inject
@@ -111,7 +110,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -126,7 +125,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -141,7 +140,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -156,7 +155,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -171,7 +170,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -186,7 +185,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // Even if creator does not input simplest form, learner's answer must still be in simplest form
@@ -202,7 +201,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -217,7 +216,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -232,7 +231,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -247,7 +246,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -262,7 +261,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -277,7 +276,7 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
       inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
         answer = answer,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -288,13 +287,14 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_1_OVER_2)
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-        answer = answer,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+          answer = answer,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -306,13 +306,14 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("f" to FRACTION_VALUE_TEST_1_OVER_2)
     val answer = STRING_VALUE_TEST
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-        answer = answer,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+          answer = answer,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -324,13 +325,14 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
     val inputs = mapOf("f" to STRING_VALUE_TEST)
     val answer = FRACTION_VALUE_TEST_1_OVER_2
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
-        answer = answer,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsEquivalentToAndInSimplestFormRuleClassifier.matches(
+          answer = answer,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -338,9 +340,12 @@ class FractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest_TestApplicationComponent // ktlint-disable max-line-length
+    @Suppress("ktlint:standard:max-line-length")
+    DaggerFractionInputIsEquivalentToAndInSimplestFormRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   @Singleton

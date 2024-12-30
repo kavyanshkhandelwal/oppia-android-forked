@@ -10,17 +10,18 @@ import org.hamcrest.TypeSafeMatcher
 
 class RichTextViewMatcher {
   companion object {
-    fun containsRichText(): Matcher<View> {
-      return object : TypeSafeMatcher<View>() {
+    fun containsRichText(): Matcher<View> =
+      object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description) {
           description.appendText("Checks if view contains rich text")
         }
 
-        override fun matchesSafely(view: View): Boolean {
-          return view is TextView && view.text.toSpannable()
-            .getSpans(0, view.text.length, CharacterStyle::class.java).isNotEmpty()
-        }
+        override fun matchesSafely(view: View): Boolean =
+          view is TextView &&
+            view.text
+              .toSpannable()
+              .getSpans(0, view.text.length, CharacterStyle::class.java)
+              .isNotEmpty()
       }
-    }
   }
 }

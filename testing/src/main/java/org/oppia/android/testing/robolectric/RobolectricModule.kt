@@ -14,7 +14,5 @@ class RobolectricModule {
   @Provides
   @IsOnRobolectric
   @Singleton
-  fun provideIsOnRobolectric(): Boolean {
-    return Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
-  }
+  fun provideIsOnRobolectric(): Boolean = Build.FINGERPRINT.contains("robolectric", ignoreCase = true)
 }

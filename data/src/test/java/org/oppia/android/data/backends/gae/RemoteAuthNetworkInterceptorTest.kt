@@ -41,7 +41,6 @@ import javax.inject.Singleton
 @Config(application = RemoteAuthNetworkInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RemoteAuthNetworkInterceptorTest {
-
   @Inject
   lateinit var remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
 
@@ -88,23 +87,26 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(serviceRequest.header("app_version_code")).isNull()
 
     call.execute()
-    val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-    )
+    val interceptedRequest =
+      mockWebServer.takeRequest(
+        timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+        unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT,
+      )
 
     verifyRequestHeaders(interceptedRequest?.headers)
   }
 
   @Test
   fun testNetworkInterceptor_withIncorrectHeaders_setsCorrectHeaders() {
-    val request = Request.Builder()
-      .url(mockWebServer.url("/"))
-      .addHeader("api_key", "wrong_api_key")
-      .addHeader("app_package_name", "wrong_package_name")
-      .addHeader("app_version_name", "wrong_version_name")
-      .addHeader("app_version_code", "wrong_version_code")
-      .build()
+    val request =
+      Request
+        .Builder()
+        .url(mockWebServer.url("/"))
+        .addHeader("api_key", "wrong_api_key")
+        .addHeader("app_package_name", "wrong_package_name")
+        .addHeader("app_version_name", "wrong_version_name")
+        .addHeader("app_version_code", "wrong_version_code")
+        .build()
     assertThat(request.header("api_key")).isEqualTo("wrong_api_key")
     assertThat(request.header("app_package_name")).isEqualTo("wrong_package_name")
     assertThat(request.header("app_version_name")).isEqualTo("wrong_version_name")
@@ -112,10 +114,11 @@ class RemoteAuthNetworkInterceptorTest {
 
     mockWebServer.enqueue(MockResponse().setBody("{}"))
     client.newCall(request).execute()
-    val interceptedRequest = mockWebServer.takeRequest(
-      timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
-      unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT
-    )
+    val interceptedRequest =
+      mockWebServer.takeRequest(
+        timeout = testCoroutineDispatcher.DEFAULT_TIMEOUT_SECONDS,
+        unit = testCoroutineDispatcher.DEFAULT_TIMEOUT_UNIT,
+      )
 
     verifyRequestHeaders(interceptedRequest?.headers)
   }
@@ -127,11 +130,13 @@ class RemoteAuthNetworkInterceptorTest {
   private fun setUpApplicationForContext() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -143,19 +148,23 @@ class RemoteAuthNetworkInterceptorTest {
 
   private fun setUpRetrofit() {
     mockWebServer = MockWebServer()
-    client = OkHttpClient.Builder()
-      .addInterceptor(remoteAuthNetworkInterceptor)
-      .build()
+    client =
+      OkHttpClient
+        .Builder()
+        .addInterceptor(remoteAuthNetworkInterceptor)
+        .build()
 
     // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
     // the full network request properly executes. MockRetrofit and MockWebServer perform the same
     // request mocking in different ways and we want to verify the full request is executed here.
     // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    retrofit = Retrofit.Builder()
-      .baseUrl(mockWebServer.url("/"))
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+    retrofit =
+      Retrofit
+        .Builder()
+        .baseUrl(mockWebServer.url("/"))
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
 
     platformParameterService = retrofit.create(PlatformParameterService::class.java)
   }
@@ -181,9 +190,7 @@ class RemoteAuthNetworkInterceptorTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -191,8 +198,8 @@ class RemoteAuthNetworkInterceptorTest {
   @Component(
     modules = [
       RobolectricModule::class, TestNetworkModule::class, TestModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class
-    ]
+      TestLogReportingModule::class, TestDispatcherModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -206,9 +213,12 @@ class RemoteAuthNetworkInterceptorTest {
     fun inject(remoteAuthNetworkInterceptorTest: RemoteAuthNetworkInterceptorTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRemoteAuthNetworkInterceptorTest_TestApplicationComponent.builder()
+      DaggerRemoteAuthNetworkInterceptorTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -12,5 +12,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MavenInstallJson(
   @Json(name = "artifacts") val artifacts: Map<String, MavenArtifact>,
-  @Json(name = "repositories") val repositories: Map<String, List<String>>
+  @Json(name = "repositories") val repositories: Map<String, List<String>>,
 )

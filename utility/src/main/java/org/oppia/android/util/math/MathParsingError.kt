@@ -36,7 +36,7 @@ sealed class MathParsingError {
    */
   data class SingleRedundantParenthesesError(
     val rawExpression: String,
-    val expression: MathExpression
+    val expression: MathExpression,
   ) : MathParsingError()
 
   /**
@@ -50,7 +50,7 @@ sealed class MathParsingError {
    */
   data class MultipleRedundantParenthesesError(
     val rawExpression: String,
-    val expression: MathExpression
+    val expression: MathExpression,
   ) : MathParsingError()
 
   /**
@@ -63,7 +63,7 @@ sealed class MathParsingError {
    */
   data class RedundantParenthesesForIndividualTermsError(
     val rawExpression: String,
-    val expression: MathExpression
+    val expression: MathExpression,
   ) : MathParsingError()
 
   /**
@@ -73,7 +73,9 @@ sealed class MathParsingError {
    *
    * @property invalidSymbol the raw invalid symbol that was encountered during parsing
    */
-  data class UnnecessarySymbolsError(val invalidSymbol: String) : MathParsingError()
+  data class UnnecessarySymbolsError(
+    val invalidSymbol: String,
+  ) : MathParsingError()
 
   /**
    * Indicates that a number was encountered to the right of a variable, e.g. 'x2'.
@@ -84,7 +86,10 @@ sealed class MathParsingError {
    * @property number the number that was parsed on the right side of the variable
    * @property variable the variable to whose right is a number
    */
-  data class NumberAfterVariableError(val number: Real, val variable: String) : MathParsingError()
+  data class NumberAfterVariableError(
+    val number: Real,
+    val variable: String,
+  ) : MathParsingError()
 
   /**
    * Indicates that two binary operators were encountered with nothing between, e.g. '1 +* 2'.
@@ -96,7 +101,7 @@ sealed class MathParsingError {
    */
   data class SubsequentBinaryOperatorsError(
     val operator1: String,
-    val operator2: String
+    val operator2: String,
   ) : MathParsingError()
 
   /**
@@ -123,7 +128,7 @@ sealed class MathParsingError {
    */
   data class NoVariableOrNumberBeforeBinaryOperatorError(
     val operator: MathBinaryOperation.Operator,
-    val operatorSymbol: String
+    val operatorSymbol: String,
   ) : MathParsingError()
 
   /**
@@ -137,7 +142,7 @@ sealed class MathParsingError {
    */
   data class NoVariableOrNumberAfterBinaryOperatorError(
     val operator: MathBinaryOperation.Operator,
-    val operatorSymbol: String
+    val operatorSymbol: String,
   ) : MathParsingError()
 
   /**
@@ -192,7 +197,9 @@ sealed class MathParsingError {
    *
    * @param variables the list of variables from the expression that aren't allowed
    */
-  data class DisabledVariablesInUseError(val variables: List<String>) : MathParsingError()
+  data class DisabledVariablesInUseError(
+    val variables: List<String>,
+  ) : MathParsingError()
 
   /**
    * Indicates that an algebraic equation is missing an equals sign, e.g. '4 x'.
@@ -224,7 +231,9 @@ sealed class MathParsingError {
    *
    * @param functionName the name of the used prohibited function
    */
-  data class InvalidFunctionInUseError(val functionName: String) : MathParsingError()
+  data class InvalidFunctionInUseError(
+    val functionName: String,
+  ) : MathParsingError()
 
   /**
    * Indicates that a function name was started, but not completed, e.g.: 'sqr(2)'.

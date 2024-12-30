@@ -7,27 +7,29 @@ import javax.inject.Inject
 
 /** The presenter for [ForceNetworkTypeActivity]. */
 @ActivityScope
-class ForceNetworkTypeActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
+class ForceNetworkTypeActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    /** Called when [ForceNetworkTypeActivity] is created. Handles UI for the activity. */
+    fun handleOnCreate() {
+      activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+      activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+      activity.setContentView(R.layout.force_network_type_activity)
 
-  /** Called when [ForceNetworkTypeActivity] is created. Handles UI for the activity. */
-  fun handleOnCreate() {
-    activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    activity.setContentView(R.layout.force_network_type_activity)
-
-    if (getForceNetworkTypeFragment() == null) {
-      val forceNetworkTypeFragment = ForceNetworkTypeFragment.newInstance()
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.force_network_type_container,
-        forceNetworkTypeFragment
-      ).commitNow()
+      if (getForceNetworkTypeFragment() == null) {
+        val forceNetworkTypeFragment = ForceNetworkTypeFragment.newInstance()
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.force_network_type_container,
+            forceNetworkTypeFragment,
+          ).commitNow()
+      }
     }
-  }
 
-  private fun getForceNetworkTypeFragment(): ForceNetworkTypeFragment? {
-    return activity.supportFragmentManager
-      .findFragmentById(R.id.force_network_type_container) as ForceNetworkTypeFragment?
+    private fun getForceNetworkTypeFragment(): ForceNetworkTypeFragment? =
+      activity.supportFragmentManager
+        .findFragmentById(R.id.force_network_type_container) as ForceNetworkTypeFragment?
   }
-}

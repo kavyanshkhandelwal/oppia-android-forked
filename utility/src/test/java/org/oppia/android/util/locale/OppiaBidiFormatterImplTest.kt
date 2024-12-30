@@ -119,7 +119,8 @@ class OppiaBidiFormatterImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerOppiaBidiFormatterImplTest_TestApplicationComponent.builder()
+    DaggerOppiaBidiFormatterImplTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -130,17 +131,15 @@ class OppiaBidiFormatterImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class
-    ]
+      TestModule::class, LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

@@ -4,7 +4,6 @@ import org.oppia.android.app.model.OppiaMetricLog
 
 /** Utility to extract performance metrics from the underlying Android system. */
 interface PerformanceMetricsAssessor {
-
   /** Returns the size of the app's installed APK file, in bytes. */
   fun getApkSize(): Long
 
@@ -48,7 +47,10 @@ interface PerformanceMetricsAssessor {
    * c) number of online CPU cores of either [firstCpuSnapshot] or [secondCpuSnapshot] are less
    * than or equal to 0.
    */
-  fun getRelativeCpuUsage(firstCpuSnapshot: CpuSnapshot, secondCpuSnapshot: CpuSnapshot): Double?
+  fun getRelativeCpuUsage(
+    firstCpuSnapshot: CpuSnapshot,
+    secondCpuSnapshot: CpuSnapshot,
+  ): Double?
 
   /**
    * Container that consists of all the necessary values that are required for calculating CPU usage
@@ -61,11 +63,12 @@ interface PerformanceMetricsAssessor {
   data class CpuSnapshot(
     val appTimeMillis: Long,
     val cpuTimeMillis: Long,
-    val numberOfOnlineCores: Int
+    val numberOfOnlineCores: Int,
   ) {
     /** Returns whether the current [CpuSnapshot] is newer than the [otherCpuSnapshot]. */
-    fun isNewer(otherCpuSnapshot: CpuSnapshot) = cpuTimeMillis > otherCpuSnapshot.cpuTimeMillis ||
-      appTimeMillis > otherCpuSnapshot.appTimeMillis
+    fun isNewer(otherCpuSnapshot: CpuSnapshot) =
+      cpuTimeMillis > otherCpuSnapshot.cpuTimeMillis ||
+        appTimeMillis > otherCpuSnapshot.appTimeMillis
 
     /** Returns whether the current [CpuSnapshot] has invalid number of online CPU cores or not. */
     fun doesNotHaveValidNumberOfOnlineCores(): Boolean = numberOfOnlineCores <= 0
@@ -75,9 +78,11 @@ interface PerformanceMetricsAssessor {
   enum class AppIconification {
     /** Indicates that the iconification hasn't been initialized yet. */
     UNINITIALIZED,
+
     /** Indicates that the app is in foreground. */
     APP_IN_FOREGROUND,
+
     /** Indicates that the app is in background. */
-    APP_IN_BACKGROUND
+    APP_IN_BACKGROUND,
   }
 }

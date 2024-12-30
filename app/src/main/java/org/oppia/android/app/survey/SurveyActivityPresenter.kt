@@ -17,42 +17,52 @@ private const val TAG_SURVEY_FRAGMENT = "TAG_SURVEY_FRAGMENT"
 
 /** The Presenter for [SurveyActivity]. */
 @ActivityScope
-class SurveyActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private lateinit var binding: SurveyActivityBinding
-
-  fun handleOnCreate(
-    profileId: ProfileId,
-    topicId: String,
-    explorationId: String
+class SurveyActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
   ) {
-    binding = DataBindingUtil.setContentView(activity, R.layout.survey_activity)
-    binding.apply {
-      lifecycleOwner = activity
-    }
+    private lateinit var binding: SurveyActivityBinding
 
-    if (getSurveyFragment() == null) {
-      val surveyFragment = SurveyFragment()
-      val args = SurveyFragmentArguments.newBuilder().apply {
-        this.topicId = topicId
-        this.explorationId = explorationId
-      }.build()
-      val bundle = Bundle().apply {
-        putProto(SURVEY_FRAGMENT_ARGUMENTS_KEY, args)
-        decorateWithUserProfileId(profileId)
+    fun handleOnCreate(
+      profileId: ProfileId,
+      topicId: String,
+      explorationId: String,
+    ) {
+      binding = DataBindingUtil.setContentView(activity, R.layout.survey_activity)
+      binding.apply {
+        lifecycleOwner = activity
       }
 
-      surveyFragment.arguments = bundle
+      if (getSurveyFragment() == null) {
+        val surveyFragment = SurveyFragment()
+        val args =
+          SurveyFragmentArguments
+            .newBuilder()
+            .apply {
+              this.topicId = topicId
+              this.explorationId = explorationId
+            }.build()
+        val bundle =
+          Bundle().apply {
+            putProto(SURVEY_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
 
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.survey_fragment_placeholder,
-        surveyFragment, TAG_SURVEY_FRAGMENT
-      ).commitNow()
+        surveyFragment.arguments = bundle
+
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.survey_fragment_placeholder,
+            surveyFragment,
+            TAG_SURVEY_FRAGMENT,
+          ).commitNow()
+      }
     }
-  }
 
-  private fun getSurveyFragment(): SurveyFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_SURVEY_FRAGMENT
-    ) as? SurveyFragment
+    private fun getSurveyFragment(): SurveyFragment? =
+      activity.supportFragmentManager.findFragmentByTag(
+        TAG_SURVEY_FRAGMENT,
+      ) as? SurveyFragment
   }
-}

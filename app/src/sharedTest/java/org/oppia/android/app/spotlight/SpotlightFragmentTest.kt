@@ -104,7 +104,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = SpotlightFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class SpotlightFragmentTest {
   @field:[Rule JvmField]
@@ -143,16 +143,17 @@ class SpotlightFragmentTest {
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
     TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -165,16 +166,17 @@ class SpotlightFragmentTest {
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -189,15 +191,16 @@ class SpotlightFragmentTest {
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(
-          activity.getSpotlightFragment()
+          activity.getSpotlightFragment(),
         ).requestSpotlightViewWithDelayedLayout(spotlightTarget)
       }
       testCoroutineDispatchers.runCurrent()
@@ -210,12 +213,13 @@ class SpotlightFragmentTest {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -224,15 +228,16 @@ class SpotlightFragmentTest {
     }
 
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -246,12 +251,13 @@ class SpotlightFragmentTest {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -259,15 +265,16 @@ class SpotlightFragmentTest {
     }
 
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       it.onActivity { activity ->
-        val spotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val spotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(spotlightTarget)
       }
@@ -280,23 +287,25 @@ class SpotlightFragmentTest {
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val firstSpotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val firstSpotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
-        val secondSpotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSecondSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.FIRST_CHAPTER
-        )
+        val secondSpotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSecondSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.FIRST_CHAPTER,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
         testCoroutineDispatchers.runCurrent()
@@ -311,23 +320,25 @@ class SpotlightFragmentTest {
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
-        val firstSpotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.PROMOTED_STORIES
-        )
+        val firstSpotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
 
-        val secondSpotlightTarget = SpotlightTarget(
-          activity.getSampleSpotlightTarget(),
-          sampleSecondSpotlightText,
-          SpotlightShape.RoundedRectangle,
-          Spotlight.FeatureCase.FIRST_CHAPTER
-        )
+        val secondSpotlightTarget =
+          SpotlightTarget(
+            activity.getSampleSpotlightTarget(),
+            sampleSecondSpotlightText,
+            SpotlightShape.RoundedRectangle,
+            Spotlight.FeatureCase.FIRST_CHAPTER,
+          )
 
         checkNotNull(activity.getSpotlightFragment()).requestSpotlight(firstSpotlightTarget)
         testCoroutineDispatchers.runCurrent()
@@ -344,15 +355,19 @@ class SpotlightFragmentTest {
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
-      createSpotlightFragmentTestActivity(context)
+      createSpotlightFragmentTestActivity(context),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
-        val spotlightFragment = activity.supportFragmentManager
-          .findFragmentByTag(SpotlightManager.SPOTLIGHT_FRAGMENT_TAG) as SpotlightFragment
-        val receivedInternalProfileId = spotlightFragment
-          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val spotlightFragment =
+          activity.supportFragmentManager
+            .findFragmentByTag(SpotlightManager.SPOTLIGHT_FRAGMENT_TAG) as SpotlightFragment
+        val receivedInternalProfileId =
+          spotlightFragment
+            .arguments
+            ?.extractCurrentUserProfileId()
+            ?.internalId ?: -1
 
         assertThat(receivedInternalProfileId).isEqualTo(0)
       }
@@ -392,8 +407,8 @@ class SpotlightFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -404,9 +419,13 @@ class SpotlightFragmentTest {
     fun inject(spotlightFragmentTest: SpotlightFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSpotlightFragmentTest_TestApplicationComponent.builder()
+      DaggerSpotlightFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -415,9 +434,12 @@ class SpotlightFragmentTest {
       component.inject(spotlightFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

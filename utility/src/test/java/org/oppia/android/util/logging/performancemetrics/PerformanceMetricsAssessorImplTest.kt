@@ -71,31 +71,40 @@ private const val TEST_CURRENT_TIME = 1665790700L
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(
   application = PerformanceMetricsAssessorImplTest.TestApplication::class,
-  shadows = [OppiaShadowActivityManager::class, OppiaShadowTrafficStats::class]
+  shadows = [OppiaShadowActivityManager::class, OppiaShadowTrafficStats::class],
 )
 class PerformanceMetricsAssessorImplTest {
-
   @Parameter var totalMemory: Long = Long.MIN_VALUE
+
   @Parameter var secondCpuValue: Long = 1200L
+
   @Parameter var secondAppTimeValue: Long = 1665790700L
+
   @Parameter var secondNumberOfOnlineCoresValue: Int = 2
+
   @Parameter var firstCpuValue: Long = 1000L
+
   @Parameter var firstAppTimeValue: Long = 1665790650L
+
   @Parameter var firstNumberOfOnlineCoresValue: Int = 6
+
   @Parameter var relativeCpuUsage: Double = Double.MIN_VALUE
 
   @Inject
   lateinit var performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
 
   private val shadowActivityManager by lazy {
     shadowOf(
-      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+      context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager,
     ) as OppiaShadowActivityManager
   }
 
@@ -110,9 +119,11 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_createFilesWithContent_getTotalStorageUsed_retsCorrectStorageUsage() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_MEGABYTE))
-    File.createTempFile(TEST_FILE_NAME, null, context.cacheDir)
+    File
+      .createTempFile(TEST_FILE_NAME, null, context.cacheDir)
       .writeBytes(ByteArray(ONE_MEGABYTE))
 
     assertThat(performanceMetricsAssessorImpl.getUsedStorage()).isEqualTo(ONE_MEGABYTE * 2)
@@ -135,7 +146,8 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_writeBytesLowerThanLowTierHigherBound_retsLowStorageUsageTier() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_KILOBYTE))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.LOW_STORAGE)
@@ -143,7 +155,8 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_writeBytesEqualToLowTierHigherBound_retsLowStorageUsageTier() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(ONE_MEGABYTE))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.LOW_STORAGE)
@@ -151,7 +164,8 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_writeBytesGreaterThanMediumTierLowerBound_retsMediumStorageUsageTier() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(TWO_AND_HALF_MEGABYTES.toInt()))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.MEDIUM_STORAGE)
@@ -159,7 +173,8 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_writeBytesEqualToMedTierHigherBound_retsMediumStorageUsageTier() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(THREE_MEGABYTES.toInt()))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.MEDIUM_STORAGE)
@@ -167,7 +182,8 @@ class PerformanceMetricsAssessorImplTest {
 
   @Test
   fun testAssessor_writeBytesGreaterThanHighTierLowerBound_retsHighStorageTier() {
-    context.openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
+    context
+      .openFileOutput(TEST_APP_PATH, Context.MODE_PRIVATE)
       .write(ByteArray(TWO_MEGABYTES.toInt() * 2))
     assertThat(performanceMetricsAssessorImpl.getDeviceStorageTier())
       .isEqualTo(OppiaMetricLog.StorageTier.HIGH_STORAGE)
@@ -194,7 +210,7 @@ class PerformanceMetricsAssessorImplTest {
         this.nativePss = 2
         this.dalvikPss = 1
         this.otherPss = 4
-      }
+      },
     )
 
     assertThat(performanceMetricsAssessorImpl.getTotalPssUsed()).isEqualTo(7)
@@ -204,15 +220,16 @@ class PerformanceMetricsAssessorImplTest {
   fun testAssessor_removeCurrentApp_installTestApp_returnsCorrectApkSize() {
     val shadowPackageManager = shadowOf(context.packageManager)
     File(TEST_APP_PATH).writeBytes(ByteArray(ONE_MEGABYTE))
-    val applicationInfo = context.applicationInfo.apply {
-      this.sourceDir = TEST_APP_PATH
-    }
+    val applicationInfo =
+      context.applicationInfo.apply {
+        this.sourceDir = TEST_APP_PATH
+      }
     shadowPackageManager.removePackage(context.packageName)
     shadowPackageManager.installPackage(
       PackageInfo().apply {
         this.packageName = context.packageName
         this.applicationInfo = applicationInfo
-      }
+      },
     )
     val apkSize = performanceMetricsAssessorImpl.getApkSize()
     assertThat(apkSize).isEqualTo(ONE_MEGABYTE)
@@ -227,7 +244,7 @@ class PerformanceMetricsAssessorImplTest {
     "secondAppTimeValue=1665790700",
     "firstNumberOfOnlineCoresValue=6",
     "secondNumberOfOnlineCoresValue=2",
-    "relativeCpuUsage=0.00"
+    "relativeCpuUsage=0.00",
   )
   @Iteration(
     "nonZeroDoubleValueTillTwoDecimalPoints",
@@ -237,7 +254,7 @@ class PerformanceMetricsAssessorImplTest {
     "secondAppTimeValue=1665790700",
     "firstNumberOfOnlineCoresValue=6",
     "secondNumberOfOnlineCoresValue=2",
-    "relativeCpuUsage=0.50"
+    "relativeCpuUsage=0.50",
   )
   @Iteration(
     "nonZeroDoubleValueTillSevenDecimalPoints",
@@ -247,7 +264,7 @@ class PerformanceMetricsAssessorImplTest {
     "secondAppTimeValue=1869790700",
     "firstNumberOfOnlineCoresValue=6",
     "secondNumberOfOnlineCoresValue=8",
-    "relativeCpuUsage=0.0000077"
+    "relativeCpuUsage=0.0000077",
   )
   @Iteration(
     "nonZeroDoubleValueTillElevenDecimalPoints",
@@ -257,19 +274,21 @@ class PerformanceMetricsAssessorImplTest {
     "secondAppTimeValue=186933790700",
     "firstNumberOfOnlineCoresValue=6",
     "secondNumberOfOnlineCoresValue=3",
-    "relativeCpuUsage=0.00000000239"
+    "relativeCpuUsage=0.00000000239",
   )
   fun testAssessor_setFirstAndSecondSnapshot_returnsCorrectRelativeCpuUsage() {
-    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      firstAppTimeValue,
-      firstCpuValue,
-      firstNumberOfOnlineCoresValue
-    )
-    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      secondAppTimeValue,
-      secondCpuValue,
-      secondNumberOfOnlineCoresValue
-    )
+    val firstSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        firstAppTimeValue,
+        firstCpuValue,
+        firstNumberOfOnlineCoresValue,
+      )
+    val secondSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        secondAppTimeValue,
+        secondCpuValue,
+        secondNumberOfOnlineCoresValue,
+      )
     val returnedRelativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
     assertThat(returnedRelativeCpuUsage).isWithin(1e-5).of(relativeCpuUsage)
@@ -279,24 +298,26 @@ class PerformanceMetricsAssessorImplTest {
   @Iteration(
     "zeroDeltaOnlineCores",
     "firstNumberOfOnlineCoresValue=6",
-    "secondNumberOfOnlineCoresValue=0"
+    "secondNumberOfOnlineCoresValue=0",
   )
   @Iteration(
     "negativeOnlineCores",
     "firstNumberOfOnlineCoresValue=-1",
-    "secondNumberOfOnlineCoresValue=6"
+    "secondNumberOfOnlineCoresValue=6",
   )
   fun testAssessor_inputInvalidOnlineCoresValues_calculateCpuUsage_returnsNull() {
-    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      firstAppTimeValue,
-      firstCpuValue,
-      firstNumberOfOnlineCoresValue
-    )
-    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      secondAppTimeValue,
-      secondCpuValue,
-      secondNumberOfOnlineCoresValue
-    )
+    val firstSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        firstAppTimeValue,
+        firstCpuValue,
+        firstNumberOfOnlineCoresValue,
+      )
+    val secondSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        secondAppTimeValue,
+        secondCpuValue,
+        secondNumberOfOnlineCoresValue,
+      )
 
     val relativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
@@ -309,16 +330,18 @@ class PerformanceMetricsAssessorImplTest {
   @Iteration("negativeCpuValue", "firstCpuValue=1000", "secondCpuValue=-900")
   @Iteration("outOfBoundsCpuValue", "firstCpuValue=1000", "secondCpuValue=9223372036854775807")
   fun testAssessor_inputInvalidCpuTimeValues_calculateCpuUsage_returnsNull() {
-    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      firstAppTimeValue,
-      firstCpuValue,
-      firstNumberOfOnlineCoresValue
-    )
-    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      secondAppTimeValue,
-      secondCpuValue,
-      secondNumberOfOnlineCoresValue
-    )
+    val firstSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        firstAppTimeValue,
+        firstCpuValue,
+        firstNumberOfOnlineCoresValue,
+      )
+    val secondSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        secondAppTimeValue,
+        secondCpuValue,
+        secondNumberOfOnlineCoresValue,
+      )
 
     val relativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
@@ -330,29 +353,31 @@ class PerformanceMetricsAssessorImplTest {
   @Iteration(
     "negativeDeltaAppTimeValue",
     "firstAppTimeValue=1665790650",
-    "secondAppTimeValue=1665790050"
+    "secondAppTimeValue=1665790050",
   )
   @Iteration(
     "negativeAppTimeValue",
     "firstAppTimeValue=1665790650",
-    "secondAppTimeValue=-1665790050"
+    "secondAppTimeValue=-1665790050",
   )
   @Iteration(
     "zeroDeltaAppTimeValue",
     "firstAppTimeValue=1665790650",
-    "secondAppTimeValue=1665790650"
+    "secondAppTimeValue=1665790650",
   )
   fun testAssessor_inputInvalidAppTimeValues_calculateCpuUsage_returnsNull() {
-    val firstSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      firstAppTimeValue,
-      firstCpuValue,
-      firstNumberOfOnlineCoresValue
-    )
-    val secondSnapshot = PerformanceMetricsAssessor.CpuSnapshot(
-      secondAppTimeValue,
-      secondCpuValue,
-      secondNumberOfOnlineCoresValue
-    )
+    val firstSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        firstAppTimeValue,
+        firstCpuValue,
+        firstNumberOfOnlineCoresValue,
+      )
+    val secondSnapshot =
+      PerformanceMetricsAssessor.CpuSnapshot(
+        secondAppTimeValue,
+        secondCpuValue,
+        secondNumberOfOnlineCoresValue,
+      )
 
     val relativeCpuUsage =
       performanceMetricsAssessorImpl.getRelativeCpuUsage(firstSnapshot, secondSnapshot)
@@ -401,7 +426,7 @@ class PerformanceMetricsAssessorImplTest {
   @Iteration("memoryInRange", "totalMemory=5221225472")
   @Iteration(
     "memoryEqualToMaxValue",
-    "totalMemory=9223372036854775807"
+    "totalMemory=9223372036854775807",
   )
   fun testAssessor_setTotalMemoryForHighMemoryRange_retsCorrectHighMemoryTier() {
     val memoryInfo = ActivityManager.MemoryInfo()
@@ -419,7 +444,6 @@ class PerformanceMetricsAssessorImplTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-
     @Provides
     @Singleton
     fun providesContext(application: Application): Context = application
@@ -442,9 +466,8 @@ class PerformanceMetricsAssessorImplTest {
   @Module
   class TestPerformanceMetricsAssessorModule {
     @Provides
-    fun providePerformanceMetricsAssessor(
-      performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl
-    ): PerformanceMetricsAssessor = performanceMetricsAssessorImpl
+    fun providePerformanceMetricsAssessor(performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl): PerformanceMetricsAssessor =
+      performanceMetricsAssessorImpl
 
     @Provides
     @LowStorageTierUpperBound
@@ -471,23 +494,27 @@ class PerformanceMetricsAssessorImplTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, SyncStatusModule::class,
-      TestPerformanceMetricsAssessorModule::class
-    ]
+      TestPerformanceMetricsAssessorModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(performanceMetricsUtilsTest: PerformanceMetricsAssessorImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsAssessorImplTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsAssessorImplTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

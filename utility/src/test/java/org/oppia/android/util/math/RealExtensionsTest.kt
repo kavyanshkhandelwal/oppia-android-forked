@@ -32,36 +32,54 @@ class RealExtensionsTest {
   private companion object {
     private const val PI = 3.1415
 
-    private val ZERO_FRACTION = Fraction.newBuilder().apply {
-      numerator = 0
-      denominator = 1
-    }.build()
+    private val ZERO_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 0
+          denominator = 1
+        }.build()
 
-    private val ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
-    }.build()
+    private val ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 2
+        }.build()
 
-    private val ONE_FOURTH_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 4
-    }.build()
+    private val ONE_FOURTH_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 4
+        }.build()
 
-    private val ONE_AND_ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
-      wholeNumber = 1
-    }.build()
+    private val ONE_AND_ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 2
+          wholeNumber = 1
+        }.build()
 
-    private val THREE_FRACTION = Fraction.newBuilder().apply {
-      wholeNumber = 3
-      denominator = 1
-    }.build()
+    private val THREE_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 3
+          denominator = 1
+        }.build()
 
-    private val THREE_ONES_FRACTION = Fraction.newBuilder().apply {
-      numerator = 3
-      denominator = 1
-    }.build()
+    private val THREE_ONES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 3
+          denominator = 1
+        }.build()
 
     private val ZERO_REAL = createIntegerReal(0)
     private val TWO_REAL = createIntegerReal(2)
@@ -82,13 +100,21 @@ class RealExtensionsTest {
   private val fractionParser by lazy { FractionParser() }
 
   @Parameter var lhsInt: Int = Int.MIN_VALUE
+
   @Parameter lateinit var lhsFrac: String
+
   @Parameter var lhsDouble: Double = Double.MIN_VALUE
+
   @Parameter var rhsInt: Int = Int.MIN_VALUE
+
   @Parameter lateinit var rhsFrac: String
+
   @Parameter var rhsDouble: Double = Double.MIN_VALUE
+
   @Parameter var expInt: Int = Int.MIN_VALUE
+
   @Parameter lateinit var expFrac: String
+
   @Parameter var expDouble: Double = Double.MIN_VALUE
 
   @Test
@@ -251,7 +277,7 @@ class RealExtensionsTest {
   fun testIsNegative_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { defaultReal.isNegative() }
+    val exception = assertThrows<IllegalStateException> { defaultReal.isNegative() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -308,9 +334,10 @@ class RealExtensionsTest {
     val first = Real.getDefaultInstance()
     val second = TWO_REAL
 
-    val exception = assertThrows<IllegalStateException>() {
-      first.isApproximatelyEqualTo(second)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        first.isApproximatelyEqualTo(second)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -320,9 +347,10 @@ class RealExtensionsTest {
     val first = TWO_REAL
     val second = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() {
-      first.isApproximatelyEqualTo(second)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        first.isApproximatelyEqualTo(second)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -529,14 +557,14 @@ class RealExtensionsTest {
   @Iteration(
     "2.000000000000001==1.999999999999999",
     "lhsDouble=2.000000000000001",
-    "rhsDouble=1.999999999999999"
+    "rhsDouble=1.999999999999999",
   )
   @Iteration("3.14==3.14", "lhsDouble=3.14", "rhsDouble=3.14")
   @Iteration("-2.0==-2.0", "lhsDouble=-2.0", "rhsDouble=-2.0")
   @Iteration(
     "-2.000000000000001==-1.999999999999999",
     "lhsDouble=-2.000000000000001",
-    "rhsDouble=-1.999999999999999"
+    "rhsDouble=-1.999999999999999",
   )
   @Iteration("-3.14==-3.14", "lhsDouble=-3.14", "rhsDouble=-3.14")
   fun testIsApproximatelyEqualTo_oneIsDouble_otherIsSimilarDouble_returnsTrue() {
@@ -634,7 +662,7 @@ class RealExtensionsTest {
   fun testIsApproximatelyZero_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { defaultReal.isApproximatelyZero() }
+    val exception = assertThrows<IllegalStateException> { defaultReal.isApproximatelyZero() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -707,7 +735,7 @@ class RealExtensionsTest {
   fun testToDouble_default_returnsZeroDouble() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { defaultReal.toDouble() }
+    val exception = assertThrows<IllegalStateException> { defaultReal.toDouble() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -758,7 +786,7 @@ class RealExtensionsTest {
   fun testAsWholeNumber_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { defaultReal.asWholeNumber() }
+    val exception = assertThrows<IllegalStateException> { defaultReal.asWholeNumber() }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -900,7 +928,7 @@ class RealExtensionsTest {
   fun testUnaryMinus_default_throwsException() {
     val defaultReal = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { -defaultReal }
+    val exception = assertThrows<IllegalStateException> { -defaultReal }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -923,14 +951,22 @@ class RealExtensionsTest {
   fun testUnaryMinus_twoOneHalf_returnsNegativeOneHalf() {
     val result = -ONE_HALF_REAL
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(-0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(-0.5)
   }
 
   @Test
   fun testUnaryMinus_negativeOneHalf_returnsOneHalf() {
     val result = -NEGATIVE_ONE_HALF_REAL
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(0.5)
   }
 
   @Test
@@ -965,14 +1001,22 @@ class RealExtensionsTest {
   fun testAbs_oneHalf_returnsOneHalf() {
     val result = abs(ONE_HALF_REAL)
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(0.5)
   }
 
   @Test
   fun testAbs_negativeOneHalf_returnsOneHalf() {
     val result = abs(NEGATIVE_ONE_HALF_REAL)
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(0.5)
   }
 
   @Test
@@ -1683,7 +1727,7 @@ class RealExtensionsTest {
     val lhsReal = createIntegerReal(2)
     val rhsReal = createIntegerReal(0)
 
-    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
+    assertThrows<ArithmeticException> { lhsReal / rhsReal }
   }
 
   @Test
@@ -1691,7 +1735,7 @@ class RealExtensionsTest {
     val lhsReal = createIntegerReal(2)
     val rhsReal = createRationalReal(ZERO_FRACTION)
 
-    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
+    assertThrows<ArithmeticException> { lhsReal / rhsReal }
   }
 
   @Test
@@ -1709,7 +1753,7 @@ class RealExtensionsTest {
     val lhsReal = ONE_AND_ONE_HALF_REAL
     val rhsReal = createIntegerReal(0)
 
-    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
+    assertThrows<ArithmeticException> { lhsReal / rhsReal }
   }
 
   @Test
@@ -1717,7 +1761,7 @@ class RealExtensionsTest {
     val lhsReal = ONE_AND_ONE_HALF_REAL
     val rhsReal = createRationalReal(ZERO_FRACTION)
 
-    assertThrows<ArithmeticException>() { lhsReal / rhsReal }
+    assertThrows<ArithmeticException> { lhsReal / rhsReal }
   }
 
   @Test
@@ -2059,13 +2103,13 @@ class RealExtensionsTest {
     assertThat(result).isIrrationalThat().isNaN()
   }
 
-  /* End operator tests. */
+  // End operator tests.
 
   @Test
   fun testSqrt_defaultReal_throwsException() {
     val real = Real.getDefaultInstance()
 
-    val exception = assertThrows<IllegalStateException>() { sqrt(real) }
+    val exception = assertThrows<IllegalStateException> { sqrt(real) }
 
     assertThat(exception).hasMessageThat().contains("Invalid real")
   }
@@ -2398,19 +2442,33 @@ class RealExtensionsTest {
     createRationalReal(fractionParser.parseFractionFromString(rawFractionExpression))
 }
 
-private fun createIntegerReal(value: Int) = Real.newBuilder().apply {
-  integer = value
-}.build()
+private fun createIntegerReal(value: Int) =
+  Real
+    .newBuilder()
+    .apply {
+      integer = value
+    }.build()
 
-private fun createRationalReal(value: Fraction) = Real.newBuilder().apply {
-  rational = value
-}.build()
+private fun createRationalReal(value: Fraction) =
+  Real
+    .newBuilder()
+    .apply {
+      rational = value
+    }.build()
 
-private fun createIrrationalReal(value: Double) = Real.newBuilder().apply {
-  irrational = value
-}.build()
+private fun createIrrationalReal(value: Double) =
+  Real
+    .newBuilder()
+    .apply {
+      irrational = value
+    }.build()
 
-private fun createFraction(numerator: Int, denominator: Int) = Fraction.newBuilder().apply {
-  this.numerator = numerator
-  this.denominator = denominator
-}.build()
+private fun createFraction(
+  numerator: Int,
+  denominator: Int,
+) = Fraction
+  .newBuilder()
+  .apply {
+    this.numerator = numerator
+    this.denominator = denominator
+  }.build()

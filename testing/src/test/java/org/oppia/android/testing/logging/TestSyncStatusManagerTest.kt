@@ -56,9 +56,13 @@ import javax.inject.Singleton
 @Config(application = TestSyncStatusManagerTest.TestApplication::class)
 class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   @Inject override lateinit var impl: TestSyncStatusManager
+
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
+
   @Inject override lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
+
   @Inject override lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject BackgroundDispatcher]
   override lateinit var backgroundDispatcher: CoroutineDispatcher
@@ -892,9 +896,7 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -903,23 +905,27 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class
-    ]
+      LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: TestSyncStatusManagerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTestSyncStatusManagerTest_TestApplicationComponent.builder()
+      DaggerTestSyncStatusManagerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -935,16 +941,24 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
     private const val EVENT_LOG_TIMESTAMP_0 = 1556061720000
     private const val EVENT_LOG_TIMESTAMP_1 = 1556094120000
 
-    private val OPEN_HOME_CONTEXT = EventLog.Context.newBuilder().apply { openHome = true }.build()
+    private val OPEN_HOME_CONTEXT =
+      EventLog.Context
+        .newBuilder()
+        .apply { openHome = true }
+        .build()
     private val EVENT_LOG_0 = createEventLog(EVENT_LOG_TIMESTAMP_0, OPEN_HOME_CONTEXT)
     private val EVENT_LOG_1 = createEventLog(EVENT_LOG_TIMESTAMP_1, OPEN_HOME_CONTEXT)
 
-    private fun createEventLog(timestamp: Long, context: EventLog.Context): EventLog {
-      return EventLog.newBuilder().apply {
-        this.timestamp = timestamp
-        this.priority = EventLog.Priority.ESSENTIAL
-        this.context = context
-      }.build()
-    }
+    private fun createEventLog(
+      timestamp: Long,
+      context: EventLog.Context,
+    ): EventLog =
+      EventLog
+        .newBuilder()
+        .apply {
+          this.timestamp = timestamp
+          this.priority = EventLog.Priority.ESSENTIAL
+          this.context = context
+        }.build()
   }
 }

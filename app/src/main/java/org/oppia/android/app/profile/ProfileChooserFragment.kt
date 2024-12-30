@@ -10,7 +10,9 @@ import org.oppia.android.app.fragment.InjectableFragment
 import javax.inject.Inject
 
 /** Fragment that allows user to select a profile or create new ones. */
-class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener {
+class ProfileChooserFragment :
+  InjectableFragment(),
+  RouteToAdminPinListener {
   @Inject
   lateinit var profileChooserFragmentPresenter: ProfileChooserFragmentPresenter
 
@@ -22,10 +24,8 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return profileChooserFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = profileChooserFragmentPresenter.handleCreateView(inflater, container)
 
   override fun routeToAdminPin() {
     profileChooserFragmentPresenter.routeToAdminPin()

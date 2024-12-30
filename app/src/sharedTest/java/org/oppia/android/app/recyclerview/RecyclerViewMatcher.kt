@@ -23,20 +23,23 @@ import org.hamcrest.TypeSafeMatcher
 
 // Reference Link: https://github.com/dannyroa/espresso-samples/blob/master/RecyclerView/app/src/androidTest/java/com/dannyroa/espresso_samples/recyclerview/RecyclerViewMatcher.java
 class RecyclerViewMatcher {
-
   companion object {
-
     /**
      * This function returns a Matcher for an item inside RecyclerView from a specified position.
      */
-    fun atPosition(recyclerViewId: Int, position: Int): Matcher<View> {
-      return atPositionOnView(recyclerViewId, position, -1)
-    }
+    fun atPosition(
+      recyclerViewId: Int,
+      position: Int,
+    ): Matcher<View> = atPositionOnView(recyclerViewId, position, -1)
 
     /**
      * This function returns a Matcher for a specific view within the item inside RecyclerView from a specified position.
      */
-    fun atPositionOnView(recyclerViewId: Int, position: Int, targetViewId: Int): Matcher<View> {
+    fun atPositionOnView(
+      recyclerViewId: Int,
+      position: Int,
+      targetViewId: Int,
+    ): Matcher<View> {
       return object : TypeSafeMatcher<View>() {
         var resources: Resources? = null
         var childView: View? = null
@@ -44,11 +47,12 @@ class RecyclerViewMatcher {
         override fun describeTo(description: Description) {
           var idDescription = recyclerViewId.toString()
           if (this.resources != null) {
-            idDescription = try {
-              this.resources!!.getResourceName(recyclerViewId)
-            } catch (var4: Resources.NotFoundException) {
-              "$recyclerViewId (resource name not found)"
-            }
+            idDescription =
+              try {
+                this.resources!!.getResourceName(recyclerViewId)
+              } catch (var4: Resources.NotFoundException) {
+                "$recyclerViewId (resource name not found)"
+              }
           }
           description.appendText("with id: $idDescription")
         }
@@ -59,7 +63,9 @@ class RecyclerViewMatcher {
             val recyclerView = view.rootView.findViewById<View>(recyclerViewId) as? RecyclerView
             if (recyclerView?.id == recyclerViewId) {
               childView = recyclerView.findViewHolderForAdapterPosition(position)?.itemView
-            } else return false
+            } else {
+              return false
+            }
           }
           return if (targetViewId == -1) {
             view === childView
@@ -71,18 +77,15 @@ class RecyclerViewMatcher {
     }
 
     /** Returns item count ViewAssertion for a recycler view. */
-    fun hasItemCount(count: Int): ViewAssertion {
-      return RecyclerViewItemCountAssertion(count)
-    }
+    fun hasItemCount(count: Int): ViewAssertion = RecyclerViewItemCountAssertion(count)
 
     /** Returns span count ViewAssertion for a recycler view that use GridLayoutManager. */
-    fun hasGridItemCount(spanCount: Int, position: Int): ViewAssertion {
-      return RecyclerViewGridItemCountAssertion(spanCount, position)
-    }
+    fun hasGridItemCount(
+      spanCount: Int,
+      position: Int,
+    ): ViewAssertion = RecyclerViewGridItemCountAssertion(spanCount, position)
 
-    fun hasGridColumnCount(expectedColumnCount: Int): ViewAssertion {
-      return GridLayoutManagerColumnCountAssertion(expectedColumnCount)
-    }
+    fun hasGridColumnCount(expectedColumnCount: Int): ViewAssertion = GridLayoutManagerColumnCountAssertion(expectedColumnCount)
 
     /**
      * Verifies if an item at a specified position in a RecyclerView with the given ID contains a target view that is displayed.
@@ -94,14 +97,14 @@ class RecyclerViewMatcher {
     fun verifyItemDisplayedOnListItem(
       recyclerViewId: Int,
       itemPosition: Int,
-      targetView: Int
+      targetView: Int,
     ) {
       onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
-          targetViewId = targetView
-        )
+          targetViewId = targetView,
+        ),
       ).check(matches(isDisplayed()))
     }
 
@@ -115,14 +118,14 @@ class RecyclerViewMatcher {
     fun verifyItemDisplayedOnListItemDoesNotExist(
       recyclerViewId: Int,
       itemPosition: Int,
-      targetView: Int
+      targetView: Int,
     ) {
       onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
-          targetViewId = targetView
-        )
+          targetViewId = targetView,
+        ),
       ).check(doesNotExist())
     }
 
@@ -144,8 +147,8 @@ class RecyclerViewMatcher {
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
-          targetViewId = targetViewId
-        )
+          targetViewId = targetViewId,
+        ),
       ).check(matches(withText(stringIdToMatch)))
     }
 
@@ -159,14 +162,14 @@ class RecyclerViewMatcher {
     fun verifyTextViewOnListItemAtPositionDoesNotExist(
       recyclerViewId: Int,
       itemPosition: Int,
-      targetViewId: Int
+      targetViewId: Int,
     ) {
       onView(
         atPositionOnView(
           recyclerViewId = recyclerViewId,
           position = itemPosition,
-          targetViewId = targetViewId
-        )
+          targetViewId = targetViewId,
+        ),
       ).check(doesNotExist())
     }
 
@@ -175,7 +178,9 @@ class RecyclerViewMatcher {
      *
      * @param textInDialogId The resource ID of the text to verify in the dialog.
      */
-    fun verifyTextInDialog(@StringRes textInDialogId: Int) {
+    fun verifyTextInDialog(
+      @StringRes textInDialogId: Int,
+    ) {
       onView(withText(textInDialogId))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -187,14 +192,22 @@ class RecyclerViewMatcher {
      * @param position The position to scroll to within the RecyclerView.
      * @param recyclerViewId The resource ID of the RecyclerView to perform scrolling on.
      */
-    fun scrollToPosition(position: Int, recyclerViewId: Int) {
+    fun scrollToPosition(
+      position: Int,
+      recyclerViewId: Int,
+    ) {
       onView(withId(recyclerViewId))
         .perform(scrollToPosition<RecyclerView.ViewHolder>(position))
     }
   }
 
-  private class RecyclerViewItemCountAssertion(private val count: Int) : ViewAssertion {
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+  private class RecyclerViewItemCountAssertion(
+    private val count: Int,
+  ) : ViewAssertion {
+    override fun check(
+      view: View,
+      noViewFoundException: NoMatchingViewException?,
+    ) {
       if (noViewFoundException != null) {
         throw noViewFoundException
       }
@@ -207,9 +220,12 @@ class RecyclerViewMatcher {
   /** Custom class to check number of spans occupied by an item at a given position. */
   private class RecyclerViewGridItemCountAssertion(
     private val count: Int,
-    private val position: Int
+    private val position: Int,
   ) : ViewAssertion {
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+    override fun check(
+      view: View,
+      noViewFoundException: NoMatchingViewException?,
+    ) {
       if (noViewFoundException != null) {
         throw noViewFoundException
       }
@@ -220,14 +236,19 @@ class RecyclerViewMatcher {
     }
   }
 
-  private class GridLayoutManagerColumnCountAssertion(expectedColumnCount: Int) : ViewAssertion {
+  private class GridLayoutManagerColumnCountAssertion(
+    expectedColumnCount: Int,
+  ) : ViewAssertion {
     private var expectedColumnCount: Int = 0
 
     init {
       this.expectedColumnCount = expectedColumnCount
     }
 
-    override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+    override fun check(
+      view: View,
+      noViewFoundException: NoMatchingViewException?,
+    ) {
       if (noViewFoundException != null) {
         throw noViewFoundException
       }

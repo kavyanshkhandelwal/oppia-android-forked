@@ -38,27 +38,25 @@ class ShadowBidiFormatter {
      */
     @Implementation
     @JvmStatic
-    fun getInstance(locale: Locale): BidiFormatter {
-      return trackedFormatters.getOrPut(locale) {
+    fun getInstance(locale: Locale): BidiFormatter =
+      trackedFormatters.getOrPut(locale) {
         Shadow.directlyOn(
-          BidiFormatter::class.java, "getInstance",
-          ReflectionHelpers.ClassParameter.from(Locale::class.java, locale)
+          BidiFormatter::class.java,
+          "getInstance",
+          ReflectionHelpers.ClassParameter.from(Locale::class.java, locale),
         )
       }
-    }
 
     /**
      * Returns the [ShadowBidiFormatter] corresponding to the specified [Locale] (as created with
      * [getInstance]) or null if none exists.
      */
-    fun lookUpFormatter(locale: Locale): ShadowBidiFormatter? =
-      trackedFormatters[locale]?.let { shadowOf(it) }
+    fun lookUpFormatter(locale: Locale): ShadowBidiFormatter? = trackedFormatters[locale]?.let { shadowOf(it) }
 
     /**
      * Returns all [ShadowBidiFormatter]s created via [getInstance] since the last call to [reset].
      */
-    fun lookUpFormatters(): Map<Locale, ShadowBidiFormatter> =
-      trackedFormatters.mapValues { (_, formatter) -> shadowOf(formatter) }
+    fun lookUpFormatters(): Map<Locale, ShadowBidiFormatter> = trackedFormatters.mapValues { (_, formatter) -> shadowOf(formatter) }
 
     /**
      * Resets all tracked formatters up to now. This should always be called in a tear-down method
@@ -73,8 +71,7 @@ class ShadowBidiFormatter {
       trackedFormatters.clear()
     }
 
-    private fun shadowOf(bidiFormatter: BidiFormatter): ShadowBidiFormatter =
-      Shadow.extract(bidiFormatter) as ShadowBidiFormatter
+    private fun shadowOf(bidiFormatter: BidiFormatter): ShadowBidiFormatter = Shadow.extract(bidiFormatter) as ShadowBidiFormatter
   }
 
   @RealObject
@@ -92,8 +89,10 @@ class ShadowBidiFormatter {
   fun unicodeWrap(str: CharSequence): CharSequence {
     wrappedSequences += str
     return Shadow.directlyOn(
-      realObject, BidiFormatter::class.java, "unicodeWrap",
-      ReflectionHelpers.ClassParameter.from(CharSequence::class.java, str)
+      realObject,
+      BidiFormatter::class.java,
+      "unicodeWrap",
+      ReflectionHelpers.ClassParameter.from(CharSequence::class.java, str),
     )
   }
 

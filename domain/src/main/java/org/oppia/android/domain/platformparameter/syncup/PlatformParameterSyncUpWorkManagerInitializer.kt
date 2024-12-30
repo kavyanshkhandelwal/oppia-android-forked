@@ -19,67 +19,63 @@ import javax.inject.Inject
  * Enqueues unique periodic work requests for fetching and caching latest platform parameter values
  * from the remote service on application creation.
  */
-class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
-  @SyncUpWorkerTimePeriodHours private val workRequestRepeatInterval: PlatformParameterValue<Int>
-) : AnalyticsStartupListener {
+class PlatformParameterSyncUpWorkManagerInitializer
+  @Inject
+  constructor(
+    @SyncUpWorkerTimePeriodHours private val workRequestRepeatInterval: PlatformParameterValue<Int>,
+  ) : AnalyticsStartupListener {
+    private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
 
-  private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
+    /** [Constraints] for platform parameter sync up work request. */
+    private val platformParameterSyncUpWorkerConstraints =
+      Constraints
+        .Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiresBatteryNotLow(true)
+        .build()
 
-  /** [Constraints] for platform parameter sync up work request. */
-  private val platformParameterSyncUpWorkerConstraints = Constraints.Builder()
-    .setRequiredNetworkType(NetworkType.CONNECTED)
-    .setRequiresBatteryNotLow(true)
-    .build()
+    /** [Data] for platform parameter sync up work request. */
+    private val workerTypeForSyncingPlatformParameters: Data =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-  /** [Data] for platform parameter sync up work request. */
-  private val workerTypeForSyncingPlatformParameters: Data = Data.Builder()
-    .putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    )
-    .build()
+    /** [PeriodicWorkRequest] for platform parameter sync up worker. */
+    private val workRequestForSyncingPlatformParameters =
+      PeriodicWorkRequest
+        .Builder(
+          PlatformParameterSyncUpWorker::class.java,
+          workRequestRepeatInterval.value.toLong(),
+          TimeUnit.HOURS,
+        ).addTag(PlatformParameterSyncUpWorker.TAG)
+        .setInputData(workerTypeForSyncingPlatformParameters)
+        .setConstraints(platformParameterSyncUpWorkerConstraints)
+        .build()
 
-  /** [PeriodicWorkRequest] for platform parameter sync up worker. */
-  private val workRequestForSyncingPlatformParameters =
-    PeriodicWorkRequest.Builder(
-      PlatformParameterSyncUpWorker::class.java,
-      workRequestRepeatInterval.value.toLong(),
-      TimeUnit.HOURS
-    )
-      .addTag(PlatformParameterSyncUpWorker.TAG)
-      .setInputData(workerTypeForSyncingPlatformParameters)
-      .setConstraints(platformParameterSyncUpWorkerConstraints)
-      .build()
+    override fun onCreate(workManager: WorkManager) {
+      workManager.enqueueUniquePeriodicWork(
+        OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME,
+        ExistingPeriodicWorkPolicy.KEEP,
+        workRequestForSyncingPlatformParameters,
+      )
+    }
 
-  override fun onCreate(workManager: WorkManager) {
-    workManager.enqueueUniquePeriodicWork(
-      OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME,
-      ExistingPeriodicWorkPolicy.KEEP,
-      workRequestForSyncingPlatformParameters
-    )
+    /** Returns the [UUID] of the work request that is enqueued to sync-up platform parameters. */
+    @VisibleForTesting
+    fun getSyncUpWorkRequestId(): UUID = workRequestForSyncingPlatformParameters.id
+
+    /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
+    @VisibleForTesting
+    fun getSyncUpWorkRequestData(): Data = workerTypeForSyncingPlatformParameters
+
+    /** Returns the time interval of periodic work request enqueued to sync-up platform parameters. */
+    @SuppressLint("RestrictedApi") // getWorkSpec is restricted; suppression is fine for tests.
+    @VisibleForTesting
+    fun getSyncUpWorkerTimePeriod(): Long = workRequestForSyncingPlatformParameters.workSpec.intervalDuration
+
+    /** Returns the Worker [Constraints] set for the platform parameter sync-up work requests. */
+    fun getSyncUpWorkerConstraints(): Constraints = platformParameterSyncUpWorkerConstraints
   }
-
-  /** Returns the [UUID] of the work request that is enqueued to sync-up platform parameters. */
-  @VisibleForTesting
-  fun getSyncUpWorkRequestId(): UUID {
-    return workRequestForSyncingPlatformParameters.id
-  }
-
-  /** Returns the [Data] that goes into the work request enqueued to sync-up platform parameters. */
-  @VisibleForTesting
-  fun getSyncUpWorkRequestData(): Data {
-    return workerTypeForSyncingPlatformParameters
-  }
-
-  /** Returns the time interval of periodic work request enqueued to sync-up platform parameters. */
-  @SuppressLint("RestrictedApi") // getWorkSpec is restricted; suppression is fine for tests.
-  @VisibleForTesting
-  fun getSyncUpWorkerTimePeriod(): Long {
-    return workRequestForSyncingPlatformParameters.workSpec.intervalDuration
-  }
-
-  /** Returns the Worker [Constraints] set for the platform parameter sync-up work requests. */
-  fun getSyncUpWorkerConstraints(): Constraints {
-    return platformParameterSyncUpWorkerConstraints
-  }
-}

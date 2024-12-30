@@ -7,11 +7,12 @@ import javax.inject.Inject
 
 /** The ViewModel for [CreateProfileFragment]. */
 @FragmentScope
-class CreateProfileViewModel @Inject constructor() : ObservableViewModel() {
+class CreateProfileViewModel
+  @Inject
+  constructor() : ObservableViewModel() {
+    /** [ObservableField] that tracks whether creating a profile has triggered an error condition. */
+    val hasErrorMessage = ObservableField(false)
 
-  /** [ObservableField] that tracks whether creating a profile has triggered an error condition. */
-  val hasErrorMessage = ObservableField(false)
-
-  /** [ObservableField] that tracks the error message to be displayed to the user. */
-  val errorMessage = ObservableField("")
-}
+    /** [ObservableField] that tracks the error message to be displayed to the user. */
+    val errorMessage = ObservableField("")
+  }

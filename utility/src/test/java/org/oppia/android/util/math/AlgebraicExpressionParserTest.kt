@@ -944,30 +944,35 @@ class AlgebraicExpressionParserTest {
   private companion object {
     private fun parseAlgebraicExpressionWithoutOptionalErrors(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathExpression {
-      return parseAlgebraicExpressionInternal(
-        expression, ErrorCheckingMode.REQUIRED_ONLY, allowedVariables
+      allowedVariables: List<String> = listOf("x", "y", "z"),
+    ): MathExpression =
+      parseAlgebraicExpressionInternal(
+        expression,
+        ErrorCheckingMode.REQUIRED_ONLY,
+        allowedVariables,
       )
-    }
 
     private fun parseAlgebraicExpressionWithAllErrors(
       expression: String,
-      allowedVariables: List<String> = listOf("x", "y", "z")
-    ): MathExpression {
-      return parseAlgebraicExpressionInternal(
-        expression, ErrorCheckingMode.ALL_ERRORS, allowedVariables
+      allowedVariables: List<String> = listOf("x", "y", "z"),
+    ): MathExpression =
+      parseAlgebraicExpressionInternal(
+        expression,
+        ErrorCheckingMode.ALL_ERRORS,
+        allowedVariables,
       )
-    }
 
     private fun parseAlgebraicExpressionInternal(
       expression: String,
       errorCheckingMode: ErrorCheckingMode,
-      allowedVariables: List<String>
+      allowedVariables: List<String>,
     ): MathExpression {
-      val result = MathExpressionParser.parseAlgebraicExpression(
-        expression, allowedVariables, errorCheckingMode
-      )
+      val result =
+        MathExpressionParser.parseAlgebraicExpression(
+          expression,
+          allowedVariables,
+          errorCheckingMode,
+        )
       assertThat(result).isInstanceOf(MathParsingResult.Success::class.java)
       return (result as MathParsingResult.Success<MathExpression>).result
     }

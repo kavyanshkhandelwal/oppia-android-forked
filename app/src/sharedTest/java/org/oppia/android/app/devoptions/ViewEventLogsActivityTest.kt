@@ -100,7 +100,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ViewEventLogsActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ViewEventLogsActivityTest {
   @get:Rule
@@ -113,11 +113,14 @@ class ViewEventLogsActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    ViewEventLogsActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      ViewEventLogsActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @Before
   fun setUp() {
@@ -160,8 +163,7 @@ class ViewEventLogsActivityTest {
     }
   }
 
-  private fun createViewEventLogsActivityIntent(): Intent =
-    ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
+  private fun createViewEventLogsActivityIntent(): Intent = ViewEventLogsActivity.createViewEventLogsActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -194,8 +196,8 @@ class ViewEventLogsActivityTest {
       TestingBuildFlavorModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
       ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -206,9 +208,13 @@ class ViewEventLogsActivityTest {
     fun inject(viewEventLogsActivityTest: ViewEventLogsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerViewEventLogsActivityTest_TestApplicationComponent.builder()
+      DaggerViewEventLogsActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -222,9 +228,12 @@ class ViewEventLogsActivityTest {
       component.inject(viewEventLogsActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

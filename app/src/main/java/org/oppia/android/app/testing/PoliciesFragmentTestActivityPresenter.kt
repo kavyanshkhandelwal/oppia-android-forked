@@ -10,27 +10,28 @@ import javax.inject.Inject
 
 /** The presenter for [PoliciesFragmentTestActivity]. */
 @ActivityScope
-class PoliciesFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
+class PoliciesFragmentTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    /** Handles onCreate() method of the [PoliciesFragmentTestActivity]. */
+    fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
+      activity.setContentView(R.layout.policies_fragment_test_activity)
+      val policiesFragmentArguments =
+        PoliciesFragmentArguments
+          .newBuilder()
+          .setPolicyPage(policiesActivityParams.policyPage)
+          .build()
+      val policiesFragment: PoliciesFragment =
+        PoliciesFragment.newInstance(policiesFragmentArguments)
 
-  /** Handles onCreate() method of the [PoliciesFragmentTestActivity]. */
-  fun handleOnCreate(policiesActivityParams: PoliciesActivityParams) {
-    activity.setContentView(R.layout.policies_fragment_test_activity)
-    val policiesFragmentArguments =
-      PoliciesFragmentArguments
-        .newBuilder()
-        .setPolicyPage(policiesActivityParams.policyPage)
-        .build()
-    val policiesFragment: PoliciesFragment =
-      PoliciesFragment.newInstance(policiesFragmentArguments)
-
-    activity
-      .supportFragmentManager
-      .beginTransaction()
-      .add(
-        R.id.policies_fragment_placeholder,
-        policiesFragment
-      ).commitNow()
+      activity
+        .supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.policies_fragment_placeholder,
+          policiesFragment,
+        ).commitNow()
+    }
   }
-}

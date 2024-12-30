@@ -12,13 +12,15 @@ import com.google.android.material.button.MaterialButton
  * Note that this view is currently only used for learner analytics admin page buttons to copy
  * various IDs to the device clipboard, and is intended only for that purpose.
  */
-class CopyIdMaterialButtonView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : MaterialButton(context, attrs, defStyleAttr) {
-  init {
-    // Ensure the tint mode is properly set (since it can't be set in XML).
-    backgroundTintMode = PorterDuff.Mode.DARKEN
+class CopyIdMaterialButtonView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+  ) : MaterialButton(context, attrs, defStyleAttr) {
+    init {
+      // Ensure the tint mode is properly set (since it can't be set in XML).
+      backgroundTintMode = PorterDuff.Mode.DARKEN
+    }
   }
-}

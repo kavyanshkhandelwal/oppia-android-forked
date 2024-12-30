@@ -123,11 +123,11 @@ class RecentlyPlayedSpanTest {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
     storyProgressTestHelper.markInProgressSavedRatiosStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = true
+      timestampOlderThanOneWeek = true,
     )
   }
 
@@ -145,15 +145,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_port_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 2,
-          position = 0
-        )
+          position = 0,
+        ),
       )
     }
   }
@@ -166,8 +166,8 @@ class RecentlyPlayedSpanTest {
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
-          position = 0
-        )
+          position = 0,
+        ),
       )
     }
   }
@@ -177,15 +177,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_landscape_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
-          position = 0
-        )
+          position = 0,
+        ),
       )
     }
   }
@@ -195,15 +195,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem0_landscape_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 4,
-          position = 0
-        )
+          position = 0,
+        ),
       )
     }
   }
@@ -213,15 +213,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_port_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 2,
-          position = 2
-        )
+          position = 2,
+        ),
       )
     }
   }
@@ -231,15 +231,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
-          position = 2
-        )
+          position = 2,
+        ),
       )
     }
   }
@@ -249,15 +249,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_landscape_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 3,
-          position = 2
-        )
+          position = 2,
+        ),
       )
     }
   }
@@ -267,15 +267,15 @@ class RecentlyPlayedSpanTest {
   fun testRecentlyPlayedSpanTest_checkSpanForItem2_landscape_tablet_hasCorrectSpanCount() {
     launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).check(
         hasGridItemCount(
           spanCount = 4,
-          position = 2
-        )
+          position = 2,
+        ),
       )
     }
   }
@@ -288,7 +288,7 @@ class RecentlyPlayedSpanTest {
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
       context,
-      recentlyPlayedActivityParams
+      recentlyPlayedActivityParams,
     )
   }
 
@@ -321,8 +321,8 @@ class RecentlyPlayedSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -333,9 +333,13 @@ class RecentlyPlayedSpanTest {
     fun inject(recentlyPlayedSpanTest: RecentlyPlayedSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRecentlyPlayedSpanTest_TestApplicationComponent.builder()
+      DaggerRecentlyPlayedSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -344,9 +348,12 @@ class RecentlyPlayedSpanTest {
       component.inject(recentlyPlayedSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

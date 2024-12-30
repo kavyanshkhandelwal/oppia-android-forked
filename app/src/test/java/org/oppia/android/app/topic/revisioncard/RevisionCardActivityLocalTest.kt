@@ -91,12 +91,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = RevisionCardActivityLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class RevisionCardActivityLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val profileId = ProfileId.newBuilder().setInternalId(1).build()
@@ -109,21 +110,22 @@ class RevisionCardActivityLocalTest {
 
   @Test
   fun testRevisionCard_onLaunch_logsEvent() {
-    ActivityScenario.launch<RevisionCardActivity>(
-      RevisionCardActivity.createRevisionCardActivityIntent(
-        ApplicationProvider.getApplicationContext(),
-        profileId,
-        FRACTIONS_TOPIC_ID,
-        SUBTOPIC_TOPIC_ID,
-        fractionsSubtopicListSize
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    ActivityScenario
+      .launch<RevisionCardActivity>(
+        RevisionCardActivity.createRevisionCardActivityIntent(
+          ApplicationProvider.getApplicationContext(),
+          profileId,
+          FRACTIONS_TOPIC_ID,
+          SUBTOPIC_TOPIC_ID,
+          fractionsSubtopicListSize,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
-      assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
-    }
+        assertThat(event.context.activityContextCase).isEqualTo(OPEN_REVISION_CARD)
+        assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
+      }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -158,8 +160,8 @@ class RevisionCardActivityLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -170,9 +172,13 @@ class RevisionCardActivityLocalTest {
     fun inject(revisionCardActivityLocalTest: RevisionCardActivityLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRevisionCardActivityLocalTest_TestApplicationComponent.builder()
+      DaggerRevisionCardActivityLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -181,9 +187,12 @@ class RevisionCardActivityLocalTest {
       component.inject(revisionCardActivityLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

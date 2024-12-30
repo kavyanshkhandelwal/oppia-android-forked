@@ -23,18 +23,17 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
-
   private val NON_NEGATIVE_VALUE_TEST_3 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 3
+      value = 3,
     )
   private val NON_NEGATIVE_VALUE_TEST_4 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 4
+      value = 4,
     )
   private val RATIO_VALUE_TEST_1_2_3 =
     InteractionObjectTestBuilder.createRatio(
-      listOf(1, 2, 3)
+      listOf(1, 2, 3),
     )
 
   @Inject
@@ -58,7 +57,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -72,7 +71,7 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
       hasNumberOfTermsEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -82,18 +81,19 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   fun testAnswer_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("y" to RATIO_VALUE_TEST_1_2_3)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasNumberOfTermsEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type NON_NEGATIVE_INT not RATIO_EXPRESSION"
+        "Expected input value to be of type NON_NEGATIVE_INT not RATIO_EXPRESSION",
       )
   }
 
@@ -101,13 +101,14 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   fun testAnswer_testRatio_missingInputY_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasNumberOfTermsEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasNumberOfTermsEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -117,7 +118,9 @@ class RatioInputHasNumberOfTermsEqualToClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerRatioInputHasNumberOfTermsEqualToClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

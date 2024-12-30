@@ -39,7 +39,7 @@ class ProfileProgressFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    ProfileProgressFragment: Bundle?
+    ProfileProgressFragment: Bundle?,
   ): View? {
     val args =
       checkNotNull(arguments) { "Expected arguments to be passed to ProfileProgressFragment" }

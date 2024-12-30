@@ -43,25 +43,30 @@ class CommandExecutorImplTest {
   fun testExecute_echo_invalidDirectory_throwsException() {
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
-    val exception = assertThrows<IllegalStateException>() {
-      commandExecutor.executeCommand(File("invaliddirectory"), "echo", "value")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        commandExecutor.executeCommand(File("invaliddirectory"), "echo", "value")
+      }
 
     assertThat(exception).hasMessageThat().contains("working directory to be an actual directory")
   }
 
   @Test
   fun testExecute_echo_largeOutput_insufficientTimeout_throwsException() {
-    val commandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 0L, processTimeoutUnit = TimeUnit.MILLISECONDS
-    )
+    val commandExecutor =
+      CommandExecutorImpl(
+        scriptBgDispatcher,
+        processTimeout = 0L,
+        processTimeoutUnit = TimeUnit.MILLISECONDS,
+      )
 
     // Produce a large output so that echo takes a bit longer to reduce the likelihood of this test
     // flaking on faster machines.
     val largeOutput = "a".repeat(100_000)
-    val exception = assertThrows<IllegalStateException>() {
-      commandExecutor.executeCommand(tempFolder.root, "echo", largeOutput)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        commandExecutor.executeCommand(tempFolder.root, "echo", largeOutput)
+      }
 
     // Verify that processes that take too long are killed & result in a failure.
     assertThat(exception).hasMessageThat().contains("Process did not finish within")
@@ -71,9 +76,10 @@ class CommandExecutorImplTest {
   fun testExecute_nonexistentCommand_throwsException() {
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
 
-    val exception = assertThrows<IOException>() {
-      commandExecutor.executeCommand(tempFolder.root, "commanddoesnotexist")
-    }
+    val exception =
+      assertThrows<IOException> {
+        commandExecutor.executeCommand(tempFolder.root, "commanddoesnotexist")
+      }
 
     assertThat(exception).hasMessageThat().contains("commanddoesnotexist")
   }
@@ -115,7 +121,10 @@ class CommandExecutorImplTest {
 
     val result =
       commandExecutor.executeCommand(
-        tempFolder.root, "rmdir", "filethatdoesnotexist", includeErrorOutput = false
+        tempFolder.root,
+        "rmdir",
+        "filethatdoesnotexist",
+        includeErrorOutput = false,
       )
 
     assertThat(result.exitCode).isNotEqualTo(0)

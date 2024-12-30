@@ -57,6 +57,7 @@ class PolicyPageTagHandlerTest {
   lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
@@ -67,12 +68,14 @@ class PolicyPageTagHandlerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     noTagHandlers = mapOf()
-    tagHandlersWithPolicyPageSupport = mapOf(
-      CUSTOM_POLICY_PAGE_TAG to PolicyPageTagHandler(
-        mockPolicyPageLinkClickListener,
-        consoleLogger
+    tagHandlersWithPolicyPageSupport =
+      mapOf(
+        CUSTOM_POLICY_PAGE_TAG to
+          PolicyPageTagHandler(
+            mockPolicyPageLinkClickListener,
+            consoleLogger,
+          ),
       )
-    )
     testView = TextView(context)
   }
 
@@ -84,7 +87,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "",
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -97,7 +100,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -110,7 +113,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -127,7 +130,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -144,7 +147,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -155,7 +158,8 @@ class PolicyPageTagHandlerTest {
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   private fun setUpTestApplicationComponent() {
-    DaggerPolicyPageTagHandlerTest_TestApplicationComponent.builder()
+    DaggerPolicyPageTagHandlerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -172,14 +176,15 @@ class PolicyPageTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
-    ]
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -190,5 +195,7 @@ class PolicyPageTagHandlerTest {
    * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
    * [CustomHtmlContentHandler.ImageRetriever].
    */
-  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
+  interface FakeImageRetriever :
+    Html.ImageGetter,
+    CustomHtmlContentHandler.ImageRetriever
 }

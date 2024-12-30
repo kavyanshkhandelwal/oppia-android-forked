@@ -15,9 +15,7 @@ class DeveloperOptionsFragment : InjectableFragment() {
   lateinit var developerOptionsFragmentPresenter: DeveloperOptionsFragmentPresenter
 
   companion object {
-    fun newInstance(): DeveloperOptionsFragment {
-      return DeveloperOptionsFragment()
-    }
+    fun newInstance(): DeveloperOptionsFragment = DeveloperOptionsFragment()
   }
 
   override fun onAttach(context: Context) {
@@ -28,8 +26,6 @@ class DeveloperOptionsFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return developerOptionsFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = developerOptionsFragmentPresenter.handleCreateView(inflater, container)
 }

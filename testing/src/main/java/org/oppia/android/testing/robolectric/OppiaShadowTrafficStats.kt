@@ -17,7 +17,6 @@ private var uidRxBytes = DEFAULT_BYTE_VALUE
  */
 @Implements(TrafficStats::class)
 class OppiaShadowTrafficStats {
-
   /** Sets [uidTxBytes] as equal to [bytes]. */
   fun setUidTxBytes(bytes: Long) {
     uidTxBytes = bytes

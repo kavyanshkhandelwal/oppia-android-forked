@@ -22,11 +22,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
-
   private val FRACTION_VALUE_TEST_1_OVER_2 =
-    InteractionObjectTestBuilder.createFraction(
-      isNegative = false, numerator = 1, denominator = 2
-    ).fraction
+    InteractionObjectTestBuilder
+      .createFraction(
+        isNegative = false,
+        numerator = 1,
+        denominator = 2,
+      ).fraction
   private val DOUBLE_VALUE_TEST_DIFFERENT_TYPE =
     InteractionObjectTestBuilder.createReal(value = 2.5)
   private val DOUBLE_VALUE_TEST =
@@ -42,40 +44,40 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_1,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_2
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_2,
+      ),
     )
   private val INPUT_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_2,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_1
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_1,
+      ),
     )
   private val DIFF_TEST_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForFraction(
       FRACTION_VALUE_TEST_1_OVER_2,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_3,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_2
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_2,
+      ),
     )
   private val ANSWER_TEST_REAL_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
       DOUBLE_VALUE_TEST,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_1,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_2
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_2,
+      ),
     )
   private val INPUT_TEST_REAL_NUMBER_WITH_UNITS =
     InteractionObjectTestBuilder.createNumberWithUnitsForReal(
       DOUBLE_VALUE_TEST,
       listOf(
         NUMBER_UNIT_TEST_STRING_TO_POWER_2,
-        NUMBER_UNIT_TEST_STRING_TO_POWER_1
-      )
+        NUMBER_UNIT_TEST_STRING_TO_POWER_1,
+      ),
     )
 
   @Inject
@@ -99,7 +101,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = DIFF_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -113,7 +115,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -127,7 +129,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -141,7 +143,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = DIFF_TEST_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -155,7 +157,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -169,7 +171,7 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
       unitIsEquivalentRuleClassifier.matches(
         answer = ANSWER_TEST_REAL_NUMBER_WITH_UNITS,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -179,18 +181,19 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   fun testInputNumberWithUnits_testAnswer_inputWithIncorrectType_verifyThrowsException() {
     val inputs = mapOf("f" to INPUT_TEST_NUMBER_WITH_UNITS)
 
-    val exception = assertThrows<IllegalStateException>() {
-      unitIsEquivalentRuleClassifier.matches(
-        answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        unitIsEquivalentRuleClassifier.matches(
+          answer = DOUBLE_VALUE_TEST_DIFFERENT_TYPE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected answer to be of type NUMBER_WITH_UNITS not REAL"
+        "Expected answer to be of type NUMBER_WITH_UNITS not REAL",
       )
   }
 
@@ -198,23 +201,25 @@ class NumberWithUnitsIsEquivalentToRuleClassifierProviderTest {
   fun testInputNumberWithUnits_testAnswerNumberWithUnits_withXMapping_verifyThrowsException() {
     val inputs = mapOf("x" to INPUT_TEST_NUMBER_WITH_UNITS)
 
-    val exception = assertThrows<IllegalStateException>() {
-      unitIsEquivalentRuleClassifier.matches(
-        answer = ANSWER_TEST_NUMBER_WITH_UNITS,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        unitIsEquivalentRuleClassifier.matches(
+          answer = ANSWER_TEST_NUMBER_WITH_UNITS,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected classifier inputs to contain parameter with name 'f' but had: [x]"
+        "Expected classifier inputs to contain parameter with name 'f' but had: [x]",
       )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNumberWithUnitsIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerNumberWithUnitsIsEquivalentToRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)

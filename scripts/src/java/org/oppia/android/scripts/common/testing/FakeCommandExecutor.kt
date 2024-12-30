@@ -25,7 +25,7 @@ class FakeCommandExecutor : CommandExecutor {
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean
+    includeErrorOutput: Boolean,
   ): CommandResult {
     val handler = handlers[command] ?: DefaultCommandHandler
     val argList = arguments.toList()
@@ -34,33 +34,38 @@ class FakeCommandExecutor : CommandExecutor {
         exitCode = handler.handleCommand(command, argList, logger.outputStream, logger.errorStream),
         output = logger.outputLines,
         errorOutput = logger.errorLines,
-        command = listOf(command) + argList
+        command = listOf(command) + argList,
       )
     }
   }
 
   /** Registers a new [CommandHandler] for the specified [command]. */
-  fun registerHandler(command: String, handler: CommandHandler) {
+  fun registerHandler(
+    command: String,
+    handler: CommandHandler,
+  ) {
     handlers[command] = handler
   }
 
   /** Registers a new [CommandHandler] for the specified [command]. */
   fun registerHandler(
     command: String,
-    handle: (String, List<String>, PrintStream, PrintStream) -> Int
+    handle: (String, List<String>, PrintStream, PrintStream) -> Int,
   ) {
-    val handler = object : CommandHandler {
-      override fun handleCommand(
-        command: String,
-        args: List<String>,
-        outputStream: PrintStream,
-        errorStream: PrintStream
-      ): Int = handle(command, args, outputStream, errorStream)
-    }
+    val handler =
+      object : CommandHandler {
+        override fun handleCommand(
+          command: String,
+          args: List<String>,
+          outputStream: PrintStream,
+          errorStream: PrintStream,
+        ): Int = handle(command, args, outputStream, errorStream)
+      }
     registerHandler(command, handler)
   }
 
   // TODO(#4122): Convert this to a fun interface & remove the second registerHandler method above.
+
   /** Handles commands that come to a [FakeCommandExecutor] via [executeCommand]. */
   interface CommandHandler {
     /**
@@ -76,7 +81,7 @@ class FakeCommandExecutor : CommandExecutor {
       command: String,
       args: List<String>,
       outputStream: PrintStream,
-      errorStream: PrintStream
+      errorStream: PrintStream,
     ): Int
   }
 
@@ -145,8 +150,7 @@ class FakeCommandExecutor : CommandExecutor {
        * Returns a new [OutputLogger] that either tracks standard and error output, or only standard
        * output (ignoring error output) depending on the provided [ignoreErrorOutput] parameter.
        */
-      fun createLogger(ignoreErrorOutput: Boolean): OutputLogger =
-        if (ignoreErrorOutput) DropErrorsLogger() else SplitLogger()
+      fun createLogger(ignoreErrorOutput: Boolean): OutputLogger = if (ignoreErrorOutput) DropErrorsLogger() else SplitLogger()
     }
   }
 
@@ -156,7 +160,7 @@ class FakeCommandExecutor : CommandExecutor {
         command: String,
         args: List<String>,
         outputStream: PrintStream,
-        errorStream: PrintStream
+        errorStream: PrintStream,
       ): Int = throw IOException("Command doesn't exist.")
     }
   }

@@ -114,7 +114,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -123,7 +123,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
     assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
@@ -140,7 +141,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -149,7 +150,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
     assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(SESSION_LENGTH_1)
@@ -166,7 +168,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -187,11 +189,12 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
     assertThat(aggregateTime.topicLearningTimeMs).isEqualTo(
-      SESSION_LENGTH_1 + SESSION_LENGTH_2
+      SESSION_LENGTH_1 + SESSION_LENGTH_2,
     )
   }
 
@@ -206,7 +209,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
     assertThat(aggregateTime.lastUpdatedTimeMs).isEqualTo(0L)
@@ -223,7 +227,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -235,7 +239,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
 
@@ -246,9 +251,10 @@ class ExplorationActiveTimeControllerTest {
   fun testStopTimer_beforeStarting_isFailure() {
     setUpTestApplicationComponent()
 
-    val exception = assertThrows<IllegalStateException>() {
-      stopExploration()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        stopExploration()
+      }
     assertThat(exception)
       .hasMessageThat()
       .contains("Session isn't initialized yet.")
@@ -265,7 +271,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
 
@@ -283,7 +290,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
 
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
@@ -292,7 +299,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
@@ -309,7 +317,8 @@ class ExplorationActiveTimeControllerTest {
       testComponent.getExplorationActiveTimeController().onAppInForeground()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
-      testComponent.getExplorationActiveTimeController()
+      testComponent
+        .getExplorationActiveTimeController()
         .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
@@ -330,7 +339,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
 
@@ -338,7 +347,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
@@ -356,7 +366,8 @@ class ExplorationActiveTimeControllerTest {
       testComponent.getExplorationActiveTimeController().onAppInForeground()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
-      testComponent.getExplorationActiveTimeController()
+      testComponent
+        .getExplorationActiveTimeController()
         .onExplorationStarted(firstTestProfile, TEST_TOPIC_ID_0)
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
@@ -376,7 +387,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
 
@@ -384,7 +395,8 @@ class ExplorationActiveTimeControllerTest {
 
     val retrieveAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val aggregateTime = monitorFactory.waitForNextSuccessfulResult(retrieveAggregateTimeProvider)
@@ -404,7 +416,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
     stopExploration()
@@ -414,19 +426,21 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_1,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
     stopExploration()
 
     val retrieveTopic0AggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val retrieveTopic1AggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_1
+        firstTestProfile,
+        TEST_TOPIC_ID_1,
       )
 
     val topic0AggregateTime =
@@ -449,7 +463,7 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      firstTestProfile
+      firstTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_1)
     stopExploration()
@@ -459,19 +473,21 @@ class ExplorationActiveTimeControllerTest {
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
       TEST_EXPLORATION_ID_2,
-      secondTestProfile
+      secondTestProfile,
     )
     testCoroutineDispatchers.advanceTimeBy(SESSION_LENGTH_2)
     stopExploration()
 
     val retrieveFirstTestProfileAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        firstTestProfile, TEST_TOPIC_ID_0
+        firstTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val retrieveSecondTestProfileAggregateTimeProvider =
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
-        secondTestProfile, TEST_TOPIC_ID_0
+        secondTestProfile,
+        TEST_TOPIC_ID_0,
       )
 
     val firstTestProfileAggregateTime =
@@ -488,11 +504,15 @@ class ExplorationActiveTimeControllerTest {
     topicId: String,
     storyId: String,
     explorationId: String,
-    profileId: ProfileId
+    profileId: ProfileId,
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -509,14 +529,16 @@ class ExplorationActiveTimeControllerTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
+      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build()
+        .build(),
     )
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -525,9 +547,7 @@ class ExplorationActiveTimeControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @EnableConsoleLog
     @Provides
@@ -543,8 +563,7 @@ class ExplorationActiveTimeControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -563,8 +582,8 @@ class ExplorationActiveTimeControllerTest {
       RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
       TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
-      LogStorageModule::class
-    ]
+      LogStorageModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -584,9 +603,12 @@ class ExplorationActiveTimeControllerTest {
     fun getOppiaClock(): FakeOppiaClock
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
+      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -22,8 +22,6 @@ class UpdatesTabFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return updatesTabFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = updatesTabFragmentPresenter.handleCreateView(inflater, container)
 }

@@ -12,9 +12,8 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
 ) : DeveloperOptionsItemViewModel() {
-
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
@@ -35,10 +34,10 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
    */
   fun onShowAllHintsAndSolutionClicked() {
     showAllHintsAndSolutionController.setShowAllHintsAndSolution(
-      !(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
+      !(showAllHintsAndSolutionController.getShowAllHintsAndSolution()),
     )
     isShowAllHintsAndSolutionEnabled.set(
-      showAllHintsAndSolutionController.getShowAllHintsAndSolution()
+      showAllHintsAndSolutionController.getShowAllHintsAndSolution(),
     )
   }
 }

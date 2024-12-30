@@ -27,7 +27,6 @@ class TextInputInteractionViewTestActivity :
   StateKeyboardButtonListener,
   InteractionAnswerErrorOrAvailabilityCheckReceiver,
   InteractionAnswerReceiver {
-
   private lateinit var binding: ActivityTextInputInteractionViewTestBinding
 
   @Inject
@@ -44,20 +43,23 @@ class TextInputInteractionViewTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    binding = DataBindingUtil.setContentView(
-      this, R.layout.activity_text_input_interaction_view_test
-    )
+    binding =
+      DataBindingUtil.setContentView(
+        this,
+        R.layout.activity_text_input_interaction_view_test,
+      )
 
     writtenTranslationContext = WrittenTranslationContext.getDefaultInstance()
     binding.textInputViewModel = textInputViewModel
-    binding.getPendingAnswerErrorOnSubmitClick = Runnable {
-      textInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
-    }
+    binding.getPendingAnswerErrorOnSubmitClick =
+      Runnable {
+        textInputViewModel.checkPendingAnswerError(AnswerErrorCategory.SUBMIT_TIME)
+      }
   }
 
   override fun onPendingAnswerErrorOrAvailabilityCheck(
     pendingAnswerError: String?,
-    inputAnswerAvailable: Boolean
+    inputAnswerAvailable: Boolean,
   ) {
   }
 
@@ -67,11 +69,10 @@ class TextInputInteractionViewTestActivity :
   override fun onEditorAction(actionCode: Int) {
   }
 
-  private inline fun <reified T : StateItemViewModel>
-  StateItemViewModel.InteractionItemFactory.create(
-    interaction: Interaction = Interaction.getDefaultInstance()
-  ): T {
-    return create(
+  private inline fun <reified T : StateItemViewModel> StateItemViewModel.InteractionItemFactory.create(
+    interaction: Interaction = Interaction.getDefaultInstance(),
+  ): T =
+    create(
       entityId = "fake_entity_id",
       hasConversationView = false,
       interaction = interaction,
@@ -80,7 +81,6 @@ class TextInputInteractionViewTestActivity :
       hasPreviousButton = false,
       isSplitView = false,
       writtenTranslationContext,
-      timeToStartNoticeAnimationMs = null
+      timeToStartNoticeAnimationMs = null,
     ) as T
-  }
 }

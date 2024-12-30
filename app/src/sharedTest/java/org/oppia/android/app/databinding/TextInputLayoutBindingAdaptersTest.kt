@@ -93,7 +93,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TextInputLayoutBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TextInputLayoutBindingAdaptersTest {
   @Inject
@@ -158,20 +158,20 @@ class TextInputLayoutBindingAdaptersTest {
         val testView: AutoCompleteTextView = activity.findViewById(R.id.test_autocomplete_view)
         TextInputLayoutBindingAdapters.setLanguageSelection(testView, OppiaLanguage.ARABIC, true)
         assertThat(testView.text.toString()).isEqualTo(
-          context.getString(R.string.arabic_localized_language_name)
+          context.getString(R.string.arabic_localized_language_name),
         )
       }
     }
   }
 
-  private fun launchActivity():
-    ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
-      val scenario = ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
-        TextInputLayoutBindingAdaptersTestActivity.createIntent(context)
+  private fun launchActivity(): ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
+    val scenario =
+      ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
+        TextInputLayoutBindingAdaptersTestActivity.createIntent(context),
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -206,8 +206,8 @@ class TextInputLayoutBindingAdaptersTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -218,9 +218,13 @@ class TextInputLayoutBindingAdaptersTest {
     fun inject(textInputLayoutBindingAdaptersTest: TextInputLayoutBindingAdaptersTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTextInputLayoutBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerTextInputLayoutBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -229,9 +233,12 @@ class TextInputLayoutBindingAdaptersTest {
       component.inject(textInputLayoutBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

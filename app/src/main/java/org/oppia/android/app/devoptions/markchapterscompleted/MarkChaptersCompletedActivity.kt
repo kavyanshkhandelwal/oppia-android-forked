@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 /** Activity for Mark Chapters Completed. */
 class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var markChaptersCompletedActivityPresenter: MarkChaptersCompletedActivityPresenter
 
@@ -29,10 +28,11 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val args = intent.getProtoExtra(
-      MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS,
-      MarkChaptersCompletedActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS,
+        MarkChaptersCompletedActivityParams.getDefaultInstance(),
+      )
 
     val internalProfileId = args?.internalProfileId ?: -1
     val showConfirmationNotice = args?.showConfirmationNotice ?: false
@@ -45,7 +45,7 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
         override fun handleOnBackPressed() {
           finish()
         }
-      }
+      },
     )
   }
 
@@ -65,15 +65,17 @@ class MarkChaptersCompletedActivity : InjectableAutoLocalizedAppCompatActivity()
     fun createMarkChaptersCompletedIntent(
       context: Context,
       internalProfileId: Int,
-      showConfirmationNotice: Boolean
+      showConfirmationNotice: Boolean,
     ): Intent {
       val intent = Intent(context, MarkChaptersCompletedActivity::class.java)
 
-      val args = MarkChaptersCompletedActivityParams.newBuilder().apply {
-        this.internalProfileId = internalProfileId
-        this.showConfirmationNotice = showConfirmationNotice
-      }
-        .build()
+      val args =
+        MarkChaptersCompletedActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = internalProfileId
+            this.showConfirmationNotice = showConfirmationNotice
+          }.build()
 
       intent.putProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS, args)
       intent.decorateWithScreenName(MARK_CHAPTERS_COMPLETED_ACTIVITY)

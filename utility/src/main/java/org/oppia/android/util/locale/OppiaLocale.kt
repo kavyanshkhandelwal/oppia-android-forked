@@ -102,7 +102,9 @@ sealed class OppiaLocale {
    * }
    * ```
    */
-  abstract class MachineLocale(override val localeContext: OppiaLocaleContext) : OppiaLocale() {
+  abstract class MachineLocale(
+    override val localeContext: OppiaLocaleContext,
+  ) : OppiaLocale() {
     /** Returns a formatted version of this string by interpolating the specified arguments. */
     abstract fun String.formatForMachines(vararg args: Any?): String
 
@@ -174,7 +176,7 @@ sealed class OppiaLocale {
        * Corresponds to an unknown time of day (implying that something might have gone wrong during
        * the time-of-day computation).
        */
-      UNKNOWN
+      UNKNOWN,
     }
 
     /** An abstract representation of a date. */
@@ -212,7 +214,9 @@ sealed class OppiaLocale {
    * to this locale. Only the active locale can affect the strings returned (see
    * [org.oppia.android.domain.locale.LocaleController.setAsDefault]).
    */
-  abstract class DisplayLocale(override val localeContext: OppiaLocaleContext) : OppiaLocale() {
+  abstract class DisplayLocale(
+    override val localeContext: OppiaLocaleContext,
+  ) : OppiaLocale() {
     /**
      * Returns a locally formatted representation of the long integer [value].
      *
@@ -308,7 +312,9 @@ sealed class OppiaLocale {
      * Returns the exact resource string from this [Resources] object per the specified string
      * resource ID.
      */
-    abstract fun Resources.getStringInLocale(@StringRes id: Int): String
+    abstract fun Resources.getStringInLocale(
+      @StringRes id: Int,
+    ): String
 
     /**
      * Returns a formatted string as described in [formatInLocaleWithWrapping] except for a string
@@ -320,7 +326,7 @@ sealed class OppiaLocale {
      */
     abstract fun Resources.getStringInLocaleWithWrapping(
       @StringRes id: Int,
-      vararg formatArgs: CharSequence
+      vararg formatArgs: CharSequence,
     ): String
 
     /**
@@ -330,17 +336,22 @@ sealed class OppiaLocale {
      */
     abstract fun Resources.getStringInLocaleWithoutWrapping(
       @StringRes id: Int,
-      vararg formatArgs: CharSequence
+      vararg formatArgs: CharSequence,
     ): String
 
     /** Returns the string array corresponding to the specified ID from this [Resources] object. */
-    abstract fun Resources.getStringArrayInLocale(@ArrayRes id: Int): List<String>
+    abstract fun Resources.getStringArrayInLocale(
+      @ArrayRes id: Int,
+    ): List<String>
 
     /**
      * Returns the quantity string specified ID and for the specified [quantity] from this
      * [Resources] object.
      */
-    abstract fun Resources.getQuantityStringInLocale(@PluralsRes id: Int, quantity: Int): String
+    abstract fun Resources.getQuantityStringInLocale(
+      @PluralsRes id: Int,
+      quantity: Int,
+    ): String
 
     /**
      * Returns a quantity string with formatting per [getQuantityStringInLocale] and
@@ -349,7 +360,7 @@ sealed class OppiaLocale {
     abstract fun Resources.getQuantityStringInLocaleWithWrapping(
       @PluralsRes id: Int,
       quantity: Int,
-      vararg formatArgs: CharSequence
+      vararg formatArgs: CharSequence,
     ): String
 
     /**
@@ -359,14 +370,17 @@ sealed class OppiaLocale {
     abstract fun Resources.getQuantityStringInLocaleWithoutWrapping(
       @PluralsRes id: Int,
       quantity: Int,
-      vararg formatArgs: CharSequence
+      vararg formatArgs: CharSequence,
     ): String
 
     /**
      * Returns a similar result as [getQuantityStringInLocale] except as a [CharSequence] instead of
      * as a [String]. See [Resources.getQuantityText] for more details.
      */
-    abstract fun Resources.getQuantityTextInLocale(@PluralsRes id: Int, quantity: Int): CharSequence
+    abstract fun Resources.getQuantityTextInLocale(
+      @PluralsRes id: Int,
+      quantity: Int,
+    ): CharSequence
   }
 
   /**
@@ -377,5 +391,7 @@ sealed class OppiaLocale {
    * an [OppiaLocaleContext] which provides details on how to make language-based decisions
    * corresponding to content localization.
    */
-  abstract class ContentLocale(override val localeContext: OppiaLocaleContext) : OppiaLocale()
+  abstract class ContentLocale(
+    override val localeContext: OppiaLocaleContext,
+  ) : OppiaLocale()
 }

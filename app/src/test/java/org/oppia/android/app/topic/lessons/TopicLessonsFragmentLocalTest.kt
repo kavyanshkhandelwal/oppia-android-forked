@@ -93,12 +93,13 @@ private const val TEST_STORY_ID = "GJ2rLXRKD5hw"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicLessonsFragmentLocalTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicLessonsFragmentLocalTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -111,7 +112,10 @@ class TopicLessonsFragmentLocalTest {
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(
-      profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID
+      profileId,
+      TEST_CLASSROOM_ID,
+      TEST_TOPIC_ID,
+      TEST_STORY_ID,
     ).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -127,7 +131,7 @@ class TopicLessonsFragmentLocalTest {
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicPlayStoryActivityIntent(
@@ -135,7 +139,7 @@ class TopicLessonsFragmentLocalTest {
         profileId,
         classroomId,
         topicId,
-        storyId
+        storyId,
       )
     return ActivityScenario.launch(intent)
   }
@@ -172,8 +176,8 @@ class TopicLessonsFragmentLocalTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -184,9 +188,13 @@ class TopicLessonsFragmentLocalTest {
     fun inject(topicLessonsFragmentLocalTest: TopicLessonsFragmentLocalTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicLessonsFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerTopicLessonsFragmentLocalTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -195,9 +203,12 @@ class TopicLessonsFragmentLocalTest {
       component.inject(testLessonsFragmentLocalTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -12,13 +12,27 @@ class TextInputEditTextHelper {
      * @param onTextChanged it is a lambda function
      */
     fun TextInputEditText.onTextChanged(onTextChanged: (String?) -> Unit) {
-      this.addTextChangedListener(object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun afterTextChanged(editable: Editable?) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-          onTextChanged.invoke(s.toString())
-        }
-      })
+      this.addTextChangedListener(
+        object : TextWatcher {
+          override fun beforeTextChanged(
+            s: CharSequence?,
+            start: Int,
+            count: Int,
+            after: Int,
+          ) {}
+
+          override fun afterTextChanged(editable: Editable?) {}
+
+          override fun onTextChanged(
+            s: CharSequence?,
+            start: Int,
+            before: Int,
+            count: Int,
+          ) {
+            onTextChanged.invoke(s.toString())
+          }
+        },
+      )
     }
   }
 }

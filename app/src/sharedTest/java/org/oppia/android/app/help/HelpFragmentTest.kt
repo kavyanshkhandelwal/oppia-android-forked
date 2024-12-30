@@ -151,13 +151,13 @@ class HelpFragmentTest {
 
   private fun createHelpActivityIntent(
     internalProfileId: Int,
-    isFromNavigationDrawer: Boolean
+    isFromNavigationDrawer: Boolean,
   ): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     return HelpActivity.createHelpActivityIntent(
       ApplicationProvider.getApplicationContext(),
       profileId,
-      isFromNavigationDrawer
+      isFromNavigationDrawer,
     )
   }
 
@@ -166,8 +166,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = false
-      )
+        isFromNavigationDrawer = false,
+      ),
     ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(matches(isCompletelyDisplayed()))
@@ -196,8 +196,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withContentDescription(R.string.abc_action_bar_up_description))
         .check(doesNotExist())
@@ -209,20 +209,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(
-        matches(withText(R.string.frequently_asked_questions_FAQ))
+        matches(withText(R.string.frequently_asked_questions_FAQ)),
       )
     }
   }
@@ -232,19 +232,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 0,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(matches(withText(R.string.frequently_asked_questions_FAQ)))
     }
   }
@@ -254,14 +254,14 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(hasComponent(FAQListActivity::class.java.name))
     }
@@ -272,20 +272,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 1,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(
-        matches(withText(R.string.third_party_dependency_list_activity_title))
+        matches(withText(R.string.third_party_dependency_list_activity_title)),
       )
     }
   }
@@ -295,8 +295,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(doesNotExist())
       onView(withId(R.id.help_multipane_options_title_textview)).check(doesNotExist())
@@ -309,11 +309,11 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE)),
       )
     }
   }
@@ -324,18 +324,18 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.faq_activity_title)
-        )
+          withText(R.string.faq_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -346,19 +346,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.faq_activity_title)
-        )
+          withText(R.string.faq_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          isCompletelyDisplayed()
-        )
+          isCompletelyDisplayed(),
+        ),
       )
     }
   }
@@ -369,8 +369,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
     }
@@ -382,8 +382,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
@@ -396,19 +396,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.faq_activity_title)
-        )
+          withText(R.string.faq_activity_title),
+        ),
       )
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
     }
@@ -420,20 +420,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.faq_activity_title)
-        )
+          withText(R.string.faq_activity_title),
+        ),
       )
       onView(withId(R.id.faq_fragment_recycler_view)).check(matches(isDisplayed()))
     }
@@ -445,27 +445,27 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -476,28 +476,28 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -508,33 +508,33 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_list_activity_title)
-        )
+          withText(R.string.license_list_activity_title),
+        ),
       )
       onView(withId(R.id.license_list_fragment_recycler_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -545,34 +545,34 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_list_activity_title)
-        )
+          withText(R.string.license_list_activity_title),
+        ),
       )
       onView(withId(R.id.license_list_fragment_recycler_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -583,34 +583,34 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
-          )
-        )
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList),
+          ),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -621,35 +621,35 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       val thirdPartyDependenciesList = retrieveThirdPartyDependenciesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList)
-          )
-        )
+            retrieveHelpOptionTextViewContentDescription(thirdPartyDependenciesList),
+          ),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -660,39 +660,39 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_name_0)
-        )
+          withText(R.string.license_name_0),
+        ),
       )
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -703,40 +703,40 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_name_0)
-        )
+          withText(R.string.license_name_0),
+        ),
       )
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -747,40 +747,40 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       val copyrightLicensesList = retrieveCopyrightLicensesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
-          )
-        )
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList),
+          ),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -791,41 +791,41 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       val copyrightLicensesList = retrieveCopyrightLicensesListString()
       onView(withId(R.id.help_multipane_options_back_button)).check(
         matches(
           withContentDescription(
-            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList)
-          )
-        )
+            retrieveHelpOptionTextViewContentDescription(copyrightLicensesList),
+          ),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
     }
   }
@@ -836,35 +836,35 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE)),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -875,36 +875,36 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE)),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -915,48 +915,48 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_list_activity_title)
-        )
+          withText(R.string.license_list_activity_title),
+        ),
       )
       onView(withId(R.id.license_list_fragment_recycler_view)).check(matches(isDisplayed()))
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE)),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -967,48 +967,48 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_list_activity_title)
-        )
+          withText(R.string.license_list_activity_title),
+        ),
       )
       onView(withId(R.id.license_list_fragment_recycler_view)).check(matches(isDisplayed()))
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.third_party_dependency_list_activity_title)
-        )
+          withText(R.string.third_party_dependency_list_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.GONE))
+        matches(withEffectiveVisibility(Visibility.GONE)),
       )
       onView(withId(R.id.third_party_dependency_list_fragment_recycler_view)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -1019,42 +1019,42 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_back_button)).perform(click())
       onView(
         atPosition(
           recyclerViewId = R.id.third_party_dependency_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.license_list_activity_title)
-        )
+          withText(R.string.license_list_activity_title),
+        ),
       )
       onView(withId(R.id.help_multipane_options_back_button)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
+        matches(withEffectiveVisibility(Visibility.VISIBLE)),
       )
       onView(withId(R.id.license_list_fragment_recycler_view)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -1064,19 +1064,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 1,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(matches(withText(R.string.third_party_dependency_list_activity_title)))
     }
   }
@@ -1086,14 +1086,14 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).perform(click())
       intended(hasComponent(ThirdPartyDependencyListActivity::class.java.name))
     }
@@ -1104,19 +1104,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 2,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(matches(withText(R.string.privacy_policy_title)))
     }
   }
@@ -1126,19 +1126,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 3,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(matches(withText(R.string.terms_of_service_title)))
     }
   }
@@ -1149,19 +1149,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 3,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.terms_of_service_title)
-        )
+          withText(R.string.terms_of_service_title),
+        ),
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -1173,20 +1173,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 3,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.terms_of_service_title)
-        )
+          withText(R.string.terms_of_service_title),
+        ),
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -1197,20 +1197,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 2,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(
-        matches(withText(R.string.privacy_policy_title))
+        matches(withText(R.string.privacy_policy_title)),
       )
     }
   }
@@ -1220,20 +1220,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(withId(R.id.help_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.help_fragment_recycler_view,
           position = 3,
-          targetViewId = R.id.help_item_text_view
-        )
+          targetViewId = R.id.help_item_text_view,
+        ),
       ).check(
-        matches(withText(R.string.terms_of_service_title))
+        matches(withText(R.string.terms_of_service_title)),
       )
     }
   }
@@ -1243,14 +1243,14 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).perform(click())
       val policiesArguments =
         PoliciesActivityParams
@@ -1262,8 +1262,8 @@ class HelpFragmentTest {
       hasExtras(
         hasEntry(
           equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
-          equalTo(policiesArguments)
-        )
+          equalTo(policiesArguments),
+        ),
       )
     }
   }
@@ -1273,14 +1273,14 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 3
-        )
+          position = 3,
+        ),
       ).perform(click())
       intended(hasComponent(PoliciesActivity::class.java.name))
       val policiesArguments =
@@ -1292,8 +1292,8 @@ class HelpFragmentTest {
       hasExtras(
         hasEntry(
           equalTo(PoliciesActivity.POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO),
-          equalTo(policiesArguments)
-        )
+          equalTo(policiesArguments),
+        ),
       )
     }
   }
@@ -1304,19 +1304,19 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).perform(click())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.privacy_policy_title)
-        )
+          withText(R.string.privacy_policy_title),
+        ),
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -1328,20 +1328,20 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       onView(
         atPosition(
           recyclerViewId = R.id.help_fragment_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.help_multipane_options_title_textview)).check(
         matches(
-          withText(R.string.privacy_policy_title)
-        )
+          withText(R.string.privacy_policy_title),
+        ),
       )
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
@@ -1352,8 +1352,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_fragment_placeholder))
@@ -1368,8 +1368,8 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.help_activity_drawer_layout)).perform(close())
@@ -1382,20 +1382,22 @@ class HelpFragmentTest {
     launch<HelpActivity>(
       createHelpActivityIntent(
         internalProfileId = 0,
-        isFromNavigationDrawer = true
-      )
+        isFromNavigationDrawer = true,
+      ),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment
+        var fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.help_fragment_placeholder) as HelpFragment
         val isMultipane =
           activity.findViewById<FrameLayout>(R.id.multipane_options_container) != null
 
-        val arguments = checkNotNull(fragment.arguments) {
-          "Expected arguments to be passed to HelpFragment"
-        }
+        val arguments =
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to HelpFragment"
+          }
         val args =
           arguments.getProto("HelpFragment.arguments", HelpFragmentArguments.getDefaultInstance())
         val receivedIsMultipane = args.isMultipane
@@ -1432,9 +1434,7 @@ class HelpFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun retrieveHelpOptionTextViewContentDescription(
-    previousFragmentDescription: String
-  ): String {
+  private fun retrieveHelpOptionTextViewContentDescription(previousFragmentDescription: String): String {
     val res = ApplicationProvider.getApplicationContext<TestApplication>().resources
     return res.getString(R.string.help_activity_back_arrow_description, previousFragmentDescription)
   }
@@ -1482,8 +1482,8 @@ class HelpFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1494,9 +1494,13 @@ class HelpFragmentTest {
     fun inject(helpFragmentTest: HelpFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerHelpFragmentTest_TestApplicationComponent.builder()
+      DaggerHelpFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1505,9 +1509,12 @@ class HelpFragmentTest {
       component.inject(helpFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

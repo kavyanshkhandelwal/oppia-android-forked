@@ -49,7 +49,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -66,7 +66,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // The ratio has value 3, but the value 2 was expected.
@@ -84,7 +84,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // A value was expected at index 2, but the ratio doesn't have that.
@@ -99,7 +99,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -113,7 +113,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // The ratio has value 3 at index 1, but the value 2 was expected.
@@ -128,7 +128,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -142,7 +142,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // The ratio has value 2 at index 2, but the value 3 was expected.
@@ -157,7 +157,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_3_2,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // A value was expected at index 3, but the ratio doesn't have that.
@@ -172,7 +172,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // A value was expected at index 0, but the ratio doesn't have that.
@@ -187,7 +187,7 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
       hasSpecificTermEqualToClassifierProvider.matches(
         answer = RATIO_VALUE_TEST_1_2_3,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     // A value was expected at index 4, but the ratio doesn't have that.
@@ -198,13 +198,14 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_indexInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE, "y" to NON_NEGATIVE_VALUE_TEST_3)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasSpecificTermEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasSpecificTermEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -215,13 +216,14 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_valueInputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4, "y" to STRING_VALUE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasSpecificTermEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasSpecificTermEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -232,13 +234,14 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_missingIndexInput_throwsException() {
     val inputs = mapOf("y" to NON_NEGATIVE_VALUE_TEST_3)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasSpecificTermEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasSpecificTermEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -249,13 +252,14 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   fun testAnswer_threeTerms_missingValueInput_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_4)
 
-    val exception = assertThrows<IllegalStateException>() {
-      hasSpecificTermEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasSpecificTermEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -264,13 +268,14 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_threeTerms_missingBothInputs_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      hasSpecificTermEqualToClassifierProvider.matches(
-        answer = RATIO_VALUE_TEST_1_2_3,
-        inputs = mapOf(),
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        hasSpecificTermEqualToClassifierProvider.matches(
+          answer = RATIO_VALUE_TEST_1_2_3,
+          inputs = mapOf(),
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -280,7 +285,9 @@ class RatioInputHasSpecificTermEqualToRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerRatioInputHasSpecificTermEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

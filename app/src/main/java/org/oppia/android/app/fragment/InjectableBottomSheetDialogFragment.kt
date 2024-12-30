@@ -29,6 +29,10 @@ abstract class InjectableBottomSheetDialogFragment :
 
   override fun createViewComponent(view: View): ViewComponent {
     val builderInjector = bottomSheetFragmentComponent as ViewComponentBuilderInjector
-    return builderInjector.getViewComponentBuilderProvider().get().setView(view).build()
+    return builderInjector
+      .getViewComponentBuilderProvider()
+      .get()
+      .setView(view)
+      .build()
   }
 }

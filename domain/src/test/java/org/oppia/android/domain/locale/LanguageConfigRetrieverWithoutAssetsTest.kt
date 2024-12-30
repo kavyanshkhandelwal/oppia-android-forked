@@ -23,6 +23,7 @@ import javax.inject.Singleton
 
 // TODO(#59): Use a build-time configuration instead of the runtime AssetRepository fake (i.e. by
 //  not including the config assets during build time).
+
 /**
  * Tests for [LanguageConfigRetriever]. Unlike [LanguageConfigRetrieverTest], this suite verifies
  * the retriever's behavior when there are no configuration files to include.
@@ -58,7 +59,8 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLanguageConfigRetrieverWithoutAssetsTest_TestApplicationComponent.builder()
+    DaggerLanguageConfigRetrieverWithoutAssetsTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -69,9 +71,7 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -79,8 +79,8 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetTestNoOpModule::class
-    ]
+      AssetTestNoOpModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

@@ -134,15 +134,15 @@ class StateFragmentAccessibilityTest {
         RecyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_move_down_item
-        )
+          targetViewId = R.id.drag_drop_move_down_item,
+        ),
       ).perform(click())
       onView(
         RecyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("I bought")))
     }
   }
@@ -155,15 +155,15 @@ class StateFragmentAccessibilityTest {
         RecyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 1,
-          targetViewId = R.id.drag_drop_move_up_item
-        )
+          targetViewId = R.id.drag_drop_move_up_item,
+        ),
       ).perform(click())
       onView(
         RecyclerViewMatcher.atPositionOnView(
           recyclerViewId = R.id.drag_drop_interaction_recycler_view,
           position = 0,
-          targetViewId = R.id.drag_drop_content_text_view
-        )
+          targetViewId = R.id.drag_drop_content_text_view,
+        ),
       ).check(matches(withText("a camera at the store")))
     }
   }
@@ -172,10 +172,8 @@ class StateFragmentAccessibilityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun launchForExploration(
-    explorationId: String
-  ): ActivityScenario<StateFragmentTestActivity> {
-    return ActivityScenario.launch(
+  private fun launchForExploration(explorationId: String): ActivityScenario<StateFragmentTestActivity> =
+    ActivityScenario.launch(
       StateFragmentTestActivity.createTestActivityIntent(
         context,
         internalProfileId,
@@ -183,10 +181,9 @@ class StateFragmentAccessibilityTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         explorationId,
-        shouldSavePartialProgress = false
-      )
+        shouldSavePartialProgress = false,
+      ),
     )
-  }
 
   private fun startPlayingExploration() {
     onView(withId(R.id.play_test_exploration_button)).perform(click())
@@ -222,8 +219,8 @@ class StateFragmentAccessibilityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -234,9 +231,13 @@ class StateFragmentAccessibilityTest {
     fun inject(stateFragmentAccessibilityTest: StateFragmentAccessibilityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStateFragmentAccessibilityTest_TestApplicationComponent.builder()
+      DaggerStateFragmentAccessibilityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -245,9 +246,12 @@ class StateFragmentAccessibilityTest {
       component.inject(stateFragmentAccessibilityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

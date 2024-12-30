@@ -8,13 +8,9 @@ import dagger.Provides
 class GcsResourceModule {
   @Provides
   @DefaultResourceBucketName
-  fun provideDefaultGcsResource(): String {
-    return "oppiaserver-resources"
-  }
+  fun provideDefaultGcsResource(): String = "oppiaserver-resources"
 
   @Provides
   @QuestionResourceBucketName
-  fun provideQuestionResourceBucketName(): String {
-    return "oppiatestserver-resources"
-  }
+  fun provideQuestionResourceBucketName(): String = "oppiatestserver-resources"
 }

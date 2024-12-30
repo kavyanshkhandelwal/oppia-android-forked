@@ -70,7 +70,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SpotlightStateControllerTest.TestApplication::class)
 class SpotlightStateControllerTest {
-
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
@@ -262,8 +261,8 @@ class SpotlightStateControllerTest {
     dataProviderTestMonitor.waitForNextSuccessfulResult(
       spotlightStateController.markSpotlightViewed(
         profileId1,
-        FIRST_CHAPTER
-      )
+        FIRST_CHAPTER,
+      ),
     )
 
     val spotlightStateProvider =
@@ -302,8 +301,8 @@ class SpotlightStateControllerTest {
     dataProviderTestMonitor.waitForNextSuccessfulResult(
       spotlightStateController.markSpotlightViewed(
         profileId0,
-        spotlightFeature
-      )
+        spotlightFeature,
+      ),
     )
   }
 
@@ -315,9 +314,7 @@ class SpotlightStateControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @EnableConsoleLog
     @Provides
@@ -333,8 +330,7 @@ class SpotlightStateControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   @Singleton
@@ -351,8 +347,8 @@ class SpotlightStateControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterSingletonModule::class
-    ]
+      SyncStatusModule::class, PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -366,9 +362,12 @@ class SpotlightStateControllerTest {
     fun inject(spotlightStateControllerTest: SpotlightStateControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSpotlightStateControllerTest_TestApplicationComponent.builder()
+      DaggerSpotlightStateControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

@@ -117,17 +117,23 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = MarkChaptersCompletedFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class MarkChaptersCompletedFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject lateinit var storyProgressController: StoryProgressController
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val internalProfileId = 0
@@ -157,27 +163,27 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Other Interesting Story",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 6,
         stringToMatch = "Matthew Goes to the Bakery",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 9,
         stringToMatch = "Ratios: Part 1",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 12,
         stringToMatch = "Ratios: Part 2",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
     }
   }
@@ -190,27 +196,27 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 0,
         stringToMatch = "First Story",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 4,
         stringToMatch = "Other Interesting Story",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 6,
         stringToMatch = "Matthew Goes to the Bakery",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 9,
         stringToMatch = "Ratios: Part 1",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 12,
         stringToMatch = "Ratios: Part 2",
-        targetViewId = R.id.mark_chapters_completed_story_name_text_view
+        targetViewId = R.id.mark_chapters_completed_story_name_text_view,
       )
     }
   }
@@ -222,52 +228,52 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Prototype Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Image Region Selection Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Math Expressions",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 5,
         stringToMatch = "Fifth Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 7,
         stringToMatch = "What is a Fraction?",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
         stringToMatch = "The Meaning of Equal Parts",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 10,
         stringToMatch = "What is a Ratio?",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 11,
         stringToMatch = "Order is important",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 13,
         stringToMatch = "Equivalent Ratios",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 14,
         stringToMatch = "Writing Ratios in Simplest Form",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
     }
   }
@@ -280,52 +286,52 @@ class MarkChaptersCompletedFragmentTest {
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 1,
         stringToMatch = "Prototype Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 2,
         stringToMatch = "Image Region Selection Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 3,
         stringToMatch = "Math Expressions",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 5,
         stringToMatch = "Fifth Exploration",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 7,
         stringToMatch = "What is a Fraction?",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 8,
         stringToMatch = "The Meaning of Equal Parts",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 10,
         stringToMatch = "What is a Ratio?",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 11,
         stringToMatch = "Order is important",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 13,
         stringToMatch = "Equivalent Ratios",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
       verifyItemTextOnRecyclerViewItemAtPosition(
         itemPosition = 14,
         stringToMatch = "Writing Ratios in Simplest Form",
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
       )
     }
   }
@@ -420,8 +426,9 @@ class MarkChaptersCompletedFragmentTest {
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_selectChaptersOfFirstStoryInOrder_configChange_chaptersAreChecked() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_selectChaptersOfFirstStoryInOrder_configChange_chaptersAreChecked() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -441,22 +448,23 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 1,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_land_firstStory_firstChapterUnchecked_secondChapterIsDisabled() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_land_firstStory_firstChapterUnchecked_secondChapterIsDisabled() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -465,22 +473,23 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 1,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isChecked())))
       scrollToPosition(position = 2)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_secondChapterIsDisabled() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_secondChapterIsDisabled() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -490,14 +499,15 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_configChange_secondChapterIsDisabled() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_firstStory_selectChaptersInOrder_unselectFirstChapter_configChange_secondChapterIsDisabled() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -508,8 +518,8 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 2,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(not(isEnabled())))
     }
   }
@@ -551,8 +561,9 @@ class MarkChaptersCompletedFragmentTest {
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_allCheckBoxIsNotChecked() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -570,8 +581,9 @@ class MarkChaptersCompletedFragmentTest {
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_configChange_allCheckBoxIsNotChecked() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_selectAllChapters_unselectOneChapter_configChange_allCheckBoxIsNotChecked() {
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -600,14 +612,15 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 7,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_isCheckedAndDisabled() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_isCheckedAndDisabled() {
     markFractionsFirstChapterCompleted()
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
@@ -617,8 +630,8 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 7,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(isChecked())).check(matches(not(isEnabled())))
     }
   }
@@ -633,14 +646,15 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 8,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(isEnabled()))
     }
   }
 
+  @Suppress("ktlint:standard:max-line-length")
   @Test
-  fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_nextChapterIsEnabled() { // ktlint-disable max-line-length
+  fun testMarkChaptersCompletedFragment_fractionsFirstChapterIsCompleted_configChange_nextChapterIsEnabled() {
     markFractionsFirstChapterCompleted()
     launchMarkChaptersCompletedFragmentTestActivity(internalProfileId).use {
       testCoroutineDispatchers.runCurrent()
@@ -650,8 +664,8 @@ class MarkChaptersCompletedFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.mark_chapters_completed_recycler_view,
           position = 8,
-          targetViewId = R.id.mark_chapters_completed_chapter_check_box
-        )
+          targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+        ),
       ).check(matches(isEnabled()))
     }
   }
@@ -705,7 +719,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_showConfirmationTrueInArgs_selectChapters_markCompleted_confirmationShown() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -727,7 +742,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_showConfirmationFalseInArgs_selectChapters_markCompleted_confirmationNotShown() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = false
+      internalProfileId,
+      showConfirmationNotice = false,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -745,7 +761,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectNoChapters_markCompleted_activityClosedWithoutConfirmation() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -764,7 +781,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectOneChapter_markCompleted_confirmationIncludesLessonTitle() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -774,8 +792,8 @@ class MarkChaptersCompletedFragmentTest {
       onView(
         withText(
           "The following chapters will be marked as finished: Prototype Exploration. Note that" +
-            " this is irreversible and will erase any partial lesson progress."
-        )
+            " this is irreversible and will erase any partial lesson progress.",
+        ),
       ).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -783,7 +801,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectTwoChapters_markCompleted_confirmationIncludesLessonTitles() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -795,8 +814,8 @@ class MarkChaptersCompletedFragmentTest {
         withText(
           "The following chapters will be marked as finished: Prototype Exploration and Image" +
             " Region Selection Exploration. Note that this is irreversible and will erase any" +
-            " partial lesson progress."
-        )
+            " partial lesson progress.",
+        ),
       ).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -804,7 +823,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectThreeChapters_markCompleted_confirmationIncludesLessonTitles() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -817,8 +837,8 @@ class MarkChaptersCompletedFragmentTest {
         withText(
           "The following chapters will be marked as finished: Prototype Exploration, Image" +
             " Region Selection Exploration, and Math Expressions. Note that this is" +
-            " irreversible and will erase any partial lesson progress."
-        )
+            " irreversible and will erase any partial lesson progress.",
+        ),
       ).inRoot(isDialog()).check(matches(isDisplayed()))
     }
   }
@@ -826,7 +846,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectChapters_markCompleted_cancelConfirmation_activityStillOpen() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -847,7 +868,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectChapters_markCompleted_cancelConfirmation_expsNotCompleted() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -867,7 +889,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectChapters_markCompleted_confirmSelection_activityClosed() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -886,7 +909,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_withNotice_selectChapters_markCompleted_confirmSelection_expsMarkedAsDone() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use {
       testCoroutineDispatchers.runCurrent()
       clickOnRecyclerViewItemAtPosition(itemPosition = 1)
@@ -906,21 +930,24 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+        val fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
         val arguments =
           checkNotNull(fragment.arguments) {
             "Expected arguments to be passed to MarkChaptersCompletedFragment"
           }
-        val args = arguments.getProto(
-          "MarkChaptersCompletedFragment.arguments",
-          MarkChaptersCompletedFragmentArguments.getDefaultInstance()
-        )
+        val args =
+          arguments.getProto(
+            "MarkChaptersCompletedFragment.arguments",
+            MarkChaptersCompletedFragmentArguments.getDefaultInstance(),
+          )
         val receivedInternalProfileId = args?.internalProfileId
         val receivedShowConfirmationNotice = args?.showConfirmationNotice
 
@@ -933,7 +960,8 @@ class MarkChaptersCompletedFragmentTest {
   @Test
   fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
     launchMarkChaptersCompletedFragmentTestActivity(
-      internalProfileId, showConfirmationNotice = true
+      internalProfileId,
+      showConfirmationNotice = true,
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.mark_chapters_completed_all_check_box_container)).perform(click())
@@ -941,8 +969,9 @@ class MarkChaptersCompletedFragmentTest {
       var actualSelectedExplorationTitles = ArrayList<String>()
 
       scenario.onActivity { activity ->
-        var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+        var fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 
         actualSelectedExplorationIds =
           fragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
@@ -953,8 +982,9 @@ class MarkChaptersCompletedFragmentTest {
       scenario.recreate()
 
       scenario.onActivity { activity ->
-        val newFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
+        val newFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.mark_chapters_completed_container) as MarkChaptersCompletedFragment
 
         val receivedSelectedExplorationIds =
           newFragment.markChaptersCompletedFragmentPresenter.serializableSelectedExplorationIds
@@ -969,27 +999,28 @@ class MarkChaptersCompletedFragmentTest {
 
   private fun launchMarkChaptersCompletedFragmentTestActivity(
     internalProfileId: Int,
-    showConfirmationNotice: Boolean = false
-  ): ActivityScenario<MarkChaptersCompletedTestActivity> {
-    return launch(
+    showConfirmationNotice: Boolean = false,
+  ): ActivityScenario<MarkChaptersCompletedTestActivity> =
+    launch(
       MarkChaptersCompletedTestActivity.createMarkChaptersCompletedTestIntent(
-        context, internalProfileId, showConfirmationNotice
-      )
+        context,
+        internalProfileId,
+        showConfirmationNotice,
+      ),
     )
-  }
 
   private fun verifyItemTextOnRecyclerViewItemAtPosition(
     itemPosition: Int,
     stringToMatch: String,
-    targetViewId: Int
+    targetViewId: Int,
   ) {
     scrollToPosition(position = itemPosition)
     onView(
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
         position = itemPosition,
-        targetViewId = targetViewId
-      )
+        targetViewId = targetViewId,
+      ),
     ).check(matches(withText(stringToMatch)))
   }
 
@@ -999,8 +1030,8 @@ class MarkChaptersCompletedFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
-      )
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+      ),
     ).perform(click())
   }
 
@@ -1010,8 +1041,8 @@ class MarkChaptersCompletedFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
-      )
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+      ),
     ).check(matches(isChecked()))
   }
 
@@ -1021,39 +1052,42 @@ class MarkChaptersCompletedFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.mark_chapters_completed_recycler_view,
         position = itemPosition,
-        targetViewId = R.id.mark_chapters_completed_chapter_check_box
-      )
+        targetViewId = R.id.mark_chapters_completed_chapter_check_box,
+      ),
     ).check(matches(isNotChecked()))
   }
 
   private fun markFractionsFirstChapterCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markAllLessonsCompleted() {
     storyProgressTestHelper.markAllTopicsAsCompleted(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.mark_chapters_completed_recycler_view)).perform(
-      scrollToPosition<ViewHolder>(position)
+      scrollToPosition<ViewHolder>(position),
     )
   }
 
   private fun retrieveChapterPlayState(
     topicId: String,
     storyId: String,
-    expId: String
+    expId: String,
   ): ChapterPlayState {
     val playStateProvider =
       storyProgressController.retrieveChapterPlayStateByExplorationId(
-        profileId, topicId, storyId, expId
+        profileId,
+        topicId,
+        storyId,
+        expId,
       )
     return monitorFactory.waitForNextSuccessfulResult(playStateProvider)
   }
@@ -1090,8 +1124,8 @@ class MarkChaptersCompletedFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1102,9 +1136,13 @@ class MarkChaptersCompletedFragmentTest {
     fun inject(markChaptersCompletedFragmentTest: MarkChaptersCompletedFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerMarkChaptersCompletedFragmentTest_TestApplicationComponent.builder()
+      DaggerMarkChaptersCompletedFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1113,9 +1151,12 @@ class MarkChaptersCompletedFragmentTest {
       component.inject(markChaptersCompletedFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

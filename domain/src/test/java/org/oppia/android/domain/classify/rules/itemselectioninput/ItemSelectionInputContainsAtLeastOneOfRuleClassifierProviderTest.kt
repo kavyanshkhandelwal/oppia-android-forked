@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
-
   private val ITEM_SELECTION_12345 =
     createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5")
   private val ITEM_SELECTION_1 = createSetOfTranslatableHtmlContentIds("test1")
@@ -49,11 +48,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_1)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -62,11 +62,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_16)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -75,11 +76,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_12)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -88,11 +90,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_126)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -101,11 +104,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_NONE)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -114,11 +118,12 @@ class ItemSelectionInputContainsAtLeastOneOfRuleClassifierProviderTest {
   fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
     val inputs = mapOf("x" to ITEM_SELECTION_6)
 
-    val matches = inputContainsAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SELECTION_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputContainsAtLeastOneOfRuleClassifier.matches(
+        answer = ITEM_SELECTION_12345,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }

@@ -15,48 +15,51 @@ import javax.inject.Inject
 
 /** The presenter for [LicenseListFragment]. */
 @FragmentScope
-class LicenseListFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) {
-  private lateinit var binding: LicenseListFragmentBinding
+class LicenseListFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: LicenseListFragmentBinding
 
-  /** Handles onCreateView() method of the [LicenseListFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    dependencyIndex: Int,
-    isMultipane: Boolean
-  ): View? {
-    val viewModel = LicenseListViewModel(activity, dependencyIndex, resourceHandler)
-    viewModel.isMultipane.set(isMultipane)
+    /** Handles onCreateView() method of the [LicenseListFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      dependencyIndex: Int,
+      isMultipane: Boolean,
+    ): View? {
+      val viewModel = LicenseListViewModel(activity, dependencyIndex, resourceHandler)
+      viewModel.isMultipane.set(isMultipane)
 
-    binding = LicenseListFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+      binding =
+        LicenseListFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.licenseListFragmentRecyclerView.apply {
-      layoutManager = LinearLayoutManager(activity.applicationContext)
-      adapter = createRecyclerViewAdapter()
+      binding.licenseListFragmentRecyclerView.apply {
+        layoutManager = LinearLayoutManager(activity.applicationContext)
+        adapter = createRecyclerViewAdapter()
+      }
+
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = viewModel
+      }
+      return binding.root
     }
 
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = viewModel
-    }
-    return binding.root
+    private fun createRecyclerViewAdapter(): BindableAdapter<LicenseItemViewModel> =
+      singleTypeBuilderFactory
+        .create<LicenseItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = LicenseItemBinding::inflate,
+          setViewModel = LicenseItemBinding::setViewModel,
+        ).build()
   }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<LicenseItemViewModel> {
-    return singleTypeBuilderFactory.create<LicenseItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = LicenseItemBinding::inflate,
-        setViewModel = LicenseItemBinding::setViewModel
-      )
-      .build()
-  }
-}

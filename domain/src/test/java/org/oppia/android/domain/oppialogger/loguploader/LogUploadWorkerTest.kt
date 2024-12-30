@@ -21,9 +21,9 @@ import dagger.Module
 import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
+import org.mockito.Mockito.`when`
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
@@ -94,19 +94,33 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
   @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
+
   @Inject lateinit var oppiaLogger: OppiaLogger
+
   @Inject lateinit var analyticsController: AnalyticsController
+
   @Inject lateinit var dataController: FirestoreDataController
+
   @Inject lateinit var exceptionsController: ExceptionsController
+
   @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+
   @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+
   @Inject lateinit var dataProviders: DataProviders
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
   @field:[Inject MockFirestoreEventLogger]
@@ -114,26 +128,31 @@ class LogUploadWorkerTest {
 
   private lateinit var context: Context
 
-  private val eventLogTopicContext = EventLog.newBuilder()
-    .setContext(
-      EventLog.Context.newBuilder()
-        .setOpenInfoTab(
-          EventLog.TopicContext.newBuilder()
-            .setTopicId(TEST_TOPIC_ID)
-            .build()
-        )
-        .build()
-    )
-    .setPriority(EventLog.Priority.ESSENTIAL)
-    .setTimestamp(TEST_TIMESTAMP)
-    .build()
+  private val eventLogTopicContext =
+    EventLog
+      .newBuilder()
+      .setContext(
+        EventLog.Context
+          .newBuilder()
+          .setOpenInfoTab(
+            EventLog.TopicContext
+              .newBuilder()
+              .setTopicId(TEST_TOPIC_ID)
+              .build(),
+          ).build(),
+      ).setPriority(EventLog.Priority.ESSENTIAL)
+      .setTimestamp(TEST_TIMESTAMP)
+      .build()
 
-  private val apkSizeTestLoggableMetric = OppiaMetricLog.LoggableMetric.newBuilder()
-    .setApkSizeMetric(
-      OppiaMetricLog.ApkSizeMetric.newBuilder()
-        .setApkSizeBytes(TEST_APK_SIZE)
-        .build()
-    ).build()
+  private val apkSizeTestLoggableMetric =
+    OppiaMetricLog.LoggableMetric
+      .newBuilder()
+      .setApkSizeMetric(
+        OppiaMetricLog.ApkSizeMetric
+          .newBuilder()
+          .setApkSizeBytes(TEST_APK_SIZE)
+          .build(),
+      ).build()
 
   private val exception = Exception("TEST")
 
@@ -144,20 +163,24 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -175,21 +198,25 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -206,20 +233,24 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     setUpEventLoggerToFail()
     workManager.enqueue(request)
@@ -239,14 +270,18 @@ class LogUploadWorkerTest {
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EXCEPTION_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EXCEPTION_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -270,20 +305,24 @@ class LogUploadWorkerTest {
       TEST_TIMESTAMP,
       SCREEN_NAME_UNSPECIFIED,
       apkSizeTestLoggableMetric,
-      OppiaMetricLog.Priority.LOW_PRIORITY
+      OppiaMetricLog.Priority.LOW_PRIORITY,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.PERFORMANCE_METRICS_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.PERFORMANCE_METRICS_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
 
@@ -292,15 +331,15 @@ class LogUploadWorkerTest {
       fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(loggedPerformanceMetric.loggableMetric.loggableMetricTypeCase).isEqualTo(
-      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC,
     )
     assertThat(loggedPerformanceMetric.currentScreen).isEqualTo(
-      SCREEN_NAME_UNSPECIFIED
+      SCREEN_NAME_UNSPECIFIED,
     )
     assertThat(loggedPerformanceMetric.priority).isEqualTo(OppiaMetricLog.Priority.LOW_PRIORITY)
     assertThat(loggedPerformanceMetric.timestampMillis).isEqualTo(TEST_TIMESTAMP)
     assertThat(loggedPerformanceMetric.loggableMetric.apkSizeMetric.apkSizeBytes).isEqualTo(
-      TEST_APK_SIZE
+      TEST_APK_SIZE,
     )
   }
 
@@ -311,21 +350,25 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -346,20 +389,24 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -382,20 +429,24 @@ class LogUploadWorkerTest {
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
       profileId = null,
-      eventLogTopicContext.timestamp
+      eventLogTopicContext.timestamp,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.EVENT_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.EVENT_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     setUpEventLoggerToFail()
     workManager.enqueue(request)
@@ -418,21 +469,25 @@ class LogUploadWorkerTest {
     dataController.logEvent(
       createOptionalSurveyResponseContext(),
       profileId = null,
-      1556094120000
+      1556094120000,
     )
     networkConnectionUtil.setCurrentConnectionStatus(LOCAL)
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.FIRESTORE_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     workManager.enqueue(request)
     testCoroutineDispatchers.runCurrent()
@@ -440,7 +495,7 @@ class LogUploadWorkerTest {
 
     assertThat(workInfo.get().state).isEqualTo(WorkInfo.State.SUCCEEDED)
     assertThat(fakeFirestoreEventLogger.getMostRecentEvent()).isEqualTo(
-      optionalSurveyResponseEventLog
+      optionalSurveyResponseEventLog,
     )
   }
 
@@ -451,20 +506,24 @@ class LogUploadWorkerTest {
     dataController.logEvent(
       createOptionalSurveyResponseContext(),
       profileId = null,
-      1556094120000
+      1556094120000,
     )
     testCoroutineDispatchers.runCurrent()
 
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val inputData = Data.Builder().putString(
-      LogUploadWorker.WORKER_CASE_KEY,
-      LogUploadWorker.FIRESTORE_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          LogUploadWorker.WORKER_CASE_KEY,
+          LogUploadWorker.FIRESTORE_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<LogUploadWorker>()
+        .setInputData(inputData)
+        .build()
 
     setUpFirestoreEventLoggerToFail()
     workManager.enqueue(request)
@@ -475,30 +534,32 @@ class LogUploadWorkerTest {
     assertThat(fakeFirestoreEventLogger.noEventsPresent()).isTrue()
   }
 
-  private val optionalSurveyResponseEventLog = EventLog.newBuilder().apply {
-    this.context = createOptionalSurveyResponseContext()
-    this.timestamp = TEST_TIMESTAMP
-    this.priority = EventLog.Priority.ESSENTIAL
-  }
-    .build()
+  private val optionalSurveyResponseEventLog =
+    EventLog
+      .newBuilder()
+      .apply {
+        this.context = createOptionalSurveyResponseContext()
+        this.timestamp = TEST_TIMESTAMP
+        this.priority = EventLog.Priority.ESSENTIAL
+      }.build()
 
-  private fun createOptionalSurveyResponseContext(): EventLog.Context {
-    return EventLog.Context.newBuilder()
+  private fun createOptionalSurveyResponseContext(): EventLog.Context =
+    EventLog.Context
+      .newBuilder()
       .setOptionalResponse(
-        EventLog.OptionalSurveyResponseContext.newBuilder()
+        EventLog.OptionalSurveyResponseContext
+          .newBuilder()
           .setFeedbackAnswer("answer")
           .setSurveyDetails(
-            createSurveyResponseContext()
-          )
-      )
-      .build()
-  }
+            createSurveyResponseContext(),
+          ),
+      ).build()
 
-  private fun createSurveyResponseContext(): EventLog.SurveyResponseContext {
-    return EventLog.SurveyResponseContext.newBuilder()
+  private fun createSurveyResponseContext(): EventLog.SurveyResponseContext =
+    EventLog.SurveyResponseContext
+      .newBuilder()
       .setSurveyId("test_survey_id")
       .build()
-  }
 
   private fun setUpEventLoggerToFail() {
     // Simulate the log attempt itself failing during the job. Note that the reset is necessary here
@@ -527,10 +588,12 @@ class LogUploadWorkerTest {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     context = InstrumentationRegistry.getInstrumentation().targetContext
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(logUploadWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(logUploadWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -553,7 +616,7 @@ class LogUploadWorkerTest {
       return mock(AnalyticsEventLogger::class.java).also {
         `when`(it.logEvent(anyOrNull())).then { answer ->
           fakeAnalyticsLogger.logEvent(
-            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java),
           )
           return@then null
         }
@@ -563,39 +626,38 @@ class LogUploadWorkerTest {
     @Provides
     @Singleton
     @MockFirestoreEventLogger
-    fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
-      FirestoreEventLogger {
-        return mock(FirestoreEventLogger::class.java).also {
-          `when`(it.uploadEvent(anyOrNull())).then { answer ->
-            fakeFirestoreLogger.uploadEvent(
-              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
-            )
-            return@then null
-          }
+    fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger): FirestoreEventLogger {
+      return mock(FirestoreEventLogger::class.java).also {
+        `when`(it.uploadEvent(anyOrNull())).then { answer ->
+          fakeFirestoreLogger.uploadEvent(
+            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java),
+          )
+          return@then null
         }
       }
+    }
 
     @Provides
-    fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
-      AnalyticsEventLogger = delegate
+    fun bindFakeEventLogger(
+      @MockEventLogger delegate: AnalyticsEventLogger,
+    ): AnalyticsEventLogger = delegate
 
     @Provides
     fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
 
     @Provides
     fun bindFakePerformanceMetricsLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger,
     ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
 
     @Provides
     fun bindFakeFirestoreEventLogger(
-      @MockFirestoreEventLogger delegate: FirestoreEventLogger
+      @MockFirestoreEventLogger delegate: FirestoreEventLogger,
     ): FirestoreEventLogger = delegate
   }
 
   @Module
   class TestLogStorageModule {
-
     @Provides
     @EventLogStorageCacheSize
     fun provideEventLogStorageCacheSize(): Int = 2
@@ -615,7 +677,6 @@ class LogUploadWorkerTest {
 
   @Module
   interface TestFirebaseLogUploaderModule {
-
     @Binds
     fun bindsFakeLogUploader(fakeLogUploader: FakeLogUploader): LogUploader
   }
@@ -633,22 +694,26 @@ class LogUploadWorkerTest {
       SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
       TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
+      DaggerLogUploadWorkerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

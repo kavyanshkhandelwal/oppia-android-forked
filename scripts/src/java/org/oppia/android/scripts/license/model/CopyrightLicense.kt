@@ -4,10 +4,8 @@ package org.oppia.android.scripts.license.model
 data class CopyrightLicense(
   /** Name of the license. */
   val licenseName: String,
-
   /** Link of the license. */
   val licenseLink: String,
-
   /** License text corresponding to the license. */
-  val licenseText: String
+  val licenseText: String,
 )

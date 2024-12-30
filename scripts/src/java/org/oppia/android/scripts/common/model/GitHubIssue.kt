@@ -12,7 +12,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class GitHubIssue(
   @Json(name = "number") val number: Int,
-  @Json(name = "pull_request") val pullRequest: PullRequestInfo? = null
+  @Json(name = "pull_request") val pullRequest: PullRequestInfo? = null,
 )
 
 /**
@@ -23,5 +23,5 @@ data class GitHubIssue(
  */
 @JsonClass(generateAdapter = true)
 data class PullRequestInfo(
-  @Json(name = "url") val url: String? = null
+  @Json(name = "url") val url: String? = null,
 )

@@ -44,14 +44,18 @@ class StateFragmentTestActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
-      StateFragmentTestActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY,
+        StateFragmentTestActivityParams.getDefaultInstance(),
+      )
 
-    profileId = ProfileId.newBuilder().apply {
-      internalId = args?.internalProfileId ?: -1
-    }.build()
+    profileId =
+      ProfileId
+        .newBuilder()
+        .apply {
+          internalId = args?.internalProfileId ?: -1
+        }.build()
     stateFragmentTestActivityPresenter.handleOnCreate()
   }
 
@@ -64,7 +68,6 @@ class StateFragmentTestActivity :
   override fun onEditorAction(actionCode: Int) {}
 
   companion object {
-
     /** Params key for StateFragmentTestActivity. */
     const val STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY = "StateFragmentTestActivity.params"
 
@@ -75,16 +78,19 @@ class StateFragmentTestActivity :
       topicId: String,
       storyId: String,
       explorationId: String,
-      shouldSavePartialProgress: Boolean
+      shouldSavePartialProgress: Boolean,
     ): Intent {
-      val args = StateFragmentTestActivityParams.newBuilder().apply {
-        this.internalProfileId = profileId
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-        this.shouldSavePartialProgress = shouldSavePartialProgress
-      }.build()
+      val args =
+        StateFragmentTestActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileId
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+            this.shouldSavePartialProgress = shouldSavePartialProgress
+          }.build()
       val intent = Intent(context, StateFragmentTestActivity::class.java)
       intent.putProtoExtra(STATE_FRAGMENT_TEST_ACTIVITY_PARAMS_KEY, args)
       return intent
@@ -111,14 +117,17 @@ class StateFragmentTestActivity :
 
   override fun dismiss() {}
 
-  override fun routeToHintsAndSolution(id: String, helpIndex: HelpIndex) {
+  override fun routeToHintsAndSolution(
+    id: String,
+    helpIndex: HelpIndex,
+  ) {
     if (getHintsAndSolution() == null) {
       val hintsAndSolutionFragment =
         HintsAndSolutionDialogFragment.newInstance(
           id,
           state,
           helpIndex,
-          writtenTranslationContext
+          writtenTranslationContext,
         )
       hintsAndSolutionFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
@@ -134,15 +143,14 @@ class StateFragmentTestActivity :
 
   override fun onExplorationStateLoaded(
     state: State,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
   ) {
     this.state = state
     this.writtenTranslationContext = writtenTranslationContext
   }
 
-  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? =
+    supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG,
     ) as HintsAndSolutionDialogFragment?
-  }
 }

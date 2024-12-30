@@ -21,12 +21,18 @@ class ProfileResetPinActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY = "ProfileResetPinActivity.params"
 
     /** Returns [Intent] for opening [ProfileResetPinActivity]. */
-    fun createProfileResetPinActivity(context: Context, profileId: Int, isAdmin: Boolean): Intent {
-
-      val args = ProfileResetPinActivityParams.newBuilder().apply {
-        this.internalProfileId = profileId
-        this.isAdmin = isAdmin
-      }.build()
+    fun createProfileResetPinActivity(
+      context: Context,
+      profileId: Int,
+      isAdmin: Boolean,
+    ): Intent {
+      val args =
+        ProfileResetPinActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileId
+            this.isAdmin = isAdmin
+          }.build()
       return Intent(context, ProfileResetPinActivity::class.java).apply {
         putProtoExtra(PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PROFILE_RESET_PIN_ACTIVITY)

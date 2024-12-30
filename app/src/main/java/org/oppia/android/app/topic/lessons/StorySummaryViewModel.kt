@@ -16,12 +16,13 @@ class StorySummaryViewModel(
   private val chapterSummarySelector: ChapterSummarySelector,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val storyIndex: Int
+  private val storyIndex: Int,
 ) : TopicLessonsItemViewModel() {
   val storySummary = ephemeralStorySummary.storySummary
   val storyTitle by lazy {
     translationController.extractString(
-      storySummary.storyTitle, ephemeralStorySummary.writtenTranslationContext
+      storySummary.storyTitle,
+      ephemeralStorySummary.writtenTranslationContext,
     )
   }
   val storyPercentage: ObservableField<Int> = ObservableField(DEFAULT_STORY_PERCENTAGE)
@@ -41,54 +42,57 @@ class StorySummaryViewModel(
     storyProgressPercentageText.set(computeStoryProgressPercentageText(storyPercentage))
   }
 
-  fun computeChapterCountText(): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.chapter_count, storySummary.chapterCount, storySummary.chapterCount.toString()
+  fun computeChapterCountText(): String =
+    resourceHandler.getQuantityStringInLocaleWithWrapping(
+      R.plurals.chapter_count,
+      storySummary.chapterCount,
+      storySummary.chapterCount.toString(),
     )
-  }
 
   /*
-  * Returns content description of progress container based on story percentage.
-  *
-  * @return a [String] representing content description for progress container
-  */
-  fun computeProgressContainerContentDescription(): String {
-    return if (storyPercentage.get()!! < 100) {
+   * Returns content description of progress container based on story percentage.
+   *
+   * @return a [String] representing content description for progress container
+   */
+  fun computeProgressContainerContentDescription(): String =
+    if (storyPercentage.get()!! < 100) {
       "${storyProgressPercentageText.get()} " +
         resourceHandler.getStringInLocale(R.string.status_in_progress)
     } else {
       "${storyProgressPercentageText.get()} " +
         resourceHandler.getStringInLocale(R.string.status_completed)
     }
-  }
 
-  private fun computeStoryProgressPercentageText(storyPercentage: Int): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.topic_story_progress_percentage, storyPercentage.toString()
+  private fun computeStoryProgressPercentageText(storyPercentage: Int): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.topic_story_progress_percentage,
+      storyPercentage.toString(),
     )
-  }
 
-  private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> {
-    return ephemeralStorySummary.chaptersList.mapIndexed { index, ephemeralChapterSummary ->
+  private fun computeChapterSummaryItemList(): List<ChapterSummaryViewModel> =
+    ephemeralStorySummary.chaptersList.mapIndexed { index, ephemeralChapterSummary ->
       ChapterSummaryViewModel(
         chapterPlayState = ephemeralChapterSummary.chapterSummary.chapterPlayState,
         explorationId = ephemeralChapterSummary.chapterSummary.explorationId,
-        chapterTitle = translationController.extractString(
-          ephemeralChapterSummary.chapterSummary.title,
-          ephemeralChapterSummary.writtenTranslationContext
-        ),
-        previousChapterTitle = if (index > 0) {
+        chapterTitle =
           translationController.extractString(
-            ephemeralStorySummary.chaptersList[index - 1].chapterSummary.title,
-            ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext
-          )
-        } else null,
+            ephemeralChapterSummary.chapterSummary.title,
+            ephemeralChapterSummary.writtenTranslationContext,
+          ),
+        previousChapterTitle =
+          if (index > 0) {
+            translationController.extractString(
+              ephemeralStorySummary.chaptersList[index - 1].chapterSummary.title,
+              ephemeralStorySummary.chaptersList[index - 1].writtenTranslationContext,
+            )
+          } else {
+            null
+          },
         storyId = storySummary.storyId,
         index = index,
         chapterSummarySelector = chapterSummarySelector,
         resourceHandler = resourceHandler,
-        storyIndex = storyIndex
+        storyIndex = storyIndex,
       )
     }
-  }
 }

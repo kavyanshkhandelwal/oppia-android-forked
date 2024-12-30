@@ -30,7 +30,7 @@ class ProfileLearnerIdItemViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val analyticsController: AnalyticsController,
   private val oppiaLogger: OppiaLogger,
-  private val fragment: Fragment
+  private val fragment: Fragment,
 ) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.LEARNER_ID) {
   /** The current ID copied to the user's clipboard, or ``null`` if there isn't one. */
   val currentCopiedId: LiveData<String?> by lazy {
@@ -54,40 +54,43 @@ class ProfileLearnerIdItemViewModel private constructor(
    * Copies the analytics learner ID associated with this model's [profile] to the user's clipboard.
    */
   fun copyLearnerId() {
-    clipboardController.setCurrentClip(
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.learner_analytics_learner_id_clipboard_label_description, profile.name
-      ),
-      profile.learnerId
-    ).toLiveData().observe(fragment) {
-      if (it !is AsyncResult.Success) {
-        oppiaLogger.w(
-          "ProfileLearnerIdItemViewModel",
-          "Encountered unexpected non-successful result when copying to clipboard: $it"
-        )
+    clipboardController
+      .setCurrentClip(
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.learner_analytics_learner_id_clipboard_label_description,
+          profile.name,
+        ),
+        profile.learnerId,
+      ).toLiveData()
+      .observe(fragment) {
+        if (it !is AsyncResult.Success) {
+          oppiaLogger.w(
+            "ProfileLearnerIdItemViewModel",
+            "Encountered unexpected non-successful result when copying to clipboard: $it",
+          )
+        }
       }
-    }
   }
 
   /**
    * Returns a textual representation of the number of events awaiting upload for the profile
    * corresponding to this view model.
    */
-  fun computeEventsWaitingUploadLabelText(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.learner_analytics_learner_events_waiting_upload, profile.name
+  fun computeEventsWaitingUploadLabelText(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.learner_analytics_learner_events_waiting_upload,
+      profile.name,
     )
-  }
 
   /**
    * Returns a textual representation of the number of events that have been uploaded for the
    * profile corresponding to this view model.
    */
-  fun computeEventsUploadedLabelText(): String {
-    return resourceHandler.getStringInLocaleWithWrapping(
-      R.string.learner_analytics_learner_events_uploaded, profile.name
+  fun computeEventsUploadedLabelText(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.learner_analytics_learner_events_uploaded,
+      profile.name,
     )
-  }
 
   /**
    * Stats structure to provide context on the synchronization & uploading information of a specific
@@ -99,7 +102,7 @@ class ProfileLearnerIdItemViewModel private constructor(
    */
   data class ProfileSpecificEventsUploadStats(
     val learnerStats: CategorizedEventStats,
-    val uncategorizedStats: CategorizedEventStats?
+    val uncategorizedStats: CategorizedEventStats?,
   ) {
     /** Returns whether this stats report includes [uncategorizedStats]. */
     fun hasUncategorizedStats(): Boolean = uncategorizedStats != null
@@ -115,20 +118,30 @@ class ProfileLearnerIdItemViewModel private constructor(
       fun createFrom(
         resourceHandler: AppLanguageResourceHandler,
         profile: Profile,
-        oppiaEventLogs: OppiaEventLogs
+        oppiaEventLogs: OppiaEventLogs,
       ): ProfileSpecificEventsUploadStats {
         val logsToUploadMap = oppiaEventLogs.eventLogsToUploadList.associateByProfileId()
         val uploadedLogsMap = oppiaEventLogs.uploadedEventLogsList.associateByProfileId()
         return ProfileSpecificEventsUploadStats(
-          learnerStats = CategorizedEventStats.createFrom(
-            resourceHandler, profile.id, logsToUploadMap, uploadedLogsMap
-          ),
-          uncategorizedStats = if (profile.isAdmin) {
-            // Admins should also show uncategorized stats.
+          learnerStats =
             CategorizedEventStats.createFrom(
-              resourceHandler, profileId = null, logsToUploadMap, uploadedLogsMap
-            )
-          } else null
+              resourceHandler,
+              profile.id,
+              logsToUploadMap,
+              uploadedLogsMap,
+            ),
+          uncategorizedStats =
+            if (profile.isAdmin) {
+              // Admins should also show uncategorized stats.
+              CategorizedEventStats.createFrom(
+                resourceHandler,
+                profileId = null,
+                logsToUploadMap,
+                uploadedLogsMap,
+              )
+            } else {
+              null
+            },
         )
       }
 
@@ -136,17 +149,16 @@ class ProfileLearnerIdItemViewModel private constructor(
        * Returns a new [ProfileSpecificEventsUploadStats] with unknown event counts filled in
        * (localized per [resourceHandler]).
        */
-      fun createFromUnknown(
-        resourceHandler: AppLanguageResourceHandler
-      ): ProfileSpecificEventsUploadStats {
+      fun createFromUnknown(resourceHandler: AppLanguageResourceHandler): ProfileSpecificEventsUploadStats {
         val unknownCountText =
           resourceHandler.getStringInLocale(R.string.learner_analytics_unknown_event_count)
         return ProfileSpecificEventsUploadStats(
-          learnerStats = CategorizedEventStats(
-            awaitingUploadEventCountText = unknownCountText,
-            uploadedEventCountText = unknownCountText
-          ),
-          uncategorizedStats = null
+          learnerStats =
+            CategorizedEventStats(
+              awaitingUploadEventCountText = unknownCountText,
+              uploadedEventCountText = unknownCountText,
+            ),
+          uncategorizedStats = null,
         )
       }
     }
@@ -164,7 +176,7 @@ class ProfileLearnerIdItemViewModel private constructor(
    */
   data class CategorizedEventStats(
     val awaitingUploadEventCountText: String,
-    val uploadedEventCountText: String
+    val uploadedEventCountText: String,
   ) {
     companion object {
       /**
@@ -182,31 +194,30 @@ class ProfileLearnerIdItemViewModel private constructor(
         resourceHandler: AppLanguageResourceHandler,
         profileId: ProfileId?,
         logsToUploadMap: Map<ProfileId?, List<EventLog>>,
-        uploadedLogsMap: Map<ProfileId?, List<EventLog>>
+        uploadedLogsMap: Map<ProfileId?, List<EventLog>>,
       ): CategorizedEventStats {
         val logsToUpload = logsToUploadMap[profileId] ?: emptyList()
         val uploadedLogs = uploadedLogsMap[profileId] ?: emptyList()
         return CategorizedEventStats(
           awaitingUploadEventCountText = resourceHandler.toHumanReadableString(logsToUpload.size),
-          uploadedEventCountText = resourceHandler.toHumanReadableString(uploadedLogs.size)
+          uploadedEventCountText = resourceHandler.toHumanReadableString(uploadedLogs.size),
         )
       }
     }
   }
 
-  private fun processCurrentClip(result: AsyncResult<CurrentClip>): String? {
-    return if (result is AsyncResult.Success) {
+  private fun processCurrentClip(result: AsyncResult<CurrentClip>): String? =
+    if (result is AsyncResult.Success) {
       when (val clip = result.value) {
         is CurrentClip.SetWithAppText -> clip.text
         CurrentClip.SetWithOtherContent, CurrentClip.Unknown -> null
       }
-    } else null
-  }
+    } else {
+      null
+    }
 
-  private fun processEventLogs(
-    result: AsyncResult<OppiaEventLogs>
-  ): ProfileSpecificEventsUploadStats {
-    return when (result) {
+  private fun processEventLogs(result: AsyncResult<OppiaEventLogs>): ProfileSpecificEventsUploadStats =
+    when (result) {
       is AsyncResult.Pending -> ProfileSpecificEventsUploadStats.createFromUnknown(resourceHandler)
       is AsyncResult.Success ->
         ProfileSpecificEventsUploadStats.createFrom(resourceHandler, profile, result.value)
@@ -215,28 +226,33 @@ class ProfileLearnerIdItemViewModel private constructor(
           oppiaLogger.e(
             "ProfileLearnerIdItemViewModel",
             "Encountered unexpected failure when processing event logs",
-            result.error
+            result.error,
           )
         }
       }
     }
-  }
 
   /** Factory for creating new [ProfileLearnerIdItemViewModel]s. */
-  class Factory @Inject constructor(
-    private val clipboardController: ClipboardController,
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val analyticsController: AnalyticsController,
-    private val oppiaLogger: OppiaLogger,
-    private val fragment: Fragment
-  ) {
-    /** Returns a new [ProfileLearnerIdItemViewModel] corresponding to the specified [profile]. */
-    fun create(profile: Profile): ProfileLearnerIdItemViewModel {
-      return ProfileLearnerIdItemViewModel(
-        profile, clipboardController, resourceHandler, analyticsController, oppiaLogger, fragment
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val clipboardController: ClipboardController,
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val analyticsController: AnalyticsController,
+      private val oppiaLogger: OppiaLogger,
+      private val fragment: Fragment,
+    ) {
+      /** Returns a new [ProfileLearnerIdItemViewModel] corresponding to the specified [profile]. */
+      fun create(profile: Profile): ProfileLearnerIdItemViewModel =
+        ProfileLearnerIdItemViewModel(
+          profile,
+          clipboardController,
+          resourceHandler,
+          analyticsController,
+          oppiaLogger,
+          fragment,
+        )
     }
-  }
 
   private companion object {
     private fun List<EventLog>.associateByProfileId(): Map<ProfileId?, List<EventLog>> =

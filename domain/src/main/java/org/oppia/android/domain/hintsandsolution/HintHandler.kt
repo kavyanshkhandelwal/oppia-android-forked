@@ -20,7 +20,6 @@ import org.oppia.android.app.model.State
  * calling thread.
  */
 interface HintHandler {
-
   /**
    * Starts watching for potential hints to be shown (e.g. if a user doesn't submit an answer after
    * a certain amount of time). This is meant to only be called once at the beginning of a state.
@@ -39,7 +38,7 @@ interface HintHandler {
   suspend fun resumeHintsForSavedState(
     trackedWrongAnswerCount: Int,
     helpIndex: HelpIndex,
-    state: State
+    state: State,
   )
 
   /**

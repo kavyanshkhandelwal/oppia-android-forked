@@ -50,7 +50,9 @@ class ClipboardControllerTest {
   }
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var clipboardController: ClipboardController
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private val clipboardManager by lazy {
@@ -85,7 +87,8 @@ class ClipboardControllerTest {
     val currentClipProvider = clipboardController.getCurrentClip()
 
     clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
+      TEST_LABEL_FROM_OPPIA_1,
+      TEST_TEXT_FROM_OPPIA_1,
     )
 
     // Not observing the result of setCurrentClip will result in its effects not executing.
@@ -97,13 +100,15 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_afterSettingClip_returnsSetWithAppText() {
     val currentClipProvider = clipboardController.getCurrentClip()
 
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
     val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
     assertThat(currentClip).isEqualTo(
-      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_1, text = TEST_TEXT_FROM_OPPIA_1)
+      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_1, text = TEST_TEXT_FROM_OPPIA_1),
     )
   }
 
@@ -111,34 +116,42 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_afterSettingClip_again_notifiesNewSetWithAppText() {
     val currentClipProvider = clipboardController.getCurrentClip()
     val monitor = monitorFactory.createMonitor(currentClipProvider)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_2, TEST_TEXT_FROM_OPPIA_2
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_2,
+        TEST_TEXT_FROM_OPPIA_2,
+      ).waitForCompletion()
 
     val currentClip = monitor.ensureNextResultIsSuccess()
     assertThat(currentClip).isEqualTo(
-      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_2, text = TEST_TEXT_FROM_OPPIA_2)
+      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_2, text = TEST_TEXT_FROM_OPPIA_2),
     )
   }
 
   @Test
   fun testGetCurrentClip_afterSettingClip_again_newSub_returnsNewSetWithAppText() {
     val currentClipProvider = clipboardController.getCurrentClip()
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_2, TEST_TEXT_FROM_OPPIA_2
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_2,
+        TEST_TEXT_FROM_OPPIA_2,
+      ).waitForCompletion()
 
     val currentClip = monitorFactory.waitForNextSuccessfulResult(currentClipProvider)
     assertThat(currentClip).isEqualTo(
-      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_2, text = TEST_TEXT_FROM_OPPIA_2)
+      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_2, text = TEST_TEXT_FROM_OPPIA_2),
     )
   }
 
@@ -146,9 +159,11 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_setClip_otherAppChangesClipboard_notifiesSetWithOtherContent() {
     val currentClipProvider = clipboardController.getCurrentClip()
     val monitor = monitorFactory.createMonitor(currentClipProvider)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_1)
 
@@ -160,9 +175,11 @@ class ClipboardControllerTest {
   @Test
   fun testGetCurrentClip_setClip_otherAppChangesClipboard_newSub_returnsSetWithOtherContent() {
     val currentClipProvider = clipboardController.getCurrentClip()
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_1)
 
@@ -175,9 +192,11 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_setClip_otherAppChangesClipboard_again_doesNotRenotify() {
     val currentClipProvider = clipboardController.getCurrentClip()
     val monitor = monitorFactory.createMonitor(currentClipProvider)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_1)
     monitor.waitForNextResult()
 
@@ -193,21 +212,25 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_setClip_otherAppChanges_setClipAgain_notifiesNewSetWithAppText() {
     val currentClipProvider = clipboardController.getCurrentClip()
     val monitor = monitorFactory.createMonitor(currentClipProvider)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_1)
     monitor.waitForNextResult()
 
     // Copy the same Oppia text again.
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
 
     // The clip should be updated with the new Oppia-sourced text.
     val currentClip = monitor.ensureNextResultIsSuccess()
     assertThat(currentClip).isEqualTo(
-      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_1, text = TEST_TEXT_FROM_OPPIA_1)
+      CurrentClip.SetWithAppText(label = TEST_LABEL_FROM_OPPIA_1, text = TEST_TEXT_FROM_OPPIA_1),
     )
   }
 
@@ -215,13 +238,17 @@ class ClipboardControllerTest {
   fun testGetCurrentClip_setClip_otherAppChanges_twice_notifiesSetWithOtherContent() {
     val currentClipProvider = clipboardController.getCurrentClip()
     val monitor = monitorFactory.createMonitor(currentClipProvider)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_1, TEST_TEXT_FROM_OPPIA_1
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_1,
+        TEST_TEXT_FROM_OPPIA_1,
+      ).waitForCompletion()
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_1)
-    clipboardController.setCurrentClip(
-      TEST_LABEL_FROM_OPPIA_2, TEST_TEXT_FROM_OPPIA_2
-    ).waitForCompletion()
+    clipboardController
+      .setCurrentClip(
+        TEST_LABEL_FROM_OPPIA_2,
+        TEST_TEXT_FROM_OPPIA_2,
+      ).waitForCompletion()
 
     updateClipboard(TEST_TEXT_FROM_OTHER_APP_2)
 
@@ -238,7 +265,7 @@ class ClipboardControllerTest {
     // This must use the setter since property syntax seems to break on SDK 30.
     @Suppress("UsePropertyAccessSyntax")
     clipboardManager.setPrimaryClip(
-      ClipData.newPlainText(/* label= */ "label of text from other app", text)
+      ClipData.newPlainText(/* label= */ "label of text from other app", text),
     )
   }
 
@@ -255,9 +282,7 @@ class ClipboardControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -268,23 +293,27 @@ class ClipboardControllerTest {
       TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
       FakeOppiaClockModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class
-    ]
+      SyncStatusTestModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: ClipboardControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerClipboardControllerTest_TestApplicationComponent.builder()
+      DaggerClipboardControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

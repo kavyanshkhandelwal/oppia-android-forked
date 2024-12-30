@@ -107,7 +107,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageFragmentTest.TestApplication::class)
 class AppLanguageFragmentTest {
-
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 1
     private const val KISWAHILI_BUTTON_INDEX = 4
@@ -223,8 +222,9 @@ class AppLanguageFragmentTest {
         testCoroutineDispatchers.runCurrent()
         scenario.onActivity { activity ->
 
-          val appLanguageFragment = activity.supportFragmentManager
-            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val appLanguageFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
           val recievedLanguage = appLanguageFragment.arguments?.retrieveLanguageFromArguments()
           val receivedProfileId =
             appLanguageFragment.arguments?.extractCurrentUserProfileId()?.internalId
@@ -242,16 +242,18 @@ class AppLanguageFragmentTest {
         testCoroutineDispatchers.runCurrent()
 
         scenario.onActivity { activity ->
-          var appLanguageFragment = activity.supportFragmentManager
-            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          var appLanguageFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
           appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
         }
 
         scenario.recreate()
 
         scenario.onActivity { activity ->
-          val newAppLanguageFragment = activity.supportFragmentManager
-            .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
+          val newAppLanguageFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
           val restoredLanguage =
             newAppLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
 
@@ -282,20 +284,23 @@ class AppLanguageFragmentTest {
     checkSelectedLanguage(index = PORTUGUESE_BUTTON_INDEX, expectedLanguageName = "Português")
   }
 
-  private fun checkSelectedLanguage(index: Int, expectedLanguageName: String) {
+  private fun checkSelectedLanguage(
+    index: Int,
+    expectedLanguageName: String,
+  ) {
     onView(
       atPositionOnView(
         R.id.language_recycler_view,
         index,
-        R.id.language_radio_button
-      )
+        R.id.language_radio_button,
+      ),
     ).check(matches(isChecked()))
     onView(
       atPositionOnView(
         R.id.language_recycler_view,
         index,
-        R.id.language_text_view
-      )
+        R.id.language_text_view,
+      ),
     ).check(matches(ViewMatchers.withText(expectedLanguageName)))
   }
 
@@ -309,21 +314,20 @@ class AppLanguageFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.language_recycler_view,
         position = index,
-        targetViewId = R.id.language_radio_button
-      )
+        targetViewId = R.id.language_radio_button,
+      ),
     ).perform(
-      click()
+      click(),
     )
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent {
-    return AppLanguageActivity.createAppLanguageActivityIntent(
+  private fun createAppLanguageActivityIntent(oppiaLanguage: OppiaLanguage): Intent =
+    AppLanguageActivity.createAppLanguageActivityIntent(
       context,
       oppiaLanguage,
-      internalProfileId
+      internalProfileId,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -357,8 +361,8 @@ class AppLanguageFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -369,9 +373,13 @@ class AppLanguageFragmentTest {
     fun inject(appLanguageFragmentTest: AppLanguageFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppLanguageFragmentTest_TestApplicationComponent.builder()
+      DaggerAppLanguageFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -380,9 +388,12 @@ class AppLanguageFragmentTest {
       component.inject(appLanguageFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

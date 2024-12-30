@@ -7,7 +7,6 @@ import javax.inject.Inject
 
 /** The activity for testing [HomeFragment]. */
 class HomeTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var homeTestActivityPresenter: HomeTestActivityPresenter
 

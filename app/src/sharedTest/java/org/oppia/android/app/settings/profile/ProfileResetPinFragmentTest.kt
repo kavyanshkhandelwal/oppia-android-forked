@@ -114,7 +114,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileResetPinFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileResetPinFragmentTest {
   @get:Rule
@@ -124,11 +124,12 @@ class ProfileResetPinFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
-    ProfileResetPinActivity::class.java, /* initialTouchMode= */
-    true, /*launchActivity= */
-    false
-  )
+  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> =
+    ActivityTestRule(
+      ProfileResetPinActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -164,912 +165,945 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(ProfileEditActivity::class.java.name))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          pressImeActionButton(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        pressImeActionButton()
-      )
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(ProfileEditActivity::class.java.name))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
-        )
-      ).perform(scrollTo())
-        .perform(
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(isRoot()).perform(orientationLandscape())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(scrollTo())
+          .perform(
+            editTextInputAction.appendText("12345"),
+            closeSoftKeyboard(),
+          )
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          scrollTo(),
+        ).perform(
           editTextInputAction.appendText("12345"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
-        )
-      ).perform(
-        scrollTo()
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
 
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
+        onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(ProfileEditActivity::class.java.name))
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          pressImeActionButton(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        pressImeActionButton()
-      )
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileEditActivity::class.java.name))
-    }
+        testCoroutineDispatchers.runCurrent()
+        intended(hasComponent(ProfileEditActivity::class.java.name))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(withId(R.id.profile_reset_input_pin))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(withId(R.id.profile_reset_input_pin))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_configChange_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_input_pin))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(scrollTo()).perform(click())
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_input_pin))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.profile_reset_pin_error_admin_pin_length),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button))
-        .perform(click())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+        onView(withId(R.id.profile_reset_save_button))
+          .perform(click())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("5"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("5"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
-    }
+        onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_configChange_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("5"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("5"),
-        closeSoftKeyboard()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
-    }
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(withId(R.id.profile_reset_input_confirm_pin))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.add_profile_error_pin_confirm_wrong),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_configChange_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_input_confirm_pin))
-        .perform(scrollTo())
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_input_confirm_pin))
+          .perform(scrollTo())
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.add_profile_error_pin_confirm_wrong),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_inputPin_configChange_inputFieldsExist_saveButtonIsClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
-        )
-      ).perform(scrollTo())
-        .check(matches(withText("12345")))
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
-        )
-      )
-        .perform(scrollTo())
-        .check(matches(withText("12345")))
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
-        .check(matches(isClickable()))
-    }
+        onView(isRoot()).perform(orientationLandscape())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(scrollTo())
+          .check(matches(withText("12345")))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(scrollTo())
+          .check(matches(withText("12345")))
+        onView(withId(R.id.profile_reset_save_button))
+          .perform(scrollTo())
+          .check(matches(isClickable()))
+      }
   }
 
   @Test
   fun testProfileResetPin_withAdmin_wrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12345"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12345"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("1234"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("1234"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("5"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("5"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
-    }
+        onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(withId(R.id.profile_reset_input_pin))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.profile_reset_pin_error_user_pin_length)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(withId(R.id.profile_reset_input_pin))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.profile_reset_pin_error_user_pin_length),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_inputPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("3"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("3"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
-    }
+        onView(withId(R.id.profile_reset_input_pin)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(withId(R.id.profile_reset_input_confirm_pin))
-        .check(
-          matches(
-            hasErrorText(
-              context.resources.getString(R.string.add_profile_error_pin_confirm_wrong)
-            )
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(withId(R.id.profile_reset_input_confirm_pin))
+          .check(
+            matches(
+              hasErrorText(
+                context.resources.getString(R.string.add_profile_error_pin_confirm_wrong),
+              ),
+            ),
           )
-        )
-    }
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).perform(click())
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(withId(R.id.profile_reset_save_button)).perform(click())
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("3"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("3"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
-    }
+        onView(withId(R.id.profile_reset_input_confirm_pin)).check(matches(hasNoErrorText()))
+      }
   }
 
   @Test
   fun testProfileResetPin_default_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
-    }
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_default_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
-        .check(matches(not(isClickable())))
-    }
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_save_button))
+          .perform(scrollTo())
+          .check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_inputPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
-    }
+        onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_inputPin_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
-        .check(matches(not(isClickable())))
-    }
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_save_button))
+          .perform(scrollTo())
+          .check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_inputPin_inputConfirmPin_saveButtonIsClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
-    }
+        onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+      }
   }
 
   @Test
   fun testProfileResetPin_inputPin_clickableSaveButton_clearPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+        onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          clearText(),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        clearText(),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button))
-        .check(matches(not(isClickable())))
-    }
+        onView(withId(R.id.profile_reset_save_button))
+          .check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          clearText(),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        clearText(),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
-    }
+        onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_pin))
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 1,
+          isAdmin = false,
+        ),
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("123"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("123"),
-        closeSoftKeyboard()
-      )
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          editTextInputAction.appendText("12"),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        editTextInputAction.appendText("12"),
-        closeSoftKeyboard()
-      )
-      onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
-      onView(
-        allOf(
-          withId(R.id.profile_reset_input_confirm_pin_edit_text),
-          isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin))
+        onView(withId(R.id.profile_reset_save_button)).check(matches(isClickable()))
+        onView(
+          allOf(
+            withId(R.id.profile_reset_input_confirm_pin_edit_text),
+            isDescendantOfA(withId(R.id.profile_reset_input_confirm_pin)),
+          ),
+        ).perform(
+          clearText(),
+          closeSoftKeyboard(),
         )
-      ).perform(
-        clearText(),
-        closeSoftKeyboard()
-      )
-      onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
-        .check(matches(not(isClickable())))
-    }
+        onView(isRoot()).perform(orientationLandscape())
+        onView(withId(R.id.profile_reset_save_button))
+          .perform(scrollTo())
+          .check(matches(not(isClickable())))
+      }
   }
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = true,
+        ),
+      ).use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
 
-        val profileResetPinFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+          val profileResetPinFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
 
-        val arguments = checkNotNull(profileResetPinFragment.arguments) {
-          "Expected arguments to be passed to ProfileResetPinFragment"
+          val arguments =
+            checkNotNull(profileResetPinFragment.arguments) {
+              "Expected arguments to be passed to ProfileResetPinFragment"
+            }
+          val args =
+            arguments.getProto(
+              ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+              ProfileResetPinFragmentArguments.getDefaultInstance(),
+            )
+          val receivedProfileResetPinProfileId = args.internalProfileId
+          val receivedProfileResetPinIsAdmin = args.isAdmin
+
+          assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+          assertThat(receivedProfileResetPinIsAdmin).isEqualTo(true)
         }
-        val args =
-          arguments.getProto(
-            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
-            ProfileResetPinFragmentArguments.getDefaultInstance()
-          )
-        val receivedProfileResetPinProfileId = args.internalProfileId
-        val receivedProfileResetPinIsAdmin = args.isAdmin
-
-        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
-        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(true)
       }
-    }
   }
 
   @Test
   fun testFragment_fragmentLoaded_whenIsAdminFalse_verifyCorrectArgumentsPassed() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = false
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    ActivityScenario
+      .launch<ProfileResetPinActivity>(
+        ProfileResetPinActivity.createProfileResetPinActivity(
+          context = context,
+          profileId = 0,
+          isAdmin = false,
+        ),
+      ).use { scenario ->
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
 
-        val profileResetPinFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+          val profileResetPinFragment =
+            activity.supportFragmentManager
+              .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
 
-        val arguments = checkNotNull(profileResetPinFragment.arguments) {
-          "Expected arguments to be passed to ProfileResetPinFragment"
+          val arguments =
+            checkNotNull(profileResetPinFragment.arguments) {
+              "Expected arguments to be passed to ProfileResetPinFragment"
+            }
+          val args =
+            arguments.getProto(
+              ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
+              ProfileResetPinFragmentArguments.getDefaultInstance(),
+            )
+          val receivedProfileResetPinProfileId = args.internalProfileId
+          val receivedProfileResetPinIsAdmin = args.isAdmin
+
+          assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
+          assertThat(receivedProfileResetPinIsAdmin).isEqualTo(false)
         }
-        val args =
-          arguments.getProto(
-            ProfileResetPinFragment.PROFILE_RESET_PIN_FRAGMENT_ARGUMENTS_KEY,
-            ProfileResetPinFragmentArguments.getDefaultInstance()
-          )
-        val receivedProfileResetPinProfileId = args.internalProfileId
-        val receivedProfileResetPinIsAdmin = args.isAdmin
-
-        assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
-        assertThat(receivedProfileResetPinIsAdmin).isEqualTo(false)
       }
-    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1100,8 +1134,8 @@ class ProfileResetPinFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1112,9 +1146,13 @@ class ProfileResetPinFragmentTest {
     fun inject(profileResetPinFragmentTest: ProfileResetPinFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileResetPinFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileResetPinFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1123,9 +1161,12 @@ class ProfileResetPinFragmentTest {
       component.inject(profileResetPinFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

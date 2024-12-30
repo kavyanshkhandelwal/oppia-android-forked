@@ -21,10 +21,12 @@ class TabMatcher {
 
         override fun matchesSafely(item: View?): Boolean {
           val tabLayout = item as TabLayout
-          val tabAtIndex: TabLayout.Tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)
-            ?: throw PerformException.Builder()
-              .withCause(IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
-              .build()
+          val tabAtIndex: TabLayout.Tab =
+            tabLayout.getTabAt(tabLayout.selectedTabPosition)
+              ?: throw PerformException
+                .Builder()
+                .withCause(IllegalStateException("No tab at index ${tabLayout.selectedTabPosition}"))
+                .build()
           return tabAtIndex.text.toString().contains(tabTitle, true)
         }
       }

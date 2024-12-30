@@ -26,7 +26,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NetworkConnectionUtilDebugModuleTest {
-
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionUtil
 
@@ -41,7 +40,8 @@ class NetworkConnectionUtilDebugModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionUtilDebugModuleTest_TestApplicationComponent.builder()
+    DaggerNetworkConnectionUtilDebugModuleTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -52,9 +52,7 @@ class NetworkConnectionUtilDebugModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -75,8 +73,8 @@ class NetworkConnectionUtilDebugModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConnectionUtilDebugModule::class
-    ]
+      TestModule::class, NetworkConnectionUtilDebugModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

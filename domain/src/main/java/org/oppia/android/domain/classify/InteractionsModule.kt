@@ -25,117 +25,90 @@ class InteractionsModule {
   @IntoMap
   @StringKey("Continue")
   fun provideContinueInteractionClassifier(
-    @ContinueRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @ContinueRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("FractionInput")
   fun provideFractionInputInteractionClassifier(
-    @FractionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @FractionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("ItemSelectionInput")
   fun provideItemSelectionInputInteractionClassifier(
-    @ItemSelectionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @ItemSelectionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("MultipleChoiceInput")
   fun provideMultipleChoiceInputInteractionClassifier(
-    @MultipleChoiceInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @MultipleChoiceInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("NumberWithUnits")
   fun provideNumberWithUnitsInteractionClassifier(
-    @NumberWithUnitsRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @NumberWithUnitsRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("NumericInput")
   fun provideNumericInputInteractionClassifier(
-    @NumericInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @NumericInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("TextInput")
   fun provideTextInputInteractionClassifier(
-    @TextInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @TextInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("DragAndDropSortInput")
   fun provideDragAndDropSortInputInteractionClassifier(
-    @DragDropSortInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @DragDropSortInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("ImageClickInput")
   fun provideImageClickInputInteractionClassifier(
-    @ImageClickInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @ImageClickInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("RatioExpressionInput")
   fun provideRatioExpressionInputInteractionClassifier(
-    @RatioExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @RatioExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("NumericExpressionInput")
   fun provideNumericExpressionInputInteractionClassifier(
-    @NumericExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @NumericExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("AlgebraicExpressionInput")
   fun provideAlgebraicExpressionInputInteractionClassifier(
-    @AlgebraicExpressionInputRules ruleClassifiers:
-      Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @AlgebraicExpressionInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 
   @Provides
   @IntoMap
   @StringKey("MathEquationInput")
   fun provideMathEquationInputInteractionClassifier(
-    @MathEquationInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>
-  ): InteractionClassifier {
-    return GenericInteractionClassifier(ruleClassifiers)
-  }
+    @MathEquationInputRules ruleClassifiers: Map<String, @JvmSuppressWildcards RuleClassifier>,
+  ): InteractionClassifier = GenericInteractionClassifier(ruleClassifiers)
 }

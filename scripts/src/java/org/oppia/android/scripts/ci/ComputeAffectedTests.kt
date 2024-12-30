@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
     println(
       "Usage: bazel run //scripts:compute_affected_tests --" +
         " <path_to_directory_root> <path_to_output_file> <merge_base_commit>" +
-        " <compute_all_tests=true/false>"
+        " <compute_all_tests=true/false>",
     )
     exitProcess(1)
   }
@@ -51,17 +51,18 @@ fun main(args: Array<String>) {
   val pathToRoot = args[0]
   val pathToOutputFile = args[1]
   val baseCommit = args[2]
-  val computeAllTestsSetting = args[3].let {
-    check(it.startsWith(COMPUTE_ALL_TESTS_PREFIX)) {
-      "Expected last argument to start with '$COMPUTE_ALL_TESTS_PREFIX'"
+  val computeAllTestsSetting =
+    args[3].let {
+      check(it.startsWith(COMPUTE_ALL_TESTS_PREFIX)) {
+        "Expected last argument to start with '$COMPUTE_ALL_TESTS_PREFIX'"
+      }
+      val computeAllTestsValue = it.removePrefix(COMPUTE_ALL_TESTS_PREFIX)
+      return@let computeAllTestsValue.toBooleanStrictOrNull()
+        ?: error(
+          "Expected last argument to have 'true' or 'false' passed to it, not:" +
+            " '$computeAllTestsValue'",
+        )
     }
-    val computeAllTestsValue = it.removePrefix(COMPUTE_ALL_TESTS_PREFIX)
-    return@let computeAllTestsValue.toBooleanStrictOrNull()
-      ?: error(
-        "Expected last argument to have 'true' or 'false' passed to it, not:" +
-          " '$computeAllTestsValue'"
-      )
-  }
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     ComputeAffectedTests(scriptBgDispatcher)
       .compute(pathToRoot, pathToOutputFile, baseCommit, computeAllTestsSetting)
@@ -69,13 +70,12 @@ fun main(args: Array<String>) {
 }
 
 // Needed since the codebase isn't yet using Kotlin 1.5, so this function isn't available.
-private fun String.toBooleanStrictOrNull(): Boolean? {
-  return when (lowercase(Locale.US)) {
+private fun String.toBooleanStrictOrNull(): Boolean? =
+  when (lowercase(Locale.US)) {
     "false" -> false
     "true" -> true
     else -> null
   }
-}
 
 /** Utility used to compute affected test targets. */
 class ComputeAffectedTests(
@@ -85,8 +85,10 @@ class ComputeAffectedTests(
   val maxTestCountPerSmallShard: Int = MAX_TEST_COUNT_PER_SMALL_SHARD,
   val commandExecutor: CommandExecutor =
     CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
-    )
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
+    ),
 ) {
   private companion object {
     private const val GENERIC_TEST_BUCKET_NAME = "generic"
@@ -106,7 +108,7 @@ class ComputeAffectedTests(
     pathToRoot: String,
     pathToOutputFile: String,
     baseCommit: String,
-    computeAllTestsSetting: Boolean
+    computeAllTestsSetting: Boolean,
   ) {
     val rootDirectory = File(pathToRoot).absoluteFile
     check(rootDirectory.isDirectory) { "Expected '$pathToRoot' to be a directory" }
@@ -122,9 +124,12 @@ class ComputeAffectedTests(
     println("Most recent common commit: ${gitClient.branchMergeBase}.")
 
     val currentBranch = gitClient.currentBranch.lowercase(Locale.US)
-    val affectedTestTargets = if (computeAllTestsSetting || currentBranch == "develop") {
-      computeAllTestTargets(bazelClient)
-    } else computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)
+    val affectedTestTargets =
+      if (computeAllTestsSetting || currentBranch == "develop") {
+        computeAllTestTargets(bazelClient)
+      } else {
+        computeAffectedTargetsForNonDevelopBranch(gitClient, bazelClient, rootDirectory)
+      }
 
     val filteredTestTargets = filterTargets(affectedTestTargets)
     println()
@@ -151,13 +156,15 @@ class ComputeAffectedTests(
   private fun computeAffectedTargetsForNonDevelopBranch(
     gitClient: GitClient,
     bazelClient: BazelClient,
-    rootDirectory: File
+    rootDirectory: File,
   ): List<String> {
     // Compute the list of changed files, but exclude files which no longer exist (since bazel query
     // can't handle these well).
-    val changedFiles = gitClient.changedFiles.filter { filepath ->
-      File(rootDirectory, filepath).exists()
-    }.toSet()
+    val changedFiles =
+      gitClient.changedFiles
+        .filter { filepath ->
+          File(rootDirectory, filepath).exists()
+        }.toSet()
     println("Changed files (per Git, ${changedFiles.size} total): $changedFiles.")
 
     // Compute the changed targets 100 files at a time to avoid unnecessarily long-running Bazel
@@ -170,22 +177,24 @@ class ComputeAffectedTests(
 
     // Similarly, compute the affect test targets list 100 file targets at a time.
     val affectedTestTargets =
-      changedFileTargets.chunked(size = 100)
+      changedFileTargets
+        .chunked(size = 100)
         .fold(initial = setOf<String>()) { allTargets, targetChunk ->
           allTargets + bazelClient.retrieveRelatedTestTargets(targetChunk).toSet()
         }
     println(
-      "Affected Bazel test targets (${affectedTestTargets.size} total): $affectedTestTargets."
+      "Affected Bazel test targets (${affectedTestTargets.size} total): $affectedTestTargets.",
     )
 
     // Compute the list of Bazel files that were changed.
-    val changedBazelFiles = changedFiles.filter { file ->
-      file.endsWith(".bzl", ignoreCase = true) ||
-        file.endsWith(".bazel", ignoreCase = true) ||
-        file == "WORKSPACE"
-    }
+    val changedBazelFiles =
+      changedFiles.filter { file ->
+        file.endsWith(".bzl", ignoreCase = true) ||
+          file.endsWith(".bazel", ignoreCase = true) ||
+          file == "WORKSPACE"
+      }
     println(
-      "Changed Bazel-specific support files (${changedBazelFiles.size} total): $changedBazelFiles."
+      "Changed Bazel-specific support files (${changedBazelFiles.size} total): $changedBazelFiles.",
     )
 
     // Compute the list of affected tests based on BUILD/Bazel/WORKSPACE files. These are generally
@@ -193,7 +202,7 @@ class ComputeAffectedTests(
     val transitiveTestTargets = bazelClient.retrieveTransitiveTestTargets(changedBazelFiles)
     println(
       "Affected test targets due to transitive build deps (${transitiveTestTargets.size} total):" +
-        " $transitiveTestTargets."
+        " $transitiveTestTargets.",
     )
 
     return (affectedTestTargets + transitiveTestTargets).distinct()
@@ -205,7 +214,7 @@ class ComputeAffectedTests(
       !targetPath
         .startsWith(
           "//instrumentation/src/javatests/org/oppia/android/instrumentation/player",
-          ignoreCase = true
+          ignoreCase = true,
         )
     }
   }
@@ -217,30 +226,35 @@ class ComputeAffectedTests(
     // 3. Convert to: Map<GroupingStrategy, List<Pair<TestBucket, List<String>>>>
     // 4. Convert to: Map<GroupingStrategy, Map<TestBucket, List<String>>>
     val groupedBuckets: Map<GroupingStrategy, Map<TestBucket, List<String>>> =
-      testTargets.groupBy { TestBucket.retrieveCorrespondingTestBucket(it) }
-        .entries.groupBy(
+      testTargets
+        .groupBy { TestBucket.retrieveCorrespondingTestBucket(it) }
+        .entries
+        .groupBy(
           keySelector = { checkNotNull(it.key).groupingStrategy },
-          valueTransform = { checkNotNull(it.key) to it.value }
+          valueTransform = { checkNotNull(it.key) to it.value },
         ).mapValues { (_, bucketLists) -> bucketLists.toMap() }
 
     // Next, properly segment buckets by splitting out individual ones and collecting like one:
     // 5. Convert to: Map<String, Map<TestBucket, List<String>>>
     val partitionedBuckets: Map<String, Map<TestBucket, List<String>>> =
-      groupedBuckets.entries.flatMap { (strategy, buckets) ->
-        return@flatMap when (strategy) {
-          GroupingStrategy.BUCKET_SEPARATELY -> {
-            // Each entry in the combined map should be a separate entry in the segmented map:
-            // 1. Start with: Map<TestBucket, List<String>>
-            // 2. Convert to: Map<TestBucket, Map<TestBucket, List<String>>>
-            // 3. Convert to: Map<String, Map<TestBucket, List<String>>>
-            // 4. Convert to: Iterable<Pair<String, Map<TestBucket, List<String>>>>
-            buckets.mapValues { (testBucket, targets) -> mapOf(testBucket to targets) }
-              .mapKeys { (testBucket, _) -> testBucket.cacheBucketName }
-              .entries.map { (cacheName, bucket) -> cacheName to bucket }
+      groupedBuckets.entries
+        .flatMap { (strategy, buckets) ->
+          return@flatMap when (strategy) {
+            GroupingStrategy.BUCKET_SEPARATELY -> {
+              // Each entry in the combined map should be a separate entry in the segmented map:
+              // 1. Start with: Map<TestBucket, List<String>>
+              // 2. Convert to: Map<TestBucket, Map<TestBucket, List<String>>>
+              // 3. Convert to: Map<String, Map<TestBucket, List<String>>>
+              // 4. Convert to: Iterable<Pair<String, Map<TestBucket, List<String>>>>
+              buckets
+                .mapValues { (testBucket, targets) -> mapOf(testBucket to targets) }
+                .mapKeys { (testBucket, _) -> testBucket.cacheBucketName }
+                .entries
+                .map { (cacheName, bucket) -> cacheName to bucket }
+            }
+            GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
           }
-          GroupingStrategy.BUCKET_GENERICALLY -> listOf(GENERIC_TEST_BUCKET_NAME to buckets)
-        }
-      }.toMap()
+        }.toMap()
 
     // Next, collapse the test bucket lists & partition them based on the common sharding strategy
     // for each group:
@@ -252,11 +266,12 @@ class ComputeAffectedTests(
           "Error: expected all buckets in the same partition to share a sharding strategy:" +
             " ${bucketMap.keys} (strategies: $shardingStrategies)"
         }
-        val maxTestCountPerShard = when (shardingStrategies.first()) {
-          ShardingStrategy.LARGE_PARTITIONS -> maxTestCountPerLargeShard
-          ShardingStrategy.MEDIUM_PARTITIONS -> maxTestCountPerMediumShard
-          ShardingStrategy.SMALL_PARTITIONS -> maxTestCountPerSmallShard
-        }
+        val maxTestCountPerShard =
+          when (shardingStrategies.first()) {
+            ShardingStrategy.LARGE_PARTITIONS -> maxTestCountPerLargeShard
+            ShardingStrategy.MEDIUM_PARTITIONS -> maxTestCountPerMediumShard
+            ShardingStrategy.SMALL_PARTITIONS -> maxTestCountPerSmallShard
+          }
         val allPartitionTargets = bucketMap.values.flatten()
 
         // Use randomization to encourage cache breadth & potentially improve workflow performance.
@@ -267,10 +282,12 @@ class ComputeAffectedTests(
     // 7. Convert to List<AffectedTestsBucket>
     return shardedBuckets.entries.flatMap { (bucketName, shardedTargets) ->
       shardedTargets.map { targets ->
-        AffectedTestsBucket.newBuilder().apply {
-          cacheBucketName = bucketName
-          addAllAffectedTestTargets(targets)
-        }.build()
+        AffectedTestsBucket
+          .newBuilder()
+          .apply {
+            cacheBucketName = bucketName
+            addAllAffectedTestTargets(targets)
+          }.build()
       }
     }
   }
@@ -278,73 +295,74 @@ class ComputeAffectedTests(
   private enum class TestBucket(
     val cacheBucketName: String,
     val groupingStrategy: GroupingStrategy,
-    val shardingStrategy: ShardingStrategy
+    val shardingStrategy: ShardingStrategy,
   ) {
     /** Corresponds to app layer tests. */
     APP(
       cacheBucketName = "app",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
-      shardingStrategy = ShardingStrategy.SMALL_PARTITIONS
+      shardingStrategy = ShardingStrategy.SMALL_PARTITIONS,
     ),
 
     /** Corresponds to data layer tests. */
     DATA(
       cacheBucketName = "data",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
-      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS,
     ),
 
     /** Corresponds to domain layer tests. */
     DOMAIN(
       cacheBucketName = "domain",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
-      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS,
     ),
 
     /** Corresponds to instrumentation tests. */
     INSTRUMENTATION(
       cacheBucketName = "instrumentation",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
-      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS,
     ),
 
     /** Corresponds to scripts tests. */
     SCRIPTS(
       cacheBucketName = "scripts",
       groupingStrategy = GroupingStrategy.BUCKET_SEPARATELY,
-      shardingStrategy = ShardingStrategy.MEDIUM_PARTITIONS
+      shardingStrategy = ShardingStrategy.MEDIUM_PARTITIONS,
     ),
 
     /** Corresponds to testing utility tests. */
     TESTING(
       cacheBucketName = "testing",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
-      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS,
     ),
 
     /** Corresponds to production utility tests. */
     UTILITY(
       cacheBucketName = "utility",
       groupingStrategy = GroupingStrategy.BUCKET_GENERICALLY,
-      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS
-    );
+      shardingStrategy = ShardingStrategy.LARGE_PARTITIONS,
+    ),
+    ;
 
     companion object {
       private val EXTRACT_BUCKET_REGEX = "^//([^(/|:)]+?)[/:].+?\$".toRegex()
 
       /** Returns the [TestBucket] that corresponds to the specific [testTarget]. */
-      fun retrieveCorrespondingTestBucket(testTarget: String): TestBucket {
-        return EXTRACT_BUCKET_REGEX.matchEntire(testTarget)
+      fun retrieveCorrespondingTestBucket(testTarget: String): TestBucket =
+        EXTRACT_BUCKET_REGEX
+          .matchEntire(testTarget)
           ?.groupValues
           ?.maybeSecond()
           ?.let { bucket ->
             values().find { it.cacheBucketName == bucket }
               ?: error(
                 "Invalid bucket name: $bucket (expected one of:" +
-                  " ${values().map { it.cacheBucketName }})"
+                  " ${values().map { it.cacheBucketName }})",
               )
           } ?: error("Invalid target: $testTarget (could not extract bucket name)")
-      }
 
       private fun <E> List<E>.maybeSecond(): E? = if (size >= 2) this[1] else null
     }
@@ -358,7 +376,7 @@ class ComputeAffectedTests(
      * Indicates that a particular test bucket should be combined with all other generically grouped
      * buckets.
      */
-    BUCKET_GENERICALLY
+    BUCKET_GENERICALLY,
   }
 
   private enum class ShardingStrategy {
@@ -378,6 +396,6 @@ class ComputeAffectedTests(
      * Indicates that the tests for a test bucket run slowly and require more parallelization for
      * faster CI runs.
      */
-    SMALL_PARTITIONS
+    SMALL_PARTITIONS,
   }
 }

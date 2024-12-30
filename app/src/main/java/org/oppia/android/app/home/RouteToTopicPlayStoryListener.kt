@@ -8,6 +8,6 @@ interface RouteToTopicPlayStoryListener {
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   )
 }

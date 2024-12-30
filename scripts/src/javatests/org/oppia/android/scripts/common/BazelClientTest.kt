@@ -50,9 +50,10 @@ class BazelClientTest {
   fun testRetrieveTestTargets_emptyFolder_fails() {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
 
-    val exception = assertThrows<IllegalStateException>() {
-      bazelClient.retrieveAllTestTargets()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        bazelClient.retrieveAllTestTargets()
+      }
 
     // Verify that the underlying Bazel command failed since it was run outside a Bazel workspace.
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -64,9 +65,10 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root, commandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
-    val exception = assertThrows<IllegalStateException>() {
-      bazelClient.retrieveAllTestTargets()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        bazelClient.retrieveAllTestTargets()
+      }
 
     // Verify that the underlying Bazel command failed since there are no test targets.
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -139,11 +141,13 @@ class BazelClientTest {
 
     val fileTargets =
       bazelClient.retrieveBazelTargets(
-        listOf("SecondTestDependency.kt", "subpackage/ThirdTest.kt", "ExtraDep.kt")
+        listOf("SecondTestDependency.kt", "subpackage/ThirdTest.kt", "ExtraDep.kt"),
       )
 
     assertThat(fileTargets).containsExactly(
-      "//:SecondTestDependency.kt", "//subpackage:ThirdTest.kt", "//:ExtraDep.kt"
+      "//:SecondTestDependency.kt",
+      "//subpackage:ThirdTest.kt",
+      "//:ExtraDep.kt",
     )
   }
 
@@ -204,7 +208,7 @@ class BazelClientTest {
 
     val testTargets =
       bazelClient.retrieveRelatedTestTargets(
-        listOf("//:SecondTestDependency.kt", "//subpackage:FourthTest.kt", "//:ExtraDep.kt")
+        listOf("//:SecondTestDependency.kt", "//subpackage:FourthTest.kt", "//:ExtraDep.kt"),
       )
 
     println(testBazelWorkspace.rootBuildFile.readLines().joinToString("\n"))
@@ -212,7 +216,9 @@ class BazelClientTest {
     // The function should provide all test targets related to the file targets provided (either via
     // dependencies or because that file is part of the test itself).
     assertThat(testTargets).containsExactly(
-      "//:FirstTest", "//:SecondTest", "//subpackage:FourthTest"
+      "//:FirstTest",
+      "//:SecondTest",
+      "//subpackage:FourthTest",
     )
   }
 
@@ -282,7 +288,7 @@ class BazelClientTest {
     val bzlFile =
       generateCustomJvmTestRuleBazelFile(
         "custom_jvm_test_rule_base.bzl",
-        "custom_jvm_test_rule.bzl"
+        "custom_jvm_test_rule.bzl",
       )
     // Update build files to depend on the new Bazel file.
     val packageTwoDirectory = File(tempFolder.root, "two")
@@ -291,7 +297,7 @@ class BazelClientTest {
 
     val testTargets =
       bazelClient.retrieveTransitiveTestTargets(
-        listOf("custom_jvm_test_rule_base.bzl", "custom_jvm_test_rule.bzl")
+        listOf("custom_jvm_test_rule_base.bzl", "custom_jvm_test_rule.bzl"),
       )
 
     // All tests corresponding to build files that use the affected .bzl file should be returned.
@@ -311,7 +317,10 @@ class BazelClientTest {
 
     // All test targets should be returned for WORKSPACE since it affects all files.
     assertThat(testTargets).containsExactly(
-      "//:FirstTest", "//two:SecondTest", "//three:ThirdTest", "//:FourthTest"
+      "//:FirstTest",
+      "//two:SecondTest",
+      "//three:ThirdTest",
+      "//:FourthTest",
     )
   }
 
@@ -329,7 +338,7 @@ class BazelClientTest {
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactViaThirdParty_returnsArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("androidx.annotation:annotation:1.1.0")
+      listOf("androidx.annotation:annotation:1.1.0"),
     )
     tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
@@ -341,7 +350,7 @@ class BazelClientTest {
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     createAndroidLibrary(
       artifactName = "androidx.annotation:annotation:1.1.0",
-      buildFile = thirdPartyBuild
+      buildFile = thirdPartyBuild,
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
@@ -354,23 +363,23 @@ class BazelClientTest {
   fun testRetrieveMavenDepsList_binaryDependsOnArtifactNotViaThirdParty_doesNotReturnArtifact() {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("androidx.annotation:annotation:1.1.0")
+      listOf("androidx.annotation:annotation:1.1.0"),
     )
     tempFolder.newFile("AndroidManifest.xml")
     createAndroidBinary(
       binaryName = "test_oppia",
       manifestName = "AndroidManifest.xml",
-      dependencyName = ":androidx_annotation_annotation"
+      dependencyName = ":androidx_annotation_annotation",
     )
     tempFolder.newFolder("third_party")
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     createAndroidLibrary(
       artifactName = "io.fabric.sdk.android:fabric:1.4.7",
-      buildFile = thirdPartyBuild
+      buildFile = thirdPartyBuild,
     )
     createAndroidLibrary(
       artifactName = "androidx.annotation:annotation:1.1.0",
-      buildFile = testBazelWorkspace.rootBuildFile
+      buildFile = testBazelWorkspace.rootBuildFile,
     )
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val thirdPartyDependenciesList =
@@ -426,36 +435,38 @@ class BazelClientTest {
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
-    val result = bazelClient.runCoverageForTestTarget(
-      "//coverage/test/java/com/example:AddNumsTest"
-    )
-    val expectedResult = listOf(
-      listOf(
-        "SF:coverage/main/java/com/example/AddNums.kt",
-        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FN:3,com/example/AddNums::<init> ()V",
-        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-        "FNDA:0,com/example/AddNums::<init> ()V",
-        "FNF:2",
-        "FNH:1",
-        "BRDA:7,0,0,1",
-        "BRDA:7,0,1,1",
-        "BRDA:7,0,2,1",
-        "BRDA:7,0,3,1",
-        "BRF:4",
-        "BRH:4",
-        "DA:3,0",
-        "DA:7,1",
-        "DA:8,1",
-        "DA:10,1",
-        "LH:3",
-        "LF:4",
-        "end_of_record"
+    val result =
+      bazelClient.runCoverageForTestTarget(
+        "//coverage/test/java/com/example:AddNumsTest",
       )
-    )
+    val expectedResult =
+      listOf(
+        listOf(
+          "SF:coverage/main/java/com/example/AddNums.kt",
+          "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+          "FN:3,com/example/AddNums::<init> ()V",
+          "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+          "FNDA:0,com/example/AddNums::<init> ()V",
+          "FNF:2",
+          "FNH:1",
+          "BRDA:7,0,0,1",
+          "BRDA:7,0,1,1",
+          "BRDA:7,0,2,1",
+          "BRDA:7,0,3,1",
+          "BRF:4",
+          "BRH:4",
+          "DA:3,0",
+          "DA:7,1",
+          "DA:8,1",
+          "DA:10,1",
+          "LH:3",
+          "LF:4",
+          "end_of_record",
+        ),
+      )
     assertThat(result).isEqualTo(expectedResult)
   }
 
@@ -510,7 +521,7 @@ class BazelClientTest {
       sourceContent = sourceContent,
       testContent = testContent,
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
     val testBuildFile = File(tempFolder.root, "coverage/test/java/com/example/BUILD.bazel")
@@ -530,57 +541,60 @@ class BazelClientTest {
           visibility = ["//visibility:public"],
           test_class = "com.example.AddNumsTest",
       )
-      """.trimIndent()
+      """.trimIndent(),
     )
 
-    val result = bazelClient.runCoverageForTestTarget(
-      "//coverage/test/java/com/example:AddNumsTest"
-    )
-    val expectedShardResult1 = listOf(
-      "SF:coverage/main/java/com/example/AddNums.kt",
-      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/AddNums::<init> ()V",
-      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/AddNums::<init> ()V",
-      "FNF:2",
-      "FNH:1",
-      "BRDA:7,0,0,1",
-      "BRDA:7,0,1,1",
-      "BRDA:7,0,2,1",
-      "BRDA:7,0,3,0",
-      "BRF:4",
-      "BRH:3",
-      "DA:3,0",
-      "DA:7,1",
-      "DA:8,0",
-      "DA:10,1",
-      "LH:2",
-      "LF:4",
-      "end_of_record"
-    )
+    val result =
+      bazelClient.runCoverageForTestTarget(
+        "//coverage/test/java/com/example:AddNumsTest",
+      )
+    val expectedShardResult1 =
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,1",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,1",
+        "BRDA:7,0,3,0",
+        "BRF:4",
+        "BRH:3",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,0",
+        "DA:10,1",
+        "LH:2",
+        "LF:4",
+        "end_of_record",
+      )
 
-    val expectedShardResult2 = listOf(
-      "SF:coverage/main/java/com/example/AddNums.kt",
-      "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FN:3,com/example/AddNums::<init> ()V",
-      "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
-      "FNDA:0,com/example/AddNums::<init> ()V",
-      "FNF:2",
-      "FNH:1",
-      "BRDA:7,0,0,0",
-      "BRDA:7,0,1,1",
-      "BRDA:7,0,2,0",
-      "BRDA:7,0,3,1",
-      "BRF:4",
-      "BRH:2",
-      "DA:3,0",
-      "DA:7,1",
-      "DA:8,1",
-      "DA:10,0",
-      "LH:2",
-      "LF:4",
-      "end_of_record"
-    )
+    val expectedShardResult2 =
+      listOf(
+        "SF:coverage/main/java/com/example/AddNums.kt",
+        "FN:7,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FN:3,com/example/AddNums::<init> ()V",
+        "FNDA:1,com/example/AddNums${'$'}Companion::sumNumbers (II)Ljava/lang/Object;",
+        "FNDA:0,com/example/AddNums::<init> ()V",
+        "FNF:2",
+        "FNH:1",
+        "BRDA:7,0,0,0",
+        "BRDA:7,0,1,1",
+        "BRDA:7,0,2,0",
+        "BRDA:7,0,3,1",
+        "BRF:4",
+        "BRH:2",
+        "DA:3,0",
+        "DA:7,1",
+        "DA:8,1",
+        "DA:10,0",
+        "LH:2",
+        "LF:4",
+        "end_of_record",
+      )
     assertThat(result).contains(expectedShardResult1)
     assertThat(result).contains(expectedShardResult2)
   }
@@ -590,9 +604,10 @@ class BazelClientTest {
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     testBazelWorkspace.initEmptyWorkspace()
 
-    val exception = assertThrows<IllegalStateException>() {
-      bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        bazelClient.runCoverageForTestTarget("//coverage/test/java/com/example:test")
+      }
 
     // Verify that the underlying Bazel command failed since the test target was not available.
     assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
@@ -610,12 +625,15 @@ class BazelClientTest {
           exitCode = 0,
           output = listOf(singleLine),
           errorOutput = listOf(),
-          command = listOf()
-        )
+          command = listOf(),
+        ),
       )
   }
 
-  private fun createAndroidLibrary(artifactName: String, buildFile: File) {
+  private fun createAndroidLibrary(
+    artifactName: String,
+    buildFile: File,
+  ) {
     buildFile.appendText(
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
@@ -626,18 +644,17 @@ class BazelClientTest {
               artifact("$artifactName")
           ],
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
-  private fun omitVersionAndReplacePeriodsAndColons(artifactName: String): String {
-    return artifactName.substringBeforeLast(':').replace('.', '_').replace(':', '_')
-  }
+  private fun omitVersionAndReplacePeriodsAndColons(artifactName: String): String =
+    artifactName.substringBeforeLast(':').replace('.', '_').replace(':', '_')
 
   private fun createAndroidBinary(
     binaryName: String,
     manifestName: String,
-    dependencyName: String
+    dependencyName: String,
   ) {
     testBazelWorkspace.rootBuildFile.writeText(
       """
@@ -648,13 +665,13 @@ class BazelClientTest {
                "$dependencyName"
           ],
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   private fun generateCustomJvmTestRuleBazelFile(
     firstFilename: String,
-    secondFilename: String
+    secondFilename: String,
   ): File {
     val firstNewFile = File(tempFolder.root, firstFilename)
     val secondNewFile = File(tempFolder.root, secondFilename)
@@ -667,7 +684,7 @@ class BazelClientTest {
               srcs = srcs,
               deps = deps
           )
-      """.trimIndent()
+      """.trimIndent(),
     )
     secondNewFile.appendText(
       """
@@ -678,20 +695,24 @@ class BazelClientTest {
               srcs = srcs,
               deps = deps
           )
-      """.trimIndent()
+      """.trimIndent(),
     )
     return secondNewFile
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 
-  private fun updateBuildFileToUseCustomJvmTestRule(bazelFile: File, buildFile: File) {
+  private fun updateBuildFileToUseCustomJvmTestRule(
+    bazelFile: File,
+    buildFile: File,
+  ) {
     buildFile.prependText(
-      "load(\"//:${bazelFile.name}\", \"custom_jvm_test\")\n"
+      "load(\"//:${bazelFile.name}\", \"custom_jvm_test\")\n",
     )
     buildFile.replaceLines("kt_jvm_test(", "custom_jvm_test(")
   }
@@ -700,7 +721,10 @@ class BazelClientTest {
     writeLines(listOf(line) + readLines())
   }
 
-  private fun File.replaceLines(find: String, replace: String) {
+  private fun File.replaceLines(
+    find: String,
+    replace: String,
+  ) {
     writeLines(readLines().map { it.replace(find, replace) })
   }
 

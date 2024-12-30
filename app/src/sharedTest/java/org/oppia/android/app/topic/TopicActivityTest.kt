@@ -116,7 +116,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = TopicActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class TopicActivityTest {
   @get:Rule
@@ -155,13 +155,24 @@ class TopicActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
-    val currentScreenNameWithIntentOne = TopicActivity.createTopicActivityIntent(
-      context, profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
-    ).extractCurrentAppScreenName()
+    val currentScreenNameWithIntentOne =
+      TopicActivity
+        .createTopicActivityIntent(
+          context,
+          profileId,
+          TEST_CLASSROOM_ID_1,
+          FRACTIONS_TOPIC_ID,
+        ).extractCurrentAppScreenName()
 
-    val currentScreenNameWithIntentTwo = TopicActivity.createTopicPlayStoryActivityIntent(
-      context, profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
-    ).extractCurrentAppScreenName()
+    val currentScreenNameWithIntentTwo =
+      TopicActivity
+        .createTopicPlayStoryActivityIntent(
+          context,
+          profileId,
+          TEST_CLASSROOM_ID_1,
+          FRACTIONS_TOPIC_ID,
+          FRACTIONS_STORY_ID_0,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntentOne).isEqualTo(ScreenName.TOPIC_ACTIVITY)
     assertThat(currentScreenNameWithIntentTwo).isEqualTo(ScreenName.TOPIC_ACTIVITY)
@@ -171,7 +182,9 @@ class TopicActivityTest {
   fun testTopicActivity_hasCorrectActivityLabel() {
     TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
     launchTopicActivity(
-      profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+      profileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
     ).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
@@ -209,11 +222,12 @@ class TopicActivityTest {
   private fun launchTopicActivity(
     profileId: ProfileId,
     classroomId: String,
-    topicId: String
+    topicId: String,
   ): ActivityScenario<TopicActivity> {
-    val scenario = ActivityScenario.launch<TopicActivity>(
-      TopicActivity.createTopicActivityIntent(context, profileId, classroomId, topicId)
-    )
+    val scenario =
+      ActivityScenario.launch<TopicActivity>(
+        TopicActivity.createTopicActivityIntent(context, profileId, classroomId, topicId),
+      )
     testCoroutineDispatchers.runCurrent()
     onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
     return scenario
@@ -257,8 +271,8 @@ class TopicActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -269,9 +283,13 @@ class TopicActivityTest {
     fun inject(topicActivityTest: TopicActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicActivityTest_TestApplicationComponent.builder()
+      DaggerTopicActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -280,9 +298,12 @@ class TopicActivityTest {
       component.inject(topicActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

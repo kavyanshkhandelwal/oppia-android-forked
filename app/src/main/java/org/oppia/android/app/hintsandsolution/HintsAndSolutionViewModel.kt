@@ -27,7 +27,7 @@ class HintsAndSolutionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val solutionViewModelFactory: SolutionViewModel.Factory
+  private val solutionViewModelFactory: SolutionViewModel.Factory,
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
   private val solution by lazy {
@@ -54,68 +54,73 @@ class HintsAndSolutionViewModel private constructor(
    */
   val solutionIndex: Int get() = itemList.lastIndex - 1
 
-  private fun createViewModels(): List<HintsAndSolutionItemViewModel> {
-    return hintList.mapIndexed { index, hint ->
+  private fun createViewModels(): List<HintsAndSolutionItemViewModel> =
+    hintList.mapIndexed { index, hint ->
       createHintViewModel(
-        index, hint, isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList))
+        index,
+        hint,
+        isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList)),
       )
     } + listOfNotNull(solution?.let(this::createSolutionViewModel)) + ReturnToLessonViewModel
-  }
 
   private fun createHintViewModel(
     hintIndex: Int,
     hint: Hint,
-    isHintRevealed: ObservableBoolean
-  ): HintViewModel {
-    return HintViewModel(
-      title = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.hint_list_item_number,
-        resourceHandler.toHumanReadableString(hintIndex + 1)
-      ),
-      hintSummary = translationController.extractString(
-        hint.hintContent, writtenTranslationContext
-      ),
-      isHintRevealed = isHintRevealed
+    isHintRevealed: ObservableBoolean,
+  ): HintViewModel =
+    HintViewModel(
+      title =
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.hint_list_item_number,
+          resourceHandler.toHumanReadableString(hintIndex + 1),
+        ),
+      hintSummary =
+        translationController.extractString(
+          hint.hintContent,
+          writtenTranslationContext,
+        ),
+      isHintRevealed = isHintRevealed,
     )
-  }
 
-  private fun createSolutionViewModel(solution: Solution): SolutionViewModel {
-    return solutionViewModelFactory.create(
-      solutionSummary = translationController.extractString(
-        solution.explanation, writtenTranslationContext
-      ),
+  private fun createSolutionViewModel(solution: Solution): SolutionViewModel =
+    solutionViewModelFactory.create(
+      solutionSummary =
+        translationController.extractString(
+          solution.explanation,
+          writtenTranslationContext,
+        ),
       isSolutionRevealed = isSolutionRevealed,
       isSolutionExclusive = solution.answerIsExclusive,
       correctAnswer = solution.correctAnswer,
       interaction = state.interaction,
-      writtenTranslationContext = writtenTranslationContext
+      writtenTranslationContext = writtenTranslationContext,
     )
-  }
 
   /** Application-injectable factory for creating [HintsAndSolutionViewModel]s (see [create]). */
-  class Factory @Inject constructor(
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val translationController: TranslationController,
-    private val solutionViewModelFactory: SolutionViewModel.Factory
-  ) {
-    /**
-     * Returns a new [HintsAndSolutionViewModel] that populates a list of item view models (to be
-     * bound to a recycler view) using the included [state] and [helpIndex] to source the current
-     * hints/solution state, and the provided [writtenTranslationContext] for localization.
-     */
-    fun create(
-      state: State,
-      helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
-    ): HintsAndSolutionViewModel {
-      return HintsAndSolutionViewModel(
-        state,
-        helpIndex,
-        writtenTranslationContext,
-        resourceHandler,
-        translationController,
-        solutionViewModelFactory
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val resourceHandler: AppLanguageResourceHandler,
+      private val translationController: TranslationController,
+      private val solutionViewModelFactory: SolutionViewModel.Factory,
+    ) {
+      /**
+       * Returns a new [HintsAndSolutionViewModel] that populates a list of item view models (to be
+       * bound to a recycler view) using the included [state] and [helpIndex] to source the current
+       * hints/solution state, and the provided [writtenTranslationContext] for localization.
+       */
+      fun create(
+        state: State,
+        helpIndex: HelpIndex,
+        writtenTranslationContext: WrittenTranslationContext,
+      ): HintsAndSolutionViewModel =
+        HintsAndSolutionViewModel(
+          state,
+          helpIndex,
+          writtenTranslationContext,
+          resourceHandler,
+          translationController,
+          solutionViewModelFactory,
+        )
     }
-  }
 }

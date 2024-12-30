@@ -52,6 +52,7 @@ import javax.inject.Singleton
 class AndroidLocaleFactoryTest {
   @Inject lateinit var androidLocaleFactory: AndroidLocaleFactory
   @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -59,13 +60,14 @@ class AndroidLocaleFactoryTest {
     setUpTestApplicationComponent()
   }
 
-  /* Basic tests for one-off Locale creation (latter functions indirectly test in more detail. */
+  // Basic tests for one-off Locale creation (latter functions indirectly test in more detail.
 
   @Test
   fun testCreateOneOffAndroidLocale_default_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createOneOffAndroidLocale(OppiaLocaleContext.getDefaultInstance())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createOneOffAndroidLocale(OppiaLocaleContext.getDefaultInstance())
+      }
 
     // The operation should fail since there's no language type defined.
     assertThat(exception).hasMessageThat().contains("Invalid language case")
@@ -77,7 +79,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = LanguageId.getDefaultInstance(),
-        regionDefinition = RegionSupportDefinition.getDefaultInstance()
+        regionDefinition = RegionSupportDefinition.getDefaultInstance(),
       )
 
     val locale = androidLocaleFactory.createOneOffAndroidLocale(context)
@@ -91,7 +93,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createOneOffAndroidLocale(context)
@@ -101,19 +103,20 @@ class AndroidLocaleFactoryTest {
     assertThat(locale.country).isEqualTo("BR")
   }
 
-  /* Begin createAndroidLocaleAsync tests. */
+  // Begin createAndroidLocaleAsync tests.
 
   @Test
   fun testCreateLocale_default_throwsException() {
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(OppiaLocaleContext.getDefaultInstance())
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(OppiaLocaleContext.getDefaultInstance())
+      }
 
     // The operation should fail since there's no language type defined.
     assertThat(exception).hasMessageThat().contains("Invalid language case")
   }
 
-  /* Tests for app strings. */
+  // Tests for app strings.
 
   @Test
   fun testCreateLocale_appStrings_withAndroidId_compatible_returnsAndroidIdLocale() {
@@ -121,7 +124,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -137,7 +140,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -153,7 +156,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(ietfBcp47LanguageId = PT_BR_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_US
+        regionDefinition = REGION_US,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -170,7 +173,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -185,11 +188,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
-        appStringId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
-        ),
-        regionDefinition = REGION_BRAZIL
+        appStringId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -205,11 +209,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
-        appStringId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_BRAZIL
+        appStringId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -227,7 +232,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -245,7 +250,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -263,7 +268,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_ZZ_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -280,7 +285,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(ietfBcp47LanguageId = PT_ZZ_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -297,7 +302,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         appStringId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_ZZ
+        regionDefinition = REGION_ZZ,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -314,7 +319,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(macaronicLanguageId = QQ_ZZ_MACARONIC_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -331,7 +336,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -349,7 +354,7 @@ class AndroidLocaleFactoryTest {
         appStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         primaryMinSdkVersion = 99,
         fallbackAppStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -365,11 +370,12 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAppStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -386,11 +392,12 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAppStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -408,11 +415,12 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAppStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -429,11 +437,12 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        fallbackAppStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAppStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -451,7 +460,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_ZZ_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -469,7 +478,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -484,12 +493,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        appStringId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID
-        ),
+        appStringId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID,
+          ),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -505,12 +515,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createAppStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        appStringId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID
-        ),
+        appStringId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID,
+          ),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -528,7 +539,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -546,7 +557,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         appStringId = createLanguageId(macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -564,12 +575,13 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.ENGLISH,
         appStringId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackAppStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(context)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
@@ -583,7 +595,7 @@ class AndroidLocaleFactoryTest {
         primaryMinSdkVersion = 99,
         fallbackAppStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         fallbackMinSdkVersion = 99,
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -600,7 +612,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
         appStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -617,7 +629,7 @@ class AndroidLocaleFactoryTest {
       createAppStringsContext(
         language = OppiaLanguage.ENGLISH,
         appStringId = LanguageId.getDefaultInstance(),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -625,7 +637,7 @@ class AndroidLocaleFactoryTest {
     assertThat(locale).isEqualTo(Locale.ROOT)
   }
 
-  /* Tests for written content strings. */
+  // Tests for written content strings.
 
   @Test
   fun testCreateLocale_contentStrings_withAndroidId_compatible_returnsAndroidIdLocale() {
@@ -633,7 +645,7 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -649,7 +661,7 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -665,7 +677,7 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(ietfBcp47LanguageId = PT_BR_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_US
+        regionDefinition = REGION_US,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -682,7 +694,7 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -697,11 +709,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createContentStringsContext(
         language = OppiaLanguage.ENGLISH,
-        contentStringId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
-        ),
-        regionDefinition = REGION_BRAZIL
+        contentStringId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -717,11 +730,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createContentStringsContext(
         language = OppiaLanguage.ENGLISH,
-        contentStringId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_BRAZIL
+        contentStringId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -739,7 +753,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -756,7 +770,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(ietfBcp47LanguageId = QQ_ZZ_IETF_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -773,7 +787,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(ietfBcp47LanguageId = PT_ZZ_IETF_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -790,7 +804,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         contentStringId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_ZZ
+        regionDefinition = REGION_ZZ,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -807,7 +821,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(macaronicLanguageId = QQ_ZZ_MACARONIC_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -824,7 +838,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -842,7 +856,7 @@ class AndroidLocaleFactoryTest {
         contentStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         primaryMinSdkVersion = 99,
         fallbackContentStringId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -858,11 +872,12 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackContentStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackContentStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -878,11 +893,12 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackContentStringId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackContentStringId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -899,7 +915,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -914,12 +930,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createContentStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        contentStringId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID
-        ),
+        contentStringId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID,
+          ),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -935,12 +952,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createContentStringsContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        contentStringId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID
-        ),
+        contentStringId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID,
+          ),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -958,7 +976,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -976,7 +994,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         contentStringId = createLanguageId(macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -994,12 +1012,13 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.ENGLISH,
         contentStringId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackContentStringId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(context)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
@@ -1013,7 +1032,7 @@ class AndroidLocaleFactoryTest {
         primaryMinSdkVersion = 99,
         fallbackContentStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         fallbackMinSdkVersion = 99,
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1030,7 +1049,7 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.ENGLISH,
         contentStringId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1047,17 +1066,18 @@ class AndroidLocaleFactoryTest {
       createContentStringsContext(
         language = OppiaLanguage.ENGLISH,
         contentStringId = LanguageId.getDefaultInstance(),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(context)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid language case")
   }
 
-  /* Tests for audio translations. */
+  // Tests for audio translations.
 
   @Test
   fun testCreateLocale_audioSubs_withAndroidId_compatible_returnsAndroidIdLocale() {
@@ -1065,7 +1085,7 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioTranslationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1081,7 +1101,7 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioTranslationId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1097,7 +1117,7 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioTranslationId = createLanguageId(ietfBcp47LanguageId = PT_BR_IETF_LANGUAGE_ID),
-        regionDefinition = REGION_US
+        regionDefinition = REGION_US,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1114,7 +1134,7 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioTranslationId = createLanguageId(macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1129,11 +1149,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createAudioTranslationContext(
         language = OppiaLanguage.ENGLISH,
-        audioTranslationId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
-        ),
-        regionDefinition = REGION_BRAZIL
+        audioTranslationId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1149,11 +1170,12 @@ class AndroidLocaleFactoryTest {
     val context =
       createAudioTranslationContext(
         language = OppiaLanguage.ENGLISH,
-        audioTranslationId = createLanguageId(
-          androidLanguageId = EN_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_BRAZIL
+        audioTranslationId =
+          createLanguageId(
+            androidLanguageId = EN_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = PT_BR_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1171,7 +1193,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1188,7 +1210,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(ietfBcp47LanguageId = QQ_ZZ_IETF_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1205,7 +1227,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioXlationId = createLanguageId(ietfBcp47LanguageId = PT_ZZ_IETF_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1222,7 +1244,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.BRAZILIAN_PORTUGUESE,
         audioXlationId = createLanguageId(ietfBcp47LanguageId = PT_IETF_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_ZZ
+        regionDefinition = REGION_ZZ,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1239,7 +1261,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(macaronicLanguageId = QQ_ZZ_MACARONIC_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1256,7 +1278,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1274,7 +1296,7 @@ class AndroidLocaleFactoryTest {
         audioXlationId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         primaryMinSdkVersion = 99,
         fallbackAudioXlationId = createLanguageId(androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_BRAZIL
+        regionDefinition = REGION_BRAZIL,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1290,11 +1312,12 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackAudioXlationId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAudioXlationId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = HI_IETF_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1310,11 +1333,12 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        fallbackAudioXlationId = createLanguageId(
-          androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID
-        ),
-        regionDefinition = REGION_INDIA
+        fallbackAudioXlationId =
+          createLanguageId(
+            androidLanguageId = PT_BR_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_IN_MACARONIC_LANGUAGE_ID,
+          ),
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1331,7 +1355,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1346,12 +1370,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createAudioTranslationContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        audioXlationId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID
-        ),
+        audioXlationId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID,
+          ),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1367,12 +1392,13 @@ class AndroidLocaleFactoryTest {
     val context =
       createAudioTranslationContext(
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
-        audioXlationId = createLanguageId(
-          androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
-          macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID
-        ),
+        audioXlationId =
+          createLanguageId(
+            androidLanguageId = QQ_ANDROID_LANGUAGE_ID,
+            macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID,
+          ),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1390,7 +1416,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(ietfBcp47LanguageId = QQ_IETF_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1408,7 +1434,7 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.LANGUAGE_UNSPECIFIED,
         audioXlationId = createLanguageId(macaronicLanguageId = HI_EN_MACARONIC_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1426,12 +1452,13 @@ class AndroidLocaleFactoryTest {
         language = OppiaLanguage.ENGLISH,
         audioXlationId = createLanguageId(macaronicLanguageId = INVALID_MACARONIC_LANGUAGE_ID),
         fallbackAudioXlationId = createLanguageId(androidLanguageId = QQ_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(context)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid ID")
   }
@@ -1445,7 +1472,7 @@ class AndroidLocaleFactoryTest {
         primaryMinSdkVersion = 99,
         fallbackAudioXlationId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
         fallbackMinSdkVersion = 99,
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1462,7 +1489,7 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.ENGLISH,
         audioTranslationId = createLanguageId(androidLanguageId = EN_ANDROID_LANGUAGE_ID),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
     val locale = androidLocaleFactory.createAndroidLocaleBlocking(context)
@@ -1479,19 +1506,18 @@ class AndroidLocaleFactoryTest {
       createAudioTranslationContext(
         language = OppiaLanguage.ENGLISH,
         audioTranslationId = LanguageId.getDefaultInstance(),
-        regionDefinition = REGION_INDIA
+        regionDefinition = REGION_INDIA,
       )
 
-    val exception = assertThrows<IllegalStateException>() {
-      androidLocaleFactory.createAndroidLocaleBlocking(context)
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        androidLocaleFactory.createAndroidLocaleBlocking(context)
+      }
 
     assertThat(exception).hasMessageThat().contains("Invalid language case")
   }
 
-  private fun AndroidLocaleFactory.createAndroidLocaleBlocking(
-    context: OppiaLocaleContext
-  ): Locale {
+  private fun AndroidLocaleFactory.createAndroidLocaleBlocking(context: OppiaLocaleContext): Locale {
     val deferred =
       CoroutineScope(backgroundDispatcher).async { createAndroidLocaleAsync(context).await() }
     testCoroutineDispatchers.runCurrent()
@@ -1499,58 +1525,65 @@ class AndroidLocaleFactoryTest {
     return runBlocking { deferred.await() }
   }
 
-  private fun createLanguageId(androidLanguageId: AndroidLanguageId): LanguageId {
-    return LanguageId.newBuilder().apply {
-      androidResourcesLanguageId = androidLanguageId
-    }.build()
-  }
+  private fun createLanguageId(androidLanguageId: AndroidLanguageId): LanguageId =
+    LanguageId
+      .newBuilder()
+      .apply {
+        androidResourcesLanguageId = androidLanguageId
+      }.build()
 
-  private fun createLanguageId(ietfBcp47LanguageId: IetfBcp47LanguageId): LanguageId {
-    return LanguageId.newBuilder().apply {
-      ietfBcp47Id = ietfBcp47LanguageId
-    }.build()
-  }
+  private fun createLanguageId(ietfBcp47LanguageId: IetfBcp47LanguageId): LanguageId =
+    LanguageId
+      .newBuilder()
+      .apply {
+        ietfBcp47Id = ietfBcp47LanguageId
+      }.build()
 
   private fun createLanguageId(
     androidLanguageId: AndroidLanguageId,
-    ietfBcp47LanguageId: IetfBcp47LanguageId
-  ): LanguageId {
-    return createLanguageId(androidLanguageId).toBuilder()
+    ietfBcp47LanguageId: IetfBcp47LanguageId,
+  ): LanguageId =
+    createLanguageId(androidLanguageId)
+      .toBuilder()
       .mergeFrom(createLanguageId(ietfBcp47LanguageId))
       .build()
-  }
 
-  private fun createLanguageId(macaronicLanguageId: MacaronicLanguageId): LanguageId {
-    return LanguageId.newBuilder().apply {
-      macaronicId = macaronicLanguageId
-    }.build()
-  }
+  private fun createLanguageId(macaronicLanguageId: MacaronicLanguageId): LanguageId =
+    LanguageId
+      .newBuilder()
+      .apply {
+        macaronicId = macaronicLanguageId
+      }.build()
 
   private fun createLanguageId(
     androidLanguageId: AndroidLanguageId,
-    macaronicLanguageId: MacaronicLanguageId
-  ): LanguageId {
-    return createLanguageId(androidLanguageId).toBuilder()
+    macaronicLanguageId: MacaronicLanguageId,
+  ): LanguageId =
+    createLanguageId(androidLanguageId)
+      .toBuilder()
       .mergeFrom(createLanguageId(macaronicLanguageId))
       .build()
-  }
 
   private fun createAppStringsContext(
     language: OppiaLanguage,
     appStringId: LanguageId,
     minSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return OppiaLocaleContext.newBuilder().apply {
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = minSdkVersion
-        this.appStringId = appStringId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    OppiaLocaleContext
+      .newBuilder()
+      .apply {
+        languageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = minSdkVersion
+              this.appStringId = appStringId
+            }.build()
+        this.regionDefinition = regionDefinition
+        usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
       }.build()
-      this.regionDefinition = regionDefinition
-      usageMode = OppiaLocaleContext.LanguageUsageMode.APP_STRINGS
-    }.build()
-  }
 
   private fun createAppStringsContext(
     language: OppiaLanguage,
@@ -1558,35 +1591,45 @@ class AndroidLocaleFactoryTest {
     primaryMinSdkVersion: Int = 1,
     fallbackAppStringId: LanguageId,
     fallbackMinSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return createAppStringsContext(
-      language, appStringId, primaryMinSdkVersion, regionDefinition
-    ).toBuilder().apply {
-      fallbackLanguageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = fallbackMinSdkVersion
-        this.appStringId = fallbackAppStringId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    createAppStringsContext(
+      language,
+      appStringId,
+      primaryMinSdkVersion,
+      regionDefinition,
+    ).toBuilder()
+      .apply {
+        fallbackLanguageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = fallbackMinSdkVersion
+              this.appStringId = fallbackAppStringId
+            }.build()
       }.build()
-    }.build()
-  }
 
   private fun createContentStringsContext(
     language: OppiaLanguage,
     contentStringId: LanguageId,
     minSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return OppiaLocaleContext.newBuilder().apply {
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = minSdkVersion
-        this.contentStringId = contentStringId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    OppiaLocaleContext
+      .newBuilder()
+      .apply {
+        languageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = minSdkVersion
+              this.contentStringId = contentStringId
+            }.build()
+        this.regionDefinition = regionDefinition
+        usageMode = OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
       }.build()
-      this.regionDefinition = regionDefinition
-      usageMode = OppiaLocaleContext.LanguageUsageMode.CONTENT_STRINGS
-    }.build()
-  }
 
   private fun createContentStringsContext(
     language: OppiaLanguage,
@@ -1594,35 +1637,45 @@ class AndroidLocaleFactoryTest {
     primaryMinSdkVersion: Int = 1,
     fallbackContentStringId: LanguageId,
     fallbackMinSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return createContentStringsContext(
-      language, contentStringId, primaryMinSdkVersion, regionDefinition
-    ).toBuilder().apply {
-      fallbackLanguageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = fallbackMinSdkVersion
-        this.contentStringId = fallbackContentStringId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    createContentStringsContext(
+      language,
+      contentStringId,
+      primaryMinSdkVersion,
+      regionDefinition,
+    ).toBuilder()
+      .apply {
+        fallbackLanguageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = fallbackMinSdkVersion
+              this.contentStringId = fallbackContentStringId
+            }.build()
       }.build()
-    }.build()
-  }
 
   private fun createAudioTranslationContext(
     language: OppiaLanguage,
     audioTranslationId: LanguageId,
     minSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return OppiaLocaleContext.newBuilder().apply {
-      languageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = minSdkVersion
-        this.audioTranslationId = audioTranslationId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    OppiaLocaleContext
+      .newBuilder()
+      .apply {
+        languageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = minSdkVersion
+              this.audioTranslationId = audioTranslationId
+            }.build()
+        this.regionDefinition = regionDefinition
+        usageMode = OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
       }.build()
-      this.regionDefinition = regionDefinition
-      usageMode = OppiaLocaleContext.LanguageUsageMode.AUDIO_TRANSLATIONS
-    }.build()
-  }
 
   private fun createAudioTranslationContext(
     language: OppiaLanguage,
@@ -1630,21 +1683,28 @@ class AndroidLocaleFactoryTest {
     primaryMinSdkVersion: Int = 1,
     fallbackAudioXlationId: LanguageId,
     fallbackMinSdkVersion: Int = 1,
-    regionDefinition: RegionSupportDefinition
-  ): OppiaLocaleContext {
-    return createAudioTranslationContext(
-      language, audioXlationId, primaryMinSdkVersion, regionDefinition
-    ).toBuilder().apply {
-      fallbackLanguageDefinition = LanguageSupportDefinition.newBuilder().apply {
-        this.language = language
-        minAndroidSdkVersion = fallbackMinSdkVersion
-        this.audioTranslationId = fallbackAudioXlationId
+    regionDefinition: RegionSupportDefinition,
+  ): OppiaLocaleContext =
+    createAudioTranslationContext(
+      language,
+      audioXlationId,
+      primaryMinSdkVersion,
+      regionDefinition,
+    ).toBuilder()
+      .apply {
+        fallbackLanguageDefinition =
+          LanguageSupportDefinition
+            .newBuilder()
+            .apply {
+              this.language = language
+              minAndroidSdkVersion = fallbackMinSdkVersion
+              this.audioTranslationId = fallbackAudioXlationId
+            }.build()
       }.build()
-    }.build()
-  }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAndroidLocaleFactoryTest_TestApplicationComponent.builder()
+    DaggerAndroidLocaleFactoryTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -1655,9 +1715,7 @@ class AndroidLocaleFactoryTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1665,8 +1723,8 @@ class AndroidLocaleFactoryTest {
   @Component(
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -1681,93 +1739,159 @@ class AndroidLocaleFactoryTest {
   }
 
   private companion object {
-    private val REGION_BRAZIL = RegionSupportDefinition.newBuilder().apply {
-      region = OppiaRegion.BRAZIL
-      regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = "BR"
-      }.build()
-    }.build()
+    private val REGION_BRAZIL =
+      RegionSupportDefinition
+        .newBuilder()
+        .apply {
+          region = OppiaRegion.BRAZIL
+          regionId =
+            RegionSupportDefinition.IetfBcp47RegionId
+              .newBuilder()
+              .apply {
+                ietfRegionTag = "BR"
+              }.build()
+        }.build()
 
-    private val REGION_US = RegionSupportDefinition.newBuilder().apply {
-      region = OppiaRegion.UNITED_STATES
-      regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = "US"
-      }.build()
-    }.build()
+    private val REGION_US =
+      RegionSupportDefinition
+        .newBuilder()
+        .apply {
+          region = OppiaRegion.UNITED_STATES
+          regionId =
+            RegionSupportDefinition.IetfBcp47RegionId
+              .newBuilder()
+              .apply {
+                ietfRegionTag = "US"
+              }.build()
+        }.build()
 
-    private val REGION_INDIA = RegionSupportDefinition.newBuilder().apply {
-      region = OppiaRegion.INDIA
-      regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = "IN"
-      }.build()
-    }.build()
+    private val REGION_INDIA =
+      RegionSupportDefinition
+        .newBuilder()
+        .apply {
+          region = OppiaRegion.INDIA
+          regionId =
+            RegionSupportDefinition.IetfBcp47RegionId
+              .newBuilder()
+              .apply {
+                ietfRegionTag = "IN"
+              }.build()
+        }.build()
 
-    private val REGION_ZZ = RegionSupportDefinition.newBuilder().apply {
-      region = OppiaRegion.REGION_UNSPECIFIED
-      regionId = RegionSupportDefinition.IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = "ZZ"
-      }.build()
-    }.build()
+    private val REGION_ZZ =
+      RegionSupportDefinition
+        .newBuilder()
+        .apply {
+          region = OppiaRegion.REGION_UNSPECIFIED
+          regionId =
+            RegionSupportDefinition.IetfBcp47RegionId
+              .newBuilder()
+              .apply {
+                ietfRegionTag = "ZZ"
+              }.build()
+        }.build()
 
-    private val EN_ANDROID_LANGUAGE_ID = AndroidLanguageId.newBuilder().apply {
-      languageCode = "en"
-    }.build()
+    private val EN_ANDROID_LANGUAGE_ID =
+      AndroidLanguageId
+        .newBuilder()
+        .apply {
+          languageCode = "en"
+        }.build()
 
-    private val PT_BR_ANDROID_LANGUAGE_ID = AndroidLanguageId.newBuilder().apply {
-      languageCode = "pt"
-      regionCode = "BR"
-    }.build()
+    private val PT_BR_ANDROID_LANGUAGE_ID =
+      AndroidLanguageId
+        .newBuilder()
+        .apply {
+          languageCode = "pt"
+          regionCode = "BR"
+        }.build()
 
-    private val QQ_ANDROID_LANGUAGE_ID = AndroidLanguageId.newBuilder().apply {
-      languageCode = "qq"
-    }.build()
+    private val QQ_ANDROID_LANGUAGE_ID =
+      AndroidLanguageId
+        .newBuilder()
+        .apply {
+          languageCode = "qq"
+        }.build()
 
-    private val PT_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "pt"
-    }.build()
+    private val PT_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "pt"
+        }.build()
 
-    private val HI_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "hi"
-    }.build()
+    private val HI_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "hi"
+        }.build()
 
-    private val PT_BR_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "pt-BR"
-    }.build()
+    private val PT_BR_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "pt-BR"
+        }.build()
 
     // Has a valid language, but unsupported region.
-    private val PT_ZZ_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "pt-ZZ"
-    }.build()
+    private val PT_ZZ_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "pt-ZZ"
+        }.build()
 
-    private val QQ_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "qq"
-    }.build()
+    private val QQ_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "qq"
+        }.build()
 
-    private val QQ_ZZ_IETF_LANGUAGE_ID = IetfBcp47LanguageId.newBuilder().apply {
-      ietfLanguageTag = "qq-ZZ"
-    }.build()
+    private val QQ_ZZ_IETF_LANGUAGE_ID =
+      IetfBcp47LanguageId
+        .newBuilder()
+        .apply {
+          ietfLanguageTag = "qq-ZZ"
+        }.build()
 
-    private val PT_BR_MACARONIC_LANGUAGE_ID = MacaronicLanguageId.newBuilder().apply {
-      // This is a loose definition for macaronic language that's being done to test compatible
-      // cases (though in reality macaronic languages aren't expected to ever match with system
-      // locales).
-      combinedLanguageCode = "pt-br"
-    }.build()
+    private val PT_BR_MACARONIC_LANGUAGE_ID =
+      MacaronicLanguageId
+        .newBuilder()
+        .apply {
+          // This is a loose definition for macaronic language that's being done to test compatible
+          // cases (though in reality macaronic languages aren't expected to ever match with system
+          // locales).
+          combinedLanguageCode = "pt-br"
+        }.build()
 
-    private val HI_IN_MACARONIC_LANGUAGE_ID = MacaronicLanguageId.newBuilder().apply {
-      combinedLanguageCode = "hi-IN"
-    }.build()
+    private val HI_IN_MACARONIC_LANGUAGE_ID =
+      MacaronicLanguageId
+        .newBuilder()
+        .apply {
+          combinedLanguageCode = "hi-IN"
+        }.build()
 
-    private val HI_EN_MACARONIC_LANGUAGE_ID = MacaronicLanguageId.newBuilder().apply {
-      combinedLanguageCode = "hi-EN"
-    }.build()
+    private val HI_EN_MACARONIC_LANGUAGE_ID =
+      MacaronicLanguageId
+        .newBuilder()
+        .apply {
+          combinedLanguageCode = "hi-EN"
+        }.build()
 
-    private val QQ_ZZ_MACARONIC_LANGUAGE_ID = MacaronicLanguageId.newBuilder().apply {
-      combinedLanguageCode = "qq-zz"
-    }.build()
+    private val QQ_ZZ_MACARONIC_LANGUAGE_ID =
+      MacaronicLanguageId
+        .newBuilder()
+        .apply {
+          combinedLanguageCode = "qq-zz"
+        }.build()
 
-    private val INVALID_MACARONIC_LANGUAGE_ID = MacaronicLanguageId.newBuilder().apply {
-      combinedLanguageCode = "languagewithoutregion"
-    }.build()
+    private val INVALID_MACARONIC_LANGUAGE_ID =
+      MacaronicLanguageId
+        .newBuilder()
+        .apply {
+          combinedLanguageCode = "languagewithoutregion"
+        }.build()
   }
 }

@@ -15,24 +15,23 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/FractionInput/directives/fraction-input-rules.service.ts#L52
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class FractionInputHasNumeratorEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
+class FractionInputHasNumeratorEqualToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeSingleInputMatcher<Fraction, Int> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createMultiTypeSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.FRACTION,
+        InteractionObject.ObjectTypeCase.SIGNED_INT,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createMultiTypeSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.FRACTION,
-      InteractionObject.ObjectTypeCase.SIGNED_INT,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: Fraction,
+      input: Int,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.numerator == input
   }
-
-  override fun matches(
-    answer: Fraction,
-    input: Int,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    return answer.numerator == input
-  }
-}

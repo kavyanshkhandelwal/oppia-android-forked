@@ -7,10 +7,12 @@ import javax.inject.Inject
 
 /** The presenter for [HomeTestActivity]. */
 @ActivityScope
-class HomeTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.home_test_activity)
+class HomeTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.home_test_activity)
+    }
   }
-}

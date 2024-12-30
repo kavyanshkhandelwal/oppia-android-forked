@@ -104,7 +104,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(
   application = GeneralAvailabilityUpgradeNoticeDialogFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 @LooperMode(LooperMode.Mode.PAUSED)
 class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
@@ -152,7 +152,7 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
         .check(matches(isDisplayed()))
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox)).check(
-        matches(withText(R.string.general_availability_notice_dialog_do_not_show_again_text))
+        matches(withText(R.string.general_availability_notice_dialog_do_not_show_again_text)),
       )
       onDialogView(withId(R.id.ga_update_notice_dialog_preference_checkbox))
         .check(isCompletelyBelow(withId(R.id.ga_update_notice_dialog_message)))
@@ -202,18 +202,17 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
     }
   }
 
-  private fun launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity(
-    testBlock: () -> Unit
-  ) {
+  private fun launchGeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity(testBlock: () -> Unit) {
     // Launch the test activity, but make sure that it's properly set up & time is given for it to
     // initialize.
-    ActivityScenario.launch(
-      GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity::class.java
-    ).use { scenario ->
-      scenario.onActivity { it.mockCallbackListener = mockNoticeClosedListener }
-      testCoroutineDispatchers.runCurrent()
-      testBlock()
-    }
+    ActivityScenario
+      .launch(
+        GeneralAvailabilityUpgradeNoticeDialogFragmentTestActivity::class.java,
+      ).use { scenario ->
+        scenario.onActivity { it.mockCallbackListener = mockNoticeClosedListener }
+        testCoroutineDispatchers.runCurrent()
+        testBlock()
+      }
   }
 
   private fun clickOnDialogView(matcher: Matcher<View>) {
@@ -257,8 +256,8 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
       CachingTestModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -272,18 +271,25 @@ class GeneralAvailabilityUpgradeNoticeDialogFragmentTest {
     fun inject(test: GeneralAvailabilityUpgradeNoticeDialogFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerGeneralAvailabilityUpgradeNoticeDialogFragmentTest_TestApplicationComponent.builder()
+      DaggerGeneralAvailabilityUpgradeNoticeDialogFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
 
     fun inject(test: GeneralAvailabilityUpgradeNoticeDialogFragmentTest) = component.inject(test)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

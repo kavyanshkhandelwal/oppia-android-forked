@@ -36,18 +36,22 @@ private fun processWikiDirectory(wikiDir: File) {
 
 private fun checkTableOfContents(file: File) {
   val fileContents = file.readLines()
-  val tocStartIdx = fileContents.indexOfFirst {
-    it.contains(Regex("""##\s+Table\s+of\s+Contents""", RegexOption.IGNORE_CASE))
-  }
+  val tocStartIdx =
+    fileContents.indexOfFirst {
+      it.contains(Regex("""##\s+Table\s+of\s+Contents""", RegexOption.IGNORE_CASE))
+    }
   if (tocStartIdx == -1) {
     return
   }
 
   // Skipping the blank line after the ## Table of Contents
-  val tocEndIdx = fileContents.subList(tocStartIdx + 2, fileContents.size).indexOfFirst {
-    it.startsWith("#")
-  }.takeIf { it != -1 }
-    ?: error("Wiki doesn't contain headers referenced in Table of Contents.")
+  val tocEndIdx =
+    fileContents
+      .subList(tocStartIdx + 2, fileContents.size)
+      .indexOfFirst {
+        it.startsWith("#")
+      }.takeIf { it != -1 }
+      ?: error("Wiki doesn't contain headers referenced in Table of Contents.")
 
   val tocSpecificLines = fileContents.subList(tocStartIdx, tocStartIdx + tocEndIdx + 1)
 
@@ -58,16 +62,30 @@ private fun checkTableOfContents(file: File) {
   }
 }
 
-private fun validateTableOfContents(file: File, line: String) {
+private fun validateTableOfContents(
+  file: File,
+  line: String,
+) {
   val titleRegex = "\\[(.*?)\\]".toRegex()
-  val title = titleRegex.find(line)?.groupValues?.get(1)?.replace('-', ' ')
-    ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
-    ?.trim()
+  val title =
+    titleRegex
+      .find(line)
+      ?.groupValues
+      ?.get(1)
+      ?.replace('-', ' ')
+      ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
+      ?.trim()
 
   val linkRegex = "\\(#(.*?)\\)".toRegex()
-  val link = linkRegex.find(line)?.groupValues?.get(1)?.removePrefix("#")?.replace('-', ' ')
-    ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
-    ?.trim()
+  val link =
+    linkRegex
+      .find(line)
+      ?.groupValues
+      ?.get(1)
+      ?.removePrefix("#")
+      ?.replace('-', ' ')
+      ?.replace(Regex("[?&./:’'*!,(){}\\[\\]+]"), "")
+      ?.trim()
 
   // Checks if the table of content title matches with the header link text.
   val matches = title.equals(link, ignoreCase = true)
@@ -76,7 +94,7 @@ private fun validateTableOfContents(file: File, line: String) {
       "\nWIKI TABLE OF CONTENTS CHECK FAILED" +
         "\nMismatch of Table of Content with headers in the File: ${file.name}. " +
         "\nThe Title: '${titleRegex.find(line)?.groupValues?.get(1)}' " +
-        "doesn't match with its corresponding Link: '${linkRegex.find(line)?.groupValues?.get(1)}'."
+        "doesn't match with its corresponding Link: '${linkRegex.find(line)?.groupValues?.get(1)}'.",
     )
   }
 }

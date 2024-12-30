@@ -12,26 +12,29 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 class LicenseListViewModel(
   val activity: AppCompatActivity,
   val dependencyIndex: Int,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : HelpViewModel() {
-
   /** Stores the list of licenses of the third-party dependency. */
   val licenseItemList: List<LicenseItemViewModel> by lazy {
     getRecyclerViewItemList()
   }
 
   private fun getRecyclerViewItemList(): List<LicenseItemViewModel> {
-    val thirdPartyDependencyLicenseNamesArray = activity.resources.obtainTypedArray(
-      R.array.third_party_dependency_license_names_array
-    )
-    val licenseNamesArrayId = thirdPartyDependencyLicenseNamesArray.getResourceId(
-      dependencyIndex,
-      /* defValue= */ 0
-    )
+    val thirdPartyDependencyLicenseNamesArray =
+      activity.resources.obtainTypedArray(
+        R.array.third_party_dependency_license_names_array,
+      )
+    val licenseNamesArrayId =
+      thirdPartyDependencyLicenseNamesArray.getResourceId(
+        dependencyIndex,
+        // defValue=
+        0,
+      )
     val licenseNamesArray = resourceHandler.getStringArrayInLocale(licenseNamesArrayId)
-    val itemList = licenseNamesArray.mapIndexed { licenseIndex, name ->
-      LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex, isMultipane.get()!!)
-    }
+    val itemList =
+      licenseNamesArray.mapIndexed { licenseIndex, name ->
+        LicenseItemViewModel(activity, name, licenseIndex, dependencyIndex, isMultipane.get()!!)
+      }
     thirdPartyDependencyLicenseNamesArray.recycle()
     return itemList
   }

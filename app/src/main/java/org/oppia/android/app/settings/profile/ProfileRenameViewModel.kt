@@ -7,11 +7,12 @@ import javax.inject.Inject
 
 /** The ViewModel for [ProfileRenameActivity]. */
 @ActivityScope
-class ProfileRenameViewModel @Inject constructor() : ObservableViewModel() {
+class ProfileRenameViewModel
+  @Inject
+  constructor() : ObservableViewModel() {
+    /** The name of the profile. */
+    val inputName = ObservableField("")
 
-  /** The name of the profile. */
-  val inputName = ObservableField("")
-
-  /** The error message of the wrong name entered in [ProfileRenameFragment]. */
-  val nameErrorMsg = ObservableField("")
-}
+    /** The error message of the wrong name entered in [ProfileRenameFragment]. */
+    val nameErrorMsg = ObservableField("")
+  }

@@ -101,10 +101,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ImageViewBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ImageViewBindingAdaptersTest {
-
   // TODO(#3059): Add more tests for other BindableAdapters present in [ImageViewBindingAdapters].
 
   @get:Rule
@@ -118,8 +117,8 @@ class ImageViewBindingAdaptersTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        ImageViewBindingAdaptersTestActivity::class.java
-      )
+        ImageViewBindingAdaptersTestActivity::class.java,
+      ),
     )
 
   @Before
@@ -139,7 +138,7 @@ class ImageViewBindingAdaptersTest {
       val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_solid_color_primary_32dp))
+        matches(withDrawable(R.drawable.circular_solid_color_primary_32dp)),
       )
     }
   }
@@ -150,7 +149,7 @@ class ImageViewBindingAdaptersTest {
       val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.NOT_STARTED)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp)),
       )
     }
   }
@@ -161,7 +160,7 @@ class ImageViewBindingAdaptersTest {
       val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.STARTED_NOT_COMPLETED)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp))
+        matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp)),
       )
     }
   }
@@ -172,20 +171,15 @@ class ImageViewBindingAdaptersTest {
       val imageView: ImageView = getImageView(it)
       setPlayStateDrawable(imageView, ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
       onView(withId(R.id.image_view_for_data_binding)).check(
-        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp))
+        matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp)),
       )
     }
   }
 
-  private fun getImageView(
-    imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity
-  ): ImageView {
-    return imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
-  }
+  private fun getImageView(imageViewBindingAdaptersTestActivity: ImageViewBindingAdaptersTestActivity): ImageView =
+    imageViewBindingAdaptersTestActivity.findViewById(R.id.image_view_for_data_binding)
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
-    crossinline action: (A) -> V
-  ): V {
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(crossinline action: (A) -> V): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
     @Suppress("UNCHECKED_CAST") // The unsafe cast is necessary to make the routine generic.
     val fakeMock: ImageViewBindingAdaptersTest.Consumer<V> =
@@ -198,11 +192,13 @@ class ImageViewBindingAdaptersTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<ImageViewBindingAdaptersTest.TestApplication>()
       .inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** Create a TestApplicationComponent. */
   @Singleton
   @Component(
     modules = [
@@ -231,10 +227,9 @@ class ImageViewBindingAdaptersTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
     /** Build the TestApplicationComponent. */
     @Component.Builder
@@ -250,9 +245,13 @@ class ImageViewBindingAdaptersTest {
    * Class to override a dependency throughout the test application, instead of overriding the
    * dependencies in every test class, we can just do it once by extending the Application class.
    */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerImageViewBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerImageViewBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -262,9 +261,12 @@ class ImageViewBindingAdaptersTest {
       component.inject(imageViewBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

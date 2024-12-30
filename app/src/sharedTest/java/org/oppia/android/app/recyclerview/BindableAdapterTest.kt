@@ -272,14 +272,14 @@ class BindableAdapterTest {
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
@@ -364,14 +364,14 @@ class BindableAdapterTest {
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(withSubstring(INT_VALUE_0.intValue.toString())))
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 2
-        )
+          position = 2,
+        ),
       ).check(matches(withSubstring(INT_VALUE_1.intValue.toString())))
     }
   }
@@ -398,8 +398,8 @@ class BindableAdapterTest {
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(withText("new value")))
     }
   }
@@ -426,8 +426,8 @@ class BindableAdapterTest {
       onView(
         atPosition(
           recyclerViewId = R.id.test_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(withText("new value")))
     }
   }
@@ -437,149 +437,131 @@ class BindableAdapterTest {
   }
 
   private fun createSingleViewTypeNoDataBindingBindableAdapter(
-    singleTypeBuilderFactory: SingleTypeBuilder.Factory
-  ): BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilderFactory.create<BindableAdapterTestDataModel>()
+    singleTypeBuilderFactory: SingleTypeBuilder.Factory,
+  ): BindableAdapter<BindableAdapterTestDataModel> =
+    singleTypeBuilderFactory
+      .create<BindableAdapterTestDataModel>()
       .registerViewBinder(
         inflateView = this::inflateTextViewForStringWithoutDataBinding,
-        bindView = this::bindTextViewForStringWithoutDataBinding
-      )
-      .build()
-  }
+        bindView = this::bindTextViewForStringWithoutDataBinding,
+      ).build()
 
   private fun createSingleViewTypeWithDataBindingBindableAdapter(
-    singleTypeBuilder: SingleTypeBuilder.Factory
-  ):
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return singleTypeBuilder.create<BindableAdapterTestDataModel>()
-        .registerViewDataBinderWithSameModelType(
-          inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-          setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-        )
-        .build()
-    }
+    singleTypeBuilder: SingleTypeBuilder.Factory,
+  ): BindableAdapter<BindableAdapterTestDataModel> =
+    singleTypeBuilder
+      .create<BindableAdapterTestDataModel>()
+      .registerViewDataBinderWithSameModelType(
+        inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel,
+      ).build()
 
   private fun createSingleViewTypeWithDataBindingAndLiveDataAdapter(
-    singleTypeBuilder: SingleTypeBuilder.Factory
-  ): BindableAdapter<BindableAdapterTestDataModel> {
-    return singleTypeBuilder.create<BindableAdapterTestDataModel>()
+    singleTypeBuilder: SingleTypeBuilder.Factory,
+  ): BindableAdapter<BindableAdapterTestDataModel> =
+    singleTypeBuilder
+      .create<BindableAdapterTestDataModel>()
       .registerViewDataBinderWithSameModelType(
         inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-      )
-      .build()
-  }
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel,
+      ).build()
 
-  private fun createSingleAdapterWithoutView(singleTypeBuilder: SingleTypeBuilder.Factory):
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return singleTypeBuilder.create<BindableAdapterTestDataModel>().build()
-    }
+  private fun createSingleAdapterWithoutView(singleTypeBuilder: SingleTypeBuilder.Factory): BindableAdapter<BindableAdapterTestDataModel> =
+    singleTypeBuilder.create<BindableAdapterTestDataModel>().build()
 
   private fun createMultiViewTypeNoDataBindingBindableAdapter(
-    multiTypeBuilderFactory: MultiTypeBuilder.Factory
-  ):
-    BindableAdapter<BindableAdapterTestDataModel> {
-      return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
-        .registerViewBinder(
-          viewType = ViewModelType.STRING,
-          inflateView = this::inflateTextViewForStringWithoutDataBinding,
-          bindView = this::bindTextViewForStringWithoutDataBinding
-        )
-        .registerViewBinder(
-          viewType = ViewModelType.INT,
-          inflateView = this::inflateTextViewForIntWithoutDataBinding,
-          bindView = this::bindTextViewForIntWithoutDataBinding
-        )
-        .build()
-    }
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory,
+  ): BindableAdapter<BindableAdapterTestDataModel> =
+    multiTypeBuilderFactory
+      .create(ViewModelType.Companion::deriveTypeFrom)
+      .registerViewBinder(
+        viewType = ViewModelType.STRING,
+        inflateView = this::inflateTextViewForStringWithoutDataBinding,
+        bindView = this::bindTextViewForStringWithoutDataBinding,
+      ).registerViewBinder(
+        viewType = ViewModelType.INT,
+        inflateView = this::inflateTextViewForIntWithoutDataBinding,
+        bindView = this::bindTextViewForIntWithoutDataBinding,
+      ).build()
 
   private fun createMultiViewTypeWithDataBindingBindableAdapter(
-    multiTypeBuilderFactory: MultiTypeBuilder.Factory
-  ): BindableAdapter<BindableAdapterTestDataModel> {
-    return multiTypeBuilderFactory.create(ViewModelType.Companion::deriveTypeFrom)
+    multiTypeBuilderFactory: MultiTypeBuilder.Factory,
+  ): BindableAdapter<BindableAdapterTestDataModel> =
+    multiTypeBuilderFactory
+      .create(ViewModelType.Companion::deriveTypeFrom)
       .registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.STRING,
         inflateDataBinding = TestTextViewForStringWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel
-      )
-      .registerViewDataBinderWithSameModelType(
+        setViewModel = TestTextViewForStringWithDataBindingBinding::setViewModel,
+      ).registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.INT,
         inflateDataBinding = TestTextViewForIntWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel
-      )
-      .registerViewDataBinderWithSameModelType(
+        setViewModel = TestTextViewForIntWithDataBindingBinding::setViewModel,
+      ).registerViewDataBinderWithSameModelType(
         viewType = ViewModelType.LIVE_DATA,
         inflateDataBinding = TestTextViewForLiveDataWithDataBindingBinding::inflate,
-        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel
-      )
-      .build()
-  }
+        setViewModel = TestTextViewForLiveDataWithDataBindingBinding::setViewModel,
+      ).build()
 
   private fun inflateTextViewForStringWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_string_no_data_binding, viewGroup, /* attachToRoot= */ false
+      R.layout.test_text_view_for_string_no_data_binding,
+      viewGroup, // attachToRoot=
+      false,
     ) as TextView
   }
 
   private fun inflateTextViewForIntWithoutDataBinding(viewGroup: ViewGroup): TextView {
     val inflater = LayoutInflater.from(ApplicationProvider.getApplicationContext())
     return inflater.inflate(
-      R.layout.test_text_view_for_int_no_data_binding, viewGroup, /* attachToRoot= */ false
+      R.layout.test_text_view_for_int_no_data_binding,
+      viewGroup, // attachToRoot=
+      false,
     ) as TextView
   }
 
   private fun bindTextViewForStringWithoutDataBinding(
     textView: TextView,
-    data: BindableAdapterTestDataModel
+    data: BindableAdapterTestDataModel,
   ) {
     textView.text = data.boundStringValue
   }
 
   private fun bindTextViewForIntWithoutDataBinding(
     textView: TextView,
-    data: BindableAdapterTestDataModel
+    data: BindableAdapterTestDataModel,
   ) {
     textView.text = "Value: " + data.boundIntValue
   }
 
-  private fun getRecyclerViewListLiveData(
-    activity: BindableAdapterTestActivity
-  ): MutableLiveData<List<BindableAdapterTestDataModel>> {
-    return getTestViewModel(activity).dataListLiveData
-  }
+  private fun getRecyclerViewListLiveData(activity: BindableAdapterTestActivity): MutableLiveData<List<BindableAdapterTestDataModel>> =
+    getTestViewModel(activity).dataListLiveData
 
-  private fun getTestViewModel(
-    activity: BindableAdapterTestActivity
-  ): BindableAdapterTestViewModel {
-    return getTestFragmentPresenter(activity).viewModel
-  }
+  private fun getTestViewModel(activity: BindableAdapterTestActivity): BindableAdapterTestViewModel =
+    getTestFragmentPresenter(activity).viewModel
 
-  private fun getTestFragmentPresenter(
-    activity: BindableAdapterTestActivity
-  ): BindableAdapterTestFragmentPresenter {
-    return getTestFragment(activity).bindableAdapterTestFragmentPresenter
-  }
+  private fun getTestFragmentPresenter(activity: BindableAdapterTestActivity): BindableAdapterTestFragmentPresenter =
+    getTestFragment(activity).bindableAdapterTestFragmentPresenter
 
-  private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment {
-    return activity.supportFragmentManager.findFragmentByTag(
-      BINDABLE_TEST_FRAGMENT_TAG
+  private fun getTestFragment(activity: BindableAdapterTestActivity): BindableAdapterTestFragment =
+    activity.supportFragmentManager.findFragmentByTag(
+      BINDABLE_TEST_FRAGMENT_TAG,
     ) as BindableAdapterTestFragment
-  }
 
   private enum class ViewModelType {
     STRING,
     INT,
-    LIVE_DATA;
+    LIVE_DATA,
+    ;
 
     companion object {
-      internal fun deriveTypeFrom(testDataModel: BindableAdapterTestDataModel): ViewModelType {
-        return when (testDataModel) {
+      internal fun deriveTypeFrom(testDataModel: BindableAdapterTestDataModel): ViewModelType =
+        when (testDataModel) {
           is StringModel -> STRING
           is IntModel -> INT
           is LiveDataModel -> LIVE_DATA
         }
-      }
     }
   }
 
@@ -595,16 +577,15 @@ class BindableAdapterTest {
 
     @Provides
     fun provideTestAdapter(): BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
-      val createFunction = checkNotNull(testAdapterFactory) {
-        "The test adapter factory hasn't been initialized in the test"
-      }
+      val createFunction =
+        checkNotNull(testAdapterFactory) {
+          "The test adapter factory hasn't been initialized in the test"
+        }
       return object : BindableAdapterTestFragmentPresenter.BindableAdapterFactory {
         override fun create(
           singleTypeBuilderFactory: SingleTypeBuilder.Factory,
-          multiTypeBuilderFactory: MultiTypeBuilder.Factory
-        ): BindableAdapter<BindableAdapterTestDataModel> {
-          return createFunction(singleTypeBuilderFactory, multiTypeBuilderFactory)
-        }
+          multiTypeBuilderFactory: MultiTypeBuilder.Factory,
+        ): BindableAdapter<BindableAdapterTestDataModel> = createFunction(singleTypeBuilderFactory, multiTypeBuilderFactory)
       }
     }
   }
@@ -614,11 +595,12 @@ class BindableAdapterTest {
   @Subcomponent(
     modules = [
       FragmentModule::class, InteractionViewModelModule::class, IntentFactoryShimModule::class,
-      ViewBindingShimModule::class, ViewComponentBuilderModule::class
-    ]
+      ViewBindingShimModule::class, ViewComponentBuilderModule::class,
+    ],
   )
   interface TestFragmentComponent :
-    FragmentComponentImpl, BindableAdapterTestFragment.TestInjector {
+    FragmentComponentImpl,
+    BindableAdapterTestFragment.TestInjector {
     @Subcomponent.Builder
     interface Builder : FragmentComponentImpl.Builder
   }
@@ -628,16 +610,14 @@ class BindableAdapterTest {
     // Bridge the test & original FragmentComponent builders to properly hook up the replacement
     // test subcomponent.
     @Binds
-    fun provideFragmentComponentBuilder(
-      builder: TestFragmentComponent.Builder
-    ): FragmentComponent.Builder
+    fun provideFragmentComponentBuilder(builder: TestFragmentComponent.Builder): FragmentComponent.Builder
   }
 
   @ActivityScope
   @Subcomponent(modules = [TestActivityModule::class, ActivityIntentFactoriesModule::class])
   interface TestActivityComponent :
-    ActivityComponentImpl, BindableAdapterTestActivity.TestInjector {
-
+    ActivityComponentImpl,
+    BindableAdapterTestActivity.TestInjector {
     @Subcomponent.Builder
     interface Builder : ActivityComponentImpl.Builder
   }
@@ -650,9 +630,7 @@ class BindableAdapterTest {
     // Bridge the test & original ActivityComponent builders to properly hook up the :replacement
     // test subcomponent.
     @Binds
-    fun provideActivityComponentBuilder(
-      builder: TestActivityComponent.Builder
-    ): ActivityComponentImpl.Builder
+    fun provideActivityComponentBuilder(builder: TestActivityComponent.Builder): ActivityComponentImpl.Builder
   }
 
   @Singleton
@@ -683,8 +661,8 @@ class BindableAdapterTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -697,9 +675,13 @@ class BindableAdapterTest {
     fun inject(bindableAdapterTest: BindableAdapterTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerBindableAdapterTest_TestApplicationComponent.builder()
+      DaggerBindableAdapterTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -708,9 +690,12 @@ class BindableAdapterTest {
       component.inject(bindableAdapterTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getTestActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getTestActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

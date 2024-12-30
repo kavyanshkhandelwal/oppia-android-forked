@@ -16,70 +16,72 @@ import javax.inject.Inject
 
 /** The presenter for [ForceNetworkTypeFragment]. */
 @FragmentScope
-class ForceNetworkTypeFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
-  private val forceNetworkTypeViewModel: ForceNetworkTypeViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) {
-
-  private lateinit var binding: ForceNetworkTypeFragmentBinding
-  private lateinit var linearLayoutManager: LinearLayoutManager
-  private lateinit var bindingAdapter: BindableAdapter<NetworkTypeItemViewModel>
-
-  /** Called when [ForceNetworkTypeFragment] is created. Handles UI for the fragment. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?
-  ): View? {
-    binding = ForceNetworkTypeFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-
-    binding.forceNetworkTypeToolbar.setNavigationOnClickListener {
-      (activity as ForceNetworkTypeActivity).finish()
-    }
-
-    binding.apply {
-      this.lifecycleOwner = fragment
-      this.viewModel = forceNetworkTypeViewModel
-    }
-
-    linearLayoutManager = LinearLayoutManager(activity.applicationContext)
-
-    bindingAdapter = createRecyclerViewAdapter()
-    binding.forceNetworkTypeRecyclerView.apply {
-      layoutManager = linearLayoutManager
-      adapter = bindingAdapter
-    }
-
-    return binding.root
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<NetworkTypeItemViewModel> {
-    return singleTypeBuilderFactory.create<NetworkTypeItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = ForceNetworkTypeNetworkItemViewBinding::inflate,
-        setViewModel = this::bindNetworkItemView
-      )
-      .build()
-  }
-
-  private fun bindNetworkItemView(
-    binding: ForceNetworkTypeNetworkItemViewBinding,
-    model: NetworkTypeItemViewModel
+class ForceNetworkTypeFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
+    private val forceNetworkTypeViewModel: ForceNetworkTypeViewModel,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   ) {
-    binding.viewModel = model
-    if (networkConnectionUtil.isPresent) {
-      binding.isNetworkSelected =
-        networkConnectionUtil.get().getForcedConnectionStatus() == model.networkType
-      binding.networkTypeLayout.setOnClickListener {
-        networkConnectionUtil.get().setCurrentConnectionStatus(model.networkType)
-        bindingAdapter.notifyDataSetChanged()
+    private lateinit var binding: ForceNetworkTypeFragmentBinding
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var bindingAdapter: BindableAdapter<NetworkTypeItemViewModel>
+
+    /** Called when [ForceNetworkTypeFragment] is created. Handles UI for the fragment. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      binding =
+        ForceNetworkTypeFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+
+      binding.forceNetworkTypeToolbar.setNavigationOnClickListener {
+        (activity as ForceNetworkTypeActivity).finish()
+      }
+
+      binding.apply {
+        this.lifecycleOwner = fragment
+        this.viewModel = forceNetworkTypeViewModel
+      }
+
+      linearLayoutManager = LinearLayoutManager(activity.applicationContext)
+
+      bindingAdapter = createRecyclerViewAdapter()
+      binding.forceNetworkTypeRecyclerView.apply {
+        layoutManager = linearLayoutManager
+        adapter = bindingAdapter
+      }
+
+      return binding.root
+    }
+
+    private fun createRecyclerViewAdapter(): BindableAdapter<NetworkTypeItemViewModel> =
+      singleTypeBuilderFactory
+        .create<NetworkTypeItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = ForceNetworkTypeNetworkItemViewBinding::inflate,
+          setViewModel = this::bindNetworkItemView,
+        ).build()
+
+    private fun bindNetworkItemView(
+      binding: ForceNetworkTypeNetworkItemViewBinding,
+      model: NetworkTypeItemViewModel,
+    ) {
+      binding.viewModel = model
+      if (networkConnectionUtil.isPresent) {
+        binding.isNetworkSelected =
+          networkConnectionUtil.get().getForcedConnectionStatus() == model.networkType
+        binding.networkTypeLayout.setOnClickListener {
+          networkConnectionUtil.get().setCurrentConnectionStatus(model.networkType)
+          bindingAdapter.notifyDataSetChanged()
+        }
       }
     }
   }
-}

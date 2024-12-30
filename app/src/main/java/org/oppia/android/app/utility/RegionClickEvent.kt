@@ -10,11 +10,16 @@ sealed class RegionClickedEvent
  * @property contentDescription content description for which [OnClickableAreaClickedListener] was
  * called for.
  */
-data class NamedRegionClickedEvent(val regionLabel: String, val contentDescription: String) :
-  RegionClickedEvent()
+data class NamedRegionClickedEvent(
+  val regionLabel: String,
+  val contentDescription: String,
+) : RegionClickedEvent()
 
 /**
  * Class to be used in case when [OnClickableAreaClickedListener] is called with an unspecified
  * region that is when any other is tapped on which wasn't defined by creator.
  */
-class DefaultRegionClickedEvent(val x: Float, val y: Float) : RegionClickedEvent()
+class DefaultRegionClickedEvent(
+  val x: Float,
+  val y: Float,
+) : RegionClickedEvent()

@@ -57,33 +57,37 @@ import java.util.concurrent.TimeUnit
 fun main(vararg args: String) {
   val repoRoot = args[0]
 
-  val filePathList = args.drop(1)
-    .takeWhile { !it.startsWith("--") }
-    .map { it.trim(',', '[', ']') }
-    .map { filePath ->
-      when {
-        filePath.endsWith("Test.kt") -> {
-          findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+  val filePathList =
+    args
+      .drop(1)
+      .takeWhile { !it.startsWith("--") }
+      .map { it.trim(',', '[', ']') }
+      .map { filePath ->
+        when {
+          filePath.endsWith("Test.kt") -> {
+            findSourceFile(File(repoRoot).absoluteFile, repoRoot, filePath)
+          }
+          filePath.endsWith(".kt") -> filePath
+          else -> null
         }
-        filePath.endsWith(".kt") -> filePath
-        else -> null
-      }
-    }
-    .filterNotNull()
-    .distinct()
+      }.filterNotNull()
+      .distinct()
 
   println("Running coverage analysis for the files: $filePathList")
 
-  val format = args.find { it.startsWith("--format=", ignoreCase = true) }
-    ?.substringAfter("=")
-    ?.uppercase() ?: "HTML"
+  val format =
+    args
+      .find { it.startsWith("--format=", ignoreCase = true) }
+      ?.substringAfter("=")
+      ?.uppercase() ?: "HTML"
 
-  val reportFormat = when (format) {
-    "HTML" -> ReportFormat.HTML
-    "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
-    "PROTO" -> ReportFormat.PROTO
-    else -> throw IllegalArgumentException("Unsupported report format: $format")
-  }
+  val reportFormat =
+    when (format) {
+      "HTML" -> ReportFormat.HTML
+      "MARKDOWN", "MD" -> ReportFormat.MARKDOWN
+      "PROTO" -> ReportFormat.PROTO
+      else -> throw IllegalArgumentException("Unsupported report format: $format")
+    }
   println("Using format: $reportFormat")
 
   for (filePath in filePathList) {
@@ -93,13 +97,18 @@ fun main(vararg args: String) {
   }
 
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
-      ?.substringAfter("=")
-      ?.toLongOrNull() ?: 5
+    val processTimeout: Long =
+      args
+        .find { it.startsWith("--processTimeout=") }
+        ?.substringAfter("=")
+        ?.toLongOrNull() ?: 5
 
-    val commandExecutor: CommandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
-    )
+    val commandExecutor: CommandExecutor =
+      CommandExecutorImpl(
+        scriptBgDispatcher,
+        processTimeout = processTimeout,
+        processTimeoutUnit = TimeUnit.MINUTES,
+      )
 
     RunCoverage(
       repoRoot,
@@ -125,7 +134,7 @@ class RunCoverage(
   private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb"
+  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb",
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
   private val rootDirectory = File(repoRoot).absoluteFile
@@ -160,17 +169,19 @@ class RunCoverage(
       return
     }
 
-    val coverageResults = filePathList.map { filePath ->
-      runCoverageForFile(filePath)
-    }
+    val coverageResults =
+      filePathList.map { filePath ->
+        runCoverageForFile(filePath)
+      }
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
-    val reporter = CoverageReporter(
-      repoRoot,
-      coverageReportContainer,
-      reportFormat,
-      testFileExemptionTextProtoPath
-    )
+    val reporter =
+      CoverageReporter(
+        repoRoot,
+        coverageReportContainer,
+        reportFormat,
+        testFileExemptionTextProtoPath,
+      )
 
     val coverageStatus = reporter.generateRichTextReport()
     when (coverageStatus) {
@@ -183,63 +194,70 @@ class RunCoverage(
     val exemption = testFileExemptionList[filePath]
     return when {
       exemption?.testFileNotRequired == true -> {
-        CoverageReport.newBuilder()
+        CoverageReport
+          .newBuilder()
           .setExemption(
-            CoverageExemption.newBuilder()
+            CoverageExemption
+              .newBuilder()
               .setFilePath(filePath)
               .setExemptionReason(
                 "This file is exempted from having a test file; " +
-                  "skipping coverage check."
-              )
-              .build()
+                  "skipping coverage check.",
+              ).build(),
           ).build()
       }
       exemption?.sourceFileIsIncompatibleWithCodeCoverage == true -> {
-        CoverageReport.newBuilder()
+        CoverageReport
+          .newBuilder()
           .setExemption(
-            CoverageExemption.newBuilder()
+            CoverageExemption
+              .newBuilder()
               .setFilePath(filePath)
               .setExemptionReason(
                 "This file is incompatible with code coverage tooling; " +
-                  "skipping coverage check."
-              )
-              .build()
+                  "skipping coverage check.",
+              ).build(),
           ).build()
       }
       else -> {
         val testFilePaths = findTestFiles(rootDirectory, repoRoot, filePath)
         when {
           testFilePaths.isEmpty() -> {
-            return CoverageReport.newBuilder()
+            return CoverageReport
+              .newBuilder()
               .setFailure(
-                CoverageFailure.newBuilder()
+                CoverageFailure
+                  .newBuilder()
                   .setFilePath(filePath)
                   .setFailureMessage("No appropriate test file found for $filePath.")
-                  .build()
+                  .build(),
               ).build()
           }
           else -> {
             val testTargets = bazelClient.retrieveBazelTargets(testFilePaths)
             when {
               testTargets.isEmpty() -> {
-                CoverageReport.newBuilder()
+                CoverageReport
+                  .newBuilder()
                   .setFailure(
-                    CoverageFailure.newBuilder()
+                    CoverageFailure
+                      .newBuilder()
                       .setFilePath(filePath)
                       .setFailureMessage(
-                        "Missing test declaration(s) for existing test file(s): $testFilePaths."
-                      )
-                      .build()
+                        "Missing test declaration(s) for existing test file(s): $testFilePaths.",
+                      ).build(),
                   ).build()
               }
               else -> {
-                val coverageReports = testTargets.flatMap { testTarget ->
-                  CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
-                    .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
-                }
+                val coverageReports =
+                  testTargets.flatMap { testTarget ->
+                    CoverageRunner(rootDirectory, scriptBgDispatcher, commandExecutor)
+                      .retrieveCoverageDataForTestTarget(testTarget.removeSuffix(".kt"))
+                  }
 
                 coverageReports.find { it.hasFailure() }?.let { failingReport ->
-                  CoverageReport.newBuilder()
+                  CoverageReport
+                    .newBuilder()
                     .setFailure(failingReport.failure)
                     .build()
                 } ?: calculateAggregateCoverageReport(coverageReports)
@@ -251,24 +269,20 @@ class RunCoverage(
     }
   }
 
-  private fun combineCoverageReports(
-    coverageResultList: List<CoverageReport>
-  ): CoverageReportContainer {
-    return CoverageReportContainer.newBuilder().apply {
-      addAllCoverageReport(coverageResultList)
-    }.build()
-  }
+  private fun combineCoverageReports(coverageResultList: List<CoverageReport>): CoverageReportContainer =
+    CoverageReportContainer
+      .newBuilder()
+      .apply {
+        addAllCoverageReport(coverageResultList)
+      }.build()
 
-  private fun calculateAggregateCoverageReport(
-    coverageReports: List<CoverageReport>
-  ): CoverageReport {
-    fun aggregateCoverage(coverages: List<Coverage>): Coverage {
-      return coverages.find { it == Coverage.FULL } ?: Coverage.NONE
-    }
+  private fun calculateAggregateCoverageReport(coverageReports: List<CoverageReport>): CoverageReport {
+    fun aggregateCoverage(coverages: List<Coverage>): Coverage = coverages.find { it == Coverage.FULL } ?: Coverage.NONE
 
-    val groupedCoverageReports = coverageReports.groupBy {
-      Pair(it.details.filePath, it.details.fileSha1Hash)
-    }
+    val groupedCoverageReports =
+      coverageReports.groupBy {
+        Pair(it.details.filePath, it.details.fileSha1Hash)
+      }
 
     val (key, reports) = groupedCoverageReports.entries.single()
     val (filePath, fileSha1Hash) = key
@@ -276,26 +290,31 @@ class RunCoverage(
     val allBazelTestTargets = reports.flatMap { it.details.bazelTestTargetsList }
     val allCoveredLines = reports.flatMap { it.details.coveredLineList }
     val groupedCoveredLines = allCoveredLines.groupBy { it.lineNumber }
-    val aggregatedCoveredLines = groupedCoveredLines.map { (lineNumber, coveredLines) ->
-      CoveredLine.newBuilder()
-        .setLineNumber(lineNumber)
-        .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
-        .build()
-    }
+    val aggregatedCoveredLines =
+      groupedCoveredLines.map { (lineNumber, coveredLines) ->
+        CoveredLine
+          .newBuilder()
+          .setLineNumber(lineNumber)
+          .setCoverage(aggregateCoverage(coveredLines.map { it.coverage }))
+          .build()
+      }
 
     val totalLinesFound = aggregatedCoveredLines.size
     val totalLinesHit = aggregatedCoveredLines.count { it.coverage == Coverage.FULL }
 
-    val coverageDetails = CoverageDetails.newBuilder()
-      .addAllBazelTestTargets(allBazelTestTargets)
-      .setFilePath(filePath)
-      .setFileSha1Hash(fileSha1Hash)
-      .addAllCoveredLine(aggregatedCoveredLines)
-      .setLinesFound(totalLinesFound)
-      .setLinesHit(totalLinesHit)
-      .build()
+    val coverageDetails =
+      CoverageDetails
+        .newBuilder()
+        .addAllBazelTestTargets(allBazelTestTargets)
+        .setFilePath(filePath)
+        .setFileSha1Hash(fileSha1Hash)
+        .addAllCoveredLine(aggregatedCoveredLines)
+        .setLinesFound(totalLinesFound)
+        .setLinesHit(totalLinesHit)
+        .build()
 
-    return CoverageReport.newBuilder()
+    return CoverageReport
+      .newBuilder()
       .setDetails(coverageDetails)
       .build()
   }
@@ -304,25 +323,26 @@ class RunCoverage(
 private fun findTestFiles(
   rootDirectory: File,
   repoRoot: String,
-  filePath: String
+  filePath: String,
 ): List<String> {
   val repoRootFile = File(repoRoot).absoluteFile
 
-  val possibleTestFilePaths = when {
-    filePath.startsWith("scripts/") -> {
-      listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+  val possibleTestFilePaths =
+    when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/java/", "/javatests/").replace(".kt", "Test.kt"))
+      }
+      filePath.startsWith("app/") -> {
+        listOf(
+          filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
+          filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt"),
+        )
+      }
+      else -> {
+        listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
+      }
     }
-    filePath.startsWith("app/") -> {
-      listOf(
-        filePath.replace("/main/", "/sharedTest/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"),
-        filePath.replace("/main/", "/test/").replace(".kt", "LocalTest.kt")
-      )
-    }
-    else -> {
-      listOf(filePath.replace("/main/", "/test/").replace(".kt", "Test.kt"))
-    }
-  }
 
   return possibleTestFilePaths
     .map { File(repoRootFile, it) }
@@ -333,44 +353,45 @@ private fun findTestFiles(
 private fun findSourceFile(
   rootDirectory: File,
   repoRoot: String,
-  filePath: String
+  filePath: String,
 ): String? {
   val repoRootFile = File(repoRoot).absoluteFile
-  val possibleSourceFilePaths = when {
-    filePath.startsWith("scripts/") -> {
-      listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
-    }
-    filePath.startsWith("app/") -> {
-      when {
-        filePath.contains("/sharedTest/") -> {
-          listOf(filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"))
+  val possibleSourceFilePaths =
+    when {
+      filePath.startsWith("scripts/") -> {
+        listOf(filePath.replace("/javatests/", "/java/").replace("Test.kt", ".kt"))
+      }
+      filePath.startsWith("app/") -> {
+        when {
+          filePath.contains("/sharedTest/") -> {
+            listOf(filePath.replace("/sharedTest/", "/main/").replace("Test.kt", ".kt"))
+          }
+          filePath.contains("/test/") -> {
+            listOf(
+              filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
+              filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt"),
+            )
+          }
+          else -> emptyList()
         }
-        filePath.contains("/test/") -> {
-          listOf(
-            filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"),
-            filePath.replace("/test/", "/main/").replace("LocalTest.kt", ".kt")
-          )
-        }
-        else -> emptyList()
+      }
+      else -> {
+        listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
       }
     }
-    else -> {
-      listOf(filePath.replace("/test/", "/main/").replace("Test.kt", ".kt"))
-    }
-  }
 
   return possibleSourceFilePaths
     .mapNotNull { path ->
       val file = File(repoRootFile, path)
       file.takeIf { it.exists() }?.toRelativeString(rootDirectory)
-    }
-    .firstOrNull()
+    }.firstOrNull()
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): TestFileExemptions {
-  return File(testFileExemptionProtoPath).inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
+private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): TestFileExemptions =
+  File(testFileExemptionProtoPath).inputStream().use { stream ->
+    TestFileExemptions
+      .newBuilder()
+      .also { builder ->
+        builder.mergeFrom(stream)
+      }.build()
   }
-}

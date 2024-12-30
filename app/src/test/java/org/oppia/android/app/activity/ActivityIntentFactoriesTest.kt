@@ -102,7 +102,7 @@ class ActivityIntentFactoriesTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Before
@@ -116,12 +116,13 @@ class ActivityIntentFactoriesTest {
       getTopicActivityIntentFactory().createIntent(
         ProfileId.getDefaultInstance(),
         classroomId = "test_classroom_id",
-        topicId = "test_topic_id"
+        topicId = "test_topic_id",
       )
-    val args = intent.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
-      TopicActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+        TopicActivityParams.getDefaultInstance(),
+      )
 
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
     assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
@@ -136,12 +137,13 @@ class ActivityIntentFactoriesTest {
         ProfileId.getDefaultInstance(),
         classroomId = "test_classroom_id",
         topicId = "test_topic_id",
-        storyId = "test_story_id"
+        storyId = "test_story_id",
       )
-    val args = intent.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
-      TopicActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+        TopicActivityParams.getDefaultInstance(),
+      )
     assertThat(intent).hasComponentClass(TopicActivity::class.java)
     assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
     assertThat(args.topicId).isEqualTo("test_topic_id")
@@ -152,7 +154,7 @@ class ActivityIntentFactoriesTest {
   fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
     val intent =
       getRecentlyPlayedActivityIntentFactory().createIntent(
-        RecentlyPlayedActivityParams.getDefaultInstance()
+        RecentlyPlayedActivityParams.getDefaultInstance(),
       )
 
     assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
@@ -207,8 +209,8 @@ class ActivityIntentFactoriesTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -222,9 +224,13 @@ class ActivityIntentFactoriesTest {
     fun inject(activityIntentFactoriesTest: ActivityIntentFactoriesTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerActivityIntentFactoriesTest_TestApplicationComponent.builder()
+      DaggerActivityIntentFactoriesTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -233,15 +239,17 @@ class ActivityIntentFactoriesTest {
       component.inject(activityIntentFactoriesTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 
   private companion object {
-
     private const val RECENTLY_PLAYED_PROFILE_ID_KEY = "RecentlyPlayedActivity.internal_profile_id"
   }
 }

@@ -104,7 +104,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(
   application = OsDeprecationNoticeDialogFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 @LooperMode(LooperMode.Mode.PAUSED)
 class OsDeprecationNoticeDialogFragmentTest {
@@ -143,10 +143,11 @@ class OsDeprecationNoticeDialogFragmentTest {
   fun testFragment_hasExpectedContentMessageTextUnderTitle() {
     launchOsDeprecationNoticeDialogFragmentTestActivity {
       val appName = context.resources.getString(R.string.app_name)
-      val expectedString = context.resources.getString(
-        R.string.os_deprecation_dialog_message,
-        appName
-      )
+      val expectedString =
+        context.resources.getString(
+          R.string.os_deprecation_dialog_message,
+          appName,
+        )
       onDialogView(withText(expectedString)).check(matches(isDisplayed()))
     }
   }
@@ -169,23 +170,22 @@ class OsDeprecationNoticeDialogFragmentTest {
           DeprecationNoticeActionResponse.Dismiss(
             deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION,
             deprecatedVersion = 19,
-          )
+          ),
         )
     }
   }
 
-  private fun launchOsDeprecationNoticeDialogFragmentTestActivity(
-    testBlock: () -> Unit
-  ) {
+  private fun launchOsDeprecationNoticeDialogFragmentTestActivity(testBlock: () -> Unit) {
     // Launch the test activity, but make sure that it's properly set up & time is given for it to
     // initialize.
-    ActivityScenario.launch(
-      OsDeprecationNoticeDialogFragmentTestActivity::class.java
-    ).use { scenario ->
-      scenario.onActivity { it.mockCallbackListener = mockDeprecationNoticeActionListener }
-      testCoroutineDispatchers.runCurrent()
-      testBlock()
-    }
+    ActivityScenario
+      .launch(
+        OsDeprecationNoticeDialogFragmentTestActivity::class.java,
+      ).use { scenario ->
+        scenario.onActivity { it.mockCallbackListener = mockDeprecationNoticeActionListener }
+        testCoroutineDispatchers.runCurrent()
+        testBlock()
+      }
   }
 
   private fun clickOnDialogView(matcher: Matcher<View>) {
@@ -198,8 +198,10 @@ class OsDeprecationNoticeDialogFragmentTest {
   }
 
   private companion object {
-    private fun onDialogView(matcher: Matcher<View>) = Espresso.onView(matcher)
-      .inRoot(isDialog())
+    private fun onDialogView(matcher: Matcher<View>) =
+      Espresso
+        .onView(matcher)
+        .inRoot(isDialog())
   }
 
   @Singleton
@@ -230,10 +232,9 @@ class OsDeprecationNoticeDialogFragmentTest {
       CachingTestModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -246,18 +247,25 @@ class OsDeprecationNoticeDialogFragmentTest {
     fun inject(test: OsDeprecationNoticeDialogFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOsDeprecationNoticeDialogFragmentTest_TestApplicationComponent.builder()
+      DaggerOsDeprecationNoticeDialogFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
 
     fun inject(test: OsDeprecationNoticeDialogFragmentTest) = component.inject(test)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

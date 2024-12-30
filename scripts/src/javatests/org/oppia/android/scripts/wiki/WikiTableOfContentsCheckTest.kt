@@ -48,17 +48,17 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """
-            ## Table of Contents
-            
-            - [Introduction](#introduction)
-            - [Usage](#usage)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
+      ## Table of Contents
+      
+      - [Introduction](#introduction)
+      - [Usage](#usage)
+      
+      ## Introduction
+      Content
+      
+      ## Usage
+      Content
+      """.trimIndent(),
     )
 
     runScript()
@@ -72,15 +72,15 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """          
-            - [Introduction](#introduction)
-            - [Usage](#usage)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
+      - [Introduction](#introduction)
+      - [Usage](#usage)
+      
+      ## Introduction
+      Content
+      
+      ## Usage
+      Content
+      """.trimIndent(),
     )
 
     runScript()
@@ -94,19 +94,20 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
-            ## Table of Contents
-             
-            - [Introduction](#introductions)
-            
-      """.trimIndent()
+      ## Table of Contents
+       
+      - [Introduction](#introductions)
+      
+      """.trimIndent(),
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      runScript()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runScript()
+      }
 
     assertThat(exception).hasMessageThat().contains(
-      "Wiki doesn't contain headers referenced in Table of Contents."
+      "Wiki doesn't contain headers referenced in Table of Contents.",
     )
   }
 
@@ -116,22 +117,23 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
-            ## Table of Contents
-             
-            - [Introduction](#introductions)
-            - [Usage](#usage)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
+      ## Table of Contents
+       
+      - [Introduction](#introductions)
+      - [Usage](#usage)
+      
+      ## Introduction
+      Content
+      
+      ## Usage
+      Content
+      """.trimIndent(),
     )
 
-    val exception = assertThrows<IllegalStateException>() {
-      runScript()
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        runScript()
+      }
 
     assertThat(exception).hasMessageThat().contains(WIKI_TOC_CHECK_FAILED_OUTPUT_INDICATOR)
   }
@@ -142,17 +144,17 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
-            ## Table of Contents
-             
-            - [Introduction To Wiki](#introduction-to-wiki)
-            - [Usage Wiki-Content](#usage-wiki-content)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
+      ## Table of Contents
+       
+      - [Introduction To Wiki](#introduction-to-wiki)
+      - [Usage Wiki-Content](#usage-wiki-content)
+      
+      ## Introduction
+      Content
+      
+      ## Usage
+      Content
+      """.trimIndent(),
     )
 
     runScript()
@@ -166,17 +168,17 @@ class WikiTableOfContentsCheckTest {
     val file = tempFolder.newFile("wiki/wiki.md")
     file.writeText(
       """   
-            ## Table of Contents
-             
-            - [Introduction](#introduction?)
-            - [Usage?](#usage)
-            
-            ## Introduction
-            Content
-            
-            ## Usage
-            Content
-      """.trimIndent()
+      ## Table of Contents
+       
+      - [Introduction](#introduction?)
+      - [Usage?](#usage)
+      
+      ## Introduction
+      Content
+      
+      ## Usage
+      Content
+      """.trimIndent(),
     )
 
     runScript()

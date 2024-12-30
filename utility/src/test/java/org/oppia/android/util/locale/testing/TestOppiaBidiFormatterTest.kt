@@ -92,9 +92,10 @@ class TestOppiaBidiFormatterTest {
     val wrappedStr = formatter.wrapText("test str")
 
     // Try to wrap the string again.
-    val exception = assertThrows<IllegalStateException>() { formatter.wrapText(wrappedStr) }
+    val exception = assertThrows<IllegalStateException> { formatter.wrapText(wrappedStr) }
 
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Error: encountered string that's already been wrapped: test str")
   }
 
@@ -130,7 +131,8 @@ class TestOppiaBidiFormatterTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestOppiaBidiFormatterTest_TestApplicationComponent.builder()
+    DaggerTestOppiaBidiFormatterTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -141,17 +143,15 @@ class TestOppiaBidiFormatterTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class
-    ]
+      TestModule::class, LocaleTestModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

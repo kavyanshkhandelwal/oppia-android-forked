@@ -21,17 +21,21 @@ class AdminPinActivity : InjectableAutoLocalizedAppCompatActivity() {
   companion object {
     /** Params key for AdminPinActivity. */
     const val ADMIN_PIN_ACTIVITY_PARAMS_KEY = "AdminPinActivity.params"
+
     fun createAdminPinActivityIntent(
       context: Context,
       profileId: Int,
       colorRgb: Int,
-      adminPinEnum: Int
+      adminPinEnum: Int,
     ): Intent {
-      val args = AdminPinActivityParams.newBuilder().apply {
-        this.internalProfileId = profileId
-        this.colorRgb = colorRgb
-        this.adminPinEnum = adminPinEnum
-      }.build()
+      val args =
+        AdminPinActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = profileId
+            this.colorRgb = colorRgb
+            this.adminPinEnum = adminPinEnum
+          }.build()
       return Intent(context, AdminPinActivity::class.java).apply {
         putProtoExtra(ADMIN_PIN_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADMIN_PIN_ACTIVITY)

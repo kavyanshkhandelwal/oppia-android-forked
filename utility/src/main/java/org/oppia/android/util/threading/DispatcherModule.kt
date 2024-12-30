@@ -16,14 +16,10 @@ class DispatcherModule {
   @Provides
   @BackgroundDispatcher
   @Singleton
-  fun provideBackgroundDispatcher(): CoroutineDispatcher {
-    return Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
-  }
+  fun provideBackgroundDispatcher(): CoroutineDispatcher = Executors.newFixedThreadPool(/* nThreads= */ 4).asCoroutineDispatcher()
 
   @Provides
   @BlockingDispatcher
   @Singleton
-  fun provideBlockingDispatcher(): CoroutineDispatcher {
-    return Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  }
+  fun provideBlockingDispatcher(): CoroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 }

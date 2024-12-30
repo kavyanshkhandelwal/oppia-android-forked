@@ -12,23 +12,23 @@ import javax.inject.Inject
  * Provider for a classifier that determines whether two object have an equal number of terms.
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class RatioInputHasNumberOfTermsEqualToClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeSingleInputMatcher<RatioExpression, Int> {
+class RatioInputHasNumberOfTermsEqualToClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeSingleInputMatcher<RatioExpression, Int> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createMultiTypeSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
+        InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
+        "y",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createMultiTypeSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
-      InteractionObject.ObjectTypeCase.NON_NEGATIVE_INT,
-      "y",
-      this
-    )
+    override fun matches(
+      answer: RatioExpression,
+      input: Int,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.ratioComponentCount == input
   }
-
-  override fun matches(
-    answer: RatioExpression,
-    input: Int,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.ratioComponentCount == input
-}

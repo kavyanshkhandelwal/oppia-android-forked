@@ -181,10 +181,11 @@ class RepositoryFileTest {
     val xmlFile = tempFolder.newFile("testfiles/TestFile.xml")
     val kotlinFile = tempFolder.newFile("testfiles/TestFile.kt")
 
-    val collectedFiles = RepositoryFile.collectSearchFiles(
-      repoPath = "${tempFolder.root}/testfiles/",
-      expectedExtension = ".kt"
-    )
+    val collectedFiles =
+      RepositoryFile.collectSearchFiles(
+        repoPath = "${tempFolder.root}/testfiles/",
+        expectedExtension = ".kt",
+      )
 
     assertThat(collectedFiles).contains(kotlinFile)
     assertThat(collectedFiles).doesNotContain(xmlFile)
@@ -197,15 +198,17 @@ class RepositoryFileTest {
     val testFile2 = tempFolder.newFile("testfiles/app/TestFile2.kt")
     val testFile3 = tempFolder.newFile("testfiles/app/TestFile3.kt")
     val testFile4 = tempFolder.newFile("testfiles/TestFile4.kt")
-    val exemptionList = listOf<String>(
-      "app/TestFile3.kt",
-      "TestFile4.kt"
-    )
+    val exemptionList =
+      listOf<String>(
+        "app/TestFile3.kt",
+        "TestFile4.kt",
+      )
 
-    val collectedFiles = RepositoryFile.collectSearchFiles(
-      repoPath = "${tempFolder.root}/testfiles/",
-      exemptionsList = exemptionList
-    )
+    val collectedFiles =
+      RepositoryFile.collectSearchFiles(
+        repoPath = "${tempFolder.root}/testfiles/",
+        exemptionsList = exemptionList,
+      )
 
     assertThat(collectedFiles).contains(testFile1)
     assertThat(collectedFiles).contains(testFile2)
@@ -223,16 +226,18 @@ class RepositoryFileTest {
     val testFile4 = tempFolder.newFile("testfiles/TestFile4.kt")
     val testFile5 = tempFolder.newFile("testfiles/TestFile5.xml")
     val testFile6 = tempFolder.newFile("testfiles/.git/TestFile6.kt")
-    val exemptionList = listOf<String>(
-      "app/TestFile3.kt",
-      "TestFile4.kt"
-    )
+    val exemptionList =
+      listOf<String>(
+        "app/TestFile3.kt",
+        "TestFile4.kt",
+      )
 
-    val collectedFiles = RepositoryFile.collectSearchFiles(
-      repoPath = "${tempFolder.root}/testfiles/",
-      expectedExtension = ".kt",
-      exemptionsList = exemptionList
-    )
+    val collectedFiles =
+      RepositoryFile.collectSearchFiles(
+        repoPath = "${tempFolder.root}/testfiles/",
+        expectedExtension = ".kt",
+        exemptionsList = exemptionList,
+      )
 
     assertThat(collectedFiles).contains(testFile1)
     assertThat(collectedFiles).contains(testFile2)
@@ -264,10 +269,9 @@ class RepositoryFileTest {
    * Calls [RepositoryFile.retrieveRelativeFilePath] for a file and returns the relative
    * path to the test directory.
    */
-  private fun retrieveRelativeFilePath(file: File): String {
-    return RepositoryFile.retrieveRelativeFilePath(
+  private fun retrieveRelativeFilePath(file: File): String =
+    RepositoryFile.retrieveRelativeFilePath(
       file,
-      "${tempFolder.root}/testfiles/"
+      "${tempFolder.root}/testfiles/",
     )
-  }
 }

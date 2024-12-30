@@ -10,9 +10,8 @@ import java.util.Objects
 class WelcomeViewModel(
   private val profileName: String,
   private val resourceHandler: AppLanguageResourceHandler,
-  dateTimeUtil: DateTimeUtil
+  dateTimeUtil: DateTimeUtil,
 ) : HomeItemViewModel() {
-
   /** Text [String] to greet the learner. */
   val greeting: String = dateTimeUtil.getGreetingMessage()
 
@@ -20,20 +19,20 @@ class WelcomeViewModel(
    *  Returns the string which contains greeting message with user's name and
    *  display on-screen when launching the home activity.
    */
-  fun computeWelcomeText(): String = resourceHandler.getStringInLocaleWithWrapping(
-    R.string.welcome_profile_name,
-    greeting,
-    profileName
-  )
+  fun computeWelcomeText(): String =
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.welcome_profile_name,
+      greeting,
+      profileName,
+    )
 
   // Overriding equals is needed so that DataProvider combine functions used in the HomeViewModel
   // will only rebind when the actual data in the data list changes, rather than when the ViewModel
   // object changes.
-  override fun equals(other: Any?): Boolean {
-    return other is WelcomeViewModel &&
+  override fun equals(other: Any?): Boolean =
+    other is WelcomeViewModel &&
       this.profileName == other.profileName &&
       this.greeting == other.greeting
-  }
 
   override fun hashCode() = Objects.hash(profileName, greeting)
 }

@@ -59,51 +59,58 @@ fun main(vararg args: String) {
 
   // List of annotation entries which when present on an element, the element does not needs to be
   // checked for a KDoc.
-  val kDocNotRequiredAnnotationEntryList = listOf<String>(
-    "Rule",
-    "Mock",
-    "Test",
-    "Before",
-    "Captor",
-    "BeforeClass",
-    "After",
-    "AfterClass",
-    "Inject",
-    "Provides",
-    "Binds"
-  )
+  val kDocNotRequiredAnnotationEntryList =
+    listOf<String>(
+      "Rule",
+      "Mock",
+      "Test",
+      "Before",
+      "Captor",
+      "BeforeClass",
+      "After",
+      "AfterClass",
+      "Inject",
+      "Provides",
+      "Binds",
+    )
 
   // A list of all the files to be exempted for this check.
   val kdocExemptionList =
     loadKdocExemptionsProto(pathToProtoBinary).getExemptedFilePathList()
 
   // A list of all kotlin files in the repo to be analyzed.
-  val searchFiles = RepositoryFile.collectSearchFiles(
-    repoPath = repoPath,
-    expectedExtension = ".kt"
-  )
+  val searchFiles =
+    RepositoryFile.collectSearchFiles(
+      repoPath = repoPath,
+      expectedExtension = ".kt",
+    )
 
   // List of files excluding the Test files.
-  val filesExcludingTestFiles = searchFiles.filter { file ->
-    !file.nameWithoutExtension.endsWith("Test")
-  }
+  val filesExcludingTestFiles =
+    searchFiles.filter { file ->
+      !file.nameWithoutExtension.endsWith("Test")
+    }
 
   // A list of all kdoc presence failures.
-  val kdocPresenceFailures = filesExcludingTestFiles.flatMap { file ->
-    hasKdocFailure(file, kDocNotRequiredAnnotationEntryList)
-  }
+  val kdocPresenceFailures =
+    filesExcludingTestFiles.flatMap { file ->
+      hasKdocFailure(file, kDocNotRequiredAnnotationEntryList)
+    }
 
-  val matchedFilesRelativePaths = kdocPresenceFailures.map {
-    RepositoryFile.retrieveRelativeFilePath(it.first, repoPath)
-  }
+  val matchedFilesRelativePaths =
+    kdocPresenceFailures.map {
+      RepositoryFile.retrieveRelativeFilePath(it.first, repoPath)
+    }
 
-  val redundantExemptions = kdocExemptionList.filter { exemption ->
-    exemption !in matchedFilesRelativePaths
-  }
+  val redundantExemptions =
+    kdocExemptionList.filter { exemption ->
+      exemption !in matchedFilesRelativePaths
+    }
 
-  val kdocPresenceFailuresAfterExemption = kdocPresenceFailures.filter {
-    RepositoryFile.retrieveRelativeFilePath(it.first, repoPath) !in kdocExemptionList
-  }
+  val kdocPresenceFailuresAfterExemption =
+    kdocPresenceFailures.filter {
+      RepositoryFile.retrieveRelativeFilePath(it.first, repoPath) !in kdocExemptionList
+    }
 
   logRedundantExemptions(redundantExemptions, kdocExemptionTextProtoFilePath)
 
@@ -112,7 +119,7 @@ fun main(vararg args: String) {
   if (kdocPresenceFailuresAfterExemption.isNotEmpty()) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#kdoc-validity-check for more details on how to fix this.\n"
+        "#kdoc-validity-check for more details on how to fix this.\n",
     )
   }
 
@@ -127,11 +134,12 @@ fun main(vararg args: String) {
 private val project by lazy {
   val config = CompilerConfiguration()
   config.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
-  KotlinCoreEnvironment.createForProduction(
-    Disposer.newDisposable(),
-    config,
-    EnvironmentConfigFiles.JVM_CONFIG_FILES
-  ).project
+  KotlinCoreEnvironment
+    .createForProduction(
+      Disposer.newDisposable(),
+      config,
+      EnvironmentConfigFiles.JVM_CONFIG_FILES,
+    ).project
 }
 
 /**
@@ -141,10 +149,13 @@ private val project by lazy {
  * @param fileName name of the file
  * @return the generated [KtFile] for the given file
  */
-private fun createKtFile(codeString: String, fileName: String): KtFile {
-  return PsiManager.getInstance(project)
+private fun createKtFile(
+  codeString: String,
+  fileName: String,
+): KtFile =
+  PsiManager
+    .getInstance(project)
     .findFile(LightVirtualFile(fileName, KotlinFileType.INSTANCE, codeString)) as KtFile
-}
 
 /**
  * Checks whether a file has a KDoc presence failure.
@@ -156,18 +167,19 @@ private fun createKtFile(codeString: String, fileName: String): KtFile {
  */
 private fun hasKdocFailure(
   file: File,
-  kDocNotRequiredAnnotationEntryList: List<String>
+  kDocNotRequiredAnnotationEntryList: List<String>,
 ): List<Pair<File, Int?>> {
-  val ktFile = createKtFile(
-    file.readLines().joinToString(separator = System.lineSeparator()),
-    file.name
-  )
+  val ktFile =
+    createKtFile(
+      file.readLines().joinToString(separator = System.lineSeparator()),
+      file.name,
+    )
   return ktFile.children.flatMap { elem ->
     if (elem is KtElement) {
       recursiveKdocPresenceChecker(
         elem,
         file,
-        kDocNotRequiredAnnotationEntryList
+        kDocNotRequiredAnnotationEntryList,
       )
     } else {
       emptyList()
@@ -187,44 +199,47 @@ private fun hasKdocFailure(
 private fun recursiveKdocPresenceChecker(
   elem: KtElement,
   file: File,
-  kDocNotRequiredAnnotationEntryList: List<String>
+  kDocNotRequiredAnnotationEntryList: List<String>,
 ): List<Pair<File, Int?>> {
   when {
     elem is KtObjectDeclaration && elem.isCompanion() -> {
-      val memberMissingKdoc = elem.declarations.flatMap { childElem ->
-        recursiveKdocPresenceChecker(
-          childElem,
-          file,
-          kDocNotRequiredAnnotationEntryList
-        )
-      }
+      val memberMissingKdoc =
+        elem.declarations.flatMap { childElem ->
+          recursiveKdocPresenceChecker(
+            childElem,
+            file,
+            kDocNotRequiredAnnotationEntryList,
+          )
+        }
       return memberMissingKdoc
     }
     elem is KtClass -> {
       val classKdocMissing = checkIfKDocIsMissing(elem, file, kDocNotRequiredAnnotationEntryList)
-      val memberMissingKdoc = elem.declarations.flatMap { childElem ->
-        recursiveKdocPresenceChecker(
-          childElem,
-          file,
-          kDocNotRequiredAnnotationEntryList
-        )
-      }
+      val memberMissingKdoc =
+        elem.declarations.flatMap { childElem ->
+          recursiveKdocPresenceChecker(
+            childElem,
+            file,
+            kDocNotRequiredAnnotationEntryList,
+          )
+        }
       return (memberMissingKdoc + classKdocMissing).filterNotNull()
     }
     elem is KtObjectDeclaration -> {
       val objectKdocMissing = checkIfKDocIsMissing(elem, file, kDocNotRequiredAnnotationEntryList)
-      val memberMissingKdoc = elem.declarations.flatMap { childElem ->
-        recursiveKdocPresenceChecker(
-          childElem,
-          file,
-          kDocNotRequiredAnnotationEntryList
-        )
-      }
+      val memberMissingKdoc =
+        elem.declarations.flatMap { childElem ->
+          recursiveKdocPresenceChecker(
+            childElem,
+            file,
+            kDocNotRequiredAnnotationEntryList,
+          )
+        }
       return (memberMissingKdoc + objectKdocMissing).filterNotNull()
     }
     elem is KtNamedFunction || elem is KtVariableDeclaration || elem is KtSecondaryConstructor ->
       return listOf(
-        checkIfKDocIsMissing(elem as KtDeclaration, file, kDocNotRequiredAnnotationEntryList)
+        checkIfKDocIsMissing(elem as KtDeclaration, file, kDocNotRequiredAnnotationEntryList),
       ).filterNotNull()
     else -> return emptyList()
   }
@@ -242,7 +257,7 @@ private fun recursiveKdocPresenceChecker(
 private fun checkIfKDocIsMissing(
   elem: KtDeclaration,
   file: File,
-  kDocNotRequiredAnnotationEntryList: List<String>
+  kDocNotRequiredAnnotationEntryList: List<String>,
 ): Pair<File, Int?>? {
   if (!isKdocRequired(elem, kDocNotRequiredAnnotationEntryList)) {
     return null
@@ -263,7 +278,7 @@ private fun checkIfKDocIsMissing(
  */
 private fun isKdocRequired(
   elem: KtDeclaration,
-  kDocNotRequiredAnnotationEntryList: List<String>
+  kDocNotRequiredAnnotationEntryList: List<String>,
 ): Boolean {
   if (elem.hasModifier(KtTokens.PRIVATE_KEYWORD)) {
     return false
@@ -289,7 +304,10 @@ private fun isKdocRequired(
  *     statement starts.
  * @return the line number
  */
-private fun retrieveLineNumberForElement(statement: KtElement, markEndOffset: Boolean): Int? {
+private fun retrieveLineNumberForElement(
+  statement: KtElement,
+  markEndOffset: Boolean,
+): Int? {
   val file = statement.containingFile
   if (statement is KtConstructorDelegationReferenceExpression && statement.textLength == 0) {
     // PsiElement for constructor delegation reference is always generated, so we shouldn't mark
@@ -297,9 +315,10 @@ private fun retrieveLineNumberForElement(statement: KtElement, markEndOffset: Bo
     return null
   }
   val document = file.viewProvider.document
-  return document?.getLineNumber(
-    if (markEndOffset) statement.textRange.endOffset else statement.textOffset
-  )?.plus(1)
+  return document
+    ?.getLineNumber(
+      if (markEndOffset) statement.textRange.endOffset else statement.textOffset,
+    )?.plus(1)
 }
 
 /**
@@ -325,7 +344,7 @@ private fun logKdocPresenceFailures(kdocPresenceFailuresAfterExemption: List<Pai
  */
 private fun logRedundantExemptions(
   redundantExemptions: List<String>,
-  kdocExemptionTextProtoFilePath: String
+  kdocExemptionTextProtoFilePath: String,
 ) {
   if (redundantExemptions.isNotEmpty()) {
     println("Redundant exemptions:")
@@ -333,7 +352,7 @@ private fun logRedundantExemptions(
       println("- $exemption")
     }
     println(
-      "Please remove them from $kdocExemptionTextProtoFilePath.textproto"
+      "Please remove them from $kdocExemptionTextProtoFilePath.textproto",
     )
     println()
   }
@@ -353,8 +372,9 @@ private fun loadKdocExemptionsProto(pathToProtoBinary: String): KdocValidityExem
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
   val protoObj: KdocValidityExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as KdocValidityExemptions
+    FileInputStream(protoBinaryFile)
+      .use {
+        builder.mergeFrom(it)
+      }.build() as KdocValidityExemptions
   return protoObj
 }

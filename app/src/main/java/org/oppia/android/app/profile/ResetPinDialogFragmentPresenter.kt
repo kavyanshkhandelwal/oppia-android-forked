@@ -21,94 +21,101 @@ import javax.inject.Inject
 
 /** The presenter for [ResetPinDialogFragment]. */
 @FragmentScope
-class ResetPinDialogFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
-  private val resetViewModel: ResetPinViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
-  fun handleOnCreateDialog(
-    routeDialogInterface: ProfileRouteDialogInterface,
-    profileId: Int,
-    name: String
-  ): Dialog {
-    val binding: ResetPinDialogBinding = DataBindingUtil.inflate(
-      activity.layoutInflater,
-      R.layout.reset_pin_dialog,
-      /* parent= */ null,
-      /* attachToParent= */ false
-    )
-    binding.apply {
-      lifecycleOwner = fragment
-      viewModel = resetViewModel
-    }
-    resetViewModel.setName(name)
-
-    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
-      confirmPin?.let {
-        // To avoid disappearing Error message due to orientation change.
-        if (
-          resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
-        ) {
-          resetViewModel.inputPin.set(it)
-        } else {
-          resetViewModel.inputPin.set(it)
-          resetViewModel.errorMessage.set("")
-        }
-      }
-    }
-
-    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.reset_pin_enter)
-      .setView(binding.root)
-      .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.reset_pin_enter_dialog_message, name
+class ResetPinDialogFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val activity: AppCompatActivity,
+    private val profileManagementController: ProfileManagementController,
+    private val resetViewModel: ResetPinViewModel,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    fun handleOnCreateDialog(
+      routeDialogInterface: ProfileRouteDialogInterface,
+      profileId: Int,
+      name: String,
+    ): Dialog {
+      val binding: ResetPinDialogBinding =
+        DataBindingUtil.inflate(
+          activity.layoutInflater,
+          R.layout.reset_pin_dialog,
+          // parent=
+          null,
+          // attachToParent=
+          false,
         )
-      )
-      .setPositiveButton(R.string.admin_settings_submit, null)
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
-        dialog.dismiss()
+      binding.apply {
+        lifecycleOwner = fragment
+        viewModel = resetViewModel
       }
-      .create()
+      resetViewModel.setName(name)
 
-    binding.resetPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
-      if (actionId == EditorInfo.IME_ACTION_DONE ||
-        (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
-      ) {
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
-      }
-      false
-    }
-
-    dialog.setOnShowListener {
-      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-        val input = binding.resetPinInputPinEditText.text.toString()
-        if (input.isEmpty()) {
-          return@setOnClickListener
-        }
-        if (input.length == 3) {
-          profileManagementController
-            .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input).toLiveData()
-            .observe(
-              fragment,
-              Observer {
-                if (it is AsyncResult.Success) {
-                  routeDialogInterface.routeToSuccessDialog()
-                }
-              }
-            )
-        } else {
-          resetViewModel.errorMessage.set(
-            resourceHandler.getStringInLocale(
-              R.string.add_profile_error_pin_length
-            )
-          )
+      // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+      binding.resetPinInputPinEditText.onTextChanged { confirmPin ->
+        confirmPin?.let {
+          // To avoid disappearing Error message due to orientation change.
+          if (
+            resetViewModel.errorMessage.get()?.isNotEmpty()!! && resetViewModel.inputPin.get() == it
+          ) {
+            resetViewModel.inputPin.set(it)
+          } else {
+            resetViewModel.inputPin.set(it)
+            resetViewModel.errorMessage.set("")
+          }
         }
       }
+
+      val dialog =
+        AlertDialog
+          .Builder(activity, R.style.OppiaAlertDialogTheme)
+          .setTitle(R.string.reset_pin_enter)
+          .setView(binding.root)
+          .setMessage(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.reset_pin_enter_dialog_message,
+              name,
+            ),
+          ).setPositiveButton(R.string.admin_settings_submit, null)
+          .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+            dialog.dismiss()
+          }.create()
+
+      binding.resetPinInputPinEditText.setOnEditorActionListener { _, actionId, event ->
+        if (actionId == EditorInfo.IME_ACTION_DONE ||
+          (event != null && (event.keyCode == KeyEvent.KEYCODE_ENTER))
+        ) {
+          dialog.getButton(AlertDialog.BUTTON_POSITIVE).callOnClick()
+        }
+        false
+      }
+
+      dialog.setOnShowListener {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+          val input = binding.resetPinInputPinEditText.text.toString()
+          if (input.isEmpty()) {
+            return@setOnClickListener
+          }
+          if (input.length == 3) {
+            profileManagementController
+              .updatePin(ProfileId.newBuilder().setInternalId(profileId).build(), input)
+              .toLiveData()
+              .observe(
+                fragment,
+                Observer {
+                  if (it is AsyncResult.Success) {
+                    routeDialogInterface.routeToSuccessDialog()
+                  }
+                },
+              )
+          } else {
+            resetViewModel.errorMessage.set(
+              resourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length,
+              ),
+            )
+          }
+        }
+      }
+      return dialog
     }
-    return dialog
   }
-}

@@ -18,16 +18,18 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CurrentUserProfileIdIntentDecoratorTest {
-
   @Test
   fun testDecorator_decorateWithProfileId_returnsIntentWithCorrectProfileId() {
-    val intent = Intent().apply {
-      decorateWithUserProfileId(
-        ProfileId.newBuilder().apply {
-          internalId = 1
-        }.build()
-      )
-    }
+    val intent =
+      Intent().apply {
+        decorateWithUserProfileId(
+          ProfileId
+            .newBuilder()
+            .apply {
+              internalId = 1
+            }.build(),
+        )
+      }
     val currentProfileId = intent.extractCurrentUserProfileId()
     assertThat(currentProfileId.internalId).isEqualTo(1)
   }
@@ -42,18 +44,21 @@ class CurrentUserProfileIdIntentDecoratorTest {
   fun testDecorateIntentWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
     val profileId = ProfileId.newBuilder().apply {}.build()
 
-    val extractedProfileId = Intent().apply {
-      decorateWithUserProfileId(profileId)
-    }.extractCurrentUserProfileId()
+    val extractedProfileId =
+      Intent()
+        .apply {
+          decorateWithUserProfileId(profileId)
+        }.extractCurrentUserProfileId()
     assertThat(extractedProfileId).isEqualToDefaultInstance()
   }
 
   @Test
   fun testDecorator_decorateBundleWithProfileId_returnsBundleWithCorrectProfileId() {
     val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
-    val bundle = Bundle().apply {
-      decorateWithUserProfileId(profileId)
-    }
+    val bundle =
+      Bundle().apply {
+        decorateWithUserProfileId(profileId)
+      }
 
     val currentUserProfileId = bundle.extractCurrentUserProfileId()
     assertThat(currentUserProfileId).isEqualTo(profileId)
@@ -68,9 +73,11 @@ class CurrentUserProfileIdIntentDecoratorTest {
   @Test
   fun testDecorateBundleWithUserProfileId_emptyProfileId_returnsDefaultProfileIdInstance() {
     val profileId = ProfileId.newBuilder().apply {}.build()
-    val extractedProfileId = Bundle().apply {
-      decorateWithUserProfileId(profileId)
-    }.extractCurrentUserProfileId()
+    val extractedProfileId =
+      Bundle()
+        .apply {
+          decorateWithUserProfileId(profileId)
+        }.extractCurrentUserProfileId()
     assertThat(extractedProfileId).isEqualToDefaultInstance()
   }
 }

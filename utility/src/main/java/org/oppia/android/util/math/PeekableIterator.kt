@@ -15,7 +15,7 @@ package org.oppia.android.util.math
  * This class is not safe to use across multiple threads and requires synchronization.
  */
 class PeekableIterator<T : Any> private constructor(
-  private val backingIterator: Iterator<T>
+  private val backingIterator: Iterator<T>,
 ) : Iterator<T> {
   private var next: T? = null
   private var count: Int = 0
@@ -31,13 +31,12 @@ class PeekableIterator<T : Any> private constructor(
    * It's safe to call this both at the end of the iterator, and multiple times (at any point in the
    * iteration).
    */
-  fun peek(): T? {
-    return when {
+  fun peek(): T? =
+    when {
       next != null -> next
       hasNext() -> retrieveNext().also { next = it }
       else -> null
     }
-  }
 
   /**
    * Consumes and returns the next token if it matches the value provided by [expected].
@@ -84,7 +83,6 @@ class PeekableIterator<T : Any> private constructor(
      * [List]). Some sequences do support multiple iteration, so the exact behavior of the returned
      * iterator will be sequence implementation dependent.
      */
-    fun <T : Any> Sequence<T>.toPeekableIterator(): PeekableIterator<T> =
-      PeekableIterator(iterator())
+    fun <T : Any> Sequence<T>.toPeekableIterator(): PeekableIterator<T> = PeekableIterator(iterator())
   }
 }

@@ -19,7 +19,9 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathTokenizerTest {
   @Parameter lateinit var variableName: String
+
   @Parameter lateinit var funcName: String
+
   @Parameter lateinit var token: String
 
   @Test
@@ -716,9 +718,10 @@ class MathTokenizerTest {
   fun testTokenize_manyOtherUnicodeValues_produceInvalidTokens() {
     // Build a large list of unicode characters minus those which are actually allowed. The ASCII
     // range is excluded from this list.
-    val characters = ('\u007f'..'\uffff').filterNot {
-      it in listOf('×', '÷', '−', '–', '√')
-    }
+    val characters =
+      ('\u007f'..'\uffff').filterNot {
+        it in listOf('×', '÷', '−', '–', '√')
+      }
     val charStr = characters.joinToString("")
 
     val tokens = MathTokenizer.tokenize(charStr).toList()

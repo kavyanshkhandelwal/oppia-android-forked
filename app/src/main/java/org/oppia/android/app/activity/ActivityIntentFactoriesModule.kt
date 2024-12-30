@@ -12,11 +12,11 @@ import org.oppia.android.app.topic.TopicActivity
 interface ActivityIntentFactoriesModule {
   @Binds
   fun provideTopicActivityIntentFactory(
-    impl: TopicActivity.TopicActivityIntentFactoryImpl
+    impl: TopicActivity.TopicActivityIntentFactoryImpl,
   ): ActivityIntentFactories.TopicActivityIntentFactory
 
   @Binds
   fun provideRecentlyPlayedActivityIntentFactory(
-    impl: RecentlyPlayedActivity.RecentlyPlayedActivityIntentFactoryImpl
+    impl: RecentlyPlayedActivity.RecentlyPlayedActivityIntentFactoryImpl,
   ): ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
 }

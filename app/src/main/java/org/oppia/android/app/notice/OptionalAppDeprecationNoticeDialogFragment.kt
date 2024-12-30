@@ -11,9 +11,7 @@ import javax.inject.Inject
 class OptionalAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
   companion object {
     /** Returns a new instance of [OptionalAppDeprecationNoticeDialogFragment]. */
-    fun newInstance(): OptionalAppDeprecationNoticeDialogFragment {
-      return OptionalAppDeprecationNoticeDialogFragment()
-    }
+    fun newInstance(): OptionalAppDeprecationNoticeDialogFragment = OptionalAppDeprecationNoticeDialogFragment()
   }
 
   @Inject lateinit var optionalAppDeprecationNoticeDialogFragmentPresenter:
@@ -24,7 +22,6 @@ class OptionalAppDeprecationNoticeDialogFragment : InjectableDialogFragment() {
     (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
-  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return optionalAppDeprecationNoticeDialogFragmentPresenter.handleOnCreateDialog()
-  }
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+    optionalAppDeprecationNoticeDialogFragmentPresenter.handleOnCreateDialog()
 }

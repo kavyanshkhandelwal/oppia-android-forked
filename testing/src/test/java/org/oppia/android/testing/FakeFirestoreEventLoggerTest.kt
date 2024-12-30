@@ -31,7 +31,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeFirestoreEventLoggerTest {
-
   @Inject
   lateinit var fakeEventLogger: FakeFirestoreEventLogger
 
@@ -78,7 +77,7 @@ class FakeFirestoreEventLoggerTest {
 
   @Test
   fun testfakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows<NoSuchElementException>() { fakeEventLogger.getMostRecentEvent() }
+    assertThrows<NoSuchElementException> { fakeEventLogger.getMostRecentEvent() }
   }
 
   @Test
@@ -86,9 +85,10 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
 
-    val eventException = assertThrows<NoSuchElementException>() {
-      fakeEventLogger.getMostRecentEvent()
-    }
+    val eventException =
+      assertThrows<NoSuchElementException> {
+        fakeEventLogger.getMostRecentEvent()
+      }
 
     assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
   }
@@ -144,7 +144,7 @@ class FakeFirestoreEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows<NoSuchElementException>() { fakeEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException> { fakeEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -172,7 +172,7 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog1)
     fakeEventLogger.clearAllEvents()
 
-    assertThrows<NoSuchElementException>() { fakeEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException> { fakeEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -237,7 +237,7 @@ class FakeFirestoreEventLoggerTest {
     eventLogger.uploadEvent(eventLog2)
     eventLogger.uploadEvent(eventLog1)
 
-    assertThrows<IllegalArgumentException>() {
+    assertThrows<IllegalArgumentException> {
       fakeEventLogger.getMostRecentEvents(count = -1)
     }
   }
@@ -265,7 +265,8 @@ class FakeFirestoreEventLoggerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeFirestoreEventLoggerTest_TestApplicationComponent.builder()
+    DaggerFakeFirestoreEventLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -276,9 +277,7 @@ class FakeFirestoreEventLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -286,14 +285,15 @@ class FakeFirestoreEventLoggerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
-    ]
+      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

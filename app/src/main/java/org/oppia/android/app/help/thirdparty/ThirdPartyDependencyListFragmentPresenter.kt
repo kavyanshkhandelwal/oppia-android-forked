@@ -14,46 +14,49 @@ import javax.inject.Inject
 
 /** The presenter for [ThirdPartyDependencyListFragment]. */
 @FragmentScope
-class ThirdPartyDependencyListFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val thirdPartyDependencyListViewModel: ThirdPartyDependencyListViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) {
-  private lateinit var binding: ThirdPartyDependencyListFragmentBinding
+class ThirdPartyDependencyListFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val thirdPartyDependencyListViewModel: ThirdPartyDependencyListViewModel,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: ThirdPartyDependencyListFragmentBinding
 
-  /** Handles onCreateView() method of the [ThirdPartyDependencyListFragment]. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    isMultipane: Boolean
-  ): View {
-    thirdPartyDependencyListViewModel.isMultipane.set(isMultipane)
-    binding = ThirdPartyDependencyListFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-    val recyclerviewAdapter = createRecyclerViewAdapter()
+    /** Handles onCreateView() method of the [ThirdPartyDependencyListFragment]. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      isMultipane: Boolean,
+    ): View {
+      thirdPartyDependencyListViewModel.isMultipane.set(isMultipane)
+      binding =
+        ThirdPartyDependencyListFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+      val recyclerviewAdapter = createRecyclerViewAdapter()
 
-    binding.thirdPartyDependencyListFragmentRecyclerView.apply {
-      layoutManager = LinearLayoutManager(activity.applicationContext)
-      adapter = recyclerviewAdapter
+      binding.thirdPartyDependencyListFragmentRecyclerView.apply {
+        layoutManager = LinearLayoutManager(activity.applicationContext)
+        adapter = recyclerviewAdapter
+      }
+
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = thirdPartyDependencyListViewModel
+      }
+      return binding.root
     }
 
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = thirdPartyDependencyListViewModel
-    }
-    return binding.root
+    private fun createRecyclerViewAdapter(): BindableAdapter<ThirdPartyDependencyItemViewModel> =
+      singleTypeBuilderFactory
+        .create<ThirdPartyDependencyItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = ThirdPartyDependencyItemBinding::inflate,
+          setViewModel = ThirdPartyDependencyItemBinding::setViewModel,
+        ).build()
   }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<ThirdPartyDependencyItemViewModel> {
-    return singleTypeBuilderFactory.create<ThirdPartyDependencyItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = ThirdPartyDependencyItemBinding::inflate,
-        setViewModel = ThirdPartyDependencyItemBinding::setViewModel
-      )
-      .build()
-  }
-}

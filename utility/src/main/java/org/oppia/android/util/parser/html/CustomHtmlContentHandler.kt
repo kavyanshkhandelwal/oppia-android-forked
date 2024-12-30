@@ -20,30 +20,49 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?
-) : ContentHandler, Html.TagHandler {
+  private val imageRetriever: ImageRetriever?,
+) : ContentHandler,
+  Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
 
-  override fun endElement(uri: String?, localName: String?, qName: String?) {
+  override fun endElement(
+    uri: String?,
+    localName: String?,
+    qName: String?,
+  ) {
     originalContentHandler?.endElement(uri, localName, qName)
     currentTrackedTag = null
   }
 
-  override fun processingInstruction(target: String?, data: String?) {
+  override fun processingInstruction(
+    target: String?,
+    data: String?,
+  ) {
     originalContentHandler?.processingInstruction(target, data)
   }
 
-  override fun startPrefixMapping(prefix: String?, uri: String?) {
+  override fun startPrefixMapping(
+    prefix: String?,
+    uri: String?,
+  ) {
     originalContentHandler?.startPrefixMapping(prefix, uri)
   }
 
-  override fun ignorableWhitespace(ch: CharArray?, start: Int, length: Int) {
+  override fun ignorableWhitespace(
+    ch: CharArray?,
+    start: Int,
+    length: Int,
+  ) {
     originalContentHandler?.ignorableWhitespace(ch, start, length)
   }
 
-  override fun characters(ch: CharArray?, start: Int, length: Int) {
+  override fun characters(
+    ch: CharArray?,
+    start: Int,
+    length: Int,
+  ) {
     originalContentHandler?.characters(ch, start, length)
   }
 
@@ -52,7 +71,12 @@ class CustomHtmlContentHandler private constructor(
     originalContentHandler = null // There's nothing left to read.
   }
 
-  override fun startElement(uri: String?, localName: String?, qName: String?, atts: Attributes?) {
+  override fun startElement(
+    uri: String?,
+    localName: String?,
+    qName: String?,
+    atts: Attributes?,
+  ) {
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
     currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
@@ -75,7 +99,12 @@ class CustomHtmlContentHandler private constructor(
     originalContentHandler?.startDocument()
   }
 
-  override fun handleTag(opening: Boolean, tag: String?, output: Editable?, xmlReader: XMLReader?) {
+  override fun handleTag(
+    opening: Boolean,
+    tag: String?,
+    output: Editable?,
+    xmlReader: XMLReader?,
+  ) {
     check(output != null) { "Expected non-null editable." }
     when {
       originalContentHandler == null -> {
@@ -95,9 +124,12 @@ class CustomHtmlContentHandler private constructor(
           check(localCurrentTrackedTag.tag == tag) {
             "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
           }
-          currentTrackedCustomTags += TrackedCustomTag(
-            localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
-          )
+          currentTrackedCustomTags +=
+            TrackedCustomTag(
+              localCurrentTrackedTag.tag,
+              localCurrentTrackedTag.attributes,
+              output.length,
+            )
           customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
         }
       }
@@ -111,17 +143,22 @@ class CustomHtmlContentHandler private constructor(
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
-        customTagHandlers.getValue(tag)
+        customTagHandlers
+          .getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
     }
   }
 
-  private data class TrackedTag(val tag: String, val attributes: Attributes)
+  private data class TrackedTag(
+    val tag: String,
+    val attributes: Attributes,
+  )
+
   private data class TrackedCustomTag(
     val tag: String,
     val attributes: Attributes,
-    val openTagIndex: Int
+    val openTagIndex: Int,
   )
 
   /** Handler interface for a custom tag and its attributes. */
@@ -140,7 +177,7 @@ class CustomHtmlContentHandler private constructor(
       openIndex: Int,
       closeIndex: Int,
       output: Editable,
-      imageRetriever: ImageRetriever?
+      imageRetriever: ImageRetriever?,
     ) {
     }
 
@@ -152,7 +189,10 @@ class CustomHtmlContentHandler private constructor(
      *
      * @param output the destination [Editable] to which spans can be added
      */
-    fun handleOpeningTag(output: Editable, tag: String) {}
+    fun handleOpeningTag(
+      output: Editable,
+      tag: String,
+    ) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -163,7 +203,11 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+    fun handleClosingTag(
+      output: Editable,
+      indentation: Int,
+      tag: String,
+    ) {}
   }
 
   /**
@@ -172,13 +216,20 @@ class CustomHtmlContentHandler private constructor(
    */
   interface ImageRetriever {
     /** Returns a new [Drawable] corresponding to the specified image filename and [Type]. */
-    fun loadDrawable(filename: String, type: Type): Drawable
+    fun loadDrawable(
+      filename: String,
+      type: Type,
+    ): Drawable
 
     /**
      * Returns a new [Drawable] representing a cached render of the specified [rawLatex] for the
      * given [lineHeight] and for the rendering [type].
      */
-    fun loadMathDrawable(rawLatex: String, lineHeight: Float, type: Type): Drawable
+    fun loadMathDrawable(
+      rawLatex: String,
+      lineHeight: Float,
+      type: Type,
+    ): Drawable
 
     /** Corresponds to the types of images that can be retrieved. */
     enum class Type {
@@ -187,11 +238,12 @@ class CustomHtmlContentHandler private constructor(
        * currently supported.
        */
       INLINE_TEXT_IMAGE,
+
       /**
        * Corresponds to a block image that should be positioned in a way that may break text, and
        * potentially centered depending on the configuration of the implementation.
        */
-      BLOCK_IMAGE
+      BLOCK_IMAGE,
     }
   }
 
@@ -204,7 +256,7 @@ class CustomHtmlContentHandler private constructor(
     fun <T> fromHtml(
       html: String,
       imageRetriever: T?,
-      customTagHandlers: Map<String, CustomTagHandler>
+      customTagHandlers: Map<String, CustomTagHandler>,
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's
@@ -216,7 +268,7 @@ class CustomHtmlContentHandler private constructor(
       val lineAdjustedHtml =
         html.replace(
           "([^\n])<(p|ol|ul|li|oppia-ul|oppia-ol|oppia-li|div)(?=>)".toRegex(),
-          "$1\n<$2"
+          "$1\n<$2",
         )
       return HtmlCompat.fromHtml(
         "<init-custom-handler/>$lineAdjustedHtml",
@@ -247,5 +299,7 @@ fun Attributes.getJsonObjectValue(name: String): JSONObject? {
   // The raw content value is a JSON blob with escaped quotes.
   return try {
     getValue(name)?.replace("&quot;", "\"")?.let { JSONObject(it) }
-  } catch (e: JSONException) { return null }
+  } catch (e: JSONException) {
+    return null
+  }
 }

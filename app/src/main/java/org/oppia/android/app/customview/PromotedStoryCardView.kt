@@ -15,46 +15,47 @@ import org.oppia.android.app.view.ViewComponentImpl
 import javax.inject.Inject
 
 /** [MaterialCardView] that represents stories promoted to the learner. */
-class PromotedStoryCardView @JvmOverloads constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyleAttr: Int = 0
-) : MaterialCardView(context, attrs, defStyleAttr) {
+class PromotedStoryCardView
+  @JvmOverloads
+  constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+  ) : MaterialCardView(context, attrs, defStyleAttr) {
+    @Inject
+    lateinit var fragment: Fragment
 
-  @Inject
-  lateinit var fragment: Fragment
+    @Inject
+    lateinit var resourceHandler: AppLanguageResourceHandler
 
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
+    private var isSpotlit = false
 
-  private var isSpotlit = false
+    /** Sets the index at which this custom view is located inside the recycler view. */
+    fun setPromotedStoryIndex(index: Int) {
+      // This view can get attached multiple times and we must make sure that the spotlight is
+      // requested only once. Only spotlight the item at the first index of the recycler view.
+      if (!isSpotlit && index == 0) {
+        isSpotlit = true
+        val spotlightTarget =
+          SpotlightTarget(
+            this,
+            resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
+            feature = Spotlight.FeatureCase.PROMOTED_STORIES,
+          )
+        checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+      }
+    }
 
-  /** Sets the index at which this custom view is located inside the recycler view. */
-  fun setPromotedStoryIndex(index: Int) {
-    // This view can get attached multiple times and we must make sure that the spotlight is
-    // requested only once. Only spotlight the item at the first index of the recycler view.
-    if (!isSpotlit && index == 0) {
-      isSpotlit = true
-      val spotlightTarget = SpotlightTarget(
-        this,
-        resourceHandler.getStringInLocale(R.string.promoted_story_spotlight_hint),
-        feature = Spotlight.FeatureCase.PROMOTED_STORIES
-      )
-      checkNotNull(getSpotlightManager()).requestSpotlightViewWithDelayedLayout(spotlightTarget)
+    private fun getSpotlightManager(): SpotlightManager? =
+      fragment.requireActivity().supportFragmentManager.findFragmentByTag(
+        SpotlightManager.SPOTLIGHT_FRAGMENT_TAG,
+      ) as? SpotlightManager
+
+    override fun onAttachedToWindow() {
+      super.onAttachedToWindow()
+      val viewComponentFactory =
+        FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
+      val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
+      viewComponent.inject(this)
     }
   }
-
-  private fun getSpotlightManager(): SpotlightManager? {
-    return fragment.requireActivity().supportFragmentManager.findFragmentByTag(
-      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
-    ) as? SpotlightManager
-  }
-
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    val viewComponentFactory =
-      FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
-    val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
-    viewComponent.inject(this)
-  }
-}

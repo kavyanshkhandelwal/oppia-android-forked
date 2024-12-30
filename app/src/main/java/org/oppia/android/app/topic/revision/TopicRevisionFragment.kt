@@ -17,7 +17,9 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Fragment that card for topic revision. */
-class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
+class TopicRevisionFragment :
+  InjectableFragment(),
+  RevisionSubtopicSelector {
   companion object {
     /** Arguments key for TopicRevisionFragment. */
     const val TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY = "TopicRevisionFragment.arguments"
@@ -26,13 +28,17 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
 
     /** Returns a new [TopicRevisionFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicRevisionFragment {
+    fun newInstance(
+      profileId: ProfileId,
+      topicId: String,
+    ): TopicRevisionFragment {
       val args = TopicRevisionFragmentArguments.newBuilder().setTopicId(topicId).build()
       return TopicRevisionFragment().apply {
-        arguments = Bundle().apply {
-          putProto(TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -48,23 +54,25 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
-    val args = arguments?.getProto(
-      TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
-      TopicRevisionFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments?.getProto(
+        TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
+        TopicRevisionFragmentArguments.getDefaultInstance(),
+      )
 
-    val topicId = checkNotNull(args?.topicId) {
-      "Expected topic ID to be included in arguments for TopicRevisionFragment."
-    }
+    val topicId =
+      checkNotNull(args?.topicId) {
+        "Expected topic ID to be included in arguments for TopicRevisionFragment."
+      }
     return topicReviewFragmentPresenter.handleCreateView(
       inflater,
       container,
       profileId,
-      topicId
+      topicId,
     )
   }
 

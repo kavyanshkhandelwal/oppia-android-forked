@@ -48,7 +48,6 @@ class ExplorationActivity :
   ConceptCardListener,
   BottomSheetOptionsMenuItemClickListener,
   RequestVoiceOverIconSpotlightListener {
-
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
@@ -67,7 +66,7 @@ class ExplorationActivity :
       params.storyId,
       params.explorationId,
       params.parentScreen,
-      params.isCheckpointingEnabled
+      params.isCheckpointingEnabled,
     )
     onBackPressedDispatcher.addCallback(
       this,
@@ -75,7 +74,7 @@ class ExplorationActivity :
         override fun handleOnBackPressed() {
           explorationActivityPresenter.backButtonPressed()
         }
-      }
+      },
     )
   }
 
@@ -95,33 +94,34 @@ class ExplorationActivity :
       storyId: String,
       explorationId: String,
       parentScreen: ExplorationActivityParams.ParentScreen,
-      isCheckpointingEnabled: Boolean
+      isCheckpointingEnabled: Boolean,
     ): Intent {
-      val params = ExplorationActivityParams.newBuilder().apply {
-        this.profileId = profileId
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-        this.parentScreen = parentScreen
-        this.isCheckpointingEnabled = isCheckpointingEnabled
-      }.build()
+      val params =
+        ExplorationActivityParams
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+            this.parentScreen = parentScreen
+            this.isCheckpointingEnabled = isCheckpointingEnabled
+          }.build()
       return createExplorationActivityIntent(context, params)
     }
 
     /** Returns a new [Intent] open an [ExplorationActivity] with the specified [params]. */
     fun createExplorationActivityIntent(
       context: Context,
-      params: ExplorationActivityParams
-    ): Intent {
-      return Intent(context, ExplorationActivity::class.java).apply {
+      params: ExplorationActivityParams,
+    ): Intent =
+      Intent(context, ExplorationActivity::class.java).apply {
         putProtoExtra(PARAMS_KEY, params)
         decorateWithScreenName(EXPLORATION_ACTIVITY)
       }
-    }
 
-    private fun Intent.extractParams() =
-      getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
+    private fun Intent.extractParams() = getProtoExtra(PARAMS_KEY, ExplorationActivityParams.getDefaultInstance())
   }
 
   override fun deleteCurrentProgressAndStopSession(isCompletion: Boolean) {
@@ -162,20 +162,23 @@ class ExplorationActivity :
 
   override fun revealSolution() = explorationActivityPresenter.revealSolution()
 
-  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? {
-    return supportFragmentManager.findFragmentByTag(
-      TAG_HINTS_AND_SOLUTION_DIALOG
+  private fun getHintsAndSolution(): HintsAndSolutionDialogFragment? =
+    supportFragmentManager.findFragmentByTag(
+      TAG_HINTS_AND_SOLUTION_DIALOG,
     ) as HintsAndSolutionDialogFragment?
-  }
 
-  override fun routeToHintsAndSolution(id: String, helpIndex: HelpIndex) {
+  override fun routeToHintsAndSolution(
+    id: String,
+    helpIndex: HelpIndex,
+  ) {
     if (getHintsAndSolution() == null) {
-      val hintsAndSolutionDialogFragment = HintsAndSolutionDialogFragment.newInstance(
-        id,
-        state,
-        helpIndex,
-        writtenTranslationContext
-      )
+      val hintsAndSolutionDialogFragment =
+        HintsAndSolutionDialogFragment.newInstance(
+          id,
+          state,
+          helpIndex,
+          writtenTranslationContext,
+        )
       hintsAndSolutionDialogFragment.showNow(supportFragmentManager, TAG_HINTS_AND_SOLUTION_DIALOG)
     }
   }
@@ -190,7 +193,7 @@ class ExplorationActivity :
 
   override fun onExplorationStateLoaded(
     state: State,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
   ) {
     this.state = state
     this.writtenTranslationContext = writtenTranslationContext

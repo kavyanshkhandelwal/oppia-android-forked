@@ -16,41 +16,42 @@ import javax.inject.Inject
  * [AppLanguageWatcherMixin].
  */
 @ActivityScope
-class ActivityLanguageLocaleHandler @Inject constructor(
-  private val localeController: LocaleController,
-  private val appLanguageLocaleHandler: AppLanguageLocaleHandler
-) {
+class ActivityLanguageLocaleHandler
+  @Inject
+  constructor(
+    private val localeController: LocaleController,
+    private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
+  ) {
+    /**
+     * Holds an Activity localized state of [OppiaLocale.DisplayLocale] which is loaded
+     * lazily from [AppLanguageLocaleHandler.getDisplayLocale] and updated when language
+     * preference changes via [ActivityLanguageLocaleHandler.updateLocale].
+     */
+    val displayLocale: OppiaLocale.DisplayLocale by lazy {
+      appLanguageLocaleHandler.getDisplayLocale()
+    }
 
-  /**
-   * Holds an Activity localized state of [OppiaLocale.DisplayLocale] which is loaded
-   * lazily from [AppLanguageLocaleHandler.getDisplayLocale] and updated when language
-   * preference changes via [ActivityLanguageLocaleHandler.updateLocale].
-   */
-  val displayLocale: OppiaLocale.DisplayLocale by lazy {
-    appLanguageLocaleHandler.getDisplayLocale()
-  }
+    /**
+     * Initializes the specified [Configuration] to utilize the current display locale.
+     *
+     * Note that this may change the Android system default locale & trigger some data provider
+     * changes for anything that relies on languages or locales (including for content strings & audio
+     * translations).
+     */
+    fun initializeLocaleForActivity(newConfiguration: Configuration) {
+      localeController.setAsDefault(displayLocale, newConfiguration)
+    }
 
-  /**
-   * Initializes the specified [Configuration] to utilize the current display locale.
-   *
-   * Note that this may change the Android system default locale & trigger some data provider
-   * changes for anything that relies on languages or locales (including for content strings & audio
-   * translations).
-   */
-  fun initializeLocaleForActivity(newConfiguration: Configuration) {
-    localeController.setAsDefault(displayLocale, newConfiguration)
-  }
-
-  /**
-   * Attempts to change the locale for the system-level and won't actually change this handler's locale.
-   * This handler never changes its locale since an activity requires re-creation in order to apply a new language.
-   *
-   * @return whether the new locale is actually different from the current displayed locale
-   */
-  fun updateLocale(newLocale: OppiaLocale.DisplayLocale): Boolean {
-    return displayLocale.let { oldLocale ->
-      appLanguageLocaleHandler.updateLocale(newLocale)
-      return@let oldLocale != newLocale
+    /**
+     * Attempts to change the locale for the system-level and won't actually change this handler's locale.
+     * This handler never changes its locale since an activity requires re-creation in order to apply a new language.
+     *
+     * @return whether the new locale is actually different from the current displayed locale
+     */
+    fun updateLocale(newLocale: OppiaLocale.DisplayLocale): Boolean {
+      return displayLocale.let { oldLocale ->
+        appLanguageLocaleHandler.updateLocale(newLocale)
+        return@let oldLocale != newLocale
+      }
     }
   }
-}

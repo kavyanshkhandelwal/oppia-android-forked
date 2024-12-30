@@ -7,8 +7,8 @@ const val QUESTION_COUNT_PER_TRAINING_SESSION = 10
 
 /** Provider to return any constants required during the training session. */
 @Singleton
-class QuestionTrainingConstantsProvider @Inject constructor() {
-  fun getQuestionCountPerTrainingSession(): Int {
-    return QUESTION_COUNT_PER_TRAINING_SESSION
+class QuestionTrainingConstantsProvider
+  @Inject
+  constructor() {
+    fun getQuestionCountPerTrainingSession(): Int = QUESTION_COUNT_PER_TRAINING_SESSION
   }
-}

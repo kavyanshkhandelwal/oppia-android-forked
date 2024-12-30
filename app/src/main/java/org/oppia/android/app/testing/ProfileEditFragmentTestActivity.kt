@@ -14,6 +14,7 @@ import javax.inject.Inject
 class ProfileEditFragmentTestActivity : TestActivity() {
   @Inject
   lateinit var profileEditFragmentTestActivityPresenter: ProfileEditFragmentTestActivityPresenter
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -22,7 +23,10 @@ class ProfileEditFragmentTestActivity : TestActivity() {
 
   companion object {
     /** Returns an [Intent] for opening [ProfileEditFragmentTestActivity]. */
-    fun createProfileEditFragmentTestActivity(context: Context, internalProfileId: Int): Intent {
+    fun createProfileEditFragmentTestActivity(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = internalProfileId.let { ProfileId.newBuilder().setInternalId(it).build() }
 
       val intent = Intent(context, ProfileEditFragmentTestActivity::class.java)

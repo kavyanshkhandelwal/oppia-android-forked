@@ -6,7 +6,9 @@ import org.oppia.android.app.player.exploration.BottomSheetOptionsMenuItemClickL
 import org.oppia.android.app.testing.activity.TestActivity
 
 /** [TestActivity] for setting up a test environment for testing the BottomSheetOptionsMenu. */
-class BottomSheetOptionsMenuTestActivity : TestActivity(), BottomSheetOptionsMenuItemClickListener {
+class BottomSheetOptionsMenuTestActivity :
+  TestActivity(),
+  BottomSheetOptionsMenuItemClickListener {
   /**
    * [BottomSheetOptionsMenuItemClickListener] that must be initialized by the test,
    * and is presumed to be a Mockito mock (though this is not, strictly speaking, required).

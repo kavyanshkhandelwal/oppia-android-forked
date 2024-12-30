@@ -20,7 +20,7 @@ class ParameterizedJunitTestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
-  private val iterationName: String?
+  private val iterationName: String?,
 ) : BlockJUnit4ClassRunner(testClass),
   OppiaParameterizedBaseRunner,
   ParameterizedRunnerOverrideMethods {
@@ -28,7 +28,7 @@ class ParameterizedJunitTestRunner internal constructor(
     ParameterizedRunnerDelegate(
       parameterizedMethods,
       methodName,
-      iterationName
+      iterationName,
     ).also { delegate ->
       delegate.fetchChildrenFromParent = { super.getChildren() }
       delegate.fetchTestNameFromParent = { method -> super.testName(method) }
@@ -40,6 +40,8 @@ class ParameterizedJunitTestRunner internal constructor(
 
   override fun testName(method: FrameworkMethod?): String = delegate.testName(method)
 
-  override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement =
-    delegate.methodInvoker(method, test)
+  override fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Statement = delegate.methodInvoker(method, test)
 }

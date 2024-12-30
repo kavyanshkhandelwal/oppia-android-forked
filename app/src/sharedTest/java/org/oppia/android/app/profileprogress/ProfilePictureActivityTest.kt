@@ -100,7 +100,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfilePictureActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfilePictureActivityTest {
   @get:Rule
@@ -133,17 +133,17 @@ class ProfilePictureActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfilePictureActivityIntent(profileId: Int): Intent {
-    return ProfilePictureActivity.createProfilePictureActivityIntent(
+  private fun createProfilePictureActivityIntent(profileId: Int): Intent =
+    ProfilePictureActivity.createProfilePictureActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      profileId
+      profileId,
     )
-  }
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createProfilePictureActivityIntent(internalProfileId)
-      .extractCurrentAppScreenName()
+    val currentScreenName =
+      createProfilePictureActivityIntent(internalProfileId)
+        .extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_PICTURE_ACTIVITY)
   }
@@ -153,7 +153,7 @@ class ProfilePictureActivityTest {
     launch(ProfilePictureActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.title).isEqualTo(
-          context.getString(R.string.profile_picture_activity_title)
+          context.getString(R.string.profile_picture_activity_title),
         )
       }
     }
@@ -175,7 +175,7 @@ class ProfilePictureActivityTest {
       scenario.onActivity { activity ->
         val toolbar = activity.findViewById<Toolbar>(R.id.profile_picture_activity_toolbar)
         assertThat(toolbar.title).isEqualTo(
-          context.getString(R.string.profile_picture_activity_title)
+          context.getString(R.string.profile_picture_activity_title),
         )
       }
     }
@@ -220,8 +220,8 @@ class ProfilePictureActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -232,9 +232,13 @@ class ProfilePictureActivityTest {
     fun inject(profilePictureActivityTest: ProfilePictureActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfilePictureActivityTest_TestApplicationComponent.builder()
+      DaggerProfilePictureActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -243,9 +247,12 @@ class ProfilePictureActivityTest {
       component.inject(profilePictureActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

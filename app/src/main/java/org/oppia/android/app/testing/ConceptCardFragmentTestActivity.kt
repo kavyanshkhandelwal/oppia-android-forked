@@ -16,7 +16,6 @@ import javax.inject.Inject
 class ConceptCardFragmentTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   ConceptCardListener {
-
   @Inject
   lateinit var conceptCardFragmentTestActivityController: ConceptCardFragmentTestActivityPresenter
 
@@ -24,7 +23,7 @@ class ConceptCardFragmentTestActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     conceptCardFragmentTestActivityController.handleOnCreate(
-      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance())
+      intent.getProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, ProfileId.getDefaultInstance()),
     )
   }
 
@@ -32,18 +31,19 @@ class ConceptCardFragmentTestActivity :
     ConceptCardFragment.dismissAll(supportFragmentManager)
   }
 
-  private fun getConceptCardFragment(): ConceptCardFragment? {
-    return supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
-  }
+  private fun getConceptCardFragment(): ConceptCardFragment? =
+    supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().singleOrNull()
 
   companion object {
     private const val TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY =
       "ConceptCardFragmentTestActivity.profile_id"
 
-    fun createIntent(context: Context, profileId: ProfileId): Intent {
-      return Intent(context, ConceptCardFragmentTestActivity::class.java).also {
+    fun createIntent(
+      context: Context,
+      profileId: ProfileId,
+    ): Intent =
+      Intent(context, ConceptCardFragmentTestActivity::class.java).also {
         it.putProtoExtra(TEST_ACTIVITY_PROFILE_ID_ARGUMENT_KEY, profileId)
       }
-    }
   }
 }

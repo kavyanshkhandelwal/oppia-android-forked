@@ -11,8 +11,9 @@ import org.oppia.android.app.viewmodel.ObservableViewModel
  * The root [ObservableViewModel] for all individual items that may be displayed in the state
  * fragment recycler view.
  */
-abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel() {
-
+abstract class StateItemViewModel(
+  val viewType: ViewType,
+) : ObservableViewModel() {
   /** Corresponds to the type of the view model. */
   enum class ViewType {
     CONTENT,
@@ -35,7 +36,7 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
     RATIO_EXPRESSION_INPUT_INTERACTION,
     NUMERIC_EXPRESSION_INPUT_INTERACTION,
     ALGEBRAIC_EXPRESSION_INPUT_INTERACTION,
-    MATH_EQUATION_INPUT_INTERACTION
+    MATH_EQUATION_INPUT_INTERACTION,
   }
 
   /** Factory for creating new [StateItemViewModel]s for interactions. */
@@ -60,7 +61,7 @@ abstract class StateItemViewModel(val viewType: ViewType) : ObservableViewModel(
       isSplitView: Boolean,
       writtenTranslationContext: WrittenTranslationContext,
       timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance()
+      userAnswerState: UserAnswerState = UserAnswerState.getDefaultInstance(),
     ): StateItemViewModel
   }
 }

@@ -60,19 +60,20 @@ class MavenDependenciesListCheckTest {
     val coordsList = listOf(DATA_BINDING_DEP, FIREBASE_ANALYTICS_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -97,61 +98,79 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_singleDepAdded_failsAndCallsOutMissingDep() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      GLIDE_DEP,
-      FIREBASE_ANALYTICS_DEP,
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        GLIDE_DEP,
+        FIREBASE_ANALYTICS_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -169,56 +188,72 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_multipleDepsAdded_failsAndCallsOutMissingDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      GLIDE_DEP,
-      FIREBASE_ANALYTICS_DEP,
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        GLIDE_DEP,
+        FIREBASE_ANALYTICS_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -243,61 +278,81 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_singleDepRemoved_failsAndCallsOutRedundantDep() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "Terms of Service for Firebase Services"
-      this.originalLink = "https://fabric.io/terms"
-      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
-        url = "https://firebase.google.com/terms"
-      }.build()
-      this.isOriginalLinkInvalid = true
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = IO_FABRIC_DEP
-            this.artifactVersion = IO_FABRIC_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Terms of Service for Firebase Services"
+          this.originalLink = "https://fabric.io/terms"
+          this.directLinkOnly =
+            DirectLinkOnly
+              .newBuilder()
+              .apply {
+                url = "https://firebase.google.com/terms"
+              }.build()
+          this.isOriginalLinkInvalid = true
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = IO_FABRIC_DEP
+                  this.artifactVersion = IO_FABRIC_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -319,67 +374,89 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_multipleDepsRemoved_failsAndCallsOutRedundantDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
-    val license3 = License.newBuilder().apply {
-      this.licenseName = "Android Software Development Kit License"
-      this.originalLink = "https://developer.android.com/studio/terms.html"
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
+    val license3 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Android Software Development Kit License"
+          this.originalLink = "https://developer.android.com/studio/terms.html"
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = FIREBASE_ANALYTICS_DEP
-            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
-            this.addLicense(license3)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = FIREBASE_ANALYTICS_DEP
+                  this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+                  this.addLicense(license3)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
     val coordsList = listOf(GLIDE_DEP)
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(REDUNDANT_DEPENDENCIES_ONLY_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -404,61 +481,79 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_depsRemovedAndAddedBoth_failsAndCallOutRedundantAndMissingDeps() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
-    val coordsList = listOf(
-      GLIDE_DEP,
-      FIREBASE_ANALYTICS_DEP
-    )
+    val coordsList =
+      listOf(
+        GLIDE_DEP,
+        FIREBASE_ANALYTICS_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -485,61 +580,79 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_depVersionUpgraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Android Software Development Kit License"
-      this.originalLink = "https://developer.android.com/studio/terms.html"
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = FIREBASE_ANALYTICS_DEP
-            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Android Software Development Kit License"
+          this.originalLink = "https://developer.android.com/studio/terms.html"
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = FIREBASE_ANALYTICS_DEP
+                  this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+                  this.addLicense(license2)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      FIREBASE_ANALYTICS_UPGRADED_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        FIREBASE_ANALYTICS_UPGRADED_DEP,
+      )
     setUpBazelEnvironmentWithUpdatedFirebaseDependency(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -566,61 +679,79 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_depVersionDowngraded_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Android Software Development Kit License"
-      this.originalLink = "https://developer.android.com/studio/terms.html"
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = FIREBASE_ANALYTICS_UPGRADED_DEP
-            this.artifactVersion = FIREBASE_ANALYTICS_UPGRADED_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Android Software Development Kit License"
+          this.originalLink = "https://developer.android.com/studio/terms.html"
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = FIREBASE_ANALYTICS_UPGRADED_DEP
+                  this.artifactVersion = FIREBASE_ANALYTICS_UPGRADED_VERSION
+                  this.addLicense(license2)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      FIREBASE_ANALYTICS_UPGRADED_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        FIREBASE_ANALYTICS_UPGRADED_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(MISSING_AND_REDUNDANT_DEPENDENCIES_FAILURE)
     assertThat(outContent.toString()).isEqualTo(
       """
@@ -647,61 +778,81 @@ class MavenDependenciesListCheckTest {
       }
 
       Refer to https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies for more details.
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   @Test
   fun testMavenDepsListCheck_allDepsUpToDate_checkPasses() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Android Software Development Kit License"
-      this.originalLink = "https://developer.android.com/studio/terms.html"
-      this.directLinkOnly = DirectLinkOnly.newBuilder().apply {
-        url = "https://developer.android.com/studio/terms.html"
-      }.build()
-    }.build()
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = FIREBASE_ANALYTICS_DEP
-            this.artifactVersion = FIREBASE_ANALYTICS_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Android Software Development Kit License"
+          this.originalLink = "https://developer.android.com/studio/terms.html"
+          this.directLinkOnly =
+            DirectLinkOnly
+              .newBuilder()
+              .apply {
+                url = "https://developer.android.com/studio/terms.html"
+              }.build()
+        }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = FIREBASE_ANALYTICS_DEP
+                  this.artifactVersion = FIREBASE_ANALYTICS_VERSION
+                  this.addLicense(license2)
+                }.build(),
+            ),
+          )
+        }.build()
     pbFile.outputStream().use { mavenDependencyList.writeTo(it) }
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      FIREBASE_ANALYTICS_UPGRADED_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        FIREBASE_ANALYTICS_UPGRADED_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
     MavenDependenciesListCheck(
       mockArtifactPropertyFetcher,
       scriptBgDispatcher,
-      commandExecutor
+      commandExecutor,
     ).main(
       arrayOf(
         "${tempFolder.root}",
         "scripts/assets/maven_install.json",
-        "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
-      )
+        "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+      ),
     )
     assertThat(outContent.toString()).contains(SCRIPT_PASSED_MESSAGE)
   }
@@ -709,161 +860,212 @@ class MavenDependenciesListCheckTest {
   @Test
   fun testMavenDepsListCheck_licenseLinkNotVerified_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Simplified BSD License"
-      this.originalLink = "https://www.opensource.org/licenses/bsd-license"
-      this.extractedCopyLink = ExtractedCopyLink.newBuilder().apply {
-        url = "https://local-copy/bsd-license"
-      }.build()
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Simplified BSD License"
+          this.originalLink = "https://www.opensource.org/licenses/bsd-license"
+          this.extractedCopyLink =
+            ExtractedCopyLink
+              .newBuilder()
+              .apply {
+                url = "https://local-copy/bsd-license"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = GLIDE_DEP
-            this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
-            this.addAllLicense(listOf(license1, license2))
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = GLIDE_DEP
+                  this.artifactVersion = GLIDE_ANNOTATIONS_VERSION
+                  this.addAllLicense(listOf(license1, license2))
+                }.build(),
+            ),
+          )
+        }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      GLIDE_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        GLIDE_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(LICENSE_DETAILS_INCOMPLETE_FAILURE)
   }
 
   @Test
   fun testMavenDepsListCheck_depMissingLicenses_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = PROTO_LITE_DEP
-            this.artifactVersion = PROTO_LITE_VERSION
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = PROTO_LITE_DEP
+                  this.artifactVersion = PROTO_LITE_VERSION
+                }.build(),
+            ),
+          )
+        }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      PROTO_LITE_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        PROTO_LITE_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
   }
 
   @Test
   fun testMavenDepsListCheck_depWithInvalidLicenseLink_failsWithException() {
     val pbFile = tempFolder.newFile("scripts/assets/maven_dependencies.pb")
-    val license1 = License.newBuilder().apply {
-      this.licenseName = "The Apache License, Version 2.0"
-      this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      this.scrapableLink = ScrapableLink.newBuilder().apply {
-        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-      }.build()
-    }.build()
-    val license2 = License.newBuilder().apply {
-      this.licenseName = "Fabric Software and Services Agreement"
-      this.originalLink = "https://fabric.io/terms"
-      this.isOriginalLinkInvalid = true
-    }.build()
+    val license1 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "The Apache License, Version 2.0"
+          this.originalLink = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          this.scrapableLink =
+            ScrapableLink
+              .newBuilder()
+              .apply {
+                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }.build()
+        }.build()
+    val license2 =
+      License
+        .newBuilder()
+        .apply {
+          this.licenseName = "Fabric Software and Services Agreement"
+          this.originalLink = "https://fabric.io/terms"
+          this.isOriginalLinkInvalid = true
+        }.build()
 
-    val mavenDependencyList = MavenDependencyList.newBuilder().apply {
-      this.addAllMavenDependency(
-        listOf(
-          MavenDependency.newBuilder().apply {
-            this.artifactName = DATA_BINDING_DEP
-            this.artifactVersion = DATA_BINDING_VERSION
-            this.addLicense(license1)
-          }.build(),
-          MavenDependency.newBuilder().apply {
-            this.artifactName = IO_FABRIC_DEP
-            this.artifactVersion = IO_FABRIC_VERSION
-            this.addLicense(license2)
-          }.build()
-        )
-      )
-    }.build()
+    val mavenDependencyList =
+      MavenDependencyList
+        .newBuilder()
+        .apply {
+          this.addAllMavenDependency(
+            listOf(
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = DATA_BINDING_DEP
+                  this.artifactVersion = DATA_BINDING_VERSION
+                  this.addLicense(license1)
+                }.build(),
+              MavenDependency
+                .newBuilder()
+                .apply {
+                  this.artifactName = IO_FABRIC_DEP
+                  this.artifactVersion = IO_FABRIC_VERSION
+                  this.addLicense(license2)
+                }.build(),
+            ),
+          )
+        }.build()
     mavenDependencyList.writeTo(pbFile.outputStream())
 
-    val coordsList = listOf(
-      DATA_BINDING_DEP,
-      IO_FABRIC_DEP
-    )
+    val coordsList =
+      listOf(
+        DATA_BINDING_DEP,
+        IO_FABRIC_DEP,
+      )
     setUpBazelEnvironment(coordsList)
 
-    val exception = assertThrows<Exception>() {
-      MavenDependenciesListCheck(
-        mockArtifactPropertyFetcher,
-        scriptBgDispatcher,
-        commandExecutor
-      ).main(
-        arrayOf(
-          "${tempFolder.root}",
-          "scripts/assets/maven_install.json",
-          "${tempFolder.root}/scripts/assets/maven_dependencies.pb"
+    val exception =
+      assertThrows<Exception> {
+        MavenDependenciesListCheck(
+          mockArtifactPropertyFetcher,
+          scriptBgDispatcher,
+          commandExecutor,
+        ).main(
+          arrayOf(
+            "${tempFolder.root}",
+            "scripts/assets/maven_install.json",
+            "${tempFolder.root}/scripts/assets/maven_dependencies.pb",
+          ),
         )
-      )
-    }
+      }
     assertThat(exception).hasMessageThat().contains(UNAVAILABLE_OR_INVALID_LICENSE_LINKS_FAILURE)
   }
 
@@ -871,16 +1073,17 @@ class MavenDependenciesListCheckTest {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson, FIREBASE_ANALYTICS_VERSION)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      when (coordinate) {
-        DATA_BINDING_DEP -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
-        FIREBASE_ANALYTICS_DEP, FIREBASE_ANALYTICS_UPGRADED_DEP ->
-          FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
-        IO_FABRIC_DEP -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
-        GLIDE_DEP -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
-        else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
+    val thirdPartyPrefixCoordList =
+      coordsList.map { coordinate ->
+        when (coordinate) {
+          DATA_BINDING_DEP -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
+          FIREBASE_ANALYTICS_DEP, FIREBASE_ANALYTICS_UPGRADED_DEP ->
+            FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
+          IO_FABRIC_DEP -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
+          GLIDE_DEP -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
+          else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
+        }
       }
-    }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
   }
@@ -889,35 +1092,36 @@ class MavenDependenciesListCheckTest {
     val mavenInstallJson = tempFolder.newFile("scripts/assets/maven_install.json")
     writeMavenInstallJson(mavenInstallJson, FIREBASE_ANALYTICS_UPGRADED_VERSION)
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(coordsList)
-    val thirdPartyPrefixCoordList = coordsList.map { coordinate ->
-      when (coordinate) {
-        DATA_BINDING_DEP -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
-        FIREBASE_ANALYTICS_DEP, FIREBASE_ANALYTICS_UPGRADED_DEP ->
-          FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
-        IO_FABRIC_DEP -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
-        GLIDE_DEP -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
-        else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
+    val thirdPartyPrefixCoordList =
+      coordsList.map { coordinate ->
+        when (coordinate) {
+          DATA_BINDING_DEP -> DATA_BINDING_DEP_WITH_THIRD_PARTY_PREFIX
+          FIREBASE_ANALYTICS_DEP, FIREBASE_ANALYTICS_UPGRADED_DEP ->
+            FIREBASE_DEP_WITH_THIRD_PARTY_PREFIX
+          IO_FABRIC_DEP -> IO_FABRIC_DEP_WITH_THIRD_PARTY_PREFIX
+          GLIDE_DEP -> GLIDE_DEP_WITH_THIRD_PARTY_PREFIX
+          else -> PROTO_DEP_WITH_THIRD_PARTY_PREFIX
+        }
       }
-    }
     createThirdPartyAndroidBinary(thirdPartyPrefixCoordList)
     writeThirdPartyBuildFile(coordsList, thirdPartyPrefixCoordList)
   }
 
   private fun writeThirdPartyBuildFile(
     coordsList: List<String>,
-    thirdPartyPrefixCoordList: List<String>
+    thirdPartyPrefixCoordList: List<String>,
   ) {
     val thirdPartyBuild = tempFolder.newFile("third_party/BUILD.bazel")
     thirdPartyBuild.appendText(
       """
       load("@rules_jvm_external//:defs.bzl", "artifact")
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
     coordsList.forEachIndexed { index, coord ->
       createThirdPartyAndroidLibrary(
         thirdPartyBuild = thirdPartyBuild,
         coord = coord,
-        artifactName = thirdPartyPrefixCoordList[index].substringAfter(':')
+        artifactName = thirdPartyPrefixCoordList[index].substringAfter(':'),
       )
     }
   }
@@ -925,7 +1129,7 @@ class MavenDependenciesListCheckTest {
   private fun createThirdPartyAndroidLibrary(
     thirdPartyBuild: File,
     coord: String,
-    artifactName: String
+    artifactName: String,
   ) {
     thirdPartyBuild.appendText(
       """
@@ -934,13 +1138,11 @@ class MavenDependenciesListCheckTest {
           visibility = ["//visibility:public"],
           exports = [artifact("$coord")],
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
-  private fun createThirdPartyAndroidBinary(
-    dependenciesList: List<String>
-  ) {
+  private fun createThirdPartyAndroidBinary(dependenciesList: List<String>) {
     tempFolder.newFile("AndroidManifest.xml")
     val build = tempFolder.newFile("BUILD.bazel")
     build.appendText("depsList = [\n")
@@ -955,12 +1157,15 @@ class MavenDependenciesListCheckTest {
           manifest = "AndroidManifest.xml",
           deps = depsList
       )
-      """.trimIndent() + "\n"
+      """.trimIndent() + "\n",
     )
   }
 
   /** Helper function to write a fake maven_install.json file. */
-  private fun writeMavenInstallJson(mavenInstallJsonFile: File, firebaseAnalyticsVersion: String) {
+  private fun writeMavenInstallJson(
+    mavenInstallJsonFile: File,
+    firebaseAnalyticsVersion: String,
+  ) {
     mavenInstallJsonFile.writeText(
       """
       {
@@ -993,19 +1198,20 @@ class MavenDependenciesListCheckTest {
           ]
         }
       }
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 
   /** Returns a mock for the [MavenArtifactPropertyFetcher]. */
-  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher {
-    return mock {
+  private fun initializeArtifactPropertyFetcher(): MavenArtifactPropertyFetcher =
+    mock {
       on { scrapeText(eq(DATA_BINDING_POM_URL)) }
         .doReturn(
           """
@@ -1017,7 +1223,7 @@ class MavenDependenciesListCheckTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(GLIDE_ANNOTATIONS_POM_URL)) }
         .doReturn(
@@ -1035,7 +1241,7 @@ class MavenDependenciesListCheckTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(FIREBASE_ANALYTICS_POM_URL)) }
         .doReturn(
@@ -1048,7 +1254,7 @@ class MavenDependenciesListCheckTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(UPGRADED_FIREBASE_ANALYTICS_POM_URL)) }
         .doReturn(
@@ -1061,7 +1267,7 @@ class MavenDependenciesListCheckTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(IO_FABRIC_POM_URL)) }
         .doReturn(
@@ -1074,14 +1280,14 @@ class MavenDependenciesListCheckTest {
               <distribution>repo</distribution>
             </license>
           </licenses>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { scrapeText(eq(PROTO_LITE_POM_URL)) }
         .doReturn(
           """
           <?xml version="1.0" encoding="UTF-8"?>
           <project>Random Project</project>
-          """.trimIndent()
+          """.trimIndent(),
         )
       on { isValidArtifactFileUrl(eq(DATA_BINDING_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(PROTO_LITE_ARTIFACT_URL)) }.thenReturn(true)
@@ -1090,7 +1296,6 @@ class MavenDependenciesListCheckTest {
       on { isValidArtifactFileUrl(eq(FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
       on { isValidArtifactFileUrl(eq(UPGRADED_FIREBASE_ANALYTICS_ARTIFACT_URL)) }.thenReturn(true)
     }
-  }
 
   private companion object {
     private const val DATA_BINDING_DEP = "androidx.databinding:databinding-adapters:3.4.2"

@@ -25,156 +25,160 @@ import javax.inject.Singleton
 
 /** An [ImageLoader] that uses Glide. */
 @Singleton
-class GlideImageLoader @Inject constructor(
-  context: Context,
-  @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
-  private val assetRepository: AssetRepository
-) : ImageLoader {
-  private val glide by lazy { Glide.with(context) }
-  private val bitmapBlurTransformation by lazy { BitmapBlurTransformation(context) }
-  private val pictureBitmapBlurTransformation by lazy { SvgBlurTransformation() }
+class GlideImageLoader
+  @Inject
+  constructor(
+    context: Context,
+    @LoadImagesFromAssets private val loadImagesFromAssets: Boolean,
+    private val assetRepository: AssetRepository,
+  ) : ImageLoader {
+    private val glide by lazy { Glide.with(context) }
+    private val bitmapBlurTransformation by lazy { BitmapBlurTransformation(context) }
+    private val pictureBitmapBlurTransformation by lazy { SvgBlurTransformation() }
 
-  override fun loadBitmap(
-    imageUrl: String,
-    target: ImageTarget<Bitmap>,
-    transformations: List<ImageTransformation>
-  ) {
-    glide
-      .asBitmap()
-      .load(loadImage(imageUrl))
-      .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
-      .intoTarget(target)
-  }
-
-  override fun loadBlockSvg(
-    imageUrl: String,
-    target: ImageTarget<BlockPictureDrawable>,
-    transformations: List<ImageTransformation>
-  ) = loadSvgWithGlide(imageUrl, target, transformations)
-
-  override fun loadTextSvg(
-    imageUrl: String,
-    target: ImageTarget<TextPictureDrawable>,
-    transformations: List<ImageTransformation>
-  ) = loadSvgWithGlide(imageUrl, target, transformations)
-
-  override fun loadDrawable(
-    imageDrawableResId: Int,
-    target: ImageTarget<Drawable>,
-    transformations: List<ImageTransformation>
-  ) {
-    glide
-      .asDrawable()
-      .load(imageDrawableResId)
-      .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
-      .intoTarget(target)
-  }
-
-  override fun loadMathDrawable(
-    rawLatex: String,
-    lineHeight: Float,
-    useInlineRendering: Boolean,
-    target: ImageTarget<Bitmap>
-  ) {
-    glide
-      .asBitmap()
-      .load(MathModel(rawLatex, lineHeight, useInlineRendering))
-      .intoTarget(target)
-  }
-
-  private inline fun <reified T : SvgPictureDrawable> loadSvgWithGlide(
-    imageUrl: String,
-    target: ImageTarget<T>,
-    transformations: List<ImageTransformation>
-  ) {
-    // TODO(#45): Ensure the image caching flow is properly hooked up.
-    glide
-      .`as`(T::class.java)
-      .fitCenter()
-      .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
-      .apply(SvgDecoder.createLoadSvgFromPipelineOption())
-      .load(loadImage(imageUrl))
-      .transformWithAll(transformations.toPictureGlideTransformations(imageUrl))
-      .intoTarget(target)
-  }
-
-  private fun loadImage(imageUrl: String): Any = when {
-    loadImagesFromAssets -> object : ImageAssetFetcher {
-      override fun fetchImage(): ByteArray =
-        assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
-
-      override fun getImageIdentifier(): String = imageUrl
+    override fun loadBitmap(
+      imageUrl: String,
+      target: ImageTarget<Bitmap>,
+      transformations: List<ImageTransformation>,
+    ) {
+      glide
+        .asBitmap()
+        .load(loadImage(imageUrl))
+        .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
+        .intoTarget(target)
     }
-    else -> imageUrl
-  }
 
-  private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) = when (target) {
-    is CustomImageTarget -> into(target.customTarget)
-    is ImageViewTarget -> into(target.imageView)
-  }
+    override fun loadBlockSvg(
+      imageUrl: String,
+      target: ImageTarget<BlockPictureDrawable>,
+      transformations: List<ImageTransformation>,
+    ) = loadSvgWithGlide(imageUrl, target, transformations)
 
-  private fun <T> RequestBuilder<T>.transformWithAll(
-    transformations: List<Transformation<ScalableVectorGraphic>>
-  ): RequestBuilder<T> {
-    return transformations.fold(this) { builder, transformation ->
-      builder.transform(ScalableVectorGraphic::class.java, transformation)
+    override fun loadTextSvg(
+      imageUrl: String,
+      target: ImageTarget<TextPictureDrawable>,
+      transformations: List<ImageTransformation>,
+    ) = loadSvgWithGlide(imageUrl, target, transformations)
+
+    override fun loadDrawable(
+      imageDrawableResId: Int,
+      target: ImageTarget<Drawable>,
+      transformations: List<ImageTransformation>,
+    ) {
+      glide
+        .asDrawable()
+        .load(imageDrawableResId)
+        .transform(*transformations.toBitmapGlideTransformations().toTypedArray())
+        .intoTarget(target)
     }
-  }
 
-  private fun List<ImageTransformation>.toBitmapGlideTransformations():
-    List<Transformation<Bitmap>> {
-      return map {
+    override fun loadMathDrawable(
+      rawLatex: String,
+      lineHeight: Float,
+      useInlineRendering: Boolean,
+      target: ImageTarget<Bitmap>,
+    ) {
+      glide
+        .asBitmap()
+        .load(MathModel(rawLatex, lineHeight, useInlineRendering))
+        .intoTarget(target)
+    }
+
+    private inline fun <reified T : SvgPictureDrawable> loadSvgWithGlide(
+      imageUrl: String,
+      target: ImageTarget<T>,
+      transformations: List<ImageTransformation>,
+    ) {
+      // TODO(#45): Ensure the image caching flow is properly hooked up.
+      glide
+        .`as`(T::class.java)
+        .fitCenter()
+        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE))
+        .apply(SvgDecoder.createLoadSvgFromPipelineOption())
+        .load(loadImage(imageUrl))
+        .transformWithAll(transformations.toPictureGlideTransformations(imageUrl))
+        .intoTarget(target)
+    }
+
+    private fun loadImage(imageUrl: String): Any =
+      when {
+        loadImagesFromAssets ->
+          object : ImageAssetFetcher {
+            override fun fetchImage(): ByteArray = assetRepository.loadImageAssetFromLocalAssets(imageUrl)()
+
+            override fun getImageIdentifier(): String = imageUrl
+          }
+        else -> imageUrl
+      }
+
+    private fun <T> RequestBuilder<T>.intoTarget(target: ImageTarget<T>) =
+      when (target) {
+        is CustomImageTarget -> into(target.customTarget)
+        is ImageViewTarget -> into(target.imageView)
+      }
+
+    private fun <T> RequestBuilder<T>.transformWithAll(transformations: List<Transformation<ScalableVectorGraphic>>): RequestBuilder<T> =
+      transformations.fold(this) { builder, transformation ->
+        builder.transform(ScalableVectorGraphic::class.java, transformation)
+      }
+
+    private fun List<ImageTransformation>.toBitmapGlideTransformations(): List<Transformation<Bitmap>> =
+      map {
         when (it) {
           ImageTransformation.BLUR -> bitmapBlurTransformation
         }
       }
-    }
 
-  private fun List<ImageTransformation>.toPictureGlideTransformations(imageUrl: String):
-    List<Transformation<ScalableVectorGraphic>> {
-      return map {
+    private fun List<ImageTransformation>.toPictureGlideTransformations(imageUrl: String): List<Transformation<ScalableVectorGraphic>> =
+      map {
         when (it) {
           ImageTransformation.BLUR -> pictureBitmapBlurTransformation
         }
       } + UpdatePictureDrawableSize(imageUrl)
-    }
 
-  private class UpdatePictureDrawableSize(
-    private val url: String
-  ) : Transformation<ScalableVectorGraphic> {
-    private val filename by lazy { Uri.parse(url).lastPathSegment }
+    private class UpdatePictureDrawableSize(
+      private val url: String,
+    ) : Transformation<ScalableVectorGraphic> {
+      private val filename by lazy { Uri.parse(url).lastPathSegment }
 
-    private val extractedWidth by lazy {
-      filename?.let(WIDTH_REGEX::find)?.destructured?.component1()?.toIntOrNull()
-    }
-    private val extractedHeight by lazy {
-      filename?.let(HEIGHT_REGEX::find)?.destructured?.component1()?.toIntOrNull()
-    }
+      private val extractedWidth by lazy {
+        filename
+          ?.let(WIDTH_REGEX::find)
+          ?.destructured
+          ?.component1()
+          ?.toIntOrNull()
+      }
+      private val extractedHeight by lazy {
+        filename
+          ?.let(HEIGHT_REGEX::find)
+          ?.destructured
+          ?.component1()
+          ?.toIntOrNull()
+      }
 
-    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
-      messageDigest.update(ID.toByteArray())
-      messageDigest.update(url.toByteArray())
-    }
+      override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+        messageDigest.update(ID.toByteArray())
+        messageDigest.update(url.toByteArray())
+      }
 
-    override fun transform(
-      context: Context,
-      toTransform: Resource<ScalableVectorGraphic>,
-      outWidth: Int,
-      outHeight: Int
-    ): Resource<ScalableVectorGraphic> {
-      return SimpleResource(
-        toTransform.get().also {
-          it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
-        }
-      )
-    }
+      override fun transform(
+        context: Context,
+        toTransform: Resource<ScalableVectorGraphic>,
+        outWidth: Int,
+        outHeight: Int,
+      ): Resource<ScalableVectorGraphic> =
+        SimpleResource(
+          toTransform.get().also {
+            it.initializeWithExtractedDimensions(extractedWidth, extractedHeight)
+          },
+        )
 
-    private companion object {
-      // See: https://bumptech.github.io/glide/doc/transformations.html#required-methods.
-      private val ID = UpdatePictureDrawableSize::class.java.name
+      private companion object {
+        // See: https://bumptech.github.io/glide/doc/transformations.html#required-methods.
+        private val ID = UpdatePictureDrawableSize::class.java.name
 
-      private val WIDTH_REGEX by lazy { "width_(\\d+)".toRegex() }
-      private val HEIGHT_REGEX by lazy { "height_(\\d+)".toRegex() }
+        private val WIDTH_REGEX by lazy { "width_(\\d+)".toRegex() }
+        private val HEIGHT_REGEX by lazy { "height_(\\d+)".toRegex() }
+      }
     }
   }
-}

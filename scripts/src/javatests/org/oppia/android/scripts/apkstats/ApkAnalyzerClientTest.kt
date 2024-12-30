@@ -39,27 +39,28 @@ class ApkAnalyzerClientTest {
   fun testComputeDownloadSize_forNonExistentApk_throwsException() {
     val apkAnalyzerClient = createApkAnalyzerClient()
 
-    val exception = assertThrows<IllegalArgumentException>() {
-      apkAnalyzerClient.computeDownloadSize("fake.apk")
-    }
+    val exception =
+      assertThrows<IllegalArgumentException> {
+        apkAnalyzerClient.computeDownloadSize("fake.apk")
+      }
 
     assertThat(exception).hasMessageThat().contains("Cannot open apk")
   }
 
-  private fun createApkAnalyzerClient(): ApkAnalyzerClient {
-    return ApkAnalyzerClient(
+  private fun createApkAnalyzerClient(): ApkAnalyzerClient =
+    ApkAnalyzerClient(
       Aapt2Client(
         tempFolder.root.absolutePath,
         sdkProperties.buildToolsVersion,
         scriptBgDispatcher,
-        commandExecutor
-      )
+        commandExecutor,
+      ),
     )
-  }
 
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
+  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl =
+    CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = 5,
+      processTimeoutUnit = TimeUnit.MINUTES,
     )
-  }
 }

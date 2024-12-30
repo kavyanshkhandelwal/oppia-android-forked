@@ -39,20 +39,23 @@ fun main(vararg args: String) {
       " </path/to/base64.file> </path/to/output.ext>"
   }
   val (base64Path, outputPath) = args
-  val inputFile = File(base64Path).absoluteFile.normalize().also {
-    require(it.exists() && it.isFile) {
-      "Expected input base 64 path to correspond to an existing file: $base64Path."
+  val inputFile =
+    File(base64Path).absoluteFile.normalize().also {
+      require(it.exists() && it.isFile) {
+        "Expected input base 64 path to correspond to an existing file: $base64Path."
+      }
     }
-  }
-  val outputFile = File(outputPath).absoluteFile.normalize().also {
-    require(!it.exists()) { "Error: output file already exists: $outputPath." }
-  }
-  val outputFormat = when (outputFile.extension) {
-    "textproto" -> DecodeUserStudyEventString.OutputFormat.TEXT_PROTO
-    "json" -> DecodeUserStudyEventString.OutputFormat.JSON
-    "yaml", "yml" -> DecodeUserStudyEventString.OutputFormat.YAML
-    else -> error("Unsupported extension in: $outputPath (expected one of: textproto/json/yaml).")
-  }
+  val outputFile =
+    File(outputPath).absoluteFile.normalize().also {
+      require(!it.exists()) { "Error: output file already exists: $outputPath." }
+    }
+  val outputFormat =
+    when (outputFile.extension) {
+      "textproto" -> DecodeUserStudyEventString.OutputFormat.TEXT_PROTO
+      "json" -> DecodeUserStudyEventString.OutputFormat.JSON
+      "yaml", "yml" -> DecodeUserStudyEventString.OutputFormat.YAML
+      else -> error("Unsupported extension in: $outputPath (expected one of: textproto/json/yaml).")
+    }
   DecodeUserStudyEventString().decodeEventString(inputFile, outputFile, outputFormat)
 }
 
@@ -65,7 +68,11 @@ class DecodeUserStudyEventString {
    * @param outputFile the file that should contain the output decoded event logs
    * @param outputFormat the [OutputFormat] to use to encode [outputFile]
    */
-  fun decodeEventString(inputFile: File, outputFile: File, outputFormat: OutputFormat) {
+  fun decodeEventString(
+    inputFile: File,
+    outputFile: File,
+    outputFormat: OutputFormat,
+  ) {
     println("Reading input: ${inputFile.path}.")
     println("Writing format $outputFormat to: ${outputFile.path}.")
 
@@ -74,14 +81,15 @@ class DecodeUserStudyEventString {
 
     println(
       "Decoded ${oppiaEventLogs.uploadedEventLogsCount} uploaded events, and" +
-        " ${oppiaEventLogs.eventLogsToUploadCount} pending events."
+        " ${oppiaEventLogs.eventLogsToUploadCount} pending events.",
     )
 
-    val convertedText = when (outputFormat) {
-      OutputFormat.TEXT_PROTO -> oppiaEventLogs.convertToText()
-      OutputFormat.JSON -> oppiaEventLogs.convertToJson()
-      OutputFormat.YAML -> oppiaEventLogs.convertToYaml()
-    }
+    val convertedText =
+      when (outputFormat) {
+        OutputFormat.TEXT_PROTO -> oppiaEventLogs.convertToText()
+        OutputFormat.JSON -> oppiaEventLogs.convertToJson()
+        OutputFormat.YAML -> oppiaEventLogs.convertToYaml()
+      }
 
     outputFile.writeText(convertedText)
   }
@@ -95,7 +103,7 @@ class DecodeUserStudyEventString {
     JSON,
 
     /** Corresponds to YAML: https://yaml.org/. */
-    YAML
+    YAML,
   }
 
   private companion object {
@@ -118,63 +126,73 @@ class DecodeUserStudyEventString {
       val inflated = decoded.tryTransform(::GZIPInputStream)
 
       println("[5/5] Reading binary proto...")
-      return baseMessage.newBuilderForType().also {
-        try {
-          it.mergeFrom(inflated)
-        } catch (e: Exception) {
-          println("Failed to deflate all data in the protocol buffer.")
-          e.printStackTrace(System.out)
-        }
-      }.build() as M
+      return baseMessage
+        .newBuilderForType()
+        .also {
+          try {
+            it.mergeFrom(inflated)
+          } catch (e: Exception) {
+            println("Failed to deflate all data in the protocol buffer.")
+            e.printStackTrace(System.out)
+          }
+        }.build() as M
     }
 
     private fun ByteArray.tryTransform(inputFactory: (InputStream) -> InputStream): ByteArray {
       val byteStream = inputStream()
-      return inputFactory(byteStream).use { it.recoverAsManyBytesAsPossible() }.also {
-        if (it.exception != null) {
-          val byteCount = size - byteStream.available()
-          println(
-            "Encountered failure during stage: $byteCount/$size bytes were read, producing" +
-              " ${it.data.size} bytes for the next stage."
-          )
-          it.exception.printStackTrace(System.out)
-          println()
-        }
-      }.data
+      return inputFactory(byteStream)
+        .use { it.recoverAsManyBytesAsPossible() }
+        .also {
+          if (it.exception != null) {
+            val byteCount = size - byteStream.available()
+            println(
+              "Encountered failure during stage: $byteCount/$size bytes were read, producing" +
+                " ${it.data.size} bytes for the next stage.",
+            )
+            it.exception.printStackTrace(System.out)
+            println()
+          }
+        }.data
     }
 
     private fun InputStream.recoverAsManyBytesAsPossible(): RecoveryResult {
       val bytes = mutableListOf<Byte>()
       var nextByte: Int
       do {
-        nextByte = when (val latestRead = tryRead()) {
-          is ReadResult.HasByte -> latestRead.value
-          is ReadResult.HasFailure ->
-            return RecoveryResult(bytes.toByteArray(), latestRead.exception)
-        }
+        nextByte =
+          when (val latestRead = tryRead()) {
+            is ReadResult.HasByte -> latestRead.value
+            is ReadResult.HasFailure ->
+              return RecoveryResult(bytes.toByteArray(), latestRead.exception)
+          }
         if (nextByte != -1) bytes += nextByte.toByte()
       } while (nextByte != -1)
       return RecoveryResult(bytes.toByteArray(), exception = null)
     }
 
     private fun InputStream.tryRead(): ReadResult =
-      try { ReadResult.HasByte(read()) } catch (e: Exception) { ReadResult.HasFailure(e) }
+      try {
+        ReadResult.HasByte(read())
+      } catch (e: Exception) {
+        ReadResult.HasFailure(e)
+      }
 
-    private fun Message.convertToText(): String =
-      TextFormat.printer().escapingNonAscii(false).printToString(this)
+    private fun Message.convertToText(): String = TextFormat.printer().escapingNonAscii(false).printToString(this)
 
-    private fun Message.convertToJson(): String =
-      JsonFormat.printer().includingDefaultValueFields().print(this)
+    private fun Message.convertToJson(): String = JsonFormat.printer().includingDefaultValueFields().print(this)
 
     private fun Message.convertToYaml(): String {
       // There's no direct way to convert from proto to yaml, so convert to json first.
       val structure = Json.createReader(StringReader(convertToJson())).use(JsonReader::read)
-      return StringWriter().also { writer ->
-        Yaml.createWriter(writer).use { it.write(structure) }
-      }.toString()
+      return StringWriter()
+        .also { writer ->
+          Yaml.createWriter(writer).use { it.write(structure) }
+        }.toString()
     }
 
-    private class WhitespaceStrippingInputStream(private val base: InputStream) : InputStream() {
+    private class WhitespaceStrippingInputStream(
+      private val base: InputStream,
+    ) : InputStream() {
       override fun read(): Int {
         // Remove newlines, carriage returns, and spaces.
         return when (val value = base.read()) {
@@ -195,7 +213,10 @@ class DecodeUserStudyEventString {
      * @property exception the failure which resulted in no more data being collected, or ``null``
      *     if the transfer succeeded without data loss
      */
-    private class RecoveryResult(val data: ByteArray, val exception: Exception?)
+    private class RecoveryResult(
+      val data: ByteArray,
+      val exception: Exception?,
+    )
 
     /** The result of trying to read a single byte from an [InputStream]. */
     private sealed class ReadResult {
@@ -204,14 +225,18 @@ class DecodeUserStudyEventString {
        *
        * @property value the single byte value that was successfully read
        */
-      data class HasByte(val value: Int) : ReadResult()
+      data class HasByte(
+        val value: Int,
+      ) : ReadResult()
 
       /**
        * A [ReadResult] that indicates the read was a failure.
        *
        * @property exception the [Exception] that was encountered when trying to read a byte
        */
-      data class HasFailure(val exception: Exception) : ReadResult()
+      data class HasFailure(
+        val exception: Exception,
+      ) : ReadResult()
     }
   }
 }

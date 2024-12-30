@@ -95,11 +95,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ColorBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ColorBindingAdaptersTest {
   @Inject lateinit var context: Context
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val whiteColor = Color.WHITE
@@ -142,20 +144,21 @@ class ColorBindingAdaptersTest {
 
   private fun getColorHexString(colorId: Int): String = Integer.toHexString(colorId)
 
-  private fun launchActivity():
-    ActivityScenario<ColorBindingAdaptersTestActivity>? {
-      val scenario = ActivityScenario.launch<ColorBindingAdaptersTestActivity>(
-        ColorBindingAdaptersTestActivity.createIntent(context)
+  private fun launchActivity(): ActivityScenario<ColorBindingAdaptersTestActivity>? {
+    val scenario =
+      ActivityScenario.launch<ColorBindingAdaptersTestActivity>(
+        ColorBindingAdaptersTestActivity.createIntent(context),
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** Create a TestApplicationComponent. */
   @Singleton
   @Component(
     modules = [
@@ -184,10 +187,9 @@ class ColorBindingAdaptersTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-  /** Create a TestApplicationComponent. */
   interface TestApplicationComponent : ApplicationComponent {
     /** Build the TestApplicationComponent. */
     @Component.Builder
@@ -201,9 +203,13 @@ class ColorBindingAdaptersTest {
    * Class to override a dependency throughout the test application, instead of overriding the
    * dependencies in every test class, we can just do it once by extending the Application class.
    */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerColorBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerColorBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -213,9 +219,12 @@ class ColorBindingAdaptersTest {
       component.inject(colorBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

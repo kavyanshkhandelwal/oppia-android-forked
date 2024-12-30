@@ -29,10 +29,8 @@ class ClassroomListFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return classroomListFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = classroomListFragmentPresenter.handleCreateView(inflater, container)
 
   override fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     classroomListFragmentPresenter.onTopicSummaryClicked(topicSummary)

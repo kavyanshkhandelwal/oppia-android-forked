@@ -15,61 +15,69 @@ import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
 
 /** Presenter for arranging [ProfileAndDeviceIdFragment]'s UI. */
-class ProfileAndDeviceIdFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val profileListViewModelFactory: ProfileListViewModel.Factory,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-) {
+class ProfileAndDeviceIdFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val profileListViewModelFactory: ProfileListViewModel.Factory,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: ProfileAndDeviceIdFragmentBinding
 
-  private lateinit var binding: ProfileAndDeviceIdFragmentBinding
-
-  /** Handles [ProfileAndDeviceIdFragment]'s creation flow. */
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
-    binding = ProfileAndDeviceIdFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-    binding.apply {
-      lifecycleOwner = fragment
-      this.viewModel = profileListViewModelFactory.create()
-    }
-    binding.profileAndDeviceIdRecyclerView.apply {
-      adapter = createRecyclerViewAdapter()
-    }
-    return binding.root
-  }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> {
-    return multiTypeBuilderFactory.create<ProfileListItemViewModel,
-      ProfileListItemViewType> { viewModel ->
-      when (viewModel) {
-        is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
-        is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
-        is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
-        is ControlButtonsViewModel -> ProfileListItemViewType.SHARE_IDS
-        else -> error("Encountered unexpected view model: $viewModel")
+    /** Handles [ProfileAndDeviceIdFragment]'s creation flow. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View {
+      binding =
+        ProfileAndDeviceIdFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+      binding.apply {
+        lifecycleOwner = fragment
+        this.viewModel = profileListViewModelFactory.create()
       }
-    }.registerViewDataBinder(
-      viewType = ProfileListItemViewType.DEVICE_ID,
-      inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
-      setViewModel = ProfileListDeviceIdItemBinding::setViewModel,
-      transformViewModel = { it as DeviceIdItemViewModel }
-    ).registerViewDataBinder(
-      viewType = ProfileListItemViewType.LEARNER_ID,
-      inflateDataBinding = ProfileListLearnerIdItemBinding::inflate,
-      setViewModel = ProfileListLearnerIdItemBinding::setViewModel,
-      transformViewModel = { it as ProfileLearnerIdItemViewModel }
-    ).registerViewDataBinder(
-      viewType = ProfileListItemViewType.SYNC_STATUS,
-      inflateDataBinding = ProfileListSyncStatusItemBinding::inflate,
-      setViewModel = ProfileListSyncStatusItemBinding::setViewModel,
-      transformViewModel = { it as SyncStatusItemViewModel }
-    ).registerViewDataBinder(
-      viewType = ProfileListItemViewType.SHARE_IDS,
-      inflateDataBinding = ProfileListControlButtonsBinding::inflate,
-      setViewModel = ProfileListControlButtonsBinding::setViewModel,
-      transformViewModel = { it as ControlButtonsViewModel }
-    ).build()
+      binding.profileAndDeviceIdRecyclerView.apply {
+        adapter = createRecyclerViewAdapter()
+      }
+      return binding.root
+    }
+
+    private fun createRecyclerViewAdapter(): BindableAdapter<ProfileListItemViewModel> =
+      multiTypeBuilderFactory
+        .create<
+          ProfileListItemViewModel,
+          ProfileListItemViewType,
+        > { viewModel ->
+          when (viewModel) {
+            is DeviceIdItemViewModel -> ProfileListItemViewType.DEVICE_ID
+            is ProfileLearnerIdItemViewModel -> ProfileListItemViewType.LEARNER_ID
+            is SyncStatusItemViewModel -> ProfileListItemViewType.SYNC_STATUS
+            is ControlButtonsViewModel -> ProfileListItemViewType.SHARE_IDS
+            else -> error("Encountered unexpected view model: $viewModel")
+          }
+        }.registerViewDataBinder(
+          viewType = ProfileListItemViewType.DEVICE_ID,
+          inflateDataBinding = ProfileListDeviceIdItemBinding::inflate,
+          setViewModel = ProfileListDeviceIdItemBinding::setViewModel,
+          transformViewModel = { it as DeviceIdItemViewModel },
+        ).registerViewDataBinder(
+          viewType = ProfileListItemViewType.LEARNER_ID,
+          inflateDataBinding = ProfileListLearnerIdItemBinding::inflate,
+          setViewModel = ProfileListLearnerIdItemBinding::setViewModel,
+          transformViewModel = { it as ProfileLearnerIdItemViewModel },
+        ).registerViewDataBinder(
+          viewType = ProfileListItemViewType.SYNC_STATUS,
+          inflateDataBinding = ProfileListSyncStatusItemBinding::inflate,
+          setViewModel = ProfileListSyncStatusItemBinding::setViewModel,
+          transformViewModel = { it as SyncStatusItemViewModel },
+        ).registerViewDataBinder(
+          viewType = ProfileListItemViewType.SHARE_IDS,
+          inflateDataBinding = ProfileListControlButtonsBinding::inflate,
+          setViewModel = ProfileListControlButtonsBinding::setViewModel,
+          transformViewModel = { it as ControlButtonsViewModel },
+        ).build()
   }
-}

@@ -50,9 +50,13 @@ import javax.inject.Singleton
 @Config(application = StoryProgressControllerTest.TestApplication::class)
 class StoryProgressControllerTest {
   @Inject lateinit var context: Context
+
   @Inject lateinit var storyProgressController: StoryProgressController
+
   @Inject lateinit var profileTestHelper: ProfileTestHelper
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId: ProfileId
@@ -75,7 +79,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(recordProvider)
@@ -89,7 +93,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(recordProvider)
@@ -103,17 +107,18 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
-      )
+        fakeOppiaClock.getCurrentTimeMs(),
+      ),
     )
 
-    val recordInProgressProvider = storyProgressController.recordChapterAsInProgressSaved(
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0,
-      FRACTIONS_EXPLORATION_ID_0,
-      fakeOppiaClock.getCurrentTimeMs()
-    )
+    val recordInProgressProvider =
+      storyProgressController.recordChapterAsInProgressSaved(
+        profileId,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
+        fakeOppiaClock.getCurrentTimeMs(),
+      )
 
     monitorFactory.waitForNextSuccessfulResult(recordInProgressProvider)
     val playState =
@@ -121,7 +126,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.COMPLETED)
   }
@@ -134,7 +139,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(recordCompletionProvider)
@@ -143,7 +148,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
@@ -156,8 +161,8 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
-      )
+        fakeOppiaClock.getCurrentTimeMs(),
+      ),
     )
 
     val progressSavedProvider =
@@ -166,7 +171,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(progressSavedProvider)
@@ -175,7 +180,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_SAVED)
   }
@@ -188,7 +193,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(recordNotSavedProvider)
@@ -202,8 +207,8 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
-      )
+        fakeOppiaClock.getCurrentTimeMs(),
+      ),
     )
 
     val recordNotSavedProvider =
@@ -212,7 +217,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(recordNotSavedProvider)
@@ -221,7 +226,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.COMPLETED)
   }
@@ -234,7 +239,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(progressNotSavedProvider)
@@ -243,7 +248,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_NOT_SAVED)
   }
@@ -256,8 +261,8 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
-      )
+        fakeOppiaClock.getCurrentTimeMs(),
+      ),
     )
 
     val progressNotSavedProvider =
@@ -266,7 +271,7 @@ class StoryProgressControllerTest {
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
         FRACTIONS_EXPLORATION_ID_0,
-        fakeOppiaClock.getCurrentTimeMs()
+        fakeOppiaClock.getCurrentTimeMs(),
       )
 
     monitorFactory.waitForNextSuccessfulResult(progressNotSavedProvider)
@@ -275,7 +280,7 @@ class StoryProgressControllerTest {
         profileId,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
-        FRACTIONS_EXPLORATION_ID_0
+        FRACTIONS_EXPLORATION_ID_0,
       )
     assertThat(playState).isEqualTo(ChapterPlayState.IN_PROGRESS_NOT_SAVED)
   }
@@ -284,11 +289,14 @@ class StoryProgressControllerTest {
     profileId: ProfileId,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ): ChapterPlayState {
     val playStateProvider =
       storyProgressController.retrieveChapterPlayStateByExplorationId(
-        profileId, topicId, storyId, explorationId
+        profileId,
+        topicId,
+        storyId,
+        explorationId,
       )
     return monitorFactory.waitForNextSuccessfulResult(playStateProvider)
   }
@@ -298,9 +306,7 @@ class StoryProgressControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     //  module in tests to avoid needing to specify these settings for tests.
@@ -326,8 +332,8 @@ class StoryProgressControllerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, AssetModule::class
-    ]
+      PlatformParameterSingletonModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -341,9 +347,12 @@ class StoryProgressControllerTest {
     fun inject(storyProgressControllerTest: StoryProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStoryProgressControllerTest_TestApplicationComponent.builder()
+      DaggerStoryProgressControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

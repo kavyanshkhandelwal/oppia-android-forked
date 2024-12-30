@@ -23,61 +23,60 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraic
  *
  * See this class's tests for a list of supported cases (both for matching and not matching).
  */
-class MathEquationInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val consoleLogger: ConsoleLogger
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+class MathEquationInputMatchesExactlyWithRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val consoleLogger: ConsoleLogger,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<String> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun matches(
-    answer: String,
-    input: String,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerEquation =
-      parseAlgebraicEquation(answer, allowedVariables, ALL_ERRORS) ?: return false
-    val inputEquation =
-      parseAlgebraicEquation(input, allowedVariables, REQUIRED_ONLY) ?: return false
-    return answerEquation.approximatelyEquals(inputEquation)
-  }
+    override fun matches(
+      answer: String,
+      input: String,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val allowedVariables = classificationContext.extractAllowedVariables()
+      val answerEquation =
+        parseAlgebraicEquation(answer, allowedVariables, ALL_ERRORS) ?: return false
+      val inputEquation =
+        parseAlgebraicEquation(input, allowedVariables, REQUIRED_ONLY) ?: return false
+      return answerEquation.approximatelyEquals(inputEquation)
+    }
 
-  private fun parseAlgebraicEquation(
-    rawEquation: String,
-    allowedVariables: List<String>,
-    checkingMode: ErrorCheckingMode
-  ): MathEquation? {
-    return when (val eqResult = parseExpression(rawEquation, allowedVariables, checkingMode)) {
-      is MathParsingResult.Success -> eqResult.result
-      is MathParsingResult.Failure -> {
-        consoleLogger.e(
-          "AlgebraEqMatchesExact",
-          "Encountered equation that failed parsing. Equation: $rawEquation." +
-            " Failure: ${eqResult.error}."
-        )
-        null
+    private fun parseAlgebraicEquation(
+      rawEquation: String,
+      allowedVariables: List<String>,
+      checkingMode: ErrorCheckingMode,
+    ): MathEquation? =
+      when (val eqResult = parseExpression(rawEquation, allowedVariables, checkingMode)) {
+        is MathParsingResult.Success -> eqResult.result
+        is MathParsingResult.Failure -> {
+          consoleLogger.e(
+            "AlgebraEqMatchesExact",
+            "Encountered equation that failed parsing. Equation: $rawEquation." +
+              " Failure: ${eqResult.error}.",
+          )
+          null
+        }
       }
+
+    private companion object {
+      private fun ClassificationContext.extractAllowedVariables(): List<String> =
+        customizationArgs["customOskLetters"]
+          ?.schemaObjectList
+          ?.schemaObjectList
+          ?.map { it.normalizedString }
+          ?: listOf()
+
+      private fun MathEquation.approximatelyEquals(input: MathEquation): Boolean =
+        leftSide.isApproximatelyEqualTo(input.leftSide.stripRedundantGroups()) &&
+          rightSide.isApproximatelyEqualTo(input.rightSide.stripRedundantGroups())
     }
   }
-
-  private companion object {
-    private fun ClassificationContext.extractAllowedVariables(): List<String> {
-      return customizationArgs["customOskLetters"]
-        ?.schemaObjectList
-        ?.schemaObjectList
-        ?.map { it.normalizedString }
-        ?: listOf()
-    }
-
-    private fun MathEquation.approximatelyEquals(input: MathEquation): Boolean {
-      return leftSide.isApproximatelyEqualTo(input.leftSide.stripRedundantGroups()) &&
-        rightSide.isApproximatelyEqualTo(input.rightSide.stripRedundantGroups())
-    }
-  }
-}

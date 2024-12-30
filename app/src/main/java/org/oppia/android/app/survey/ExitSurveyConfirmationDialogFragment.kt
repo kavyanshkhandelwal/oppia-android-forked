@@ -25,15 +25,13 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
      * @param profileId the ID of the profile viewing the survey
      * @return [ExitSurveyConfirmationDialogFragment]: DialogFragment
      */
-    fun newInstance(
-      profileId: ProfileId
-    ): ExitSurveyConfirmationDialogFragment {
-      return ExitSurveyConfirmationDialogFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+    fun newInstance(profileId: ProfileId): ExitSurveyConfirmationDialogFragment =
+      ExitSurveyConfirmationDialogFragment().apply {
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
-    }
   }
 
   override fun onAttach(context: Context) {
@@ -49,7 +47,7 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
     dialog?.setCanceledOnTouchOutside(false)
     dialog?.setCancelable(false)

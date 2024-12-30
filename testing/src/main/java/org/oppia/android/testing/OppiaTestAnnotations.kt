@@ -11,7 +11,7 @@ enum class TestPlatform {
   ROBOLECTRIC,
 
   /** Corresponds to instrumented tests that can run on a real device or emulator via Espresso. */
-  ESPRESSO
+  ESPRESSO,
 }
 
 /** Specifies a build environment to target in conjunction with [RunOn]. */
@@ -20,7 +20,7 @@ enum class BuildEnvironment {
   GRADLE,
 
   /** Corresponds to tests run within the Bazel build environment. */
-  BAZEL
+  BAZEL,
 }
 
 /**
@@ -42,5 +42,5 @@ enum class BuildEnvironment {
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class RunOn(
   vararg val testPlatforms: TestPlatform = [ROBOLECTRIC, ESPRESSO],
-  val buildEnvironments: Array<BuildEnvironment> = [GRADLE, BAZEL]
+  val buildEnvironments: Array<BuildEnvironment> = [GRADLE, BAZEL],
 )

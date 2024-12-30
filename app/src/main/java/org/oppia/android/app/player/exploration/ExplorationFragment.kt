@@ -26,20 +26,24 @@ class ExplorationFragment : InjectableFragment() {
       topicId: String,
       storyId: String,
       explorationId: String,
-      readingTextSize: ReadingTextSize
+      readingTextSize: ReadingTextSize,
     ): ExplorationFragment {
-      val args = ExplorationFragmentArguments.newBuilder().apply {
-        this.profileId = profileId
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-        this.readingTextSize = readingTextSize
-      }.build()
+      val args =
+        ExplorationFragmentArguments
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+            this.readingTextSize = readingTextSize
+          }.build()
       return ExplorationFragment().apply {
-        arguments = Bundle().apply {
-          putProto(ExplorationFragmentPresenter.ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(ExplorationFragmentPresenter.ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -53,10 +57,13 @@ class ExplorationFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View = explorationFragmentPresenter.handleCreateView(inflater, container)
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     explorationFragmentPresenter.handleViewCreated()
   }
@@ -65,8 +72,7 @@ class ExplorationFragment : InjectableFragment() {
 
   fun onKeyboardAction() = explorationFragmentPresenter.onKeyboardAction()
 
-  fun setAudioBarVisibility(isVisible: Boolean) =
-    explorationFragmentPresenter.setAudioBarVisibility(isVisible)
+  fun setAudioBarVisibility(isVisible: Boolean) = explorationFragmentPresenter.setAudioBarVisibility(isVisible)
 
   fun scrollToTop() = explorationFragmentPresenter.scrollToTop()
 
@@ -77,9 +83,11 @@ class ExplorationFragment : InjectableFragment() {
   fun viewHint(hintIndex: Int) {
     explorationFragmentPresenter.viewHint(hintIndex)
   }
+
   fun revealSolution() {
     explorationFragmentPresenter.revealSolution()
   }
+
   fun viewSolution() {
     explorationFragmentPresenter.viewSolution()
   }

@@ -30,229 +30,252 @@ private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
 
 /** The presenter for [PinPasswordActivity]. */
-class PinPasswordActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController,
-  private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
-  private val pinViewModel: PinPasswordViewModel,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val accessibilityService: AccessibilityService,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-) {
-  private var internalProfileId = -1
-  private var profileId = ProfileId.getDefaultInstance()
-  private lateinit var alertDialog: AlertDialog
-  private var confirmedDeletion = false
+class PinPasswordActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val profileManagementController: ProfileManagementController,
+    private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
+    private val pinViewModel: PinPasswordViewModel,
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val accessibilityService: AccessibilityService,
+    @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  ) {
+    private var internalProfileId = -1
+    private var profileId = ProfileId.getDefaultInstance()
+    private lateinit var alertDialog: AlertDialog
+    private var confirmedDeletion = false
 
-  fun handleOnCreate() {
-    val args = activity.intent.getProtoExtra(
-      PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
-      PinPasswordActivityParams.getDefaultInstance()
-    )
-
-    val adminPin = args?.adminPin
-    internalProfileId = args?.internalProfileId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
-    val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
-      activity,
-      R.layout.pin_password_activity
-    )
-    pinViewModel.setProfileId(internalProfileId)
-    binding.apply {
-      lifecycleOwner = activity
-      viewModel = pinViewModel
-    }
-
-    binding.pinPasswordToolbar.setNavigationOnClickListener {
-      (activity as PinPasswordActivity).finish()
-    }
-
-    binding.showPin.setOnClickListener {
-      pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
-      if (!pinViewModel.showPassword.get()!!) {
-        binding.pinPasswordInputPinEditText.transformationMethod = PasswordTransformationMethod()
-        binding.pinPasswordInputPinEditText.setSelection(
-          binding.pinPasswordInputPinEditText.text.toString().length
+    fun handleOnCreate() {
+      val args =
+        activity.intent.getProtoExtra(
+          PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
+          PinPasswordActivityParams.getDefaultInstance(),
         )
-      } else {
-        binding.pinPasswordInputPinEditText.transformationMethod = null
-        binding.pinPasswordInputPinEditText.setSelection(
-          binding.pinPasswordInputPinEditText.text.toString().length
+
+      val adminPin = args?.adminPin
+      internalProfileId = args?.internalProfileId ?: -1
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+      val binding =
+        DataBindingUtil.setContentView<PinPasswordActivityBinding>(
+          activity,
+          R.layout.pin_password_activity,
         )
+      pinViewModel.setProfileId(internalProfileId)
+      binding.apply {
+        lifecycleOwner = activity
+        viewModel = pinViewModel
       }
-    }
 
-    // If the screen reader is off, the EditText will receive focus.
-    // If the screen reader is on, the EditText won't receive focus.
-    // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
-    if (!accessibilityService.isScreenReaderEnabled())
-      binding.pinPasswordInputPinEditText.requestFocus()
+      binding.pinPasswordToolbar.setNavigationOnClickListener {
+        (activity as PinPasswordActivity).finish()
+      }
 
-    // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
-    binding.pinPasswordInputPinEditText.onTextChanged { pin ->
-      pin?.let { inputtedPin ->
-        if (inputtedPin.isNotEmpty()) {
-          pinViewModel.errorMessage.set("")
+      binding.showPin.setOnClickListener {
+        pinViewModel.showPassword.set(!pinViewModel.showPassword.get()!!)
+        if (!pinViewModel.showPassword.get()!!) {
+          binding.pinPasswordInputPinEditText.transformationMethod = PasswordTransformationMethod()
+          binding.pinPasswordInputPinEditText.setSelection(
+            binding.pinPasswordInputPinEditText.text
+              .toString()
+              .length,
+          )
+        } else {
+          binding.pinPasswordInputPinEditText.transformationMethod = null
+          binding.pinPasswordInputPinEditText.setSelection(
+            binding.pinPasswordInputPinEditText.text
+              .toString()
+              .length,
+          )
         }
-        if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
-          inputtedPin.isNotEmpty() && pinViewModel.correctPin.get()!!
-            .isNotEmpty()
-        ) {
-          if (inputtedPin == pinViewModel.correctPin.get()) {
-            profileManagementController
-              .loginToProfile(profileId).toLiveData().observe(
+      }
+
+      // If the screen reader is off, the EditText will receive focus.
+      // If the screen reader is on, the EditText won't receive focus.
+      // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
+      if (!accessibilityService.isScreenReaderEnabled()) {
+        binding.pinPasswordInputPinEditText.requestFocus()
+      }
+
+      // [onTextChanged] is a extension function defined at [TextInputEditTextHelper]
+      binding.pinPasswordInputPinEditText.onTextChanged { pin ->
+        pin?.let { inputtedPin ->
+          if (inputtedPin.isNotEmpty()) {
+            pinViewModel.errorMessage.set("")
+          }
+          if (inputtedPin.length == pinViewModel.correctPin.get()!!.length &&
+            inputtedPin.isNotEmpty() &&
+            pinViewModel.correctPin
+              .get()!!
+              .isNotEmpty()
+          ) {
+            if (inputtedPin == pinViewModel.correctPin.get()) {
+              profileManagementController
+                .loginToProfile(profileId)
+                .toLiveData()
+                .observe(
+                  activity,
+                  {
+                    if (it is AsyncResult.Success) {
+                      activity.startActivity(
+                        if (enableMultipleClassrooms.value) {
+                          ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                        } else {
+                          HomeActivity.createHomeActivity(activity, profileId)
+                        },
+                      )
+                    }
+                  },
+                )
+            } else {
+              pinViewModel.errorMessage.set(
+                resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin),
+              )
+              binding.pinPasswordInputPinEditText.startAnimation(
+                AnimationUtils.loadAnimation(
+                  activity,
+                  R.anim.shake,
+                ),
+              )
+              lifecycleSafeTimerFactory.createTimer(1000).observe(
                 activity,
                 {
-                  if (it is AsyncResult.Success) {
-                    activity.startActivity(
-                      if (enableMultipleClassrooms.value)
-                        ClassroomListActivity.createClassroomListActivity(activity, profileId)
-                      else
-                        HomeActivity.createHomeActivity(activity, profileId)
-                    )
-                  }
-                }
+                  binding.pinPasswordInputPinEditText.setText("")
+                },
               )
-          } else {
-            pinViewModel.errorMessage.set(
-              resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
-            )
-            binding.pinPasswordInputPinEditText.startAnimation(
-              AnimationUtils.loadAnimation(
-                activity,
-                R.anim.shake
-              )
-            )
-            lifecycleSafeTimerFactory.createTimer(1000).observe(
-              activity,
-              {
-                binding.pinPasswordInputPinEditText.setText("")
-              }
-            )
+            }
           }
         }
       }
-    }
 
-    binding.forgotPin.setOnClickListener {
-      if (pinViewModel.isAdmin.get()!!) {
+      binding.forgotPin.setOnClickListener {
+        if (pinViewModel.isAdmin.get()!!) {
+          showAdminForgotPin()
+        } else {
+          val previousFrag =
+            activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
+          if (previousFrag != null) {
+            activity.supportFragmentManager
+              .beginTransaction()
+              .remove(previousFrag)
+              .commitNow()
+          }
+          val dialogFragment =
+            AdminSettingsDialogFragment
+              .newInstance(adminPin!!)
+          dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+        }
+      }
+
+      if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
         showAdminForgotPin()
-      } else {
-        val previousFrag =
-          activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
-        if (previousFrag != null) {
-          activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
-        }
-        val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin!!)
-        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }
 
-    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
-      showAdminForgotPin()
-    }
-  }
-
-  fun handleRouteToResetPinDialog() {
-    (
-      activity
-        .supportFragmentManager
-        .findFragmentByTag(
-          TAG_ADMIN_SETTINGS_DIALOG
-        ) as DialogFragment
+    fun handleRouteToResetPinDialog() {
+      (
+        activity
+          .supportFragmentManager
+          .findFragmentByTag(
+            TAG_ADMIN_SETTINGS_DIALOG,
+          ) as DialogFragment
       ).dismiss()
-    val dialogFragment = ResetPinDialogFragment.newInstance(
-      internalProfileId,
-      pinViewModel.name.get()!!
-    )
-    dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
-  }
+      val dialogFragment =
+        ResetPinDialogFragment.newInstance(
+          internalProfileId,
+          pinViewModel.name.get()!!,
+        )
+      dialogFragment.showNow(activity.supportFragmentManager, TAG_RESET_PIN_DIALOG)
+    }
 
-  fun handleRouteToSuccessDialog() {
-    (
-      activity
-        .supportFragmentManager
-        .findFragmentByTag(
-          TAG_RESET_PIN_DIALOG
-        ) as DialogFragment
+    fun handleRouteToSuccessDialog() {
+      (
+        activity
+          .supportFragmentManager
+          .findFragmentByTag(
+            TAG_RESET_PIN_DIALOG,
+          ) as DialogFragment
       ).dismiss()
-    showSuccessDialog()
-  }
-
-  private fun showAdminForgotPin() {
-    val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
-    val resetDataButtonText =
-      resourceHandler.getStringInLocaleWithWrapping(
-        R.string.admin_forgot_pin_reset_app_data_button_text, appName
-      )
-    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.pin_password_forgot_title)
-      .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.admin_forgot_pin_message, appName)
-      )
-      .setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        dialog.dismiss()
-      }
-      .setPositiveButton(resetDataButtonText) { dialog, _ ->
-        // Show a confirmation dialog since this is a permanent action.
-        dialog.dismiss()
-        showConfirmAppResetDialog()
-      }.create()
-    alertDialog.setCanceledOnTouchOutside(false)
-    alertDialog.show()
-  }
-
-  private fun showConfirmAppResetDialog() {
-    val appName = resourceHandler.getStringInLocale(R.string.app_name)
-    alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_title, appName
-        )
-      )
-      .setMessage(
-        resourceHandler.getStringInLocaleWithWrapping(
-          R.string.admin_confirm_app_wipe_message, appName
-        )
-      )
-      .setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
-        pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
-        dialog.dismiss()
-      }
-      .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(activity) {
-          // Regardless of the result of the operation, always restart the app.
-          confirmedDeletion = true
-          activity.finishAffinity()
-        }
-      }.create()
-    alertDialog.setCanceledOnTouchOutside(false)
-    alertDialog.show()
-  }
-
-  fun handleOnDestroy() {
-    if (::alertDialog.isInitialized && alertDialog.isShowing) {
-      alertDialog.dismiss()
+      showSuccessDialog()
     }
 
-    if (confirmedDeletion) {
-      confirmedDeletion = false
+    private fun showAdminForgotPin() {
+      val appName = resourceHandler.getStringInLocale(R.string.app_name)
+      pinViewModel.showAdminPinForgotPasswordPopUp.set(true)
+      val resetDataButtonText =
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.admin_forgot_pin_reset_app_data_button_text,
+          appName,
+        )
+      alertDialog =
+        AlertDialog
+          .Builder(activity, R.style.OppiaAlertDialogTheme)
+          .setTitle(R.string.pin_password_forgot_title)
+          .setMessage(
+            resourceHandler.getStringInLocaleWithWrapping(R.string.admin_forgot_pin_message, appName),
+          ).setNegativeButton(R.string.admin_settings_cancel) { dialog, _ ->
+            pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+            dialog.dismiss()
+          }.setPositiveButton(resetDataButtonText) { dialog, _ ->
+            // Show a confirmation dialog since this is a permanent action.
+            dialog.dismiss()
+            showConfirmAppResetDialog()
+          }.create()
+      alertDialog.setCanceledOnTouchOutside(false)
+      alertDialog.show()
+    }
 
-      // End the process forcibly since the app is not designed to recover from major on-disk state
-      // changes that happen from underneath it (like deleting all profiles).
-      exitProcess(0)
+    private fun showConfirmAppResetDialog() {
+      val appName = resourceHandler.getStringInLocale(R.string.app_name)
+      alertDialog =
+        AlertDialog
+          .Builder(activity, R.style.OppiaAlertDialogTheme)
+          .setTitle(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_confirm_app_wipe_title,
+              appName,
+            ),
+          ).setMessage(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_confirm_app_wipe_message,
+              appName,
+            ),
+          ).setNegativeButton(R.string.admin_confirm_app_wipe_negative_button_text) { dialog, _ ->
+            pinViewModel.showAdminPinForgotPasswordPopUp.set(false)
+            dialog.dismiss()
+          }.setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
+            profileManagementController.deleteAllProfiles().toLiveData().observe(activity) {
+              // Regardless of the result of the operation, always restart the app.
+              confirmedDeletion = true
+              activity.finishAffinity()
+            }
+          }.create()
+      alertDialog.setCanceledOnTouchOutside(false)
+      alertDialog.show()
+    }
+
+    fun handleOnDestroy() {
+      if (::alertDialog.isInitialized && alertDialog.isShowing) {
+        alertDialog.dismiss()
+      }
+
+      if (confirmedDeletion) {
+        confirmedDeletion = false
+
+        // End the process forcibly since the app is not designed to recover from major on-disk state
+        // changes that happen from underneath it (like deleting all profiles).
+        exitProcess(0)
+      }
+    }
+
+    private fun showSuccessDialog() {
+      AlertDialog
+        .Builder(activity, R.style.OppiaAlertDialogTheme)
+        .setMessage(R.string.pin_password_success)
+        .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
+          dialog.dismiss()
+        }.create()
+        .show()
     }
   }
-
-  private fun showSuccessDialog() {
-    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setMessage(R.string.pin_password_success)
-      .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
-        dialog.dismiss()
-      }.create().show()
-  }
-}

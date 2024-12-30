@@ -44,7 +44,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class TextInputStartsWithRuleClassifierProviderTest {
-
   private val STRING_VALUE_TEST_STRING_LOWERCASE = createString(value = "test string")
   private val STRING_VALUE_TEST_LOWERCASE = createString(value = "test")
   private val STRING_VALUE_TEST_STRING_UPPERCASE = createString(value = "TEST STRING")
@@ -95,11 +94,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_lowercaseStringInput_differentStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_LOWERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -108,11 +108,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_lowercaseStringInput_differentString_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_STRING_LOWERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -121,11 +122,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_lowercaseStringInput_inputStartsWithAns_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -134,11 +136,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_uppercaseStringInput_sameCaseInsensitive_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     // The check should be case-insensitive.
     assertThat(matches).isTrue()
@@ -148,11 +151,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_lowercaseStringInput_extraSpaces_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE_EXTRA_SPACES_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -161,11 +165,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_uppercaseStringInput_differentStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_UPPERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     // The check should be case-insensitive.
     assertThat(matches).isTrue()
@@ -175,11 +180,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testLowercaseStringAns_emptyStringInput_differentStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NULL_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -188,11 +194,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testUppercaseStringAns_uppercaseStringInput_inputStartWithAns_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_UPPERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_UPPERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -201,11 +208,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testUppercaseStringAns_uppercaseStringInput_noSpaces_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_UPPERCASE_NO_SPACES_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_UPPERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_UPPERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -214,11 +222,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testUppercaseStringAns_emptyStringInput_differentStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NULL_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_STRING_UPPERCASE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_STRING_UPPERCASE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -227,11 +236,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testEmptyStringAns_lowercaseStringInput_differentStrings_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_STRING_LOWERCASE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_NULL,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_NULL,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -240,11 +250,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testEmptyStringAns_emptyStringInput_exactSameStrings_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_NULL_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_TEST_NULL,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_TEST_NULL,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -253,11 +264,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_multipleInputs_answerStartsWithOne_answerMatches() {
     val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_ANTIDERIVATIVE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_ANTIDERIVATIVE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -266,11 +278,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_multipleInputs_answerStartsWithAnotherOne_answerMatches() {
     val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_PREFIX,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_PREFIX,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -279,11 +292,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_multipleInputs_answerStartsWithWithNone_answerDoesNotMatch() {
     val inputs = mapOf("x" to MULTIPLE_STRING_VALUE_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = STRING_VALUE_SOMETHING_ELSE,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = STRING_VALUE_SOMETHING_ELSE,
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isFalse()
   }
@@ -292,13 +306,14 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAns_missingInput_throwsException() {
     val inputs = mapOf("y" to STRING_VALUE_TEST_STRING_LOWERCASE_INPUT_SET)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputStartsWithRuleClassifier.matches(
-        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputStartsWithRuleClassifier.matches(
+          answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -309,30 +324,32 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAns_nonNegativeIntInput_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_TEST_VALUE_1)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputStartsWithRuleClassifier.matches(
-        answer = STRING_VALUE_TEST_STRING_LOWERCASE,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputStartsWithRuleClassifier.matches(
+          answer = STRING_VALUE_TEST_STRING_LOWERCASE,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains("Expected input value to be of type TRANSLATABLE_SET_OF_NORMALIZED_STRING")
   }
 
-  /* Localization-based tests. */
+  // Localization-based tests.
 
   @Test
   fun testStringAnswer_inputsWithPortuguese_answerInEnglish_englishContext_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = createString("an answer is my choice"),
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = createString("an answer is my choice"),
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     assertThat(matches).isTrue()
   }
@@ -341,11 +358,12 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_englishContext_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = createString("uma resposta é minha escolha"),
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = createString("uma resposta é minha escolha"),
+        inputs = inputs,
+        classificationContext = ClassificationContext(),
+      )
 
     // A Portuguese answer isn't reocgnized with this translation context.
     assertThat(matches).isFalse()
@@ -355,13 +373,15 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_inputsWithPortuguese_answerInEnglish_portugueseContext_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = createString("an answer is my choice"),
-      inputs = inputs,
-      classificationContext = ClassificationContext(
-        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = createString("an answer is my choice"),
+        inputs = inputs,
+        classificationContext =
+          ClassificationContext(
+            createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta"),
+          ),
       )
-    )
 
     // Even though the English string matches, the presence of the Portuguese context should trigger
     // a failure for an English answer.
@@ -372,13 +392,15 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_inputsWithPortuguese_answerInPortuguese_portugueseContext_answerMatches() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = createString("uma resposta é minha escolha"),
-      inputs = inputs,
-      classificationContext = ClassificationContext(
-        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = createString("uma resposta é minha escolha"),
+        inputs = inputs,
+        classificationContext =
+          ClassificationContext(
+            createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta"),
+          ),
       )
-    )
 
     // The translation context provides a bridge between Portuguese & English.
     assertThat(matches).isTrue()
@@ -388,20 +410,23 @@ class TextInputStartsWithRuleClassifierProviderTest {
   fun testStringAnswer_inputsAndAnswerInPortuguese_nonPrefixedAnswer_answerDoesNotMatch() {
     val inputs = mapOf("x" to STRING_VALUE_TEST_AN_ANSWER_INPUT_SET)
 
-    val matches = inputStartsWithRuleClassifier.matches(
-      answer = createString("diferente"),
-      inputs = inputs,
-      classificationContext = ClassificationContext(
-        createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta")
+    val matches =
+      inputStartsWithRuleClassifier.matches(
+        answer = createString("diferente"),
+        inputs = inputs,
+        classificationContext =
+          ClassificationContext(
+            createTranslationContext(TEST_STRING_CONTENT_ID, "uma resposta"),
+          ),
       )
-    )
 
     // The Portuguese answer doesn't match.
     assertThat(matches).isFalse()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTextInputStartsWithRuleClassifierProviderTest_TestApplicationComponent.builder()
+    DaggerTextInputStartsWithRuleClassifierProviderTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -411,9 +436,7 @@ class TextInputStartsWithRuleClassifierProviderTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -425,8 +448,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
       TestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

@@ -36,20 +36,24 @@ class StoryActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      STORY_ACTIVITY_PARAMS_KEY,
-      StoryActivityParams.getDefaultInstance()
-    )
+    val args =
+      intent.getProtoExtra(
+        STORY_ACTIVITY_PARAMS_KEY,
+        StoryActivityParams.getDefaultInstance(),
+      )
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    classroomId = checkNotNull(args.classroomId) {
-      "Expected extra classroom ID to be included for StoryActivity."
-    }
-    topicId = checkNotNull(args.topicId) {
-      "Expected extra topic ID to be included for StoryActivity."
-    }
-    storyId = checkNotNull(args.storyId) {
-      "Expected extra story ID to be included for StoryActivity."
-    }
+    classroomId =
+      checkNotNull(args.classroomId) {
+        "Expected extra classroom ID to be included for StoryActivity."
+      }
+    topicId =
+      checkNotNull(args.topicId) {
+        "Expected extra topic ID to be included for StoryActivity."
+      }
+    storyId =
+      checkNotNull(args.storyId) {
+        "Expected extra story ID to be included for StoryActivity."
+      }
     storyActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
   }
 
@@ -60,7 +64,7 @@ class StoryActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -71,8 +75,8 @@ class StoryActivity :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
   }
 
@@ -83,7 +87,7 @@ class StoryActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   ) {
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
@@ -94,8 +98,8 @@ class StoryActivity :
         storyId,
         explorationId,
         parentScreen,
-        explorationCheckpoint
-      )
+        explorationCheckpoint,
+      ),
     )
   }
 
@@ -104,7 +108,6 @@ class StoryActivity :
   }
 
   companion object {
-
     /** Params key for StoryActivity. */
     const val STORY_ACTIVITY_PARAMS_KEY = "StoryActivity.params"
 
@@ -114,14 +117,17 @@ class StoryActivity :
       internalProfileId: Int,
       classroomId: String,
       topicId: String,
-      storyId: String
+      storyId: String,
     ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val args = StoryActivityParams.newBuilder().apply {
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-      }.build()
+      val args =
+        StoryActivityParams
+          .newBuilder()
+          .apply {
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+          }.build()
       return Intent(context, StoryActivity::class.java).apply {
         putProtoExtra(STORY_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)

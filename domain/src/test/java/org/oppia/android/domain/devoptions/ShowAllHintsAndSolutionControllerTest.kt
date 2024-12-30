@@ -28,7 +28,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ShowAllHintsAndSolutionControllerTest.TestApplication::class)
 class ShowAllHintsAndSolutionControllerTest {
-
   @Inject
   lateinit var showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 
@@ -67,8 +66,8 @@ class ShowAllHintsAndSolutionControllerTest {
       TestModule::class, RobolectricModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -84,7 +83,8 @@ class ShowAllHintsAndSolutionControllerTest {
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerShowAllHintsAndSolutionControllerTest_TestApplicationComponent.builder()
+      DaggerShowAllHintsAndSolutionControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

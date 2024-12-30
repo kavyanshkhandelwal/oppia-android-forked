@@ -9,7 +9,7 @@ import org.oppia.android.domain.translation.TranslationController
 class TopicViewModel(
   ephemeralTopic: EphemeralTopic,
   val isCompleted: Boolean,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : ObservableViewModel() {
   /** The summary of the topic being displayed. */
   val topic = ephemeralTopic.topic

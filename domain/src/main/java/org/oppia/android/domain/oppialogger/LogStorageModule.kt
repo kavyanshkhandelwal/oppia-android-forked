@@ -19,7 +19,6 @@ annotation class FirestoreLogStorageCacheSize
 /** Provider to return any constants required during the storage of log reports. */
 @Module
 class LogStorageModule {
-
   /**
    * Provides the maximum number of event logs that can be cached on disk.
    *

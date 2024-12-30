@@ -141,13 +141,13 @@ class ApplicationLifecycleObserverTest {
     ActivityScenarioRule<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
         decorateWithScreenName(ScreenName.HOME_ACTIVITY)
-      }
+      },
     )
 
   @get:Rule
   var activityRuleForUnspecifiedActivity =
     ActivityScenarioRule<TextInputActionTestActivity>(
-      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   private lateinit var retrofit: Retrofit
@@ -301,7 +301,7 @@ class ApplicationLifecycleObserverTest {
     assertThat(loggedMetrics[0].loggableMetric.loggableMetricTypeCase)
       .isEqualTo(OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC)
     assertThat(loggedMetrics[1].loggableMetric.loggableMetricTypeCase).isEqualTo(
-      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
+      OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC,
     )
     assertThat(loggedMetrics[0].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
     assertThat(loggedMetrics[1].timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
@@ -331,7 +331,7 @@ class ApplicationLifecycleObserverTest {
       val startupLatencyEvent = startupLatencyEvents[1]
 
       assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
+        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC,
       )
       assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
       assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
@@ -352,11 +352,12 @@ class ApplicationLifecycleObserverTest {
       applicationLifecycleObserver.onActivityResumed(activity)
 
       val loggedStartupLatencyEvents =
-        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-          fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-        ).filter {
-          it.loggableMetric.hasStartupLatencyMetric()
-        }
+        fakePerformanceMetricsEventLogger
+          .getMostRecentPerformanceMetricsEvents(
+            fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount(),
+          ).filter {
+            it.loggableMetric.hasStartupLatencyMetric()
+          }
 
       assertThat(loggedStartupLatencyEvents.size).isEqualTo(1)
     }
@@ -373,7 +374,7 @@ class ApplicationLifecycleObserverTest {
         fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
       assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC,
       )
       assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
       assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
@@ -423,7 +424,7 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
 
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(TEST_FEATURE_FLAG to testFeatureFlag),
     )
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
@@ -533,9 +534,10 @@ class ApplicationLifecycleObserverTest {
     testCoroutineDispatchers.runCurrent()
 
     val pageNotFound = HttpURLConnection.HTTP_NOT_FOUND
-    val mockResponse = MockResponse()
-      .setResponseCode(pageNotFound)
-      .setBody(testResponseBody)
+    val mockResponse =
+      MockResponse()
+        .setResponseCode(pageNotFound)
+        .setBody(testResponseBody)
 
     mockWebServer.enqueue(mockResponse)
     client.newCall(request).execute()
@@ -563,17 +565,18 @@ class ApplicationLifecycleObserverTest {
 
   private fun logIntoAnalyticsReadyAdminProfile() {
     val rootProfileId = ProfileId.getDefaultInstance()
-    val addProfileProvider = profileManagementController.addProfile(
-      name = "Admin",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = 0,
-      isAdmin = true
-    )
+    val addProfileProvider =
+      profileManagementController.addProfile(
+        name = "Admin",
+        pin = "",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = 0,
+        isAdmin = true,
+      )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     monitorFactory.waitForNextSuccessfulResult(
-      profileManagementController.loginToProfile(rootProfileId)
+      profileManagementController.loginToProfile(rootProfileId),
     )
   }
 
@@ -595,31 +598,35 @@ class ApplicationLifecycleObserverTest {
 
   private fun setUpRetrofitApiCall() {
     mockWebServer = MockWebServer()
-    client = OkHttpClient.Builder()
-      .addInterceptor(networkLoggingInterceptor)
-      .build()
+    client =
+      OkHttpClient
+        .Builder()
+        .addInterceptor(networkLoggingInterceptor)
+        .build()
 
     mockWebServerUrl = mockWebServer.url(testUrl)
 
-    request = Request.Builder()
-      .url(mockWebServerUrl)
-      .addHeader(testApiKey, testApiKeyValue)
-      .build()
+    request =
+      Request
+        .Builder()
+        .url(mockWebServerUrl)
+        .addHeader(testApiKey, testApiKeyValue)
+        .build()
 
     // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
     // the full network request properly executes. MockRetrofit and MockWebServer perform the same
     // request mocking in different ways and we want to verify the full request is executed here.
     // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
-    retrofit = Retrofit.Builder()
-      .baseUrl(mockWebServerUrl)
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(client)
-      .build()
+    retrofit =
+      Retrofit
+        .Builder()
+        .baseUrl(mockWebServerUrl)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
   }
 
-  private fun getOneOfLastTwoEventsLogged(
-    wantedContext: ActivityContextCase
-  ): EventLog {
+  private fun getOneOfLastTwoEventsLogged(wantedContext: ActivityContextCase): EventLog {
     val events = fakeAnalyticsEventLogger.getMostRecentEvents(2)
     return if (events[0].context.activityContextCase == wantedContext) events[0] else events[1]
   }
@@ -629,9 +636,7 @@ class ApplicationLifecycleObserverTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -668,23 +673,27 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
-    ]
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(applicationLifecycleObserverImplTest: ApplicationLifecycleObserverTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerApplicationLifecycleObserverTest_TestApplicationComponent.builder()
+      DaggerApplicationLifecycleObserverTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

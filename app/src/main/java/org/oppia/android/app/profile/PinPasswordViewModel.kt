@@ -17,48 +17,51 @@ import javax.inject.Inject
 
 /** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
-class PinPasswordViewModel @Inject constructor(
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
-) : ObservableViewModel() {
-  private lateinit var profileId: ProfileId
-  val errorMessage = ObservableField<String>("")
-  val showPassword = ObservableField(false)
-  val correctPin = ObservableField<String>("")
-  val isAdmin = ObservableField<Boolean>(false)
-  val name = ObservableField<String>("")
-  val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
+class PinPasswordViewModel
+  @Inject
+  constructor(
+    private val profileManagementController: ProfileManagementController,
+    private val oppiaLogger: OppiaLogger,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) : ObservableViewModel() {
+    private lateinit var profileId: ProfileId
+    val errorMessage = ObservableField<String>("")
+    val showPassword = ObservableField(false)
+    val correctPin = ObservableField<String>("")
+    val isAdmin = ObservableField<Boolean>(false)
+    val name = ObservableField<String>("")
+    val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
 
-  val profile: LiveData<Profile> by lazy {
-    Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
-    )
-  }
-
-  val helloText: LiveData<String> by lazy {
-    Transformations.map(profile) { profile ->
-      resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_hello, profile.name)
+    val profile: LiveData<Profile> by lazy {
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processGetProfileResult,
+      )
     }
-  }
 
-  fun setProfileId(id: Int) {
-    profileId = ProfileId.newBuilder().setInternalId(id).build()
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    val profile = when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.error)
-        Profile.getDefaultInstance()
+    val helloText: LiveData<String> by lazy {
+      Transformations.map(profile) { profile ->
+        resourceHandler.getStringInLocaleWithWrapping(R.string.pin_password_hello, profile.name)
       }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
     }
-    correctPin.set(profile.pin)
-    isAdmin.set(profile.isAdmin)
-    name.set(profile.name)
-    return profile
+
+    fun setProfileId(id: Int) {
+      profileId = ProfileId.newBuilder().setInternalId(id).build()
+    }
+
+    private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+      val profile =
+        when (profileResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e("PinPasswordActivity", "Failed to retrieve profile", profileResult.error)
+            Profile.getDefaultInstance()
+          }
+          is AsyncResult.Pending -> Profile.getDefaultInstance()
+          is AsyncResult.Success -> profileResult.value
+        }
+      correctPin.set(profile.pin)
+      isAdmin.set(profile.isAdmin)
+      name.set(profile.name)
+      return profile
+    }
   }
-}

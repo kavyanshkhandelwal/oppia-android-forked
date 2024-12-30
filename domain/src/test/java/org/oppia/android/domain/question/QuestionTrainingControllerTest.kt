@@ -71,9 +71,13 @@ import javax.inject.Singleton
 @Config(application = QuestionTrainingControllerTest.TestApplication::class)
 class QuestionTrainingControllerTest {
   @Inject lateinit var questionTrainingController: QuestionTrainingController
+
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
@@ -89,7 +93,8 @@ class QuestionTrainingControllerTest {
 
     val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1,
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1),
       )
 
     monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
@@ -99,7 +104,8 @@ class QuestionTrainingControllerTest {
   fun testController_startTrainingSession_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1,
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -115,7 +121,8 @@ class QuestionTrainingControllerTest {
 
     val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        profileId1,
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1),
       )
 
     monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
@@ -125,7 +132,8 @@ class QuestionTrainingControllerTest {
   fun testController_startTrainingSession_differentSeed_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 2)
     questionTrainingController.startQuestionTrainingSession(
-      profileId1, listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+      profileId1,
+      listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -141,7 +149,8 @@ class QuestionTrainingControllerTest {
 
     val questionListDataProvider =
       questionTrainingController.startQuestionTrainingSession(
-        profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+        profileId1,
+        listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2),
       )
 
     monitorFactory.waitForNextSuccessfulResult(questionListDataProvider)
@@ -151,7 +160,8 @@ class QuestionTrainingControllerTest {
   fun testController_startTrainingSession_differentSkills_sessionStartsWithInitialQuestion() {
     setUpTestApplicationComponent(questionSeed = 0)
     questionTrainingController.startQuestionTrainingSession(
-      profileId1, listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2)
+      profileId1,
+      listOf(TEST_SKILL_ID_1, TEST_SKILL_ID_2),
     )
     testCoroutineDispatchers.runCurrent()
 
@@ -192,9 +202,7 @@ class QuestionTrainingControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -278,8 +286,8 @@ class QuestionTrainingControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, LoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -293,9 +301,12 @@ class QuestionTrainingControllerTest {
     fun inject(questionTrainingControllerTest: QuestionTrainingControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerQuestionTrainingControllerTest_TestApplicationComponent.builder()
+      DaggerQuestionTrainingControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

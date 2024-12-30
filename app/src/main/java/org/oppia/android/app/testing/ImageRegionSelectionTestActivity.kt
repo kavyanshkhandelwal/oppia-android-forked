@@ -9,18 +9,17 @@ import org.oppia.android.app.utility.OnClickableAreaClickedListener
 
 /** Test Activity used for testing [ClickableAreasImage] functionality. */
 class ImageRegionSelectionTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     setContentView(R.layout.test_activity)
-    supportFragmentManager.beginTransaction()
+    supportFragmentManager
+      .beginTransaction()
       .add(
         R.id.test_fragment_placeholder,
         ImageRegionSelectionTestFragment(),
-        IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG
-      )
-      .commitNow()
+        IMAGE_REGION_SELECTION_TEST_FRAGMENT_TAG,
+      ).commitNow()
   }
 
   /**

@@ -5,7 +5,6 @@ import dagger.Module
 
 @Module
 interface IntentFactoryShimModule {
-
   @Binds
   fun provideIntentFactoryShim(intentFactoryShim: IntentFactoryShimImpl): IntentFactoryShim
 }

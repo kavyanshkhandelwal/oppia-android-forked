@@ -40,7 +40,7 @@ abstract class TestCoroutineDispatcherTestBase(
    * The number of millis to check if two timestamps are the same when comparing long tasks
    * scheduled using [longTaskDelayMillis].
    */
-  private val longTaskDelayDeltaCheckMillis: Long
+  private val longTaskDelayDeltaCheckMillis: Long,
 ) {
   @Rule
   @JvmField
@@ -587,9 +587,8 @@ abstract class TestCoroutineDispatcherTestBase(
 
   private fun LongSubject.isWithin(range: LongRange) = isIn(range.toGuavaRange())
 
-  private fun <T : Comparable<T>> ClosedRange<T>.toGuavaRange(): GuavaRange<T> {
-    return GuavaRange.open(/* lower= */ start, /* upper= */ endInclusive)
-  }
+  private fun <T : Comparable<T>> ClosedRange<T>.toGuavaRange(): GuavaRange<T> =
+    GuavaRange.open(/* lower= */ start, /* upper= */ endInclusive)
 
   /** Schedules a [Runnable] to run without a delay. */
   protected fun scheduleImmediateTask(runnable: Runnable) {
@@ -597,7 +596,10 @@ abstract class TestCoroutineDispatcherTestBase(
   }
 
   /** Schedules a [Runnable] to run after [delayMs] milliseconds. */
-  protected fun scheduleFutureTask(delayMs: Long, runnable: Runnable) {
+  protected fun scheduleFutureTask(
+    delayMs: Long,
+    runnable: Runnable,
+  ) {
     backgroundScope.launch {
       delay(delayMs)
       runnable.run()

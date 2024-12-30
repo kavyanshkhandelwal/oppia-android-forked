@@ -16,22 +16,22 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L24
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class ItemSelectionInputEqualsRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.SingleInputMatcher<SetOfTranslatableHtmlContentIds> {
+class ItemSelectionInputEqualsRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<SetOfTranslatableHtmlContentIds> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.SET_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: SetOfTranslatableHtmlContentIds,
+      input: SetOfTranslatableHtmlContentIds,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.getContentIdSet() == input.getContentIdSet()
   }
-
-  override fun matches(
-    answer: SetOfTranslatableHtmlContentIds,
-    input: SetOfTranslatableHtmlContentIds,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.getContentIdSet() == input.getContentIdSet()
-}

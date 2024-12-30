@@ -23,9 +23,10 @@ class CompletedStoryListFragment : InjectableFragment() {
     fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return CompletedStoryListFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -41,17 +42,18 @@ class CompletedStoryListFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to CompletedStoryListFragment"
-    }
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to CompletedStoryListFragment"
+      }
     val profileId = arguments.extractCurrentUserProfileId()
     val internalProfileId = profileId.internalId
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      internalProfileId,
     )
   }
 }

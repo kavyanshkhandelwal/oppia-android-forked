@@ -13,7 +13,6 @@ import javax.inject.Inject
 class ThirdPartyDependencyListActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToLicenseListListener {
-
   @Inject
   lateinit var thirdPartyDependencyListActivityPresenter:
     ThirdPartyDependencyListActivityPresenter
@@ -26,11 +25,10 @@ class ThirdPartyDependencyListActivity :
 
   companion object {
     /** Returns [Intent] for starting [ThirdPartyDependencyListActivity]. */
-    fun createThirdPartyDependencyListActivityIntent(context: Context): Intent {
-      return Intent(context, ThirdPartyDependencyListActivity::class.java).apply {
+    fun createThirdPartyDependencyListActivityIntent(context: Context): Intent =
+      Intent(context, ThirdPartyDependencyListActivity::class.java).apply {
         decorateWithScreenName(THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)
       }
-    }
   }
 
   override fun onRouteToLicenseList(dependencyIndex: Int) {
@@ -38,8 +36,8 @@ class ThirdPartyDependencyListActivity :
       LicenseListActivity
         .createLicenseListActivityIntent(
           context = this,
-          dependencyIndex = dependencyIndex
-        )
+          dependencyIndex = dependencyIndex,
+        ),
     )
   }
 }

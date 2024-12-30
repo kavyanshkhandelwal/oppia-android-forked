@@ -20,12 +20,14 @@ import javax.inject.Inject
 /** [StateItemViewModel] for the numeric input interaction. */
 class NumericInputViewModel private constructor(
   val hasConversationView: Boolean,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  @Suppress("ktlint:standard:max-line-length")
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
-  userAnswerState: UserAnswerState
-) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION), InteractionAnswerHandler {
+  userAnswerState: UserAnswerState,
+) : StateItemViewModel(ViewType.NUMERIC_INPUT_INTERACTION),
+  InteractionAnswerHandler {
   var answerText: CharSequence = userAnswerState.textInputAnswer
   private var answerErrorCetegory: AnswerErrorCategory = AnswerErrorCategory.NO_ERROR
   private var pendingAnswerError: String? = null
@@ -36,10 +38,13 @@ class NumericInputViewModel private constructor(
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        override fun onPropertyChanged(
+          sender: Observable,
+          propertyId: Int,
+        ) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            inputAnswerAvailable = true // Allow blank answer submission.
+            inputAnswerAvailable = true, // Allow blank answer submission.
           )
         }
       }
@@ -49,7 +54,7 @@ class NumericInputViewModel private constructor(
     // Initializing with default values so that submit button is enabled by default.
     interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       pendingAnswerError = null,
-      inputAnswerAvailable = true
+      inputAnswerAvailable = true,
     )
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
@@ -60,34 +65,50 @@ class NumericInputViewModel private constructor(
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     answerErrorCetegory = category
-    pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME ->
-        if (answerText.isNotEmpty())
-          stringToNumberParser.getRealTimeAnswerError(answerText.toString())
+    pendingAnswerError =
+      when (category) {
+        AnswerErrorCategory.REAL_TIME ->
+          if (answerText.isNotEmpty()) {
+            stringToNumberParser
+              .getRealTimeAnswerError(answerText.toString())
+              .getErrorMessageFromStringRes(resourceHandler)
+          } else {
+            null
+          }
+        AnswerErrorCategory.SUBMIT_TIME ->
+          stringToNumberParser
+            .getSubmitTimeError(answerText.toString())
             .getErrorMessageFromStringRes(resourceHandler)
-        else null
-      AnswerErrorCategory.SUBMIT_TIME ->
-        stringToNumberParser.getSubmitTimeError(answerText.toString())
-          .getErrorMessageFromStringRes(resourceHandler)
-      else -> null
-    }
+        else -> null
+      }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
-  override fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.newBuilder().apply {
-      this.textInputAnswer = answerText.toString()
-      this.answerErrorCategory = answerErrorCetegory
-    }.build()
-  }
+  override fun getUserAnswerState(): UserAnswerState =
+    UserAnswerState
+      .newBuilder()
+      .apply {
+        this.textInputAnswer = answerText.toString()
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
 
-  fun getAnswerTextWatcher(): TextWatcher {
-    return object : TextWatcher {
-      override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+  fun getAnswerTextWatcher(): TextWatcher =
+    object : TextWatcher {
+      override fun beforeTextChanged(
+        s: CharSequence,
+        start: Int,
+        count: Int,
+        after: Int,
+      ) {
       }
 
-      override fun onTextChanged(answer: CharSequence, start: Int, before: Int, count: Int) {
+      override fun onTextChanged(
+        answer: CharSequence,
+        start: Int,
+        before: Int,
+        count: Int,
+      ) {
         answerText = answer.toString().trim()
         val isAnswerTextAvailable = answerText.isNotEmpty()
         if (isAnswerTextAvailable != isAnswerAvailable.get()) {
@@ -99,43 +120,49 @@ class NumericInputViewModel private constructor(
       override fun afterTextChanged(s: Editable) {
       }
     }
-  }
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    if (answerText.isNotEmpty()) {
-      val answerTextString = answerText.toString()
-      answer = InteractionObject.newBuilder().apply {
-        real = answerTextString.toDouble()
+  override fun getPendingAnswer(): UserAnswer =
+    UserAnswer
+      .newBuilder()
+      .apply {
+        if (answerText.isNotEmpty()) {
+          val answerTextString = answerText.toString()
+          answer =
+            InteractionObject
+              .newBuilder()
+              .apply {
+                real = answerTextString.toDouble()
+              }.build()
+          plainAnswer = answerTextString
+          this.writtenTranslationContext = this@NumericInputViewModel.writtenTranslationContext
+        }
       }.build()
-      plainAnswer = answerTextString
-      this.writtenTranslationContext = this@NumericInputViewModel.writtenTranslationContext
-    }
-  }.build()
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val resourceHandler: AppLanguageResourceHandler
-  ) : InteractionItemFactory {
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return NumericInputViewModel(
-        hasConversationView,
-        answerErrorReceiver,
-        isSplitView,
-        writtenTranslationContext,
-        resourceHandler,
-        userAnswerState
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val resourceHandler: AppLanguageResourceHandler,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        NumericInputViewModel(
+          hasConversationView,
+          answerErrorReceiver,
+          isSplitView,
+          writtenTranslationContext,
+          resourceHandler,
+          userAnswerState,
+        )
     }
-  }
 }

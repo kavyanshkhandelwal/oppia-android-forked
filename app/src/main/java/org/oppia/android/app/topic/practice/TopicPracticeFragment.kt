@@ -26,15 +26,22 @@ class TopicPracticeFragment : InjectableFragment() {
     const val TOPIC_PRACTICE_FRAGMENT_STATE_KEY = "TopicPracticeFragment.state"
 
     /** Returns a new [TopicPracticeFragment]. */
-    fun newInstance(profileId: ProfileId, topicId: String): TopicPracticeFragment {
-      val args = TopicPracticeFragmentArguments.newBuilder().apply {
-        this.topicId = topicId
-      }.build()
+    fun newInstance(
+      profileId: ProfileId,
+      topicId: String,
+    ): TopicPracticeFragment {
+      val args =
+        TopicPracticeFragmentArguments
+          .newBuilder()
+          .apply {
+            this.topicId = topicId
+          }.build()
       return TopicPracticeFragment().apply {
-        arguments = Bundle().apply {
-          putProto(TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -50,29 +57,36 @@ class TopicPracticeFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     var selectedIdList = ArrayList<Int>()
     var selectedSkillId = HashMap<Int, MutableList<String>>()
     if (savedInstanceState != null) {
-      val savedArgs = savedInstanceState.getProto(
-        TOPIC_PRACTICE_FRAGMENT_STATE_KEY,
-        TopicPracticeFragmentStateBundle.getDefaultInstance()
-      )
+      val savedArgs =
+        savedInstanceState.getProto(
+          TOPIC_PRACTICE_FRAGMENT_STATE_KEY,
+          TopicPracticeFragmentStateBundle.getDefaultInstance(),
+        )
       selectedIdList = ArrayList(savedArgs.subtopicIdsList)
-      selectedSkillId = savedArgs.skillIdsMap.mapValues { entry ->
-        entry.value.valuesList.toMutableList()
-      } as HashMap<Int, MutableList<String>>
+      selectedSkillId =
+        savedArgs.skillIdsMap.mapValues { entry ->
+          entry.value.valuesList.toMutableList()
+        } as HashMap<Int, MutableList<String>>
     }
-    val args = arguments?.getProto(
-      TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
-      TopicPracticeFragmentArguments.getDefaultInstance()
-    )
-    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder()
-      .setInternalId(-1).build()
-    val topicId = checkNotNull(args?.topicId) {
-      "Expected topic ID to be included in arguments for TopicPracticeFragment."
-    }
+    val args =
+      arguments?.getProto(
+        TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
+        TopicPracticeFragmentArguments.getDefaultInstance(),
+      )
+    val profileId =
+      arguments?.extractCurrentUserProfileId() ?: ProfileId
+        .newBuilder()
+        .setInternalId(-1)
+        .build()
+    val topicId =
+      checkNotNull(args?.topicId) {
+        "Expected topic ID to be included in arguments for TopicPracticeFragment."
+      }
 
     return topicPracticeFragmentPresenter.handleCreateView(
       inflater,
@@ -80,21 +94,27 @@ class TopicPracticeFragment : InjectableFragment() {
       selectedIdList,
       selectedSkillId,
       profileId,
-      topicId
+      topicId,
     )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val args = TopicPracticeFragmentStateBundle.newBuilder().apply {
-      this.addAllSubtopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
-      topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
-        this.putSkillIds(
-          key,
-          TopicPracticeFragmentStateBundle.StringList.newBuilder().addAllValues(value).build()
-        )
-      }
-    }.build()
+    val args =
+      TopicPracticeFragmentStateBundle
+        .newBuilder()
+        .apply {
+          this.addAllSubtopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
+          topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
+            this.putSkillIds(
+              key,
+              TopicPracticeFragmentStateBundle.StringList
+                .newBuilder()
+                .addAllValues(value)
+                .build(),
+            )
+          }
+        }.build()
     outState.putProto(TOPIC_PRACTICE_FRAGMENT_STATE_KEY, args)
   }
 }

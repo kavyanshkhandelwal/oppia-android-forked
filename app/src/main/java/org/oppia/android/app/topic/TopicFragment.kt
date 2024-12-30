@@ -28,13 +28,13 @@ class TopicFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-
-    val args = arguments?.getProto(
-      TOPIC_FRAGMENT_ARGUMENTS_KEY,
-      TopicFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments?.getProto(
+        TOPIC_FRAGMENT_ARGUMENTS_KEY,
+        TopicFragmentArguments.getDefaultInstance(),
+      )
     val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
     val classroomId = args?.classroomId ?: TEST_CLASSROOM_ID_0
@@ -48,11 +48,14 @@ class TopicFragment : InjectableFragment() {
       classroomId,
       topicId,
       storyId,
-      isConfigChanged = savedInstanceState != null
+      isConfigChanged = savedInstanceState != null,
     )
   }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+  override fun onViewCreated(
+    view: View,
+    savedInstanceState: Bundle?,
+  ) {
     super.onViewCreated(view, savedInstanceState)
     topicFragmentPresenter.startSpotlight()
   }

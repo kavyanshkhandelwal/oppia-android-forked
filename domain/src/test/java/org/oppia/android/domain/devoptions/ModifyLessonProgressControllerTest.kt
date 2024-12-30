@@ -53,7 +53,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ModifyLessonProgressControllerTest.TestApplication::class)
 class ModifyLessonProgressControllerTest {
-
   companion object {
     private const val TEST_TOPIC_ID_0 = "test_topic_id_0"
     private const val TEST_TOPIC_ID_1 = "test_topic_id_1"
@@ -73,9 +72,13 @@ class ModifyLessonProgressControllerTest {
   }
 
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject lateinit var modifyLessonProgressController: ModifyLessonProgressController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId: ProfileId
@@ -154,8 +157,15 @@ class ModifyLessonProgressControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(firstTopic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(firstTopic.storyList[0].chapterList[1].missingPrerequisiteChapter.title.html)
-      .isEqualTo(firstTopic.storyList[0].chapterList[0].title.html)
+    assertThat(
+      firstTopic.storyList[0]
+        .chapterList[1]
+        .missingPrerequisiteChapter.title.html,
+    ).isEqualTo(
+      firstTopic.storyList[0]
+        .chapterList[0]
+        .title.html,
+    )
   }
 
   @Test
@@ -266,8 +276,10 @@ class ModifyLessonProgressControllerTest {
     assertThat(firstStory.chapterList[0].chapterPlayState).isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(firstStory.chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(firstStory.chapterList[1].missingPrerequisiteChapter.title.html)
-      .isEqualTo(firstStory.chapterList[0].title.html)
+    assertThat(
+      firstStory.chapterList[1]
+        .missingPrerequisiteChapter.title.html,
+    ).isEqualTo(firstStory.chapterList[0].title.html)
   }
 
   @Test
@@ -312,7 +324,7 @@ class ModifyLessonProgressControllerTest {
   fun markFirstAndFractionsTopicsCompleted_bothTopicsAreCompleted() {
     modifyLessonProgressController.markMultipleTopicsCompleted(
       profileId,
-      listOf(TEST_TOPIC_ID_0, FRACTIONS_TOPIC_ID)
+      listOf(TEST_TOPIC_ID_0, FRACTIONS_TOPIC_ID),
     )
 
     val allTopics = retrieveAllTopics()
@@ -334,7 +346,7 @@ class ModifyLessonProgressControllerTest {
   fun markFirstAndRatios2StoriesCompleted_bothStoriesAreCompleted() {
     modifyLessonProgressController.markMultipleStoriesCompleted(
       profileId,
-      mapOf(TEST_STORY_ID_0 to TEST_TOPIC_ID_0, RATIOS_STORY_ID_1 to RATIOS_TOPIC_ID)
+      mapOf(TEST_STORY_ID_0 to TEST_TOPIC_ID_0, RATIOS_STORY_ID_1 to RATIOS_TOPIC_ID),
     )
 
     val allStories = retrieveAllStories()
@@ -355,8 +367,8 @@ class ModifyLessonProgressControllerTest {
       mapOf(
         TEST_EXPLORATION_ID_2 to Pair(TEST_STORY_ID_0, TEST_TOPIC_ID_0),
         FRACTIONS_EXPLORATION_ID_0 to Pair(FRACTIONS_STORY_ID_0, FRACTIONS_TOPIC_ID),
-        FRACTIONS_EXPLORATION_ID_1 to Pair(FRACTIONS_STORY_ID_0, FRACTIONS_TOPIC_ID)
-      )
+        FRACTIONS_EXPLORATION_ID_1 to Pair(FRACTIONS_STORY_ID_0, FRACTIONS_TOPIC_ID),
+      ),
     )
 
     val allStories = retrieveAllStories()
@@ -377,14 +389,14 @@ class ModifyLessonProgressControllerTest {
   private fun markFirstTestTopicCompleted() {
     storyProgressTestHelper.markCompletedTestTopic0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markFirstStoryCompleted() {
     storyProgressTestHelper.markCompletedTestTopic0Story0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
@@ -403,9 +415,7 @@ class ModifyLessonProgressControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     //  module in tests to avoid needing to specify these settings for tests.
@@ -423,8 +433,7 @@ class ModifyLessonProgressControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -436,8 +445,8 @@ class ModifyLessonProgressControllerTest {
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -451,9 +460,12 @@ class ModifyLessonProgressControllerTest {
     fun inject(modifyLessonProgressControllerTest: ModifyLessonProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerModifyLessonProgressControllerTest_TestApplicationComponent.builder()
+      DaggerModifyLessonProgressControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

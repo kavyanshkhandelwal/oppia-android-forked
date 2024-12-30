@@ -13,10 +13,14 @@ class KeyboardHelper {
      * @param view the input view
      * @param context the activity context
      */
-    fun hideSoftKeyboard(view: View, context: Context) {
-      val imm = context.getSystemService(
-        Context.INPUT_METHOD_SERVICE
-      ) as InputMethodManager
+    fun hideSoftKeyboard(
+      view: View,
+      context: Context,
+    ) {
+      val imm =
+        context.getSystemService(
+          Context.INPUT_METHOD_SERVICE,
+        ) as InputMethodManager
       imm.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
@@ -26,11 +30,15 @@ class KeyboardHelper {
      * @param view the input view
      * @param context the activity context
      */
-    fun showSoftKeyboard(view: View, context: Context) {
+    fun showSoftKeyboard(
+      view: View,
+      context: Context,
+    ) {
       if (view.requestFocus()) {
-        val imm = context.getSystemService(
-          Context.INPUT_METHOD_SERVICE
-        ) as InputMethodManager
+        val imm =
+          context.getSystemService(
+            Context.INPUT_METHOD_SERVICE,
+          ) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
       }
     }

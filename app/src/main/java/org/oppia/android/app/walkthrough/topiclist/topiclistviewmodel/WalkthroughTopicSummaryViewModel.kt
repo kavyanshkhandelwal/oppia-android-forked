@@ -15,13 +15,14 @@ class WalkthroughTopicSummaryViewModel(
   ephemeralTopicSummary: EphemeralTopicSummary,
   private val topicSummaryClickListener: TopicSummaryClickListener,
   private val resourceHandler: AppLanguageResourceHandler,
-  translationController: TranslationController
+  translationController: TranslationController,
 ) : WalkthroughTopicItemViewModel() {
   val topicSummary = ephemeralTopicSummary.topicSummary
 
   val name: String by lazy {
     translationController.extractString(
-      topicSummary.title, ephemeralTopicSummary.writtenTranslationContext
+      topicSummary.title,
+      ephemeralTopicSummary.writtenTranslationContext,
     )
   }
 
@@ -33,16 +34,13 @@ class WalkthroughTopicSummaryViewModel(
     topicSummaryClickListener.onTopicSummaryClicked(topicSummary)
   }
 
-  fun computeWalkthroughLessonCountText(): String {
-    return resourceHandler.getQuantityStringInLocaleWithWrapping(
+  fun computeWalkthroughLessonCountText(): String =
+    resourceHandler.getQuantityStringInLocaleWithWrapping(
       R.plurals.lesson_count,
       topicSummary.totalChapterCount,
-      topicSummary.totalChapterCount.toString()
+      topicSummary.totalChapterCount.toString(),
     )
-  }
 
   @ColorInt
-  private fun retrieveBackgroundColor(): Int {
-    return (0xff000000L or topicSummary.topicThumbnail.backgroundColorRgb.toLong()).toInt()
-  }
+  private fun retrieveBackgroundColor(): Int = (0xff000000L or topicSummary.topicThumbnail.backgroundColorRgb.toLong()).toInt()
 }

@@ -16,5 +16,5 @@ class ContinueNavigationButtonViewModel(
   val continueNavigationButtonListener: ContinueNavigationButtonListener,
   val isSplitView: Boolean,
   val shouldAnimateContinueButton: Boolean,
-  val continueButtonAnimationTimestampMs: Long
+  val continueButtonAnimationTimestampMs: Long,
 ) : StateItemViewModel(ViewType.CONTINUE_NAVIGATION_BUTTON)

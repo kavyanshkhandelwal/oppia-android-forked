@@ -12,7 +12,6 @@ import javax.inject.Inject
  * This test activity is used in integration tests for platform parameters.
  */
 class SplashTestActivity : InjectableSystemLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var splashTestActivityPresenter: SplashTestActivityPresenter
 

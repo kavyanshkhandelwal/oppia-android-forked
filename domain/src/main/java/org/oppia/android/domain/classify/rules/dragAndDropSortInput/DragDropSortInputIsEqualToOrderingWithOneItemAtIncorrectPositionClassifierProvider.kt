@@ -17,36 +17,37 @@ import javax.inject.Inject
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
 class DragDropSortInputIsEqualToOrderingWithOneItemAtIncorrectPositionClassifierProvider
-@Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfTranslatableHtmlContentIds> {
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<ListOfSetsOfTranslatableHtmlContentIds> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+    override fun matches(
+      answer: ListOfSetsOfTranslatableHtmlContentIds,
+      input: ListOfSetsOfTranslatableHtmlContentIds,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val answerStringSets = answer.contentIdListsList
+      val inputStringSets = input.contentIdListsList
+      return (answerStringSets zip inputStringSets)
+        .map { (first, second) ->
+          computeSymmetricDifference(first.getContentIdSet(), second.getContentIdSet()).size
+        }.reduce(Int::plus) == 1
+    }
 
-  override fun matches(
-    answer: ListOfSetsOfTranslatableHtmlContentIds,
-    input: ListOfSetsOfTranslatableHtmlContentIds,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val answerStringSets = answer.contentIdListsList
-    val inputStringSets = input.contentIdListsList
-    return (answerStringSets zip inputStringSets).map { (first, second) ->
-      computeSymmetricDifference(first.getContentIdSet(), second.getContentIdSet()).size
-    }.reduce(Int::plus) == 1
+    /**
+     * Returns the symmetric difference of the two sets. That is, the set of elements that are
+     * individually one of either sets, but not both.
+     */
+    private fun computeSymmetricDifference(
+      first: Set<String>,
+      second: Set<String>,
+    ): Set<String> = (first union second) subtract (first intersect second)
   }
-
-  /**
-   * Returns the symmetric difference of the two sets. That is, the set of elements that are
-   * individually one of either sets, but not both.
-   */
-  private fun computeSymmetricDifference(first: Set<String>, second: Set<String>): Set<String> {
-    return (first union second) subtract (first intersect second)
-  }
-}

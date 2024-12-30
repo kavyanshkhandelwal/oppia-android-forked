@@ -25,8 +25,6 @@ class HintsAndSolutionExplorationManagerFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return hintsAndSolutionExplorationManagerFragmentPresenter.handleCreateView()
-  }
+    savedInstanceState: Bundle?,
+  ): View? = hintsAndSolutionExplorationManagerFragmentPresenter.handleCreateView()
 }

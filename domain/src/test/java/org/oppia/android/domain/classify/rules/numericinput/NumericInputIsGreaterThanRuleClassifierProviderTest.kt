@@ -22,7 +22,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericInputIsGreaterThanRuleClassifierProviderTest {
-
   private val POSITIVE_REAL_VALUE_1_5 =
     InteractionObjectTestBuilder.createReal(value = 1.5)
   private val POSITIVE_REAL_VALUE_3_5 =
@@ -64,7 +63,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
         .matches(
           answer = POSITIVE_REAL_VALUE_1_5,
           inputs = inputs,
-          classificationContext = ClassificationContext()
+          classificationContext = ClassificationContext(),
         )
 
     assertThat(matches).isFalse()
@@ -78,7 +77,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -92,7 +91,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -106,7 +105,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -120,7 +119,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -134,7 +133,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -148,7 +147,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_REAL_VALUE_3_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -162,7 +161,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_REAL_VALUE_1_5,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -176,7 +175,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = POSITIVE_INT_VALUE_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -190,7 +189,7 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
       inputIsGreaterThanRuleClassifier.matches(
         answer = NEGATIVE_INT_VALUE_1,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -200,13 +199,14 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
   fun testRealAnswer_missingInput_throwsException() {
     val inputs = mapOf("y" to POSITIVE_REAL_VALUE_1_5)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsGreaterThanRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsGreaterThanRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -217,13 +217,14 @@ class NumericInputIsGreaterThanRuleClassifierProviderTest {
   fun testRealAnswer_stringInput_throwsException() {
     val inputs = mapOf("x" to STRING_VALUE)
 
-    val exception = assertThrows<IllegalStateException>() {
-      inputIsGreaterThanRuleClassifier.matches(
-        answer = POSITIVE_REAL_VALUE_1_5,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        inputIsGreaterThanRuleClassifier.matches(
+          answer = POSITIVE_REAL_VALUE_1_5,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()

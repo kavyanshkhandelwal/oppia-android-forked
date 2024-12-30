@@ -38,7 +38,6 @@ import kotlin.reflect.KCallable
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ReportSchemaVersionTest {
-
   @JvmField
   @field:[Inject ReportSchemaVersion]
   var reportSchemaVersion: Int = 0
@@ -48,42 +47,61 @@ class ReportSchemaVersionTest {
   private val latestSchemaVersion = 1
 
   // The expected data that can be included in V1 of the report.
-  private val gaeFeedbackReportParameterNamesV1 = listOf(
-    "schemaVersion",
-    "reportSubmissionTimestampSec",
-    "userSuppliedFeedback",
-    "systemContext",
-    "deviceContext",
-    "appContext"
-  )
+  private val gaeFeedbackReportParameterNamesV1 =
+    listOf(
+      "schemaVersion",
+      "reportSubmissionTimestampSec",
+      "userSuppliedFeedback",
+      "systemContext",
+      "deviceContext",
+      "appContext",
+    )
 
-  private val gaeUserSuppliedFeedbackParameterNamesV1 = listOf(
-    "reportType", "category", "feedbackList", "openTextUserInput"
-  )
+  private val gaeUserSuppliedFeedbackParameterNamesV1 =
+    listOf(
+      "reportType",
+      "category",
+      "feedbackList",
+      "openTextUserInput",
+    )
 
-  private val gaeFeedbackReportingSystemContextParameterNamesV1 = listOf(
-    "packageVersionName", "packageVersionCode", "countryLocaleCode", "languageLocaleCode"
-  )
+  private val gaeFeedbackReportingSystemContextParameterNamesV1 =
+    listOf(
+      "packageVersionName",
+      "packageVersionCode",
+      "countryLocaleCode",
+      "languageLocaleCode",
+    )
 
-  private val gaeFeedbackReportingDeviceContextParameterNamesV1 = listOf(
-    "deviceModel", "sdkVersion", "buildFingerprint", "networkType"
-  )
+  private val gaeFeedbackReportingDeviceContextParameterNamesV1 =
+    listOf(
+      "deviceModel",
+      "sdkVersion",
+      "buildFingerprint",
+      "networkType",
+    )
 
-  private val gaeFeedbackReportingAppContextParameterNamesV1 = listOf(
-    "entryPoint",
-    "textSize",
-    "textLanguageCode",
-    "audioLanguageCode",
-    "downloadAndUpdateOnlyOnWifi",
-    "automaticallyUpdateTopics",
-    "isAdmin",
-    "eventLogs",
-    "logcatLogs"
-  )
+  private val gaeFeedbackReportingAppContextParameterNamesV1 =
+    listOf(
+      "entryPoint",
+      "textSize",
+      "textLanguageCode",
+      "audioLanguageCode",
+      "downloadAndUpdateOnlyOnWifi",
+      "automaticallyUpdateTopics",
+      "isAdmin",
+      "eventLogs",
+      "logcatLogs",
+    )
 
-  private val gaeFeedbackReportingEntryPointParameterNamesV1 = listOf(
-    "entryPointName", "topicId", "storyId", "explorationId", "subtopicId"
-  )
+  private val gaeFeedbackReportingEntryPointParameterNamesV1 =
+    listOf(
+      "entryPointName",
+      "topicId",
+      "storyId",
+      "explorationId",
+      "subtopicId",
+    )
 
   @Before
   fun setUp() {
@@ -99,7 +117,7 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedFeedbackReportMembers() {
     verifyDataFields(
       dataClassMembers = GaeFeedbackReport::class.members,
-      expectedFields = gaeFeedbackReportParameterNamesV1
+      expectedFields = gaeFeedbackReportParameterNamesV1,
     )
   }
 
@@ -107,7 +125,7 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedUserSuppliedFeedbackMembers() {
     verifyDataFields(
       dataClassMembers = GaeUserSuppliedFeedback::class.members,
-      expectedFields = gaeUserSuppliedFeedbackParameterNamesV1
+      expectedFields = gaeUserSuppliedFeedbackParameterNamesV1,
     )
   }
 
@@ -115,7 +133,7 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedSystemContextMembers() {
     verifyDataFields(
       dataClassMembers = GaeFeedbackReportingSystemContext::class.members,
-      expectedFields = gaeFeedbackReportingSystemContextParameterNamesV1
+      expectedFields = gaeFeedbackReportingSystemContextParameterNamesV1,
     )
   }
 
@@ -123,7 +141,7 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedDeviceContextMembers() {
     verifyDataFields(
       dataClassMembers = GaeFeedbackReportingDeviceContext::class.members,
-      expectedFields = gaeFeedbackReportingDeviceContextParameterNamesV1
+      expectedFields = gaeFeedbackReportingDeviceContextParameterNamesV1,
     )
   }
 
@@ -131,7 +149,7 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedAppContextMembers() {
     verifyDataFields(
       dataClassMembers = GaeFeedbackReportingAppContext::class.members,
-      expectedFields = gaeFeedbackReportingAppContextParameterNamesV1
+      expectedFields = gaeFeedbackReportingAppContextParameterNamesV1,
     )
   }
 
@@ -139,20 +157,21 @@ class ReportSchemaVersionTest {
   fun testSchemaVersion_currentReportSchemaVersion_hasExpectedEntryPointMembers() {
     verifyDataFields(
       dataClassMembers = GaeFeedbackReportingEntryPoint::class.members,
-      expectedFields = gaeFeedbackReportingEntryPointParameterNamesV1
+      expectedFields = gaeFeedbackReportingEntryPointParameterNamesV1,
     )
   }
 
   private fun verifyDataFields(
     dataClassMembers: Collection<KCallable<*>>,
-    expectedFields: List<String>
+    expectedFields: List<String>,
   ) {
     val dataClassFields = dataClassMembers.map { it.name }
     expectedFields.forEach { assertThat(dataClassFields.contains(it)).isTrue() }
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerReportSchemaVersionTest_TestApplicationComponent.builder()
+    DaggerReportSchemaVersionTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -163,9 +182,7 @@ class ReportSchemaVersionTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   @Singleton
@@ -175,14 +192,15 @@ class ReportSchemaVersionTest {
       TestLogReportingModule::class, RobolectricModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

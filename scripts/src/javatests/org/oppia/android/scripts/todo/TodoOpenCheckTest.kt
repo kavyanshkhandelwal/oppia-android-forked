@@ -98,7 +98,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -131,7 +131,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -170,7 +170,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -219,7 +219,7 @@ class TodoOpenCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -256,20 +256,27 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoOpenExemptions.newBuilder().apply {
-      this.addAllTodoOpenExemption(
-        listOf(
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build(),
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile2.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build()
-        )
-      )
-    }.build()
+    val exemptions =
+      TodoOpenExemptions
+        .newBuilder()
+        .apply {
+          this.addAllTodoOpenExemption(
+            listOf(
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile1.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile2.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+            ),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
     runScript()
@@ -294,23 +301,30 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoOpenExemptions.newBuilder().apply {
-      this.addAllTodoOpenExemption(
-        listOf(
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
-            this.addAllLineNumber(listOf(1, 2)).build()
-          }.build(),
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile2.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build()
-        )
-      )
-    }.build()
+    val exemptions =
+      TodoOpenExemptions
+        .newBuilder()
+        .apply {
+          this.addAllTodoOpenExemption(
+            listOf(
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile1.kt"
+                  this.addAllLineNumber(listOf(1, 2)).build()
+                }.build(),
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile2.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+            ),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -345,19 +359,24 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoOpenExemptions.newBuilder().apply {
-      this.addAllTodoOpenExemption(
-        listOf(
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "extra_dir/TempFile1.kt"
-            this.addAllLineNumber(listOf(1, 2)).build()
-          }.build()
-        )
-      )
-    }.build()
+    val exemptions =
+      TodoOpenExemptions
+        .newBuilder()
+        .apply {
+          this.addAllTodoOpenExemption(
+            listOf(
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "extra_dir/TempFile1.kt"
+                  this.addAllLineNumber(listOf(1, 2)).build()
+                }.build(),
+            ),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -396,7 +415,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -424,7 +443,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -444,7 +463,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -463,7 +482,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -491,7 +510,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
   }
@@ -512,23 +531,30 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoOpenExemptions.newBuilder().apply {
-      this.addAllTodoOpenExemption(
-        listOf(
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build(),
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile2.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build()
-        )
-      )
-    }.build()
+    val exemptions =
+      TodoOpenExemptions
+        .newBuilder()
+        .apply {
+          this.addAllTodoOpenExemption(
+            listOf(
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile1.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile2.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+            ),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    val exception = assertThrows<Exception>() { runScript(regenerateFile = true) }
+    val exception = assertThrows<Exception> { runScript(regenerateFile = true) }
 
     // 'regenerate' always throws an exception since it's regenerating everything.
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_SKIPPED_OUTPUT_INDICATOR)
@@ -551,7 +577,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -582,7 +608,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -605,7 +631,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -646,7 +672,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -692,7 +718,7 @@ class TodoOpenCheckTest {
       """.trimIndent()
     tempFile.writeText(testContent)
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -743,23 +769,30 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-    val exemptions = TodoOpenExemptions.newBuilder().apply {
-      this.addAllTodoOpenExemption(
-        listOf(
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile1.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build(),
-          TodoOpenExemption.newBuilder().apply {
-            this.exemptedFilePath = "TempFile2.kt"
-            this.addAllLineNumber(listOf(1)).build()
-          }.build()
-        )
-      )
-    }.build()
+    val exemptions =
+      TodoOpenExemptions
+        .newBuilder()
+        .apply {
+          this.addAllTodoOpenExemption(
+            listOf(
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile1.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+              TodoOpenExemption
+                .newBuilder()
+                .apply {
+                  this.exemptedFilePath = "TempFile2.kt"
+                  this.addAllLineNumber(listOf(1)).build()
+                }.build(),
+            ),
+          )
+        }.build()
     exemptions.writeTo(exemptionFile.outputStream())
 
-    assertThrows<Exception>() { runScript(regenerateFile = true) }
+    assertThrows<Exception> { runScript(regenerateFile = true) }
 
     val failureMessage =
       """
@@ -781,7 +814,7 @@ class TodoOpenCheckTest {
   fun testTodoCheck_PrPresent_checkShouldFail() {
     setUpGitHubService(
       issueNumbers = listOf(11004, 11003, 11002, 11001),
-      pullRequestNumbers = listOf(11005)
+      pullRequestNumbers = listOf(11005),
     )
     val tempFile1 = tempFolder.newFile("testfiles/TempFile1.kt")
     val tempFile2 = tempFolder.newFile("testfiles/TempFile2.kt")
@@ -803,7 +836,7 @@ class TodoOpenCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(TODO_SYNTAX_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -820,15 +853,17 @@ class TodoOpenCheckTest {
 
   private fun setUpGitHubService(
     issueNumbers: List<Int>,
-    pullRequestNumbers: List<Int> = emptyList()
+    pullRequestNumbers: List<Int> = emptyList(),
   ) {
     // Create JSON for issues with "pull_request" set to null
-    val issueJsons = issueNumbers
-      .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":null}" }
+    val issueJsons =
+      issueNumbers
+        .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":null}" }
 
     // Create JSON for pull requests with "pull_request" as an empty object
-    val pullRequestJsons = pullRequestNumbers
-      .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":{}}" }
+    val pullRequestJsons =
+      pullRequestNumbers
+        .joinToString(separator = ",") { "{\"number\":$it,\"pull_request\":{}}" }
 
     // Combine issues and pull requests into one JSON array
     val combinedJsons =
@@ -858,7 +893,7 @@ class TodoOpenCheckTest {
     val repoRoot = File(tempFolder.root, "testfiles")
     TodoOpenCheck(repoRoot, scriptBgDispatcher, fakeCommandExecutor).runTodoOpenCheck(
       pathToProtoBinary = "${tempFolder.root}/$pathToProtoBinary",
-      regenerateFile
+      regenerateFile,
     )
   }
 }

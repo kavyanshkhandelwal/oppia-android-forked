@@ -41,7 +41,10 @@ class NavigationDrawerTestActivity :
   private var internalProfileId: Int = -1
 
   companion object {
-    fun createNavigationDrawerTestActivity(context: Context, internalProfileId: Int?): Intent {
+    fun createNavigationDrawerTestActivity(
+      context: Context,
+      internalProfileId: Int?,
+    ): Intent {
       val intent = Intent(context, NavigationDrawerTestActivity::class.java)
       val profileId = internalProfileId?.let { ProfileId.newBuilder().setInternalId(it).build() }
       if (profileId != null) {
@@ -59,9 +62,13 @@ class NavigationDrawerTestActivity :
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
-  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
+  override fun routeToTopic(
+    profileId: ProfileId,
+    classroomId: String,
+    topicId: String,
+  ) {
     startActivity(
-      TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId)
+      TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId),
     )
   }
 
@@ -69,7 +76,7 @@ class NavigationDrawerTestActivity :
     profileId: ProfileId,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
@@ -77,8 +84,8 @@ class NavigationDrawerTestActivity :
         profileId,
         classroomId,
         topicId,
-        storyId
-      )
+        storyId,
+      ),
     )
   }
 
@@ -94,7 +101,7 @@ class NavigationDrawerTestActivity :
       DestinationScreen
         .newBuilder()
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-        .build()
+        .build(),
     )
   }
 

@@ -68,10 +68,15 @@ import javax.inject.Singleton
 @Config(application = DeprecationControllerTest.TestApplication::class)
 class DeprecationControllerTest {
   @Inject lateinit var context: Context
+
   @Inject lateinit var deprecationController: DeprecationController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
+
   @Inject lateinit var platformParameterController: PlatformParameterController
 
   @field:[Inject LowestSupportedApiLevel]
@@ -88,8 +93,9 @@ class DeprecationControllerTest {
     setUpDefaultTestApplicationComponent()
 
     val deprecationDataProvider = deprecationController.getDeprecationDatabase()
-    val deprecationResponseDatabase = monitorFactory
-      .waitForNextSuccessfulResult(deprecationDataProvider)
+    val deprecationResponseDatabase =
+      monitorFactory
+        .waitForNextSuccessfulResult(deprecationDataProvider)
 
     assertThat(deprecationResponseDatabase.osDeprecationResponse)
       .isEqualTo(defaultDeprecationResponseDatabase.osDeprecationResponse)
@@ -107,8 +113,9 @@ class DeprecationControllerTest {
     setUpDefaultTestApplicationComponent()
 
     val deprecationDataProvider = deprecationController.getDeprecationDatabase()
-    val deprecationResponseDatabase = monitorFactory
-      .waitForNextSuccessfulResult(deprecationDataProvider)
+    val deprecationResponseDatabase =
+      monitorFactory
+        .waitForNextSuccessfulResult(deprecationDataProvider)
 
     assertThat(deprecationResponseDatabase.appDeprecationResponse)
       .isEqualTo(appDeprecationResponse)
@@ -124,8 +131,9 @@ class DeprecationControllerTest {
     setUpDefaultTestApplicationComponent()
 
     val deprecationDataProvider = deprecationController.getDeprecationDatabase()
-    val deprecationResponseDatabase = monitorFactory
-      .waitForNextSuccessfulResult(deprecationDataProvider)
+    val deprecationResponseDatabase =
+      monitorFactory
+        .waitForNextSuccessfulResult(deprecationDataProvider)
 
     assertThat(deprecationResponseDatabase.osDeprecationResponse).isEqualTo(osDeprecationResponse)
   }
@@ -135,9 +143,11 @@ class DeprecationControllerTest {
     setUpDefaultTestApplicationComponent()
 
     val onboardingState = OnboardingState.newBuilder().build()
-    val startUpMode = deprecationController.processStartUpMode(
-      onboardingState, defaultDeprecationResponseDatabase
-    )
+    val startUpMode =
+      deprecationController.processStartUpMode(
+        onboardingState,
+        defaultDeprecationResponseDatabase,
+      )
 
     assertThat(startUpMode).isEqualTo(StartupMode.USER_NOT_YET_ONBOARDED)
   }
@@ -146,9 +156,11 @@ class DeprecationControllerTest {
   fun testController_userIsOnboarded_returnsUserIsOnboardedStartUpMode() {
     setUpDefaultTestApplicationComponent()
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        defaultDeprecationResponseDatabase,
+      )
 
     assertThat(startupMode).isEqualTo(StartupMode.USER_IS_ONBOARDED)
   }
@@ -156,12 +168,14 @@ class DeprecationControllerTest {
   @Test
   fun testController_osIsDeprecated_returnsOsIsDeprecatedStartUpMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(lowestApiLevel)
+      platformParameters = listOf(lowestApiLevel),
     )
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        defaultDeprecationResponseDatabase,
+      )
 
     assertThat(startupMode).isEqualTo(StartupMode.OS_IS_DEPRECATED)
   }
@@ -169,63 +183,73 @@ class DeprecationControllerTest {
   @Test
   fun testController_osIsDeprecated_previousResponseExists_returnsUserIsOnboardedStartUpMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(lowestApiLevel)
+      platformParameters = listOf(lowestApiLevel),
     )
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        deprecationResponseDatabaseWithPreviousResponses,
+      )
     assertThat(startupMode).isEqualTo(StartupMode.USER_IS_ONBOARDED)
   }
 
   @Test
   fun testController_hasOptionalUpdate_returnsOptionalUpdateAvailableStartupMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(optionalAppUpdateVersion)
+      platformParameters = listOf(optionalAppUpdateVersion),
     )
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        defaultDeprecationResponseDatabase,
+      )
     assertThat(startupMode).isEqualTo(StartupMode.OPTIONAL_UPDATE_AVAILABLE)
   }
 
   @Test
   fun testController_hasOptionalUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(optionalAppUpdateVersion)
+      platformParameters = listOf(optionalAppUpdateVersion),
     )
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        deprecationResponseDatabaseWithPreviousResponses,
+      )
     assertThat(startupMode).isEqualTo(StartupMode.USER_IS_ONBOARDED)
   }
 
   @Test
   fun testController_hasForcedUpdate_returnsAppIsDeprecatedStartupMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(forcedAppUpdateVersion)
+      platformParameters = listOf(forcedAppUpdateVersion),
     )
 
     monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
     testCoroutineDispatchers.runCurrent()
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        defaultDeprecationResponseDatabase,
+      )
     assertThat(startupMode).isEqualTo(StartupMode.APP_IS_DEPRECATED)
   }
 
   @Test
   fun testController_hasForcedUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
     setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(forcedAppUpdateVersion)
+      platformParameters = listOf(forcedAppUpdateVersion),
     )
 
-    val startupMode = deprecationController.processStartUpMode(
-      alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
-    )
+    val startupMode =
+      deprecationController.processStartUpMode(
+        alreadyOnboardedOnboardingState,
+        deprecationResponseDatabaseWithPreviousResponses,
+      )
     assertThat(startupMode).isEqualTo(StartupMode.USER_IS_ONBOARDED)
   }
 
@@ -233,16 +257,17 @@ class DeprecationControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
+  private fun setUpOppiaApplication(
+    expirationEnabled: Boolean,
+    expDate: String,
+  ) {
     setUpOppiaApplicationForContext(context, expirationEnabled, expDate)
   }
 
-  private fun setUpTestApplicationComponentWithParameters(
-    platformParameters: List<PlatformParameter>
-  ) {
+  private fun setUpTestApplicationComponentWithParameters(platformParameters: List<PlatformParameter>) {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        platformParameters
+        platformParameters,
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
@@ -268,20 +293,22 @@ class DeprecationControllerTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerDeprecationControllerTest_TestApplicationComponent.builder()
+      DaggerDeprecationControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(testApplication)
-        .build()
+        .build(),
     )
   }
 
   private fun setUpOppiaApplicationForContext(
     context: Context,
     expirationEnabled: Boolean,
-    expDate: String
+    expDate: String,
   ) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setName("Oppia")
         .build()
@@ -289,7 +316,8 @@ class DeprecationControllerTest {
     applicationInfo.metaData.putBoolean("automatic_app_expiration_enabled", expirationEnabled)
     applicationInfo.metaData.putString("expiration_date", expDate)
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -311,9 +339,7 @@ class DeprecationControllerTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -343,8 +369,8 @@ class DeprecationControllerTest {
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -372,9 +398,12 @@ class DeprecationControllerTest {
     fun inject(deprecationControllerTest: DeprecationControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDeprecationControllerTest_TestApplicationComponent.builder()
+      DaggerDeprecationControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -391,43 +420,56 @@ class DeprecationControllerTest {
   }
 
   companion object {
-    val alreadyOnboardedOnboardingState: OnboardingState = OnboardingState.newBuilder()
-      .setAlreadyOnboardedApp(true)
-      .build()
+    val alreadyOnboardedOnboardingState: OnboardingState =
+      OnboardingState
+        .newBuilder()
+        .setAlreadyOnboardedApp(true)
+        .build()
 
-    val lowestApiLevel: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(LOWEST_SUPPORTED_API_LEVEL)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-      .build()
+    val lowestApiLevel: PlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setName(LOWEST_SUPPORTED_API_LEVEL)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+        .build()
 
-    val optionalAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-      .build()
+    val optionalAppUpdateVersion: PlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+        .build()
 
-    val forcedAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(FORCED_APP_UPDATE_VERSION_CODE)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-      .build()
+    val forcedAppUpdateVersion: PlatformParameter =
+      PlatformParameter
+        .newBuilder()
+        .setName(FORCED_APP_UPDATE_VERSION_CODE)
+        .setInteger(Int.MAX_VALUE)
+        .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+        .build()
 
-    val osDeprecationResponse: DeprecationResponse = DeprecationResponse.newBuilder()
-      .setDeprecationNoticeType(DeprecationNoticeType.OS_DEPRECATION)
-      .setDeprecatedVersion(Int.MAX_VALUE)
-      .build()
+    val osDeprecationResponse: DeprecationResponse =
+      DeprecationResponse
+        .newBuilder()
+        .setDeprecationNoticeType(DeprecationNoticeType.OS_DEPRECATION)
+        .setDeprecatedVersion(Int.MAX_VALUE)
+        .build()
 
-    val appDeprecationResponse: DeprecationResponse = DeprecationResponse.newBuilder()
-      .setDeprecationNoticeType(DeprecationNoticeType.APP_DEPRECATION)
-      .setDeprecatedVersion(Int.MAX_VALUE)
-      .build()
+    val appDeprecationResponse: DeprecationResponse =
+      DeprecationResponse
+        .newBuilder()
+        .setDeprecationNoticeType(DeprecationNoticeType.APP_DEPRECATION)
+        .setDeprecatedVersion(Int.MAX_VALUE)
+        .build()
 
     val defaultDeprecationResponseDatabase: DeprecationResponseDatabase =
       DeprecationResponseDatabase.getDefaultInstance()
 
     val deprecationResponseDatabaseWithPreviousResponses: DeprecationResponseDatabase =
-      DeprecationResponseDatabase.newBuilder()
+      DeprecationResponseDatabase
+        .newBuilder()
         .setOsDeprecationResponse(osDeprecationResponse)
         .setAppDeprecationResponse(appDeprecationResponse)
         .build()

@@ -26,27 +26,30 @@ class MetricLogSchedulingWorker private constructor(
   private val consoleLogger: ConsoleLogger,
   private val performanceMetricsLogger: PerformanceMetricsLogger,
   private val applicationLifecycleObserver: ApplicationLifecycleObserver,
-  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
 ) : ListenableWorker(context, params) {
-
   companion object {
     private const val TAG = "MetricLogSchedulingWorker"
+
     /**
      * The key for an input key-value pair for [MetricLogSchedulingWorker] where one of
      * [PERIODIC_BACKGROUND_METRIC_WORKER], [PERIODIC_UI_METRIC_WORKER] and [STORAGE_USAGE_WORKER] indicates what
      * kind of work to perform.
      */
     const val WORKER_CASE_KEY = "metric_log_scheduling_worker_case_key"
+
     /**
      * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for periodic
      * performance metrics.
      */
     const val PERIODIC_BACKGROUND_METRIC_WORKER = "periodic_background_metric_worker"
+
     /**
      * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for storage usage
      * performance metrics.
      */
     const val STORAGE_USAGE_WORKER = "storage_usage_worker"
+
     /**
      * Indicates to [MetricLogSchedulingWorker] that it should schedule logging for ui-related
      * memory usage performance metrics.
@@ -57,14 +60,15 @@ class MetricLogSchedulingWorker private constructor(
   override fun startWork(): ListenableFuture<Result> {
     val backgroundScope = CoroutineScope(backgroundDispatcher)
     // TODO(#4463): Add withTimeout() to avoid potential hanging.
-    return backgroundScope.async {
-      when (inputData.getStringFromData(WORKER_CASE_KEY)) {
-        PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
-        STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
-        PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
-        else -> Result.failure()
-      }
-    }.asListenableFuture()
+    return backgroundScope
+      .async {
+        when (inputData.getStringFromData(WORKER_CASE_KEY)) {
+          PERIODIC_BACKGROUND_METRIC_WORKER -> schedulePeriodicBackgroundMetricLogging()
+          STORAGE_USAGE_WORKER -> scheduleStorageUsageMetricLogging()
+          PERIODIC_UI_METRIC_WORKER -> schedulePeriodicUiMetricLogging()
+          else -> Result.failure()
+        }
+      }.asListenableFuture()
   }
 
   private fun schedulePeriodicBackgroundMetricLogging(): Result {
@@ -99,27 +103,31 @@ class MetricLogSchedulingWorker private constructor(
   }
 
   /** Creates an instance of [MetricLogSchedulingWorker] by properly injecting dependencies. */
-  class Factory @Inject constructor(
-    private val consoleLogger: ConsoleLogger,
-    private val performanceMetricsLogger: PerformanceMetricsLogger,
-    private val applicationLifecycleObserver: ApplicationLifecycleObserver,
-    @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
-  ) {
-    /**
-     * Returns a new [MetricLogSchedulingWorker].
-     *
-     * This [MetricLogSchedulingWorker] implements the [ListenableWorker] for facilitating metric
-     * log scheduling.
-     */
-    fun create(context: Context, params: WorkerParameters): ListenableWorker {
-      return MetricLogSchedulingWorker(
-        context,
-        params,
-        consoleLogger,
-        performanceMetricsLogger,
-        applicationLifecycleObserver,
-        backgroundDispatcher
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val consoleLogger: ConsoleLogger,
+      private val performanceMetricsLogger: PerformanceMetricsLogger,
+      private val applicationLifecycleObserver: ApplicationLifecycleObserver,
+      @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
+    ) {
+      /**
+       * Returns a new [MetricLogSchedulingWorker].
+       *
+       * This [MetricLogSchedulingWorker] implements the [ListenableWorker] for facilitating metric
+       * log scheduling.
+       */
+      fun create(
+        context: Context,
+        params: WorkerParameters,
+      ): ListenableWorker =
+        MetricLogSchedulingWorker(
+          context,
+          params,
+          consoleLogger,
+          performanceMetricsLogger,
+          applicationLifecycleObserver,
+          backgroundDispatcher,
+        )
     }
-  }
 }

@@ -13,7 +13,6 @@ import javax.inject.Inject
 class TopicRevisionTestActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToRevisionCardListener {
-
   @Inject
   lateinit var topicRevisionTestActivityPresenter: TopicRevisionTestActivityPresenter
 
@@ -27,7 +26,7 @@ class TopicRevisionTestActivity :
     profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int
+    subtopicListSize: Int,
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
@@ -35,8 +34,8 @@ class TopicRevisionTestActivity :
         profileId,
         topicId,
         subtopicId,
-        subtopicListSize
-      )
+        subtopicListSize,
+      ),
     )
   }
 }

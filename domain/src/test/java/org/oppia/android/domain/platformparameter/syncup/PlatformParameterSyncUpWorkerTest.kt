@@ -82,54 +82,71 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = PlatformParameterSyncUpWorkerTest.TestApplication::class,
-  manifest = Config.NONE
+  manifest = Config.NONE,
 )
 class PlatformParameterSyncUpWorkerTest {
   @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
+
   @Inject lateinit var platformParameterController: PlatformParameterController
+
   @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
-  private val expectedTestStringParameter = PlatformParameter.newBuilder()
-    .setName(TEST_STRING_PARAM_NAME)
-    .setString(TEST_STRING_PARAM_SERVER_VALUE)
-    .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-    .build()
+  private val expectedTestStringParameter =
+    PlatformParameter
+      .newBuilder()
+      .setName(TEST_STRING_PARAM_NAME)
+      .setString(TEST_STRING_PARAM_SERVER_VALUE)
+      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+      .build()
 
-  private val expectedTestIntegerParameter = PlatformParameter.newBuilder()
-    .setName(TEST_INTEGER_PARAM_NAME)
-    .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
-    .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-    .build()
+  private val expectedTestIntegerParameter =
+    PlatformParameter
+      .newBuilder()
+      .setName(TEST_INTEGER_PARAM_NAME)
+      .setInteger(TEST_INTEGER_PARAM_SERVER_VALUE)
+      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+      .build()
 
-  private val defaultTestIntegerParameter = PlatformParameter.newBuilder()
-    .setName(TEST_INTEGER_PARAM_NAME)
-    .setInteger(TEST_INTEGER_PARAM_DEFAULT_VALUE)
-    .setSyncStatus(SyncStatus.NOT_SYNCED_FROM_SERVER)
-    .build()
+  private val defaultTestIntegerParameter =
+    PlatformParameter
+      .newBuilder()
+      .setName(TEST_INTEGER_PARAM_NAME)
+      .setInteger(TEST_INTEGER_PARAM_DEFAULT_VALUE)
+      .setSyncStatus(SyncStatus.NOT_SYNCED_FROM_SERVER)
+      .build()
 
-  private val expectedTestBooleanParameter = PlatformParameter.newBuilder()
-    .setName(TEST_BOOLEAN_PARAM_NAME)
-    .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
-    .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-    .build()
+  private val expectedTestBooleanParameter =
+    PlatformParameter
+      .newBuilder()
+      .setName(TEST_BOOLEAN_PARAM_NAME)
+      .setBoolean(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+      .build()
 
   // Not including "expectedTestBooleanParameter" in this list to prove that a refresh took place
-  private val mockPlatformParameterList = listOf<PlatformParameter>(
-    expectedTestStringParameter,
-    defaultTestIntegerParameter // using default value here just to prove refresh took place
-  )
+  private val mockPlatformParameterList =
+    listOf<PlatformParameter>(
+      expectedTestStringParameter,
+      defaultTestIntegerParameter, // using default value here just to prove refresh took place
+    )
 
   @Before
   fun setup() {
     setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(platformParameterSyncUpWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
@@ -143,14 +160,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -179,14 +200,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -211,14 +236,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -259,14 +288,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -291,14 +324,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -337,14 +374,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -377,14 +418,18 @@ class PlatformParameterSyncUpWorkerTest {
 
     val workManager = WorkManager.getInstance(context)
 
-    val inputData = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+    val inputData =
+      Data
+        .Builder()
+        .putString(
+          PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+          PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER,
+        ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
-      .setInputData(inputData)
-      .build()
+    val request: OneTimeWorkRequest =
+      OneTimeWorkRequestBuilder<PlatformParameterSyncUpWorker>()
+        .setInputData(inputData)
+        .build()
 
     // Enqueue the Work Request to fetch and cache the Platform Parameters from Remote Service.
     workManager.enqueue(request)
@@ -413,11 +458,13 @@ class PlatformParameterSyncUpWorkerTest {
   private fun setUpApplicationForContext(testAppVersionName: String) {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
+      ApplicationInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .build()
     val packageInfo =
-      PackageInfoBuilder.newBuilder()
+      PackageInfoBuilder
+        .newBuilder()
         .setPackageName(context.packageName)
         .setApplicationInfo(applicationInfo)
         .build()
@@ -430,14 +477,11 @@ class PlatformParameterSyncUpWorkerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
-    fun providePlatformParameterSingleton(
-      platformParameterSingletonImpl: PlatformParameterSingletonImpl
-    ): PlatformParameterSingleton = platformParameterSingletonImpl
+    fun providePlatformParameterSingleton(platformParameterSingletonImpl: PlatformParameterSingletonImpl): PlatformParameterSingleton =
+      platformParameterSingletonImpl
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -456,26 +500,28 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Module
   class TestNetworkModule {
-
     @OppiaRetrofit
     @Provides
     @Singleton
     fun provideRetrofitInstance(
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
+      @BaseUrl baseUrl: String,
     ): Optional<Retrofit> {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
+      val client =
+        OkHttpClient
+          .Builder()
+          .addInterceptor(jsonPrefixNetworkInterceptor)
+          .addInterceptor(remoteAuthNetworkInterceptor)
+          .build()
 
       return Optional.of(
-        Retrofit.Builder()
+        Retrofit
+          .Builder()
           .baseUrl(baseUrl)
           .addConverterFactory(MoshiConverterFactory.create())
           .client(client)
-          .build()
+          .build(),
       )
     }
 
@@ -484,9 +530,7 @@ class PlatformParameterSyncUpWorkerTest {
     fun provideNetworkApiKey(): String = ""
 
     @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): Optional<PlatformParameterService> {
+    fun provideMockPlatformParameterService(mockRetrofit: MockRetrofit): Optional<PlatformParameterService> {
       val delegate = mockRetrofit.create(PlatformParameterService::class.java)
       return Optional.of(MockPlatformParameterService(delegate))
     }
@@ -501,23 +545,27 @@ class PlatformParameterSyncUpWorkerTest {
       RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class
-    ]
+      SyncStatusModule::class, PlatformParameterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(platformParameterSyncUpWorkerTest: PlatformParameterSyncUpWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: PlatformParameterSyncUpWorkerTest.TestApplicationComponent by lazy {
-      DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterSyncUpWorkerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

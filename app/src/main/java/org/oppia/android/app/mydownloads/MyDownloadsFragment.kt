@@ -22,8 +22,6 @@ class MyDownloadsFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return myDownloadsFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = myDownloadsFragmentPresenter.handleCreateView(inflater, container)
 }

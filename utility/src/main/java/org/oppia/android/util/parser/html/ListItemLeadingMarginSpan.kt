@@ -60,7 +60,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       start: Int,
       end: Int,
       first: Boolean,
-      layout: Layout
+      layout: Layout,
     ) {
       val startCharOfSpan = (text as Spanned).getSpanStart(this)
       val isFirstCharacter = startCharOfSpan == start
@@ -71,13 +71,19 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
 
         val indentedX = parentAbsoluteLeadingMargin + spacingBeforeBullet
         val bulletCenterLtrX = indentedX + bulletDrawRadius
-        val bulletCenterX = if (isRtl) {
-          // See https://stackoverflow.com/a/21845993/3689782 for 'right' property exclusivity.
-          val maxDrawX = if (canvas.getClipBounds(clipBounds)) {
-            clipBounds.right - 1
-          } else canvas.width - 1
-          maxDrawX - bulletCenterLtrX
-        } else bulletCenterLtrX
+        val bulletCenterX =
+          if (isRtl) {
+            // See https://stackoverflow.com/a/21845993/3689782 for 'right' property exclusivity.
+            val maxDrawX =
+              if (canvas.getClipBounds(clipBounds)) {
+                clipBounds.right - 1
+              } else {
+                canvas.width - 1
+              }
+            maxDrawX - bulletCenterLtrX
+          } else {
+            bulletCenterLtrX
+          }
         val bulletCenterY = (top + bottom) / 2f
         when (indentationLevel) {
           0 -> {
@@ -102,7 +108,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
                 this.top = bulletCenterY - bulletDrawRadius
                 this.bottom = this.top + rectSize
               },
-              paint
+              paint,
             )
           }
         }
@@ -110,8 +116,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       }
     }
 
-    override fun getLeadingMargin(first: Boolean) =
-      bulletDiameter + spacingBeforeBullet + spacingBeforeText
+    override fun getLeadingMargin(first: Boolean) = bulletDiameter + spacingBeforeBullet + spacingBeforeText
   }
 
   /** A subclass of [LeadingMarginSpan] that shows nested list span for <ol> tags. */
@@ -120,7 +125,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     context: Context,
     private val numberedItemPrefix: String,
     private val longestNumberedItemPrefix: String,
-    private val displayLocale: OppiaLocale.DisplayLocale
+    private val displayLocale: OppiaLocale.DisplayLocale,
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
@@ -147,25 +152,34 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       start: Int,
       end: Int,
       first: Boolean,
-      layout: Layout
+      layout: Layout,
     ) {
       val startCharOfSpan = (text as Spanned).getSpanStart(this)
       val isFirstCharacter = startCharOfSpan == start
 
       if (isFirstCharacter) {
-        val textWidth = Rect().also {
-          paint.getTextBounds(
-            numberedItemPrefix, /* start= */ 0, /* end= */ numberedItemPrefix.length, it
-          )
-        }.width()
-        val longestTextWidth = Rect().also {
-          paint.getTextBounds(
-            longestNumberedItemPrefix,
-            /* start= */ 0,
-            /* end= */ longestNumberedItemPrefix.length,
-            it
-          )
-        }.width()
+        val textWidth =
+          Rect()
+            .also {
+              paint.getTextBounds(
+                numberedItemPrefix, // start=
+                0, // end=
+                numberedItemPrefix.length,
+                it,
+              )
+            }.width()
+        val longestTextWidth =
+          Rect()
+            .also {
+              paint.getTextBounds(
+                longestNumberedItemPrefix,
+                // start=
+                0,
+                // end=
+                longestNumberedItemPrefix.length,
+                it,
+              )
+            }.width()
         computedLeadingMargin = longestTextWidth + spacingBeforeNumberPrefix + spacingBeforeText
 
         // Compute the prefix's start x value such that it is right-aligned with other numbers in

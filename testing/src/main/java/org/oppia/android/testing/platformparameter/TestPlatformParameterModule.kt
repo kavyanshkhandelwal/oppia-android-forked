@@ -66,91 +66,69 @@ import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
 
-/* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
+// Fake Platform Parameter Module that provides individual Platform Parameters for testing.
 @Module
 class TestPlatformParameterModule {
   @Provides
   @EnableTestFeatureFlag
-  fun provideEnableTestFeatureFlag(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(TEST_FEATURE_FLAG)
+  fun provideEnableTestFeatureFlag(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(TEST_FEATURE_FLAG)
       ?: PlatformParameterValue.createDefaultParameter(TEST_FEATURE_FLAG_DEFAULT_VALUE)
-  }
 
   @Provides
   @EnableTestFeatureFlagWithEnabledDefault
   fun provideEnableTestFeatureFlagWithEnabledDefault(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(
+      TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS,
     )
       ?: PlatformParameterValue.createDefaultParameter(
         defaultValue = TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULT_VALUE,
-        defaultSyncStatus = PlatformParameter.SyncStatus.SYNCED_FROM_SERVER
+        defaultSyncStatus = PlatformParameter.SyncStatus.SYNCED_FROM_SERVER,
       )
-  }
 
   @Provides
   @EnableDownloadsSupport
-  fun provideEnableDownloadsSupport(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
+  fun provideEnableDownloadsSupport(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
       ?: PlatformParameterValue.createDefaultParameter(enableDownloadsSupport)
-  }
 
   @TestStringParam
   @Provides
   @Singleton
-  fun provideTestStringParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<String> {
-    return platformParameterSingleton.getStringPlatformParameter(TEST_STRING_PARAM_NAME)
+  fun provideTestStringParam(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<String> =
+    platformParameterSingleton.getStringPlatformParameter(TEST_STRING_PARAM_NAME)
       ?: PlatformParameterValue.createDefaultParameter(TEST_STRING_PARAM_DEFAULT_VALUE)
-  }
 
   @TestIntegerParam
   @Provides
   @Singleton
-  fun provideTestIntegerParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(TEST_INTEGER_PARAM_NAME)
+  fun provideTestIntegerParam(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(TEST_INTEGER_PARAM_NAME)
       ?: PlatformParameterValue.createDefaultParameter(TEST_INTEGER_PARAM_DEFAULT_VALUE)
-  }
 
   @TestBooleanParam
   @Provides
   @Singleton
-  fun provideTestBooleanParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(TEST_BOOLEAN_PARAM_NAME)
+  fun provideTestBooleanParam(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(TEST_BOOLEAN_PARAM_NAME)
       ?: PlatformParameterValue.createDefaultParameter(TEST_BOOLEAN_PARAM_DEFAULT_VALUE)
-  }
 
   @Provides
   @SplashScreenWelcomeMsg
-  fun provideSplashScreenWelcomeMsgParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(SPLASH_SCREEN_WELCOME_MSG)
+  fun provideSplashScreenWelcomeMsgParam(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(SPLASH_SCREEN_WELCOME_MSG)
       ?: PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-  }
 
   @Provides
   @SyncUpWorkerTimePeriodHours
-  fun provideSyncUpWorkerTimePeriod(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+  fun provideSyncUpWorkerTimePeriod(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @EnableEditAccountsOptionsUi
@@ -174,54 +152,47 @@ class TestPlatformParameterModule {
 
   @Provides
   @CacheLatexRendering
-  fun provideCacheLatexRendering(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
+  fun provideCacheLatexRendering(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
-  }
 
   @Provides
   @EnablePerformanceMetricsCollection
-  fun provideEnablePerformanceMetricCollection(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsCollection)
-  }
+  fun provideEnablePerformanceMetricCollection(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enablePerformanceMetricsCollection)
 
   @Provides
   @PerformanceMetricsCollectionUploadTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionUploadTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
   fun providePerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    platformParameterSingleton: PlatformParameterSingleton,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL,
     )
-  }
 
   @Provides
   @EnableExtraTopicTabsUi
@@ -235,90 +206,73 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableSpotlightUi
-  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(
-      enableSpotlightUi
+  fun provideEnableSpotlightUi(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(
+      enableSpotlightUi,
     )
-  }
 
   @Provides
   @EnableAppAndOsDeprecation
-  fun provideEnableAppAndOsDeprecation(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
+  fun provideEnableAppAndOsDeprecation(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Boolean> =
+    platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
-  }
 
   @Provides
   @Singleton
   @OptionalAppUpdateVersionCode
   fun provideOptionalAppUpdateVersionCode(
     platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      OPTIONAL_APP_UPDATE_VERSION_CODE
+    context: Context,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      OPTIONAL_APP_UPDATE_VERSION_CODE,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
+      context.getVersionCode(),
     )
-  }
 
   @Provides
   @ForcedAppUpdateVersionCode
   fun provideForcedAppUpdateVersionCode(
     platformParameterSingleton: PlatformParameterSingleton,
-    context: Context
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      FORCED_APP_UPDATE_VERSION_CODE
+    context: Context,
+  ): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      FORCED_APP_UPDATE_VERSION_CODE,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      context.getVersionCode()
+      context.getVersionCode(),
     )
-  }
 
   @Provides
   @LowestSupportedApiLevel
-  fun provideLowestSupportedApiLevel(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(
-      LOWEST_SUPPORTED_API_LEVEL
+  fun provideLowestSupportedApiLevel(platformParameterSingleton: PlatformParameterSingleton): PlatformParameterValue<Int> =
+    platformParameterSingleton.getIntegerPlatformParameter(
+      LOWEST_SUPPORTED_API_LEVEL,
     ) ?: PlatformParameterValue.createDefaultParameter(
-      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE
+      LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE,
     )
-  }
 
   @Provides
   @NpsSurveyGracePeriodInDays
-  fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> {
-    return PlatformParameterValue.createDefaultParameter(gracePeriodInDays)
-  }
+  fun provideNpsSurveyGracePeriodInDays(): PlatformParameterValue<Int> = PlatformParameterValue.createDefaultParameter(gracePeriodInDays)
 
   @Provides
   @NpsSurveyMinimumAggregateLearningTimeInATopicInMinutes
-  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes():
-    PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(minimumLearningTime)
-    }
+  fun provideNpsSurveyMinimumAggregateLearningTimeInATopicInMinutes(): PlatformParameterValue<Int> =
+    PlatformParameterValue.createDefaultParameter(minimumLearningTime)
 
   @Provides
   @EnableNpsSurvey
-  fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enableNpsSurvey)
-  }
+  fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> = PlatformParameterValue.createDefaultParameter(enableNpsSurvey)
 
   @Provides
   @EnableOnboardingFlowV2
-  fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enableOnboardingFlowV2)
-  }
+  fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableOnboardingFlowV2)
 
   @Provides
   @EnableMultipleClassrooms
-  fun provideEnableMultipleClassrooms(): PlatformParameterValue<Boolean> {
-    return PlatformParameterValue.createDefaultParameter(enableMultipleClassrooms)
-  }
+  fun provideEnableMultipleClassrooms(): PlatformParameterValue<Boolean> =
+    PlatformParameterValue.createDefaultParameter(enableMultipleClassrooms)
 
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE

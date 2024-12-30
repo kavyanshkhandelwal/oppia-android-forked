@@ -12,21 +12,20 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 // https://bumptech.github.io/glide/tut/custom-modelloader.html#an-empty-implementation.
+
 /** ModelLoader for loading assets from the app's local asset repository. */
 class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStream> {
   override fun buildLoadData(
     model: ImageAssetFetcher,
     width: Int,
     height: Int,
-    options: Options
-  ): ModelLoader.LoadData<InputStream>? {
-    return ModelLoader.LoadData(ObjectKey(model.getImageIdentifier()), RepositoryDataFetcher(model))
-  }
+    options: Options,
+  ): ModelLoader.LoadData<InputStream>? = ModelLoader.LoadData(ObjectKey(model.getImageIdentifier()), RepositoryDataFetcher(model))
 
   override fun handles(model: ImageAssetFetcher): Boolean = true
 
   private class RepositoryDataFetcher(
-    private val fetcher: ImageAssetFetcher
+    private val fetcher: ImageAssetFetcher,
   ) : DataFetcher<InputStream> {
     override fun getDataClass(): Class<InputStream> = InputStream::class.java
 
@@ -36,7 +35,10 @@ class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStream> {
 
     override fun cancel() {}
 
-    override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in InputStream>) {
+    override fun loadData(
+      priority: Priority,
+      callback: DataFetcher.DataCallback<in InputStream>,
+    ) {
       val imageData = fetcher.fetchImage()
       callback.onDataReady(ByteArrayInputStream(imageData))
     }
@@ -44,11 +46,7 @@ class RepositoryModelLoader : ModelLoader<ImageAssetFetcher, InputStream> {
 
   /** [ModelLoaderFactory] for creating new [RepositoryModelLoader]s. */
   class Factory : ModelLoaderFactory<ImageAssetFetcher, InputStream> {
-    override fun build(
-      multiFactory: MultiModelLoaderFactory
-    ): ModelLoader<ImageAssetFetcher, InputStream> {
-      return RepositoryModelLoader()
-    }
+    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<ImageAssetFetcher, InputStream> = RepositoryModelLoader()
 
     override fun teardown() {}
   }

@@ -10,13 +10,9 @@ import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 class EndToEndTestGcsResourceModule {
   @Provides
   @DefaultResourceBucketName
-  fun provideDefaultGcsResource(): String {
-    return "assetsdevhandler"
-  }
+  fun provideDefaultGcsResource(): String = "assetsdevhandler"
 
   @Provides
   @QuestionResourceBucketName
-  fun provideQuestionResourceBucketName(): String {
-    return "assetsdevhandler"
-  }
+  fun provideQuestionResourceBucketName(): String = "assetsdevhandler"
 }

@@ -39,7 +39,8 @@ class AssetTestNoOpModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAssetTestNoOpModuleTest_TestApplicationComponent.builder()
+    DaggerAssetTestNoOpModuleTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -50,17 +51,15 @@ class AssetTestNoOpModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, AssetTestNoOpModule::class
-    ]
+      TestModule::class, AssetTestNoOpModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

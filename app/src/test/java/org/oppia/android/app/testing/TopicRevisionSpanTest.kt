@@ -103,9 +103,10 @@ class TopicRevisionSpanTest {
   }
 
   private fun getRevisionSpanCount(activity: TopicRevisionTestActivity): Int {
-    val revisionFragment = activity
-      .supportFragmentManager
-      .findFragmentByTag(TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG)
+    val revisionFragment =
+      activity
+        .supportFragmentManager
+        .findFragmentByTag(TopicRevisionFragment.TOPIC_REVISION_FRAGMENT_TAG)
     val recyclerviewTag = activity.resources.getString(R.string.topic_revision_recyclerview_tag)
     val recyclerView =
       revisionFragment?.view?.findViewWithTag<RecyclerView>(recyclerviewTag)
@@ -180,8 +181,8 @@ class TopicRevisionSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -192,9 +193,13 @@ class TopicRevisionSpanTest {
     fun inject(topicRevisionSpanTest: TopicRevisionSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicRevisionSpanTest_TestApplicationComponent.builder()
+      DaggerTopicRevisionSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -203,9 +208,12 @@ class TopicRevisionSpanTest {
       component.inject(topicRevisionSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

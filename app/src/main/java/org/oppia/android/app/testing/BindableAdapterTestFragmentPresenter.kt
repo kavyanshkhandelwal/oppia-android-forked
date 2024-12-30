@@ -10,34 +10,41 @@ import org.oppia.android.databinding.TestFragmentBinding
 import javax.inject.Inject
 
 /** The test-only fragment presenter corresponding to [BindableAdapterTestFragment]. */
-class BindableAdapterTestFragmentPresenter @Inject constructor(
-  private val fragment: Fragment,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-  private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val testBindableAdapterFactory: BindableAdapterFactory,
-  @VisibleForTesting val viewModel: BindableAdapterTestViewModel
-) {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding = TestFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
-    binding.testRecyclerView.apply {
-      adapter = testBindableAdapterFactory.create(singleTypeBuilderFactory, multiTypeBuilderFactory)
+class BindableAdapterTestFragmentPresenter
+  @Inject
+  constructor(
+    private val fragment: Fragment,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+    private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+    private val testBindableAdapterFactory: BindableAdapterFactory,
+    @VisibleForTesting val viewModel: BindableAdapterTestViewModel,
+  ) {
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      val binding =
+        TestFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+      binding.testRecyclerView.apply {
+        adapter = testBindableAdapterFactory.create(singleTypeBuilderFactory, multiTypeBuilderFactory)
+      }
+      binding.let {
+        it.viewModel = viewModel
+        it.lifecycleOwner = fragment
+      }
+      return binding.root
     }
-    binding.let {
-      it.viewModel = viewModel
-      it.lifecycleOwner = fragment
-    }
-    return binding.root
-  }
 
-  /** Factory for creating new [BindableAdapter]s for the current fragment. */
-  interface BindableAdapterFactory {
-    fun create(
-      singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-      multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory
-    ): BindableAdapter<BindableAdapterTestDataModel>
+    /** Factory for creating new [BindableAdapter]s for the current fragment. */
+    interface BindableAdapterFactory {
+      fun create(
+        singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+        multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
+      ): BindableAdapter<BindableAdapterTestDataModel>
+    }
   }
-}

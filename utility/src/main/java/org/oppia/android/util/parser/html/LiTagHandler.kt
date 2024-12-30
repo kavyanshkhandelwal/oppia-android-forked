@@ -22,31 +22,41 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
  */
 class LiTagHandler(
   private val context: Context,
-  private val displayLocale: OppiaLocale.DisplayLocale
+  private val displayLocale: OppiaLocale.DisplayLocale,
 ) : CustomHtmlContentHandler.CustomTagHandler {
   private val pendingLists = Stack<ListTag<*, *>>()
   private val latestPendingList: ListTag<*, *>?
     get() = pendingLists.lastOrNull()
 
-  override fun handleOpeningTag(output: Editable, tag: String) {
+  override fun handleOpeningTag(
+    output: Editable,
+    tag: String,
+  ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
-        pendingLists += ListTag.Ul(
-          parentList = latestPendingList,
-          parentMark = latestPendingList?.pendingStartMark,
-          indentationLevel = pendingLists.size
-        )
+        pendingLists +=
+          ListTag.Ul(
+            parentList = latestPendingList,
+            parentMark = latestPendingList?.pendingStartMark,
+            indentationLevel = pendingLists.size,
+          )
       }
       CUSTOM_LIST_OL_TAG -> {
-        pendingLists += ListTag.Ol(
-          parentList = latestPendingList, parentMark = latestPendingList?.pendingStartMark
-        )
+        pendingLists +=
+          ListTag.Ol(
+            parentList = latestPendingList,
+            parentMark = latestPendingList?.pendingStartMark,
+          )
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.openItem(output)
     }
   }
 
-  override fun handleClosingTag(output: Editable, indentation: Int, tag: String) {
+  override fun handleClosingTag(
+    output: Editable,
+    indentation: Int,
+    tag: String,
+  ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
         // Actually place the spans only if the root tree has been finished (as the entirety of the
@@ -61,7 +71,7 @@ class LiTagHandler(
   private sealed class ListTag<M : Mark<S>, S : ListItemLeadingMarginSpan>(
     private val parentList: ListTag<*, *>?,
     private val parentMark: Mark<*>?,
-    private val fetchLastMark: Editable.() -> M?
+    private val fetchLastMark: Editable.() -> M?,
   ) {
     private val markRangesToReplace = mutableListOf<MarkedRange<S>>()
     private val childrenLists = mutableMapOf<Mark<*>, ListTag<*, *>>()
@@ -122,8 +132,11 @@ class LiTagHandler(
      * Recursively replaces all marks for this root list (and all its children) with renderable
      * spans in the provided [text].
      */
-    fun finishListTree(text: Editable, context: Context, displayLocale: OppiaLocale.DisplayLocale) =
-      finishListRecursively(parentSpan = null, text, context, displayLocale)
+    fun finishListTree(
+      text: Editable,
+      context: Context,
+      displayLocale: OppiaLocale.DisplayLocale,
+    ) = finishListRecursively(parentSpan = null, text, context, displayLocale)
 
     /**
      * Returns a new mark of type [M] for this tag.
@@ -136,16 +149,23 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       text: Editable,
       context: Context,
-      displayLocale: OppiaLocale.DisplayLocale
+      displayLocale: OppiaLocale.DisplayLocale,
     ) {
       val childrenToProcess = childrenLists.toMutableMap()
       markRangesToReplace.forEach { (startMark, endMark) ->
-        val styledSpan = startMark.toSpan(
-          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size
-        )
+        val styledSpan =
+          startMark.toSpan(
+            parentSpan,
+            context,
+            displayLocale,
+            peerItemCount = markRangesToReplace.size,
+          )
         text.replaceMarksWithSpan(startMark, endMark, styledSpan)
         childrenToProcess.remove(startMark)?.finishListRecursively(
-          parentSpan = styledSpan, text, context, displayLocale
+          parentSpan = styledSpan,
+          text,
+          context,
+          displayLocale,
         )
       }
 
@@ -159,27 +179,31 @@ class LiTagHandler(
     class Ul(
       parentList: ListTag<*, *>?,
       parentMark: Mark<*>?,
-      private val indentationLevel: Int
+      private val indentationLevel: Int,
     ) : ListTag<Mark.BulletListItem, ListItemLeadingMarginSpan.UlSpan>(
-      parentList, parentMark, ::getLast
-    ) {
+        parentList,
+        parentMark,
+        ::getLast,
+      ) {
       override fun createMark(itemNumber: Int) = Mark.BulletListItem(indentationLevel)
     }
 
     /** [ListTag] for ordered lists. */
     class Ol(
       parentList: ListTag<*, *>?,
-      parentMark: Mark<*>?
+      parentMark: Mark<*>?,
     ) : ListTag<Mark.NumberListItem, ListItemLeadingMarginSpan.OlSpan>(
-      parentList, parentMark, ::getLast
-    ) {
+        parentList,
+        parentMark,
+        ::getLast,
+      ) {
       override fun createMark(itemNumber: Int) = Mark.NumberListItem(itemNumber)
     }
   }
 
   private data class MarkedRange<S : ListItemLeadingMarginSpan>(
     val startMark: Mark<S>,
-    val endMark: Mark.EndListItem
+    val endMark: Mark.EndListItem,
   )
 
   private sealed class Mark<S : ListItemLeadingMarginSpan> {
@@ -188,55 +212,59 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       context: Context,
       displayLocale: OppiaLocale.DisplayLocale,
-      peerItemCount: Int
+      peerItemCount: Int,
     ): S
 
     /** Marks the opening tag location of a list item inside an <ul> element. */
     class BulletListItem(
-      private val indentationLevel: Int
+      private val indentationLevel: Int,
     ) : Mark<ListItemLeadingMarginSpan.UlSpan>() {
       override fun equals(other: Any?) = this === other
+
       override fun hashCode() = System.identityHashCode(this)
 
       override fun toSpan(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
+        peerItemCount: Int,
       ) = ListItemLeadingMarginSpan.UlSpan(parentSpan, context, indentationLevel, displayLocale)
     }
 
     /** Marks the opening tag location of a list item inside an <ol> element. */
-    class NumberListItem(val number: Int) : Mark<ListItemLeadingMarginSpan.OlSpan>() {
+    class NumberListItem(
+      val number: Int,
+    ) : Mark<ListItemLeadingMarginSpan.OlSpan>() {
       override fun equals(other: Any?) = this === other
+
       override fun hashCode() = System.identityHashCode(this)
 
       override fun toSpan(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
-      ): ListItemLeadingMarginSpan.OlSpan {
-        return ListItemLeadingMarginSpan.OlSpan(
+        peerItemCount: Int,
+      ): ListItemLeadingMarginSpan.OlSpan =
+        ListItemLeadingMarginSpan.OlSpan(
           parentSpan,
           context,
           numberedItemPrefix = "${displayLocale.toHumanReadableString(number)}.",
           longestNumberedItemPrefix = "${displayLocale.toHumanReadableString(peerItemCount)}.",
-          displayLocale
+          displayLocale,
         )
-      }
     }
 
     /** A [Mark] that indicates the end of a list item in a developing spannable. */
     class EndListItem : Mark<ListItemLeadingMarginSpan>() {
       override fun equals(other: Any?) = this === other
+
       override fun hashCode() = System.identityHashCode(this)
 
       override fun toSpan(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
+        peerItemCount: Int,
       ) = error("Ending marks cannot be converted to spans.")
     }
   }
@@ -266,14 +294,13 @@ class LiTagHandler(
      *
      * The last span corresponds to the top of the "stack".
      */
-    private inline fun <reified T> getLast(text: Spanned) =
-      text.getSpans(0, text.length, T::class.java).lastOrNull()
+    private inline fun <reified T> getLast(text: Spanned) = text.getSpans(0, text.length, T::class.java).lastOrNull()
 
     /** Replaces the provided [startMark] from the [this] with the [styleSpan] span. */
     private fun <T : Mark<S>, S : ListItemLeadingMarginSpan> Spannable.replaceMarksWithSpan(
       startMark: T,
       endMark: Mark.EndListItem,
-      styleSpan: S
+      styleSpan: S,
     ) {
       // Find the range denoted by marks, remove the mark, then add the span to the same locations.
       val startMarkLocation = getSpanStart(startMark).also { removeSpan(startMark) }
@@ -288,7 +315,6 @@ class LiTagHandler(
      * Inserts an invisible [Mark] that doesn't do any styling. Instead, [replaceMarksWithSpan] will
      * later find the location of this span so it knows where the opening tag was.
      */
-    private fun <T : Mark<*>> Spannable.addMark(mark: T) =
-      setSpan(mark, length, length, Spanned.SPAN_MARK_MARK)
+    private fun <T : Mark<*>> Spannable.addMark(mark: T) = setSpan(mark, length, length, Spanned.SPAN_MARK_MARK)
   }
 }

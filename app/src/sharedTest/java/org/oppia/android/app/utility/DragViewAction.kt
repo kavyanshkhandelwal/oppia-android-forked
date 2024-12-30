@@ -33,7 +33,7 @@ private const val WAIT_BEFORE_SENDING_UP_MS = 400
 class DragViewAction(
   private val startCoordinatesProvider: CoordinatesProvider,
   private val endCoordinatesProvider: CoordinatesProvider,
-  private val precisionDescriber: PrecisionDescriber
+  private val precisionDescriber: PrecisionDescriber,
 ) : ViewAction {
   // Factor 1.5 is needed, otherwise a long press is not safely detected.
   private val longPressTimeout = (ViewConfiguration.getLongPressTimeout() * 1.5f).toLong()
@@ -42,7 +42,10 @@ class DragViewAction(
 
   override fun getConstraints(): Matcher<View> = allOf(isCompletelyDisplayed())
 
-  override fun perform(uiController: UiController, view: View) {
+  override fun perform(
+    uiController: UiController,
+    view: View,
+  ) {
     val startCoordinates = startCoordinatesProvider.calculateCoordinates(view)
     val endCoordinates = endCoordinatesProvider.calculateCoordinates(view)
     val precision = precisionDescriber.describePrecision()
@@ -63,16 +66,18 @@ class DragViewAction(
       // Wait before sending up because some drag handling logic may discard move events
       // that has been sent immediately before the up event.
       uiController.loopMainThreadForAtLeast(WAIT_BEFORE_SENDING_UP_MS.toLong())
-      status = if (!MotionEvents.sendUp(uiController, downEvent, endCoordinates)) {
-        MotionEvents.sendCancel(uiController, downEvent)
-        Swiper.Status.FAILURE
-      } else {
-        Swiper.Status.SUCCESS
-      }
+      status =
+        if (!MotionEvents.sendUp(uiController, downEvent, endCoordinates)) {
+          MotionEvents.sendCancel(uiController, downEvent)
+          Swiper.Status.FAILURE
+        } else {
+          Swiper.Status.SUCCESS
+        }
     } catch (re: RuntimeException) {
       // Using a RuntimeException because of the swiper class which generally throws a
       // Runtime Exception.
-      throw PerformException.Builder()
+      throw PerformException
+        .Builder()
         .withActionDescription(description)
         .withViewDescription(HumanReadables.describe(view))
         .withCause(re)
@@ -86,7 +91,8 @@ class DragViewAction(
       uiController.loopMainThreadForAtLeast(duration.toLong())
     }
     if (status == Swiper.Status.FAILURE) {
-      throw PerformException.Builder()
+      throw PerformException
+        .Builder()
         .withActionDescription(description)
         .withViewDescription(HumanReadables.describe(view))
         .withCause(java.lang.RuntimeException("$description failed"))
@@ -98,7 +104,10 @@ class DragViewAction(
    * Calculates [DRAG_STEP_COUNT] points between the start and end so that view can be smoothly
    * transitioned when performing drag action.
    */
-  private fun interpolate(start: FloatArray, end: FloatArray): Array<FloatArray> {
+  private fun interpolate(
+    start: FloatArray,
+    end: FloatArray,
+  ): Array<FloatArray> {
     val res = Array(DRAG_STEP_COUNT) { FloatArray(2) }
     for (i in 0 until DRAG_STEP_COUNT) {
       res[i][0] = start[0] + (end[0] - start[0]) * i / (DRAG_STEP_COUNT - 1f)
@@ -111,27 +120,25 @@ class DragViewAction(
 /** Class to find coordinates of an item within your RecyclerView. */
 class RecyclerViewCoordinatesProvider(
   private val position: Int,
-  private val childItemCoordinatesProvider: CoordinatesProvider
+  private val childItemCoordinatesProvider: CoordinatesProvider,
 ) : CoordinatesProvider {
-  override fun calculateCoordinates(view: View): FloatArray {
-    return childItemCoordinatesProvider.calculateCoordinates(
-      (view as RecyclerView).layoutManager!!.findViewByPosition(position)!!
+  override fun calculateCoordinates(view: View): FloatArray =
+    childItemCoordinatesProvider.calculateCoordinates(
+      (view as RecyclerView).layoutManager!!.findViewByPosition(position)!!,
     )
-  }
 }
 
 /** Class to find coordinates of a child with a given id. */
 class ChildViewCoordinatesProvider(
   private val childViewId: Int,
-  private val insideChildViewCoordinatesProvider: CoordinatesProvider
+  private val insideChildViewCoordinatesProvider: CoordinatesProvider,
 ) : CoordinatesProvider {
-  override fun calculateCoordinates(view: View): FloatArray {
-    return insideChildViewCoordinatesProvider.calculateCoordinates(
+  override fun calculateCoordinates(view: View): FloatArray =
+    insideChildViewCoordinatesProvider.calculateCoordinates(
       view.findViewById<View>(
-        childViewId
-      )
+        childViewId,
+      ),
     )
-  }
 }
 
 /** Class to provide coordinates above and under a View. */
@@ -142,7 +149,7 @@ enum class CustomGeneralLocation : CoordinatesProvider {
       view.getLocationOnScreen(screenLocation)
       return floatArrayOf(
         screenLocation[0] + view.width - 1f,
-        screenLocation[1] + view.height * 1.5f
+        screenLocation[1] + view.height * 1.5f,
       )
     }
   },
@@ -152,8 +159,8 @@ enum class CustomGeneralLocation : CoordinatesProvider {
       view.getLocationOnScreen(screenLocation)
       return floatArrayOf(
         screenLocation[0] + view.width - 1f,
-        screenLocation[1] - view.height * 0.5f
+        screenLocation[1] - view.height * 0.5f,
       )
     }
-  }
+  },
 }

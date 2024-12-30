@@ -25,14 +25,14 @@ class IntroFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val profileNickname =
       checkNotNull(
         arguments?.getProto(
           PROFILE_NICKNAME_ARGUMENT_KEY,
-          IntroFragmentArguments.getDefaultInstance()
-        )
+          IntroFragmentArguments.getDefaultInstance(),
+        ),
       ) {
         "Expected profileNickname to be included in the arguments for IntroFragment."
       }.profileNickname
@@ -46,7 +46,7 @@ class IntroFragment : InjectableFragment() {
       inflater,
       container,
       profileNickname,
-      profileId
+      profileId,
     )
   }
 }

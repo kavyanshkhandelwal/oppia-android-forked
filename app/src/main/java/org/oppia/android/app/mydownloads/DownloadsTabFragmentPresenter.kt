@@ -9,14 +9,20 @@ import javax.inject.Inject
 
 /** The presenter for [DownloadsTabFragment]. */
 @FragmentScope
-class DownloadsTabFragmentPresenter @Inject constructor() {
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    val binding =
-      DownloadsTabFragmentBinding.inflate(
-        inflater,
-        container,
-        /* attachToRoot= */ false
-      )
-    return binding.root
+class DownloadsTabFragmentPresenter
+  @Inject
+  constructor() {
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      val binding =
+        DownloadsTabFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
+      return binding.root
+    }
   }
-}

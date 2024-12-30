@@ -14,42 +14,45 @@ import javax.inject.Inject
 
 /** [ObservableViewModel] for concept card, providing rich text and worked examples. */
 @FragmentScope
-class ConceptCardViewModel @Inject constructor(
-  private val topicController: TopicController,
-  private val oppiaLogger: OppiaLogger
-) : ObservableViewModel() {
-  private lateinit var skillId: String
-  private lateinit var profileId: ProfileId
+class ConceptCardViewModel
+  @Inject
+  constructor(
+    private val topicController: TopicController,
+    private val oppiaLogger: OppiaLogger,
+  ) : ObservableViewModel() {
+    private lateinit var skillId: String
+    private lateinit var profileId: ProfileId
 
-  val conceptCardLiveData: LiveData<EphemeralConceptCard> by lazy {
-    processConceptCardLiveData()
-  }
-
-  fun initialize(skillId: String, profileId: ProfileId) {
-    this.skillId = skillId
-    this.profileId = profileId
-  }
-
-  private val conceptCardResultLiveData: LiveData<AsyncResult<EphemeralConceptCard>> by lazy {
-    topicController.getConceptCard(profileId, skillId).toLiveData()
-  }
-
-  private fun processConceptCardLiveData(): LiveData<EphemeralConceptCard> {
-    return Transformations.map(conceptCardResultLiveData, ::processConceptCardResult)
-  }
-
-  private fun processConceptCardResult(
-    conceptCardResult: AsyncResult<EphemeralConceptCard>
-  ): EphemeralConceptCard {
-    return when (conceptCardResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ConceptCardFragment", "Failed to retrieve Concept Card", conceptCardResult.error
-        )
-        EphemeralConceptCard.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> EphemeralConceptCard.getDefaultInstance()
-      is AsyncResult.Success -> conceptCardResult.value
+    val conceptCardLiveData: LiveData<EphemeralConceptCard> by lazy {
+      processConceptCardLiveData()
     }
+
+    fun initialize(
+      skillId: String,
+      profileId: ProfileId,
+    ) {
+      this.skillId = skillId
+      this.profileId = profileId
+    }
+
+    private val conceptCardResultLiveData: LiveData<AsyncResult<EphemeralConceptCard>> by lazy {
+      topicController.getConceptCard(profileId, skillId).toLiveData()
+    }
+
+    private fun processConceptCardLiveData(): LiveData<EphemeralConceptCard> =
+      Transformations.map(conceptCardResultLiveData, ::processConceptCardResult)
+
+    private fun processConceptCardResult(conceptCardResult: AsyncResult<EphemeralConceptCard>): EphemeralConceptCard =
+      when (conceptCardResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ConceptCardFragment",
+            "Failed to retrieve Concept Card",
+            conceptCardResult.error,
+          )
+          EphemeralConceptCard.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> EphemeralConceptCard.getDefaultInstance()
+        is AsyncResult.Success -> conceptCardResult.value
+      }
   }
-}

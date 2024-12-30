@@ -14,21 +14,22 @@ import javax.inject.Inject
  * their lowest form as per the ratio input interaction.
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class RatioInputIsEquivalentRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<RatioExpression> {
+class RatioInputIsEquivalentRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<RatioExpression> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
+        "x",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.RATIO_EXPRESSION,
-      "x",
-      this
-    )
+    override fun matches(
+      answer: RatioExpression,
+      input: RatioExpression,
+      classificationContext: ClassificationContext,
+    ): Boolean = answer.toSimplestForm() == input.toSimplestForm()
   }
-
-  override fun matches(
-    answer: RatioExpression,
-    input: RatioExpression,
-    classificationContext: ClassificationContext
-  ): Boolean = answer.toSimplestForm() == input.toSimplestForm()
-}

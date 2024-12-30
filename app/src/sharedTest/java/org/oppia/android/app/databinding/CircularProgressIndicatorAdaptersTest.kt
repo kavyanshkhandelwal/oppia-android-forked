@@ -102,17 +102,19 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = CircularProgressIndicatorAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class CircularProgressIndicatorAdaptersTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   var activityRule =
     ActivityScenarioRule<CircularProgressIndicatorAdaptersTestActivity>(
       CircularProgressIndicatorAdaptersTestActivity.createIntent(
-        ApplicationProvider.getApplicationContext()
-      )
+        ApplicationProvider.getApplicationContext(),
+      ),
     )
 
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -235,14 +237,12 @@ class CircularProgressIndicatorAdaptersTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun AppCompatActivity.findAutoBoundIndicatorView() =
-    findProgressIndicatorView(R.id.circular_progress_indicator_test_bound_view)
+  private fun AppCompatActivity.findAutoBoundIndicatorView() = findProgressIndicatorView(R.id.circular_progress_indicator_test_bound_view)
 
-  private fun AppCompatActivity.findUnboundIndicatorView() =
-    findProgressIndicatorView(R.id.circular_progress_indicator_test_unbound_view)
+  private fun AppCompatActivity.findUnboundIndicatorView() = findProgressIndicatorView(R.id.circular_progress_indicator_test_unbound_view)
 
   private fun AppCompatActivity.findProgressIndicatorView(
-    @IdRes viewId: Int
+    @IdRes viewId: Int,
   ): CircularProgressIndicator = findViewById(viewId)
 
   /**
@@ -265,11 +265,10 @@ class CircularProgressIndicatorAdaptersTest {
   private fun DeterminateDrawable<CircularProgressIndicatorSpec>.getCurrentIndicatorFraction() =
     javaClass.getAccessibleDeclaredField("indicatorFraction").getFloat(this)
 
-  private fun <T> Class<T>.getAccessibleDeclaredField(name: String): Field {
-    return checkNotNull(declaredFields.find { it.name == name }) {
+  private fun <T> Class<T>.getAccessibleDeclaredField(name: String): Field =
+    checkNotNull(declaredFields.find { it.name == name }) {
       "Failed to find field with name '$name' in class: $this."
     }.also { it.isAccessible = true }
-  }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -300,8 +299,8 @@ class CircularProgressIndicatorAdaptersTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -312,9 +311,13 @@ class CircularProgressIndicatorAdaptersTest {
     fun inject(test: CircularProgressIndicatorAdaptersTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCircularProgressIndicatorAdaptersTest_TestApplicationComponent.builder()
+      DaggerCircularProgressIndicatorAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -323,9 +326,12 @@ class CircularProgressIndicatorAdaptersTest {
       component.inject(test)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

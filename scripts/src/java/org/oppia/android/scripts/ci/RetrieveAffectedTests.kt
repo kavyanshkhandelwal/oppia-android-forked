@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
     println(
       "Usage: bazel run //scripts:retrieve_affected_tests --" +
         " <encoded_proto_in_base64> <path_to_bucket_name_output_file>" +
-        " <path_to_test_target_list_output_file>"
+        " <path_to_test_target_list_output_file>",
     )
     exitProcess(1)
   }

@@ -25,7 +25,10 @@ class StringToRatioParser {
    * This method should only be used when a user tries submitting an answer. Real-time error
    * detection should be done using [getRealTimeAnswerError], instead.
    */
-  fun getSubmitTimeError(text: String, numberOfTerms: Int): RatioParsingError {
+  fun getSubmitTimeError(
+    text: String,
+    numberOfTerms: Int,
+  ): RatioParsingError {
     val normalized = text.normalizeWhitespace()
     val ratio = parseRatioOrNull(normalized)
     return when {
@@ -47,13 +50,12 @@ class StringToRatioParser {
    * [getSubmitTimeError] should be used for that, instead. This method is meant to be used as a
    * quick sanity check for general validity, not for definite correctness.
    */
-  fun getRealTimeAnswerError(text: String): RatioParsingError {
-    return when {
+  fun getRealTimeAnswerError(text: String): RatioParsingError =
+    when {
       !text.matches(invalidCharsRegex) -> RatioParsingError.INVALID_CHARS
       text.contains("::") -> RatioParsingError.INVALID_COLONS
       else -> RatioParsingError.VALID
     }
-  }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
   fun parseRatioOrNull(text: String): RatioExpression? {
@@ -62,29 +64,32 @@ class StringToRatioParser {
     val components = rawComponents.mapNotNull { it.toIntOrNull() }
     return if (rawComponents.size == components.size) {
       RatioExpression.newBuilder().addAllRatioComponent(components).build()
-    } else null // Something is incorrect in the original formatting.
+    } else {
+      null // Something is incorrect in the original formatting.
+    }
   }
 
   /** Returns a [RatioExpression] parse from the specified raw text string. */
-  fun parseRatioOrThrow(text: String): RatioExpression {
-    return parseRatioOrNull(text)
+  fun parseRatioOrThrow(text: String): RatioExpression =
+    parseRatioOrNull(text)
       ?: throw IllegalArgumentException("Incorrectly formatted ratio: $text")
-  }
 
   /** Enum to store the errors of [RatioInputInteractionView]. */
-  enum class RatioParsingError(@StringRes private var error: Int?) {
+  enum class RatioParsingError(
+    @StringRes private var error: Int?,
+  ) {
     VALID(error = null),
     INVALID_CHARS(error = R.string.ratio_error_invalid_chars),
     INVALID_FORMAT(error = R.string.ratio_error_invalid_format),
     INVALID_COLONS(error = R.string.ratio_error_invalid_colons),
     INVALID_SIZE(error = R.string.ratio_error_invalid_size),
     INCLUDES_ZERO(error = R.string.ratio_error_includes_zero),
-    EMPTY_INPUT(error = R.string.ratio_error_empty_input);
+    EMPTY_INPUT(error = R.string.ratio_error_empty_input),
+    ;
 
     /**
      * Returns the string corresponding to this error's string resources, or null if there is none.
      */
-    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
-      error?.let(resourceHandler::getStringInLocale)
+    fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? = error?.let(resourceHandler::getStringInLocale)
   }
 }

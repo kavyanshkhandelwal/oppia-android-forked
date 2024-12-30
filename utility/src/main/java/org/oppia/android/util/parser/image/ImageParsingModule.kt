@@ -10,21 +10,15 @@ class ImageParsingModule {
   @Provides
   @DefaultGcsPrefix
   @Singleton
-  fun provideDefaultGcsPrefix(): String {
-    return "https://storage.googleapis.com"
-  }
+  fun provideDefaultGcsPrefix(): String = "https://storage.googleapis.com"
 
   @Provides
   @ImageDownloadUrlTemplate
   @Singleton
-  fun provideImageDownloadUrlTemplate(): String {
-    return "%s/%s/assets/image/%s"
-  }
+  fun provideImageDownloadUrlTemplate(): String = "%s/%s/assets/image/%s"
 
   @Provides
   @ThumbnailDownloadUrlTemplate
   @Singleton
-  fun provideThumbnailDownloadUrlTemplate(): String {
-    return "%s/%s/assets/thumbnail/%s"
-  }
+  fun provideThumbnailDownloadUrlTemplate(): String = "%s/%s/assets/thumbnail/%s"
 }

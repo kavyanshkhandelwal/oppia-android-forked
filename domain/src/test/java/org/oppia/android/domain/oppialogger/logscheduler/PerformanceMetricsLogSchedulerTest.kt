@@ -52,7 +52,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLogSchedulerTest.TestApplication::class)
 class PerformanceMetricsLogSchedulerTest {
-
   @Inject
   lateinit var performanceMetricsLogScheduler: PerformanceMetricsLogScheduler
 
@@ -67,48 +66,54 @@ class PerformanceMetricsLogSchedulerTest {
 
   private lateinit var workManager: WorkManager
 
-  private val workerCaseForSchedulingPeriodicBackgroundMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
-    )
-    .build()
+  private val workerCaseForSchedulingPeriodicBackgroundMetricLogs: Data =
+    Data
+      .Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER,
+      ).build()
 
-  private val workerCaseForSchedulingStorageUsageMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
-    )
-    .build()
+  private val workerCaseForSchedulingStorageUsageMetricLogs: Data =
+    Data
+      .Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.STORAGE_USAGE_WORKER,
+      ).build()
 
-  private val workerCaseForSchedulingPeriodicUiMetricLogs: Data = Data.Builder()
-    .putString(
-      MetricLogSchedulingWorker.WORKER_CASE_KEY,
-      MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
-    )
-    .build()
+  private val workerCaseForSchedulingPeriodicUiMetricLogs: Data =
+    Data
+      .Builder()
+      .putString(
+        MetricLogSchedulingWorker.WORKER_CASE_KEY,
+        MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER,
+      ).build()
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(metricLogSchedulingWorkerFactory)
-      .build()
+    val config =
+      Configuration
+        .Builder()
+        .setExecutor(SynchronousExecutor())
+        .setWorkerFactory(metricLogSchedulingWorkerFactory)
+        .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
   @Test
   fun testScheduler_enqueueRequestForPeriodicBackgroundMetrics_workRequestGetsEnqueued() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
-      .build()
+    val request =
+      PeriodicWorkRequest
+        .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
+        .setInputData(workerCaseForSchedulingPeriodicBackgroundMetricLogs)
+        .build()
 
     performanceMetricsLogScheduler.enqueueWorkRequestForPeriodicBackgroundMetrics(
       workManager,
-      request
+      request,
     )
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
@@ -120,14 +125,15 @@ class PerformanceMetricsLogSchedulerTest {
   fun testScheduler_enqueueRequestForPeriodicUiMetric_workRequestGetsEnqueued() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
-      .build()
+    val request =
+      PeriodicWorkRequest
+        .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
+        .setInputData(workerCaseForSchedulingPeriodicUiMetricLogs)
+        .build()
 
     performanceMetricsLogScheduler.enqueueWorkRequestForPeriodicUiMetrics(
       workManager,
-      request
+      request,
     )
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
@@ -139,14 +145,15 @@ class PerformanceMetricsLogSchedulerTest {
   fun testScheduler_enqueueRequestForStorageMetric_workRequestGetsEnqueued() {
     val workManager = WorkManager.getInstance(ApplicationProvider.getApplicationContext())
 
-    val request = PeriodicWorkRequest
-      .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
-      .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
-      .build()
+    val request =
+      PeriodicWorkRequest
+        .Builder(MetricLogSchedulingWorker::class.java, 15, TimeUnit.MINUTES)
+        .setInputData(workerCaseForSchedulingStorageUsageMetricLogs)
+        .build()
 
     performanceMetricsLogScheduler.enqueueWorkRequestForStorageUsage(
       workManager,
-      request
+      request,
     )
     testCoroutineDispatchers.runCurrent()
     val workInfo = workManager.getWorkInfoById(request.id)
@@ -155,7 +162,8 @@ class PerformanceMetricsLogSchedulerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent.builder()
+    DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -179,8 +187,8 @@ class PerformanceMetricsLogSchedulerTest {
       AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
       PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
-    ]
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -194,9 +202,12 @@ class PerformanceMetricsLogSchedulerTest {
     fun inject(performanceMetricsLogSchedulerTest: PerformanceMetricsLogSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

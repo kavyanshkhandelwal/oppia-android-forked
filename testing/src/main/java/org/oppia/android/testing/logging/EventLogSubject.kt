@@ -83,7 +83,7 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 @Suppress("unused", "MemberVisibilityCanBePrivate") // TODO(#4272): Remove suppression when tested.
 class EventLogSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: EventLog
+  private val actual: EventLog,
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Returns a [LongSubject] to test [EventLog.getTimestamp].
@@ -126,28 +126,25 @@ class EventLogSubject private constructor(
    * Returns an [AppLanguageSelectionSubject] to verify the under-test [EventLog]'s
    * [EventLog.getAppLanguageSelection] field.
    */
-  fun hasAppLanguageSelectionThat(): AppLanguageSelectionSubject =
-    AppLanguageSelectionSubject.assertThat(actual.appLanguageSelection)
+  fun hasAppLanguageSelectionThat(): AppLanguageSelectionSubject = AppLanguageSelectionSubject.assertThat(actual.appLanguageSelection)
 
   /**
    * Returns an [WrittenTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
    * [EventLog.getWrittenTranslationLanguageSelection] field.
    */
-  fun hasWrittenTranslationLanguageSelectionThat(): WrittenTranslationLanguageSelectionSubject {
-    return WrittenTranslationLanguageSelectionSubject.assertThat(
-      actual.writtenTranslationLanguageSelection
+  fun hasWrittenTranslationLanguageSelectionThat(): WrittenTranslationLanguageSelectionSubject =
+    WrittenTranslationLanguageSelectionSubject.assertThat(
+      actual.writtenTranslationLanguageSelection,
     )
-  }
 
   /**
    * Returns an [AudioTranslationLanguageSelectionSubject] to verify the under-test [EventLog]'s
    * [EventLog.getAudioTranslationLanguageSelection] field.
    */
-  fun hasAudioTranslationLanguageSelectionThat(): AudioTranslationLanguageSelectionSubject {
-    return AudioTranslationLanguageSelectionSubject.assertThat(
-      actual.audioTranslationLanguageSelection
+  fun hasAudioTranslationLanguageSelectionThat(): AudioTranslationLanguageSelectionSubject =
+    AudioTranslationLanguageSelectionSubject.assertThat(
+      actual.audioTranslationLanguageSelection,
     )
-  }
 
   /**
    * Verifies that the [EventLog] under test has a context corresponding to
@@ -1000,7 +997,7 @@ class EventLogSubject private constructor(
   fun hasSwitchInLessonLanguageContextThat(): SwitchInLessonLanguageEventContextSubject {
     hasSwitchInLessonLanguageContext()
     return SwitchInLessonLanguageEventContextSubject.assertThat(
-      actual.context.switchInLessonLanguage
+      actual.context.switchInLessonLanguage,
     )
   }
 
@@ -1009,9 +1006,7 @@ class EventLogSubject private constructor(
    * [hasOpenExplorationActivityContextThat] except for the conditions of, and subject returned
    * by, [hasSwitchInLessonLanguageContextThat].
    */
-  fun hasSwitchInLessonLanguageContextThat(
-    block: SwitchInLessonLanguageEventContextSubject.() -> Unit
-  ) {
+  fun hasSwitchInLessonLanguageContextThat(block: SwitchInLessonLanguageEventContextSubject.() -> Unit) {
     hasSwitchInLessonLanguageContextThat().block()
   }
 
@@ -1047,16 +1042,14 @@ class EventLogSubject private constructor(
   fun hasAbandonSurveyContextThat(): AbandonSurveyContextSubject {
     hasAbandonSurveyContext()
     return AbandonSurveyContextSubject.assertThat(
-      actual.context.abandonSurvey
+      actual.context.abandonSurvey,
     )
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasAbandonSurveyContextThat(
-    block: AbandonSurveyContextSubject.() -> Unit
-  ) {
+  fun hasAbandonSurveyContextThat(block: AbandonSurveyContextSubject.() -> Unit) {
     hasAbandonSurveyContextThat().block()
   }
 
@@ -1075,16 +1068,14 @@ class EventLogSubject private constructor(
   fun hasMandatorySurveyResponseContextThat(): MandatorySurveyResponseContextSubject {
     hasMandatorySurveyResponseContext()
     return MandatorySurveyResponseContextSubject.assertThat(
-      actual.context.mandatoryResponse
+      actual.context.mandatoryResponse,
     )
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasMandatorySurveyResponseContextThat(
-    block: MandatorySurveyResponseContextSubject.() -> Unit
-  ) {
+  fun hasMandatorySurveyResponseContextThat(block: MandatorySurveyResponseContextSubject.() -> Unit) {
     hasMandatorySurveyResponseContextThat().block()
   }
 
@@ -1103,16 +1094,14 @@ class EventLogSubject private constructor(
   fun hasShowSurveyPopupContextThat(): SurveyContextSubject {
     hasShowSurveyPopupContext()
     return SurveyContextSubject.assertThat(
-      actual.context.showSurveyPopup
+      actual.context.showSurveyPopup,
     )
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasShowSurveyPopupContextThat(
-    block: SurveyContextSubject.() -> Unit
-  ) {
+  fun hasShowSurveyPopupContextThat(block: SurveyContextSubject.() -> Unit) {
     hasShowSurveyPopupContextThat().block()
   }
 
@@ -1131,16 +1120,14 @@ class EventLogSubject private constructor(
   fun hasBeginSurveyContextThat(): SurveyContextSubject {
     hasBeginSurveyContext()
     return SurveyContextSubject.assertThat(
-      actual.context.beginSurvey
+      actual.context.beginSurvey,
     )
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasBeginSurveyContextThat(
-    block: SurveyContextSubject.() -> Unit
-  ) {
+  fun hasBeginSurveyContextThat(block: SurveyContextSubject.() -> Unit) {
     hasBeginSurveyContextThat().block()
   }
 
@@ -1148,18 +1135,15 @@ class EventLogSubject private constructor(
    * Verifies the [EventLog]'s context and returns a [FeatureFlagListContextSubject] to test the
    * corresponding context.
    */
-  fun hasFeatureFlagContextThat(): FeatureFlagListContextSubject {
-    return FeatureFlagListContextSubject.assertThat(
-      actual.context.featureFlagListContext
+  fun hasFeatureFlagContextThat(): FeatureFlagListContextSubject =
+    FeatureFlagListContextSubject.assertThat(
+      actual.context.featureFlagListContext,
     )
-  }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasFeatureFlagContextThat(
-    block: FeatureFlagListContextSubject.() -> Unit
-  ) {
+  fun hasFeatureFlagContextThat(block: FeatureFlagListContextSubject.() -> Unit) {
     hasFeatureFlagContextThat().block()
   }
 
@@ -1178,16 +1162,14 @@ class EventLogSubject private constructor(
   fun hasOptionalSurveyResponseContextThat(): OptionalSurveyResponseContextSubject {
     hasOptionalSurveyResponseContext()
     return OptionalSurveyResponseContextSubject.assertThat(
-      actual.context.optionalResponse
+      actual.context.optionalResponse,
     )
   }
 
   /**
    * Verifies the [EventLog]'s context and executes [block].
    */
-  fun hasOptionalSurveyResponseContextThat(
-    block: OptionalSurveyResponseContextSubject.() -> Unit
-  ) {
+  fun hasOptionalSurveyResponseContextThat(block: OptionalSurveyResponseContextSubject.() -> Unit) {
     hasOptionalSurveyResponseContextThat().block()
   }
 
@@ -1285,7 +1267,7 @@ class EventLogSubject private constructor(
   fun hasResumeLessonSubmitCorrectAnswerContextThat(): ExplorationContextSubject {
     hasResumeLessonSubmitCorrectAnswerContext()
     return ExplorationContextSubject.assertThat(
-      actual.context.resumeLessonSubmitCorrectAnswerContext
+      actual.context.resumeLessonSubmitCorrectAnswerContext,
     )
   }
 
@@ -1314,7 +1296,7 @@ class EventLogSubject private constructor(
   fun hasResumeLessonSubmitIncorrectAnswerContextThat(): ExplorationContextSubject {
     hasResumeLessonSubmitIncorrectAnswerContext()
     return ExplorationContextSubject.assertThat(
-      actual.context.resumeLessonSubmitIncorrectAnswerContext
+      actual.context.resumeLessonSubmitIncorrectAnswerContext,
     )
   }
 
@@ -1342,14 +1324,12 @@ class EventLogSubject private constructor(
   fun hasStartProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
     hasStartProfileOnboardingContext()
     return ProfileOnboardingContextSubject.assertThat(
-      actual.context.startProfileOnboardingEvent
+      actual.context.startProfileOnboardingEvent,
     )
   }
 
   /** Verifies the [EventLog]'s context and executes [block]. */
-  fun hasStartProfileOnboardingContextThat(
-    block: ProfileOnboardingContextSubject.() -> Unit
-  ) {
+  fun hasStartProfileOnboardingContextThat(block: ProfileOnboardingContextSubject.() -> Unit) {
     hasStartProfileOnboardingContextThat().block()
   }
 
@@ -1368,14 +1348,12 @@ class EventLogSubject private constructor(
   fun hasEndProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
     hasEndProfileOnboardingContext()
     return ProfileOnboardingContextSubject.assertThat(
-      actual.context.endProfileOnboardingEvent
+      actual.context.endProfileOnboardingEvent,
     )
   }
 
   /** Verifies the [EventLog]'s context and executes [block]. */
-  fun hasEndProfileOnboardingContextThat(
-    block: ProfileOnboardingContextSubject.() -> Unit
-  ) {
+  fun hasEndProfileOnboardingContextThat(block: ProfileOnboardingContextSubject.() -> Unit) {
     hasEndProfileOnboardingContextThat().block()
   }
 
@@ -1389,11 +1367,10 @@ class EventLogSubject private constructor(
    */
   class AppLanguageSelectionSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: AppLanguageSelection
+    private val actual: AppLanguageSelection,
   ) : LiteProtoSubject(metadata, actual) {
     /** Asserts that this selection corresponds to [USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT]. */
-    fun isUseSystemLanguageOrAppDefault(): Unit =
-      assertThat(actual.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
+    fun isUseSystemLanguageOrAppDefault(): Unit = assertThat(actual.selectionTypeCase).isEqualTo(USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT)
 
     /**
      * Asserts that this selection corresponds to
@@ -1410,16 +1387,14 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
-      assertThat(actual.selectedLanguage)
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> = assertThat(actual.selectedLanguage)
 
     companion object {
       /**
        * Returns a new [AppLanguageSelectionSubject] to verify aspects of the specified
        * [AppLanguageSelection] value.
        */
-      fun assertThat(actual: AppLanguageSelection): AppLanguageSelectionSubject =
-        assertAbout(::AppLanguageSelectionSubject).that(actual)
+      fun assertThat(actual: AppLanguageSelection): AppLanguageSelectionSubject = assertAbout(::AppLanguageSelectionSubject).that(actual)
     }
   }
 
@@ -1433,7 +1408,7 @@ class EventLogSubject private constructor(
    */
   class WrittenTranslationLanguageSelectionSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: WrittenTranslationLanguageSelection
+    private val actual: WrittenTranslationLanguageSelection,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Asserts that this selection corresponds to
@@ -1460,17 +1435,14 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
-      assertThat(actual.selectedLanguage)
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> = assertThat(actual.selectedLanguage)
 
     companion object {
       /**
        * Returns a new [WrittenTranslationLanguageSelectionSubject] to verify aspects of the
        * specified [WrittenTranslationLanguageSelection] value.
        */
-      fun assertThat(
-        actual: WrittenTranslationLanguageSelection
-      ): WrittenTranslationLanguageSelectionSubject =
+      fun assertThat(actual: WrittenTranslationLanguageSelection): WrittenTranslationLanguageSelectionSubject =
         assertAbout(::WrittenTranslationLanguageSelectionSubject).that(actual)
     }
   }
@@ -1485,7 +1457,7 @@ class EventLogSubject private constructor(
    */
   class AudioTranslationLanguageSelectionSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: AudioTranslationLanguageSelection
+    private val actual: AudioTranslationLanguageSelection,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Asserts that this selection corresponds to
@@ -1512,17 +1484,14 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> =
-      assertThat(actual.selectedLanguage)
+    fun isSelectedLanguageThat(): ComparableSubject<OppiaLanguage> = assertThat(actual.selectedLanguage)
 
     companion object {
       /**
        * Returns a new [AudioTranslationLanguageSelectionSubject] to verify aspects of the
        * specified [AudioTranslationLanguageSelection] value.
        */
-      fun assertThat(
-        actual: AudioTranslationLanguageSelection
-      ): AudioTranslationLanguageSelectionSubject =
+      fun assertThat(actual: AudioTranslationLanguageSelection): AudioTranslationLanguageSelectionSubject =
         assertAbout(::AudioTranslationLanguageSelectionSubject).that(actual)
     }
   }
@@ -1537,7 +1506,7 @@ class EventLogSubject private constructor(
    */
   class CardContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.CardContext
+    private val actual: EventLog.CardContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test [EventLog.CardContext.getExplorationDetails].
@@ -1545,8 +1514,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
      */
-    fun hasExplorationDetailsThat(): ExplorationContextSubject =
-      ExplorationContextSubject.assertThat(actual.explorationDetails)
+    fun hasExplorationDetailsThat(): ExplorationContextSubject = ExplorationContextSubject.assertThat(actual.explorationDetails)
 
     /**
      * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
@@ -1569,8 +1537,7 @@ class EventLogSubject private constructor(
        * Returns a new [CardContextSubject] to verify aspects of the specified
        * [EventLog.CardContext] value.
        */
-      fun assertThat(actual: EventLog.CardContext): CardContextSubject =
-        assertAbout(::CardContextSubject).that(actual)
+      fun assertThat(actual: EventLog.CardContext): CardContextSubject = assertAbout(::CardContextSubject).that(actual)
     }
   }
 
@@ -1584,7 +1551,7 @@ class EventLogSubject private constructor(
    */
   class ConceptCardContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.ConceptCardContext
+    private val actual: EventLog.ConceptCardContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.ConceptCardContext.getSkillId].
@@ -1599,8 +1566,7 @@ class EventLogSubject private constructor(
        * Returns a new [ConceptCardContextSubject] to verify aspects of the specified
        * [EventLog.ConceptCardContext] value.
        */
-      fun assertThat(actual: EventLog.ConceptCardContext): ConceptCardContextSubject =
-        assertAbout(::ConceptCardContextSubject).that(actual)
+      fun assertThat(actual: EventLog.ConceptCardContext): ConceptCardContextSubject = assertAbout(::ConceptCardContextSubject).that(actual)
     }
   }
 
@@ -1614,7 +1580,7 @@ class EventLogSubject private constructor(
    */
   class ExplorationContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.ExplorationContext
+    private val actual: EventLog.ExplorationContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.ExplorationContext.getClassroomId].
@@ -1679,8 +1645,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
      */
-    fun hasLearnerDetailsThat(): LearnerDetailsContextSubject =
-      LearnerDetailsContextSubject.assertThat(actual.learnerDetails)
+    fun hasLearnerDetailsThat(): LearnerDetailsContextSubject = LearnerDetailsContextSubject.assertThat(actual.learnerDetails)
 
     /**
      * Executes [block] in the context returned by [hasLearnerDetailsThat], similar to
@@ -1695,8 +1660,7 @@ class EventLogSubject private constructor(
        * Returns a new [ExplorationContextSubject] to verify aspects of the specified
        * [EventLog.ExplorationContext] value.
        */
-      fun assertThat(actual: EventLog.ExplorationContext): ExplorationContextSubject =
-        assertAbout(::ExplorationContextSubject).that(actual)
+      fun assertThat(actual: EventLog.ExplorationContext): ExplorationContextSubject = assertAbout(::ExplorationContextSubject).that(actual)
     }
   }
 
@@ -1710,7 +1674,7 @@ class EventLogSubject private constructor(
    */
   class HintContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.HintContext
+    private val actual: EventLog.HintContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test [EventLog.HintContext.getExplorationDetails].
@@ -1718,8 +1682,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
      */
-    fun hasExplorationDetailsThat(): ExplorationContextSubject =
-      ExplorationContextSubject.assertThat(actual.explorationDetails)
+    fun hasExplorationDetailsThat(): ExplorationContextSubject = ExplorationContextSubject.assertThat(actual.explorationDetails)
 
     /**
      * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
@@ -1742,8 +1705,7 @@ class EventLogSubject private constructor(
        * Returns a new [HintContextSubject] to verify aspects of the specified
        * [EventLog.HintContext] value.
        */
-      fun assertThat(actual: EventLog.HintContext): HintContextSubject =
-        assertAbout(::HintContextSubject).that(actual)
+      fun assertThat(actual: EventLog.HintContext): HintContextSubject = assertAbout(::HintContextSubject).that(actual)
     }
   }
 
@@ -1757,7 +1719,7 @@ class EventLogSubject private constructor(
    */
   class LearnerDetailsContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.LearnerDetailsContext
+    private val actual: EventLog.LearnerDetailsContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.LearnerDetailsContext.getLearnerId].
@@ -1795,7 +1757,7 @@ class EventLogSubject private constructor(
    */
   class VoiceoverActionContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.VoiceoverActionContext
+    private val actual: EventLog.VoiceoverActionContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
@@ -1804,8 +1766,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
      */
-    fun hasExplorationDetailsThat(): ExplorationContextSubject =
-      ExplorationContextSubject.assertThat(actual.explorationDetails)
+    fun hasExplorationDetailsThat(): ExplorationContextSubject = ExplorationContextSubject.assertThat(actual.explorationDetails)
 
     /**
      * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
@@ -1851,7 +1812,7 @@ class EventLogSubject private constructor(
    */
   class QuestionContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.QuestionContext
+    private val actual: EventLog.QuestionContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.QuestionContext.getQuestionId].
@@ -1874,8 +1835,7 @@ class EventLogSubject private constructor(
        * Returns a new [QuestionContextSubject] to verify aspects of the specified
        * [EventLog.QuestionContext] value.
        */
-      fun assertThat(actual: EventLog.QuestionContext): QuestionContextSubject =
-        assertAbout(::QuestionContextSubject).that(actual)
+      fun assertThat(actual: EventLog.QuestionContext): QuestionContextSubject = assertAbout(::QuestionContextSubject).that(actual)
     }
   }
 
@@ -1889,7 +1849,7 @@ class EventLogSubject private constructor(
    */
   class RevisionCardContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.RevisionCardContext
+    private val actual: EventLog.RevisionCardContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.RevisionCardContext.getTopicId].
@@ -1927,7 +1887,7 @@ class EventLogSubject private constructor(
    */
   class StoryContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.StoryContext
+    private val actual: EventLog.StoryContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.StoryContext.getTopicId].
@@ -1950,8 +1910,7 @@ class EventLogSubject private constructor(
        * Returns a new [StoryContextSubject] to verify aspects of the specified
        * [EventLog.StoryContext] value.
        */
-      fun assertThat(actual: EventLog.StoryContext): StoryContextSubject =
-        assertAbout(::StoryContextSubject).that(actual)
+      fun assertThat(actual: EventLog.StoryContext): StoryContextSubject = assertAbout(::StoryContextSubject).that(actual)
     }
   }
 
@@ -1965,7 +1924,7 @@ class EventLogSubject private constructor(
    */
   class SubmitAnswerContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.SubmitAnswerContext
+    private val actual: EventLog.SubmitAnswerContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
@@ -1974,8 +1933,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty proto if it's not
      * defined in the context.
      */
-    fun hasExplorationDetailsThat(): ExplorationContextSubject =
-      ExplorationContextSubject.assertThat(actual.explorationDetails)
+    fun hasExplorationDetailsThat(): ExplorationContextSubject = ExplorationContextSubject.assertThat(actual.explorationDetails)
 
     /**
      * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
@@ -2013,7 +1971,7 @@ class EventLogSubject private constructor(
    */
   class TopicContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.TopicContext
+    private val actual: EventLog.TopicContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.TopicContext.getTopicId].
@@ -2028,8 +1986,7 @@ class EventLogSubject private constructor(
        * Returns a new [TopicContextSubject] to verify aspects of the specified
        * [EventLog.TopicContext] value.
        */
-      fun assertThat(actual: EventLog.TopicContext): TopicContextSubject =
-        assertAbout(::TopicContextSubject).that(actual)
+      fun assertThat(actual: EventLog.TopicContext): TopicContextSubject = assertAbout(::TopicContextSubject).that(actual)
     }
   }
 
@@ -2043,7 +2000,7 @@ class EventLogSubject private constructor(
    */
   class SwitchInLessonLanguageEventContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.SwitchInLessonLanguageEventContext
+    private val actual: EventLog.SwitchInLessonLanguageEventContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [ExplorationContextSubject] to test
@@ -2052,8 +2009,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasExplorationDetailsThat(): ExplorationContextSubject =
-      ExplorationContextSubject.assertThat(actual.explorationDetails)
+    fun hasExplorationDetailsThat(): ExplorationContextSubject = ExplorationContextSubject.assertThat(actual.explorationDetails)
 
     /**
      * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
@@ -2070,8 +2026,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasSwitchFromLanguageThat(): ComparableSubject<OppiaLanguage> =
-      assertThat(actual.switchFromLanguage)
+    fun hasSwitchFromLanguageThat(): ComparableSubject<OppiaLanguage> = assertThat(actual.switchFromLanguage)
 
     /**
      * Returns a [ComparableSubject] to test
@@ -2080,17 +2035,14 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasSwitchToLanguageThat(): ComparableSubject<OppiaLanguage> =
-      assertThat(actual.switchToLanguage)
+    fun hasSwitchToLanguageThat(): ComparableSubject<OppiaLanguage> = assertThat(actual.switchToLanguage)
 
     companion object {
       /**
        * Returns a new [TopicContextSubject] to verify aspects of the specified
        * [EventLog.TopicContext] value.
        */
-      fun assertThat(
-        actual: EventLog.SwitchInLessonLanguageEventContext
-      ): SwitchInLessonLanguageEventContextSubject =
+      fun assertThat(actual: EventLog.SwitchInLessonLanguageEventContext): SwitchInLessonLanguageEventContextSubject =
         assertAbout(::SwitchInLessonLanguageEventContextSubject).that(actual)
     }
   }
@@ -2105,7 +2057,7 @@ class EventLogSubject private constructor(
    */
   class OptionalSurveyResponseContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.OptionalSurveyResponseContext
+    private val actual: EventLog.OptionalSurveyResponseContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [SurveyResponseContextSubject] to test
@@ -2114,8 +2066,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
-      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject = SurveyResponseContextSubject.assertThat(actual.surveyDetails)
 
     /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
     fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
@@ -2129,17 +2080,15 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasFeedbackAnswerThat(): StringSubject =
-      assertThat(actual.feedbackAnswer)
+    fun hasFeedbackAnswerThat(): StringSubject = assertThat(actual.feedbackAnswer)
 
     companion object {
       /**
        * Returns a new [OptionalSurveyResponseContextSubject] to verify aspects of the specified
        * [EventLog.OptionalSurveyResponseContext] value.
        */
-      fun assertThat(actual: EventLog.OptionalSurveyResponseContext):
-        OptionalSurveyResponseContextSubject =
-          assertAbout(::OptionalSurveyResponseContextSubject).that(actual)
+      fun assertThat(actual: EventLog.OptionalSurveyResponseContext): OptionalSurveyResponseContextSubject =
+        assertAbout(::OptionalSurveyResponseContextSubject).that(actual)
     }
   }
 
@@ -2153,7 +2102,7 @@ class EventLogSubject private constructor(
    */
   class MandatorySurveyResponseContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.MandatorySurveyResponseContext
+    private val actual: EventLog.MandatorySurveyResponseContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [SurveyResponseContextSubject] to test
@@ -2162,8 +2111,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
-      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject = SurveyResponseContextSubject.assertThat(actual.surveyDetails)
 
     /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
     fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
@@ -2177,8 +2125,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasUserTypeAnswerThat(): ComparableSubject<UserTypeAnswer> =
-      assertThat(actual.userTypeAnswer)
+    fun hasUserTypeAnswerThat(): ComparableSubject<UserTypeAnswer> = assertThat(actual.userTypeAnswer)
 
     /**
      * Returns a [ComparableSubject] to test
@@ -2187,8 +2134,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasMarketFitAnswerThat(): ComparableSubject<MarketFitAnswer> =
-      assertThat(actual.marketFitAnswer)
+    fun hasMarketFitAnswerThat(): ComparableSubject<MarketFitAnswer> = assertThat(actual.marketFitAnswer)
 
     /**
      * Returns a [IntegerSubject] to test
@@ -2197,17 +2143,15 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasNpsScoreAnswerThat(): IntegerSubject =
-      assertThat(actual.npsScoreAnswer)
+    fun hasNpsScoreAnswerThat(): IntegerSubject = assertThat(actual.npsScoreAnswer)
 
     companion object {
       /**
        * Returns a new [MandatorySurveyResponseContextSubject] to verify aspects of the specified
        * [EventLog.MandatorySurveyResponseContext] value.
        */
-      fun assertThat(actual: EventLog.MandatorySurveyResponseContext):
-        MandatorySurveyResponseContextSubject =
-          assertAbout(::MandatorySurveyResponseContextSubject).that(actual)
+      fun assertThat(actual: EventLog.MandatorySurveyResponseContext): MandatorySurveyResponseContextSubject =
+        assertAbout(::MandatorySurveyResponseContextSubject).that(actual)
     }
   }
 
@@ -2221,7 +2165,7 @@ class EventLogSubject private constructor(
    */
   class AbandonSurveyContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.AbandonSurveyContext
+    private val actual: EventLog.AbandonSurveyContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [SurveyResponseContextSubject] to test
@@ -2230,8 +2174,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasSurveyDetailsThat(): SurveyResponseContextSubject =
-      SurveyResponseContextSubject.assertThat(actual.surveyDetails)
+    fun hasSurveyDetailsThat(): SurveyResponseContextSubject = SurveyResponseContextSubject.assertThat(actual.surveyDetails)
 
     /** Executes [block] in the context returned by [hasSurveyDetailsThat]. */
     fun hasSurveyDetailsThat(block: SurveyResponseContextSubject.() -> Unit) {
@@ -2244,8 +2187,7 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasQuestionNameThat(): ComparableSubject<SurveyQuestionName> =
-      assertThat(actual.questionName)
+    fun hasQuestionNameThat(): ComparableSubject<SurveyQuestionName> = assertThat(actual.questionName)
 
     companion object {
       /**
@@ -2267,7 +2209,7 @@ class EventLogSubject private constructor(
    */
   class SurveyResponseContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.SurveyResponseContext
+    private val actual: EventLog.SurveyResponseContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.SurveyResponseContext.getSurveyId].
@@ -2305,7 +2247,7 @@ class EventLogSubject private constructor(
    */
   class SurveyContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.SurveyContext
+    private val actual: EventLog.SurveyContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.SurveyContext.getExplorationId].
@@ -2328,8 +2270,7 @@ class EventLogSubject private constructor(
        * Returns a new [SurveyContextSubject] to verify aspects of the specified
        * [EventLog.SurveyContext] value.
        */
-      fun assertThat(actual: EventLog.SurveyContext): SurveyContextSubject =
-        assertAbout(::SurveyContextSubject).that(actual)
+      fun assertThat(actual: EventLog.SurveyContext): SurveyContextSubject = assertAbout(::SurveyContextSubject).that(actual)
     }
   }
 
@@ -2343,7 +2284,7 @@ class EventLogSubject private constructor(
    */
   class FeatureFlagListContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.FeatureFlagListContext
+    private val actual: EventLog.FeatureFlagListContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [EventLog.FeatureFlagListContext.getUniqueUserUuid].
@@ -2376,9 +2317,8 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to empty object if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagItemContextThatAtIndex(index: Int): FeatureFlagItemContextSubject {
-      return FeatureFlagItemContextSubject.assertThat(actual.featureFlagsList[index])
-    }
+    fun hasFeatureFlagItemContextThatAtIndex(index: Int): FeatureFlagItemContextSubject =
+      FeatureFlagItemContextSubject.assertThat(actual.featureFlagsList[index])
 
     /**
      * Verifies the [EventLog]'s context and executes [block] in the same way as
@@ -2387,7 +2327,7 @@ class EventLogSubject private constructor(
      */
     fun hasFeatureFlagItemContextThatAtIndex(
       index: Int,
-      block: FeatureFlagItemContextSubject.() -> Unit
+      block: FeatureFlagItemContextSubject.() -> Unit,
     ) {
       hasFeatureFlagItemContextThatAtIndex(index).block()
     }
@@ -2413,7 +2353,7 @@ class EventLogSubject private constructor(
    */
   class FeatureFlagItemContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: FeatureFlagItemContext
+    private val actual: FeatureFlagItemContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test
@@ -2440,17 +2380,15 @@ class EventLogSubject private constructor(
      * This method never fails since the underlying property defaults to the unspecified enum value
      * if it's not defined in the context.
      */
-    fun hasFeatureFlagSyncStateThat(): ComparableSubject<SyncStatus> =
-      assertThat(actual.flagSyncStatus)
+    fun hasFeatureFlagSyncStateThat(): ComparableSubject<SyncStatus> = assertThat(actual.flagSyncStatus)
 
     companion object {
       /**
        * Returns a new [FeatureFlagItemContextSubject] to verify aspects of the specified
        * [EventLog.FeatureFlagItemContext] value.
        */
-      fun assertThat(actual: FeatureFlagItemContext?):
-        FeatureFlagItemContextSubject =
-          assertAbout(::FeatureFlagItemContextSubject).that(actual)
+      fun assertThat(actual: FeatureFlagItemContext?): FeatureFlagItemContextSubject =
+        assertAbout(::FeatureFlagItemContextSubject).that(actual)
     }
   }
 
@@ -2464,7 +2402,7 @@ class EventLogSubject private constructor(
    */
   class ProfileOnboardingContextSubject private constructor(
     metadata: FailureMetadata,
-    private val actual: EventLog.ProfileOnboardingContext
+    private val actual: EventLog.ProfileOnboardingContext,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [LiteProtoSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].

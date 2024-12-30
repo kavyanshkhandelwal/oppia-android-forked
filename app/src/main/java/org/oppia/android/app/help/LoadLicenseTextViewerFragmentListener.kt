@@ -10,5 +10,8 @@ interface LoadLicenseTextViewerFragmentListener {
    *   [ThirdPartyDependencyListFragment]
    * @param licenseIndex index of the license clicked by the user in the [LicenseListFragment]
    */
-  fun loadLicenseTextViewerFragment(dependencyIndex: Int, licenseIndex: Int)
+  fun loadLicenseTextViewerFragment(
+    dependencyIndex: Int,
+    licenseIndex: Int,
+  )
 }

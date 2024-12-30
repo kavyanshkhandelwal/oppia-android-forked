@@ -1,4 +1,6 @@
-// ktlint-disable filename
+
+@file:Suppress("ktlint:standard:filename")
+
 package org.oppia.android.util.gcsresource
 
 import javax.inject.Qualifier

@@ -92,10 +92,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = AppCompatCheckBoxBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AppCompatCheckBoxBindingAdaptersTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -104,8 +103,8 @@ class AppCompatCheckBoxBindingAdaptersTest {
     ActivityScenarioRule(
       Intent(
         ApplicationProvider.getApplicationContext(),
-        AppCompatCheckBoxBindingAdaptersTestActivity::class.java
-      )
+        AppCompatCheckBoxBindingAdaptersTestActivity::class.java,
+      ),
     )
 
   private var colorRgb: Int = Color.valueOf(0x10000).toArgb()
@@ -130,11 +129,8 @@ class AppCompatCheckBoxBindingAdaptersTest {
     }
   }
 
-  private fun getAppCompatCheckBox(
-    it: AppCompatCheckBoxBindingAdaptersTestActivity
-  ): AppCompatCheckBox {
-    return it.findViewById(R.id.test_check_box)
-  }
+  private fun getAppCompatCheckBox(it: AppCompatCheckBoxBindingAdaptersTestActivity): AppCompatCheckBox =
+    it.findViewById(R.id.test_check_box)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -169,10 +165,9 @@ class AppCompatCheckBoxBindingAdaptersTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
@@ -182,9 +177,13 @@ class AppCompatCheckBoxBindingAdaptersTest {
     fun inject(appCompatCheckBoxBindingAdaptersTest: AppCompatCheckBoxBindingAdaptersTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAppCompatCheckBoxBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerAppCompatCheckBoxBindingAdaptersTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -193,9 +192,12 @@ class AppCompatCheckBoxBindingAdaptersTest {
       component.inject(appCompatCheckBoxBindingAdaptersTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

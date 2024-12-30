@@ -70,16 +70,16 @@ class FractionParser {
   }
 
   /** Returns a [Fraction] parse from the specified raw text string. */
-  fun parseFractionFromString(text: String): Fraction {
-    return parseFraction(text)
+  fun parseFractionFromString(text: String): Fraction =
+    parseFraction(text)
       ?: throw IllegalArgumentException("Incorrectly formatted fraction: $text")
-  }
 
   private fun parseMixedNumber(inputText: String): Fraction? {
     val mixedNumberMatch = mixedNumberRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText, numeratorText, denominatorText) =
       mixedNumberMatch.groupValues
-    return Fraction.newBuilder()
+    return Fraction
+      .newBuilder()
       .setIsNegative(isInputNegative(inputText))
       .setWholeNumber(wholeNumberText.toInt())
       .setNumerator(numeratorText.toInt())
@@ -91,7 +91,8 @@ class FractionParser {
     val fractionOnlyMatch = fractionOnlyRegex.matchEntire(inputText) ?: return null
     val (_, numeratorText, denominatorText) = fractionOnlyMatch.groupValues
     // Fraction-only numbers imply no whole number.
-    return Fraction.newBuilder()
+    return Fraction
+      .newBuilder()
       .setIsNegative(isInputNegative(inputText))
       .setNumerator(numeratorText.toInt())
       .setDenominator(denominatorText.toInt())
@@ -102,7 +103,8 @@ class FractionParser {
     val wholeNumberMatch = wholeNumberOnlyRegex.matchEntire(inputText) ?: return null
     val (_, wholeNumberText) = wholeNumberMatch.groupValues
     // Whole number fractions imply '0/1' fractional parts.
-    return Fraction.newBuilder()
+    return Fraction
+      .newBuilder()
       .setIsNegative(isInputNegative(inputText))
       .setWholeNumber(wholeNumberText.toInt())
       .setNumerator(0)
@@ -136,6 +138,6 @@ class FractionParser {
     NUMBER_TOO_LONG,
 
     /** Indicates that the input text was empty. */
-    EMPTY_INPUT
+    EMPTY_INPUT,
   }
 }

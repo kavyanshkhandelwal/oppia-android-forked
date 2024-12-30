@@ -22,8 +22,6 @@ class DownloadsTabFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return downloadsTabFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = downloadsTabFragmentPresenter.handleCreateView(inflater, container)
 }

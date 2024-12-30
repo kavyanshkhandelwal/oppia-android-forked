@@ -97,7 +97,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @Config(
   application = AdministratorControlsFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class AdministratorControlsFragmentTest {
   @get:Rule
@@ -131,8 +131,8 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickEditProfile_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
-      )
+        0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.edit_profiles_text_view))
@@ -151,14 +151,14 @@ class AdministratorControlsFragmentTest {
   fun testAdministratorControlsFragment_clickAppVersion_checkLoadingTheCorrectFragment() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
-        0
-      )
+        0,
+      ),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
+          3,
+        ),
       )
       onView(withId(R.id.app_version_text_view)).perform(click())
       it.onActivity { activity ->
@@ -174,7 +174,7 @@ class AdministratorControlsFragmentTest {
     val profileId = ProfileId.newBuilder().setInternalId(internalProifleId).build()
     return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
       context,
-      profileId
+      profileId,
     )
   }
 
@@ -206,8 +206,8 @@ class AdministratorControlsFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -218,9 +218,13 @@ class AdministratorControlsFragmentTest {
     fun inject(testAdministratorControlsFragmentTest: AdministratorControlsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAdministratorControlsFragmentTest_TestApplicationComponent.builder()
+      DaggerAdministratorControlsFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -229,9 +233,12 @@ class AdministratorControlsFragmentTest {
       component.inject(testAdministratorControlsFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -17,7 +17,6 @@ import javax.inject.Inject
 class PoliciesActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToPoliciesListener {
-
   @Inject
   lateinit var policiesActivityPresenter: PoliciesActivityPresenter
 
@@ -28,8 +27,8 @@ class PoliciesActivity :
     policiesActivityPresenter.handleOnCreate(
       intent.getProtoExtra(
         POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO,
-        PoliciesActivityParams.getDefaultInstance()
-      )
+        PoliciesActivityParams.getDefaultInstance(),
+      ),
     )
   }
 
@@ -38,7 +37,10 @@ class PoliciesActivity :
     const val POLICIES_ACTIVITY_POLICY_PAGE_PARAMS_PROTO = "PoliciesActivity.policy_page"
 
     /** Returns the [Intent] for opening [PoliciesActivity] for the specified [policyPage]. */
-    fun createPoliciesActivityIntent(context: Context, policyPage: PolicyPage): Intent {
+    fun createPoliciesActivityIntent(
+      context: Context,
+      policyPage: PolicyPage,
+    ): Intent {
       val policiesActivityParams =
         PoliciesActivityParams
           .newBuilder()

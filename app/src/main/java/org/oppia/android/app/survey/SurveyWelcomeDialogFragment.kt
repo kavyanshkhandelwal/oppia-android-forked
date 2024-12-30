@@ -36,26 +36,29 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
       profileId: ProfileId,
       topicId: String,
       explorationId: String,
-      mandatoryQuestionNames: List<SurveyQuestionName>
+      mandatoryQuestionNames: List<SurveyQuestionName>,
     ): SurveyWelcomeDialogFragment {
-      val args = SurveyWelcomeDialogFragmentArguments.newBuilder().apply {
-        this.topicId = topicId
-        this.explorationId = explorationId
-        this.addAllQuestions(
-          extractQuestions(mandatoryQuestionNames)
-        )
-      }.build()
+      val args =
+        SurveyWelcomeDialogFragmentArguments
+          .newBuilder()
+          .apply {
+            this.topicId = topicId
+            this.explorationId = explorationId
+            this.addAllQuestions(
+              extractQuestions(mandatoryQuestionNames),
+            )
+          }.build()
       return SurveyWelcomeDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(SURVEY_WELCOME_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(SURVEY_WELCOME_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
 
-    private fun extractQuestions(questionNames: List<SurveyQuestionName>): List<Int> {
-      return questionNames.map { questionName -> questionName.number }
-    }
+    private fun extractQuestions(questionNames: List<SurveyQuestionName>): List<Int> =
+      questionNames.map { questionName -> questionName.number }
   }
 
   override fun onAttach(context: Context) {
@@ -71,17 +74,18 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
     val arguments =
       checkNotNull(
-        arguments
+        arguments,
       ) { "Expected arguments to be passed to SurveyWelcomeDialogFragment" }
 
-    val args = arguments.getProto(
-      SURVEY_WELCOME_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-      SurveyWelcomeDialogFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        SURVEY_WELCOME_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        SurveyWelcomeDialogFragmentArguments.getDefaultInstance(),
+      )
 
     val profileId = arguments.extractCurrentUserProfileId()
     val topicId = args.topicId!!
@@ -94,13 +98,12 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
       profileId,
       topicId,
       explorationId,
-      surveyQuestions
+      surveyQuestions,
     )
   }
 
-  private fun getQuestions(questionNumberList: List<Int>): List<SurveyQuestionName> {
-    return questionNumberList.map { number -> SurveyQuestionName.forNumber(number) }
-  }
+  private fun getQuestions(questionNumberList: List<Int>): List<SurveyQuestionName> =
+    questionNumberList.map { number -> SurveyQuestionName.forNumber(number) }
 
   override fun onStart() {
     super.onStart()

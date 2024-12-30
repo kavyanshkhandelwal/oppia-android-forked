@@ -12,7 +12,6 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class StringExtensionsTest {
-
   @Test
   fun testRemoveWhitespace_stringWithoutSpaces_returnsOriginalString() {
     val stringWithoutSpaces = "1:2:3"

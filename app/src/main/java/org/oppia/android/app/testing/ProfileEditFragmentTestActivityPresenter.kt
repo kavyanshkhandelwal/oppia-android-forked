@@ -9,24 +9,27 @@ import javax.inject.Inject
 
 /** The presenter for [ProfileEditFragmentTestActivity]. */
 @ActivityScope
-class ProfileEditFragmentTestActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity
-) {
-  /** Handles onCreate function of [ProfileEditActivity]. */
-  fun handleOnCreate() {
-    activity.setContentView(R.layout.profile_edit_activity)
-    val profileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: 0
-    if (getProfileEditFragment() == null) {
-      activity.supportFragmentManager.beginTransaction().replace(
-        R.id.profile_edit_fragment_placeholder,
-        ProfileEditFragment.newInstance(profileId, isMultipane = false)
-      ).commitNow()
+class ProfileEditFragmentTestActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    /** Handles onCreate function of [ProfileEditActivity]. */
+    fun handleOnCreate() {
+      activity.setContentView(R.layout.profile_edit_activity)
+      val profileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: 0
+      if (getProfileEditFragment() == null) {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .replace(
+            R.id.profile_edit_fragment_placeholder,
+            ProfileEditFragment.newInstance(profileId, isMultipane = false),
+          ).commitNow()
+      }
     }
-  }
 
-  private fun getProfileEditFragment(): ProfileEditFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(R.id.profile_edit_fragment_placeholder) as? ProfileEditFragment
+    private fun getProfileEditFragment(): ProfileEditFragment? =
+      activity
+        .supportFragmentManager
+        .findFragmentById(R.id.profile_edit_fragment_placeholder) as? ProfileEditFragment
   }
-}

@@ -188,11 +188,12 @@ class StoryFragmentTest {
   lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
-    StoryActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
-  )
+  var activityTestRule: ActivityTestRule<StoryActivity> =
+    ActivityTestRule(
+      StoryActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   private val internalProfileId = 0
 
@@ -308,19 +309,19 @@ class StoryFragmentTest {
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 0,
-          targetViewId = R.id.story_progress_chapter_completed_text
-        )
+          targetViewId = R.id.story_progress_chapter_completed_text,
+        ),
       ).check(
         matches(
-          withText(headerString)
-        )
+          withText(headerString),
+        ),
       )
     }
   }
@@ -332,15 +333,15 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_completed_tick
-        )
+          targetViewId = R.id.chapter_completed_tick,
+        ),
       ).check(matches(withContentDescription(R.string.chapter_completed)))
     }
   }
@@ -360,19 +361,19 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_title
-        )
+          targetViewId = R.id.chapter_title,
+        ),
       ).check(
         matches(
-          withText("Chapter 1: What is a Fraction?")
-        )
+          withText("Chapter 1: What is a Fraction?"),
+        ),
       )
     }
   }
@@ -383,19 +384,19 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
-          withText("Matthew learns about fractions.")
-        )
+          withText("Matthew learns about fractions."),
+        ),
       )
     }
   }
@@ -406,20 +407,21 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check { view, _ ->
         ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_LTR)
-        val chapterSummayTextview: TextView = view.findViewById<TextView>(
-          R.id.chapter_summary
-        )
+        val chapterSummayTextview: TextView =
+          view.findViewById<TextView>(
+            R.id.chapter_summary,
+          )
         assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -431,20 +433,21 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check { view, _ ->
         ViewCompat.setLayoutDirection(view, ViewCompat.LAYOUT_DIRECTION_RTL)
-        val chapterSummayTextview: TextView = view.findViewById<TextView>(
-          R.id.chapter_summary
-        )
+        val chapterSummayTextview: TextView =
+          view.findViewById<TextView>(
+            R.id.chapter_summary,
+          )
         assertThat(chapterSummayTextview.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
       }
     }
@@ -457,19 +460,19 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
-          withText("Matthew learns about fractions.")
-        )
+          withText("Matthew learns about fractions."),
+        ),
       )
     }
   }
@@ -480,23 +483,23 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
           withText(
             "This is the outline/summary for the first exploration of the story. It is very long" +
               " but it has to be fully visible. You wil be learning about Oppia interactions." +
-              " There is no second story to follow-up, but there is a second chapter."
-          )
-        )
+              " There is no second story to follow-up, but there is a second chapter.",
+          ),
+        ),
       )
     }
   }
@@ -508,23 +511,23 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
           withText(
             "This is the outline/summary for the first exploration of the story. It is very long" +
               " but it has to be fully visible. You wil be learning about Oppia interactions." +
-              " There is no second story to follow-up, but there is a second chapter."
-          )
-        )
+              " There is no second story to follow-up, but there is a second chapter.",
+          ),
+        ),
       )
     }
   }
@@ -535,23 +538,24 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_thumbnail
-        )
+          targetViewId = R.id.chapter_thumbnail,
+        ),
       ).check { view, _ ->
-        var lessonThumbnailImageView = view.findViewById<LessonThumbnailImageView>(
-          R.id.chapter_thumbnail
-        )
+        var lessonThumbnailImageView =
+          view.findViewById<LessonThumbnailImageView>(
+            R.id.chapter_thumbnail,
+          )
         verify(lessonThumbnailImageView.imageLoader, atLeastOnce()).loadDrawable(
           imageDrawableResId = anyInt(),
           target = anyOrNull(),
-          transformations = capture(listCaptor)
+          transformations = capture(listCaptor),
         )
         assertThat(listCaptor.value).contains(ImageTransformation.BLUR)
       }
@@ -564,19 +568,19 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
-          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
-        )
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter."),
+        ),
       )
     }
   }
@@ -588,19 +592,19 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
         matches(
-          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter.")
-        )
+          withText("Complete Chapter 1: What is a Fraction? to unlock this chapter."),
+        ),
       )
     }
   }
@@ -613,17 +617,17 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
-        matches(hasClickableSpanWithText("Chapter 1: What is a Fraction?"))
+        matches(hasClickableSpanWithText("Chapter 1: What is a Fraction?")),
       )
     }
   }
@@ -636,17 +640,17 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).check(
-        matches(not(hasClickableSpanWithText("Chapter 1: What is a Fraction?")))
+        matches(not(hasClickableSpanWithText("Chapter 1: What is a Fraction?"))),
       )
     }
   }
@@ -657,29 +661,29 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).perform(
         openClickableSpan(
-          "Chapter 1: What is a Fraction?"
-        )
+          "Chapter 1: What is a Fraction?",
+        ),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.story_chapter_list,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -691,29 +695,29 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.chapter_summary
-        )
+          targetViewId = R.id.chapter_summary,
+        ),
       ).perform(
         openClickableSpan(
-          "Chapter 1: What is a Fraction?"
-        )
+          "Chapter 1: What is a Fraction?",
+        ),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.story_chapter_list,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(
         matches(
-          isDisplayed()
-        )
+          isDisplayed(),
+        ),
       )
     }
   }
@@ -727,15 +731,15 @@ class StoryFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.story_chapter_card
-        )
+          targetViewId = R.id.story_chapter_card,
+        ),
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ExplorationActivity::class.java.name))
@@ -752,24 +756,24 @@ class StoryFragmentTest {
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 0,
-          targetViewId = R.id.story_progress_chapter_completed_text
-        )
+          targetViewId = R.id.story_progress_chapter_completed_text,
+        ),
       ).check(
         matches(
-          withText(headerString)
-        )
+          withText(headerString),
+        ),
       )
     }
   }
@@ -780,16 +784,19 @@ class StoryFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scenario.onActivity { activity ->
-        val storyFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
+        val storyFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
 
-        val arguments = checkNotNull(storyFragment.arguments) {
-          "Expected arguments to be passed to StoryFragment."
-        }
-        val args = arguments.getProto(
-          StoryFragment.STORY_FRAGMENT_ARGUMENTS_KEY,
-          StoryFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(storyFragment.arguments) {
+            "Expected arguments to be passed to StoryFragment."
+          }
+        val args =
+          arguments.getProto(
+            StoryFragment.STORY_FRAGMENT_ARGUMENTS_KEY,
+            StoryFragmentArguments.getDefaultInstance(),
+          )
 
         val receivedInternalProfileId = arguments.extractCurrentUserProfileId().internalId
         val receivedClassroomId =
@@ -823,8 +830,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.progress_image_view
-        )
+          targetViewId = R.id.progress_image_view,
+        ),
       ).check(matches(withDrawable(R.drawable.circular_solid_color_primary_32dp)))
     }
   }
@@ -838,8 +845,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.progress_image_view
-        )
+          targetViewId = R.id.progress_image_view,
+        ),
       ).check(matches(withDrawable(R.drawable.circular_stroke_2dp_color_primary_32dp)))
     }
   }
@@ -853,8 +860,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.progress_image_view
-        )
+          targetViewId = R.id.progress_image_view,
+        ),
       ).check(matches(withDrawable(R.drawable.circular_stroke_2dp_grey_32dp)))
     }
   }
@@ -868,8 +875,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.completed_chapter_image_view
-        )
+          targetViewId = R.id.completed_chapter_image_view,
+        ),
       ).check(matches(withDrawable(R.drawable.ic_lessons_icon_24dp)))
     }
   }
@@ -883,8 +890,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.completed_chapter_image_view
-        )
+          targetViewId = R.id.completed_chapter_image_view,
+        ),
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -898,8 +905,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 1,
-          targetViewId = R.id.verticalDashedLineView
-        )
+          targetViewId = R.id.verticalDashedLineView,
+        ),
       ).check(matches(isDisplayed()))
     }
   }
@@ -914,8 +921,8 @@ class StoryFragmentTest {
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,
-          targetViewId = R.id.verticalDashedLineView
-        )
+          targetViewId = R.id.verticalDashedLineView,
+        ),
       ).check(matches(not(isDisplayed())))
     }
   }
@@ -926,86 +933,80 @@ class StoryFragmentTest {
    * inspired by https://stackoverflow.com/q/38314077.
    */
   @Suppress("SameParameterValue")
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
   /**
    * Returns a matcher that matches against text views with clickable spans that contain the
    * specified text.
    */
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */
-      text.length,
-      ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
+    return (viewText as Spannable)
+      .getSpans(
+        // start=
+        0, // end=
+        text.length,
+        ClickableSpan::class.java,
+      ).map {
+        viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+      }
   }
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(
-    text: String
-  ): ClickableSpan? {
-    return find { text in it.first }?.second
-  }
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String): ClickableSpan? = find { text in it.first }?.second
 
-  private fun createFractionsStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
+  private fun createFractionsStoryActivityIntent(): Intent =
+    StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
+      FRACTIONS_STORY_ID_0,
     )
-  }
 
-  private fun createTestStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
+  private fun createTestStoryActivityIntent(): Intent =
+    StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       TEST_CLASSROOM_ID_1,
       TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0
+      TEST_STORY_ID_0,
     )
-  }
 
-  private fun createRatiosStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
+  private fun createRatiosStoryActivityIntent(): Intent =
+    StoryActivity.createStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
       internalProfileId,
       TEST_CLASSROOM_ID_1,
       RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0
+      RATIOS_STORY_ID_0,
     )
-  }
 
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
@@ -1013,9 +1014,7 @@ class StoryFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun getResources(): Resources {
-    return ApplicationProvider.getApplicationContext<Context>().resources
-  }
+  private fun getResources(): Resources = ApplicationProvider.getApplicationContext<Context>().resources
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -1046,8 +1045,8 @@ class StoryFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -1058,9 +1057,13 @@ class StoryFragmentTest {
     fun inject(storyFragmentTest: StoryFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerStoryFragmentTest_TestApplicationComponent.builder()
+      DaggerStoryFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -1069,9 +1072,12 @@ class StoryFragmentTest {
       component.inject(storyFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -26,7 +26,7 @@ import org.oppia.android.util.math.toPlainText
  */
 class PolynomialSubject(
   metadata: FailureMetadata,
-  private val actual: Polynomial?
+  private val actual: Polynomial?,
 ) : LiteProtoSubject(metadata, actual) {
   private val nonNullActual by lazy {
     checkNotNull(actual) {
@@ -38,7 +38,7 @@ class PolynomialSubject(
   /** Verifies that the represented [Polynomial] is null (i.e. not a valid polynomial). */
   fun isNotValidPolynomial() {
     assertWithMessage(
-      "Expected polynomial to be undefined, but was: ${actual?.toPlainText()}"
+      "Expected polynomial to be undefined, but was: ${actual?.toPlainText()}",
     ).that(actual).isNull()
   }
 
@@ -77,11 +77,9 @@ class PolynomialSubject(
 
   companion object {
     /** Returns a new [PolynomialSubject] to verify aspects of the specified [Polynomial] value. */
-    fun assertThat(actual: Polynomial?): PolynomialSubject =
-      assertAbout(::PolynomialSubject).that(actual)
+    fun assertThat(actual: Polynomial?): PolynomialSubject = assertAbout(::PolynomialSubject).that(actual)
 
-    private fun assertThat(actual: Polynomial.Term): PolynomialTermSubject =
-      assertAbout(::PolynomialTermSubject).that(actual)
+    private fun assertThat(actual: Polynomial.Term): PolynomialTermSubject = assertAbout(::PolynomialTermSubject).that(actual)
 
     private fun assertThat(actual: Polynomial.Term.Variable): PolynomialTermVariableSubject =
       assertAbout(::PolynomialTermVariableSubject).that(actual)
@@ -95,7 +93,7 @@ class PolynomialSubject(
    */
   class PolynomialTermSubject(
     metadata: FailureMetadata,
-    private val actual: Polynomial.Term
+    private val actual: Polynomial.Term,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [RealSubject] to test [Polynomial.Term.getCoefficient] for the represented term.
@@ -121,8 +119,7 @@ class PolynomialSubject(
      * This method throws if the index doesn't correspond to a valid variable. Callers should first
      * verify the variable count using [hasVariableCountThat].
      */
-    fun variable(index: Int): PolynomialTermVariableSubject =
-      assertThat(actual.variableList[index])
+    fun variable(index: Int): PolynomialTermVariableSubject = assertThat(actual.variableList[index])
   }
 
   /**
@@ -133,7 +130,7 @@ class PolynomialSubject(
    */
   class PolynomialTermVariableSubject(
     metadata: FailureMetadata,
-    private val actual: Polynomial.Term.Variable
+    private val actual: Polynomial.Term.Variable,
   ) : LiteProtoSubject(metadata, actual) {
     /**
      * Returns a [StringSubject] to test [Polynomial.Term.Variable.getName] for the represented

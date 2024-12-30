@@ -10,6 +10,5 @@ import javax.inject.Singleton
 class TestAuthenticationModule {
   @Provides
   @Singleton
-  fun provideFakeFirebaseAuthWrapper(fakeFirebaseWrapperImpl: FakeFirebaseAuthWrapperImpl):
-    FirebaseAuthWrapper = fakeFirebaseWrapperImpl
+  fun provideFakeFirebaseAuthWrapper(fakeFirebaseWrapperImpl: FakeFirebaseAuthWrapperImpl): FirebaseAuthWrapper = fakeFirebaseWrapperImpl
 }

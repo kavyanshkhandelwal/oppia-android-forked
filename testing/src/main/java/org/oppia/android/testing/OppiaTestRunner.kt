@@ -7,6 +7,7 @@ import androidx.test.runner.AndroidJUnitRunner
 import java.lang.reflect.Field
 
 // TODO(#59): Remove this runner once application classes can be specified per-test suite.
+
 /**
  * Custom test runner for Oppia's AndroidX tests to facilitate loading custom Dagger applications in
  * a way that's interoperable with Espresso.
@@ -25,9 +26,10 @@ class OppiaTestRunner : AndroidJUnitRunner() {
 
   override fun onCreate(arguments: Bundle?) {
     // Load a new application if it's different than the original.
-    val bindApplication = retrieveTestApplicationName(arguments?.getString("class"))?.let {
-      newApplication(applicationClassLoader, it, targetContext)
-    } ?: targetContext as Application
+    val bindApplication =
+      retrieveTestApplicationName(arguments?.getString("class"))?.let {
+        newApplication(applicationClassLoader, it, targetContext)
+      } ?: targetContext as Application
 
     // Ensure the bound application is forcibly overwritten in the target context, and used
     // subsequently throughout the runner since it's replacing the previous application.
@@ -45,11 +47,12 @@ class OppiaTestRunner : AndroidJUnitRunner() {
   override fun newApplication(
     cl: ClassLoader?,
     className: String?,
-    context: Context?
+    context: Context?,
   ): Application {
-    applicationClassLoader = checkNotNull(cl) {
-      "Expected non-null class loader to be passed to newApplication"
-    }
+    applicationClassLoader =
+      checkNotNull(cl) {
+        "Expected non-null class loader to be passed to newApplication"
+      }
     return super.newApplication(cl, className, context)
   }
 
@@ -77,24 +80,35 @@ class OppiaTestRunner : AndroidJUnitRunner() {
     return null
   }
 
-  private fun overrideApplicationInContext(context: Context, application: Application) {
-    val packageInfo = checkNotNull(getPrivateFieldFromObject(context, "mPackageInfo")) {
-      "Failed to retrieve mPackageInfo from context: $context."
-    }
+  private fun overrideApplicationInContext(
+    context: Context,
+    application: Application,
+  ) {
+    val packageInfo =
+      checkNotNull(getPrivateFieldFromObject(context, "mPackageInfo")) {
+        "Failed to retrieve mPackageInfo from context: $context."
+      }
     setPrivateFieldFromObject(packageInfo, "mApplication", application)
   }
 
-  private fun getPrivateFieldFromObject(container: Any, fieldName: String): Any? {
-    return retrieveAccessibleFieldFromObject(container, fieldName).get(container)
-  }
+  private fun getPrivateFieldFromObject(
+    container: Any,
+    fieldName: String,
+  ): Any? = retrieveAccessibleFieldFromObject(container, fieldName).get(container)
 
-  private fun setPrivateFieldFromObject(container: Any, fieldName: String, newValue: Any) {
+  private fun setPrivateFieldFromObject(
+    container: Any,
+    fieldName: String,
+    newValue: Any,
+  ) {
     retrieveAccessibleFieldFromObject(container, fieldName).set(container, newValue)
   }
 
-  private fun retrieveAccessibleFieldFromObject(container: Any, fieldName: String): Field {
-    return container.javaClass.getDeclaredField(fieldName).apply {
+  private fun retrieveAccessibleFieldFromObject(
+    container: Any,
+    fieldName: String,
+  ): Field =
+    container.javaClass.getDeclaredField(fieldName).apply {
       isAccessible = true
     }
-  }
 }

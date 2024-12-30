@@ -97,7 +97,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = LicenseTextViewerFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class LicenseTextViewerFragmentTest {
   @get:Rule
@@ -127,11 +127,11 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_0))
+        matches(withText(R.string.license_text_0)),
       )
     }
   }
@@ -141,12 +141,12 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 0,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_0))
+        matches(withText(R.string.license_text_0)),
       )
     }
   }
@@ -156,11 +156,11 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 1,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_0))
+        matches(withText(R.string.license_text_0)),
       )
     }
   }
@@ -170,12 +170,12 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 1,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_0))
+        matches(withText(R.string.license_text_0)),
       )
     }
   }
@@ -185,11 +185,11 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 1,
-        licenseIndex = 1
-      )
+        licenseIndex = 1,
+      ),
     ).use {
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_1))
+        matches(withText(R.string.license_text_1)),
       )
     }
   }
@@ -199,12 +199,12 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 1,
-        licenseIndex = 1
-      )
+        licenseIndex = 1,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_1))
+        matches(withText(R.string.license_text_1)),
       )
     }
   }
@@ -214,13 +214,13 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 2,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_2))
+        matches(withText(R.string.license_text_2)),
       )
     }
   }
@@ -230,14 +230,14 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 2,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
-        matches(withText(R.string.license_text_2))
+        matches(withText(R.string.license_text_2)),
       )
     }
   }
@@ -247,15 +247,15 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          withText(R.string.license_text_2)
-        )
+          withText(R.string.license_text_2),
+        ),
       )
     }
   }
@@ -265,16 +265,16 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,
-        licenseIndex = 0
-      )
+        licenseIndex = 0,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 0 implies the first license for the dependency and not that it
       // should match with license_text_0.
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          withText(R.string.license_text_2)
-        )
+          withText(R.string.license_text_2),
+        ),
       )
     }
   }
@@ -284,15 +284,15 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,
-        licenseIndex = 1
-      )
+        licenseIndex = 1,
+      ),
     ).use {
       // Note that licenseIndex 1 implies the first license for the dependency and not that it
       // should match with license_text_1.
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          withText(R.string.license_text_0)
-        )
+          withText(R.string.license_text_0),
+        ),
       )
     }
   }
@@ -302,27 +302,29 @@ class LicenseTextViewerFragmentTest {
     launch<LicenseTextViewerActivity>(
       createLicenseTextViewerActivity(
         dependencyIndex = 3,
-        licenseIndex = 1
-      )
+        licenseIndex = 1,
+      ),
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       // Note that licenseIndex 1 implies the first license for the dependency and not that it
       // should match with license_text_1.
       onView(withId(R.id.copyright_license_text_view)).check(
         matches(
-          withText(R.string.license_text_0)
-        )
+          withText(R.string.license_text_0),
+        ),
       )
     }
   }
 
-  private fun createLicenseTextViewerActivity(dependencyIndex: Int, licenseIndex: Int): Intent {
-    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+  private fun createLicenseTextViewerActivity(
+    dependencyIndex: Int,
+    licenseIndex: Int,
+  ): Intent =
+    LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
       ApplicationProvider.getApplicationContext(),
       dependencyIndex,
-      licenseIndex
+      licenseIndex,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -357,12 +359,10 @@ class LicenseTextViewerFragmentTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -371,9 +371,13 @@ class LicenseTextViewerFragmentTest {
     fun inject(licenseTextViewerFragmentTest: LicenseTextViewerFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseTextViewerFragmentTest_TestApplicationComponent.builder()
+      DaggerLicenseTextViewerFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -382,9 +386,12 @@ class LicenseTextViewerFragmentTest {
       component.inject(licenseTextViewerFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

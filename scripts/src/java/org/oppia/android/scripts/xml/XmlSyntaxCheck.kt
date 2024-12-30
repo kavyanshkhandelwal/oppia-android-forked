@@ -23,22 +23,24 @@ fun main(vararg args: String) {
   val repoPath = "${args[0]}/"
 
   // A list of all XML files in the repo to be analyzed.
-  val searchFiles = RepositoryFile.collectSearchFiles(
-    repoPath = repoPath,
-    expectedExtension = ".xml"
-  )
+  val searchFiles =
+    RepositoryFile.collectSearchFiles(
+      repoPath = repoPath,
+      expectedExtension = ".xml",
+    )
 
   // Builder factory which provides the builder to parse the XMl.
   val builderFactory = DocumentBuilderFactory.newInstance()
 
-  val allErrorsList = searchFiles.flatMap { file ->
-    val docBuilder = builderFactory.newDocumentBuilder()
-    val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
-    docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
-    parseXml(docBuilder, file)
-    val fileErrorList = xmlSyntaxErrorHandler.retrieveErrorList()
-    fileErrorList.map { error -> Pair(error, file) }
-  }
+  val allErrorsList =
+    searchFiles.flatMap { file ->
+      val docBuilder = builderFactory.newDocumentBuilder()
+      val xmlSyntaxErrorHandler = XmlSyntaxErrorHandler()
+      docBuilder.setErrorHandler(xmlSyntaxErrorHandler)
+      parseXml(docBuilder, file)
+      val fileErrorList = xmlSyntaxErrorHandler.retrieveErrorList()
+      fileErrorList.map { error -> Pair(error, file) }
+    }
 
   // Check if the repo has any syntactically incorrect XML.
   val hasXmlSyntaxFailure = allErrorsList.isNotEmpty()
@@ -48,7 +50,7 @@ fun main(vararg args: String) {
   if (hasXmlSyntaxFailure) {
     println(
       "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-        "#xml-syntax-check for more details on how to fix this.\n"
+        "#xml-syntax-check for more details on how to fix this.\n",
     )
   }
 
@@ -65,7 +67,10 @@ fun main(vararg args: String) {
  * @param docBuilder the builder which will parse the XML file
  * @param file the file to be checked for
  */
-private fun parseXml(docBuilder: DocumentBuilder, file: File) {
+private fun parseXml(
+  docBuilder: DocumentBuilder,
+  file: File,
+) {
   try {
     docBuilder.parse(file)
   } catch (e: SAXParseException) {

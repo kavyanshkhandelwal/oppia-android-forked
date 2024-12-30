@@ -20,26 +20,24 @@ import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.O
  * This function assumes that both this [ComparableOperation] and [other] are sorted prior to
  * equality checking.
  */
-fun ComparableOperation.isApproximatelyEqualTo(other: ComparableOperation): Boolean {
-  return when {
+fun ComparableOperation.isApproximatelyEqualTo(other: ComparableOperation): Boolean =
+  when {
     isNegated != other.isNegated -> false
     isInverted != other.isInverted -> false
     comparisonTypeCase != other.comparisonTypeCase -> false
-    else -> when (comparisonTypeCase) {
-      COMMUTATIVE_ACCUMULATION ->
-        commutativeAccumulation.isApproximatelyEqualTo(other.commutativeAccumulation)
-      NON_COMMUTATIVE_OPERATION ->
-        nonCommutativeOperation.isApproximatelyEqualTo(other.nonCommutativeOperation)
-      CONSTANT_TERM -> constantTerm.isApproximatelyEqualTo(other.constantTerm)
-      VARIABLE_TERM -> variableTerm == other.variableTerm
-      COMPARISONTYPE_NOT_SET, null -> true
-    }
+    else ->
+      when (comparisonTypeCase) {
+        COMMUTATIVE_ACCUMULATION ->
+          commutativeAccumulation.isApproximatelyEqualTo(other.commutativeAccumulation)
+        NON_COMMUTATIVE_OPERATION ->
+          nonCommutativeOperation.isApproximatelyEqualTo(other.nonCommutativeOperation)
+        CONSTANT_TERM -> constantTerm.isApproximatelyEqualTo(other.constantTerm)
+        VARIABLE_TERM -> variableTerm == other.variableTerm
+        COMPARISONTYPE_NOT_SET, null -> true
+      }
   }
-}
 
-private fun CommutativeAccumulation.isApproximatelyEqualTo(
-  other: CommutativeAccumulation
-): Boolean {
+private fun CommutativeAccumulation.isApproximatelyEqualTo(other: CommutativeAccumulation): Boolean {
   if (accumulationType != other.accumulationType) return false
   if (combinedOperationsCount != other.combinedOperationsCount) return false
   return combinedOperationsList.zip(other.combinedOperationsList).all { (first, second) ->
@@ -47,9 +45,7 @@ private fun CommutativeAccumulation.isApproximatelyEqualTo(
   }
 }
 
-private fun NonCommutativeOperation.isApproximatelyEqualTo(
-  other: NonCommutativeOperation
-): Boolean {
+private fun NonCommutativeOperation.isApproximatelyEqualTo(other: NonCommutativeOperation): Boolean {
   if (operationTypeCase != other.operationTypeCase) return false
   return when (operationTypeCase) {
     EXPONENTIATION -> {

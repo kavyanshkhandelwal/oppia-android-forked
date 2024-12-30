@@ -10,7 +10,6 @@ import retrofit2.http.Query
 
 /** Retrofit service for interacting with GitHub's REST API. */
 interface GitHubService {
-
   /**
    * Fetches [countPerPage] open issues from the configured GitHub repository.
    *
@@ -35,6 +34,6 @@ interface GitHubService {
     @Path("repo_name") repoName: String,
     @Header("Authorization") authorizationBearer: String,
     @Query("page") pageNumber: Int,
-    @Query("per_page") countPerPage: Int = 100
+    @Query("per_page") countPerPage: Int = 100,
   ): Call<List<GitHubIssue>>
 }

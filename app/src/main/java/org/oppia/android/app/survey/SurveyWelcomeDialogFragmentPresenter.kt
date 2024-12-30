@@ -21,93 +21,96 @@ const val TAG_SURVEY_WELCOME_DIALOG = "SURVEY_WELCOME_DIALOG"
 
 /** Presenter for [SurveyWelcomeDialogFragment], sets up bindings. */
 @FragmentScope
-class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val surveyController: SurveyController,
-  private val oppiaLogger: OppiaLogger,
-  private val analyticsController: AnalyticsController,
-  private val profileManagementController: ProfileManagementController
-) {
-  private lateinit var explorationId: String
-
-  /** Sets up data binding. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    profileId: ProfileId,
-    topicId: String,
-    explorationId: String,
-    questionNames: List<SurveyQuestionName>,
-  ): View {
-    this.explorationId = explorationId
-    val binding =
-      SurveyWelcomeDialogFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
-
-    binding.lifecycleOwner = fragment
-
-    binding.beginSurveyButton.setOnClickListener {
-      startSurveySession(profileId, topicId, questionNames)
-    }
-
-    binding.maybeLaterButton.setOnClickListener {
-      activity.supportFragmentManager.beginTransaction()
-        .remove(fragment)
-        .commitNow()
-    }
-
-    profileManagementController.updateSurveyLastShownTimestamp(profileId)
-
-    logSurveyPopUpShownEvent(explorationId, topicId, profileId)
-
-    return binding.root
-  }
-
-  private fun startSurveySession(
-    profileId: ProfileId,
-    topicId: String,
-    questions: List<SurveyQuestionName>
+class SurveyWelcomeDialogFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val surveyController: SurveyController,
+    private val oppiaLogger: OppiaLogger,
+    private val analyticsController: AnalyticsController,
+    private val profileManagementController: ProfileManagementController,
   ) {
-    val startDataProvider = surveyController.startSurveySession(questions, profileId = profileId)
-    startDataProvider.toLiveData().observe(
-      activity,
-      {
-        when (it) {
-          is AsyncResult.Pending ->
-            oppiaLogger.d("SurveyWelcomeDialogFragment", "Starting a survey session")
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "SurveyWelcomeDialogFragment",
-              "Failed to start a survey session",
-              it.error
-            )
-            activity.finish() // Can't recover from the session failing to start.
-          }
-          is AsyncResult.Success -> {
-            oppiaLogger.d("SurveyWelcomeDialogFragment", "Successfully started a survey session")
-            val intent =
-              SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId, explorationId)
-            fragment.startActivity(intent)
-            activity.finish()
-            val transaction = activity.supportFragmentManager.beginTransaction()
-            transaction.remove(fragment).commitAllowingStateLoss()
-          }
-        }
+    private lateinit var explorationId: String
+
+    /** Sets up data binding. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      profileId: ProfileId,
+      topicId: String,
+      explorationId: String,
+      questionNames: List<SurveyQuestionName>,
+    ): View {
+      this.explorationId = explorationId
+      val binding =
+        SurveyWelcomeDialogFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
+      binding.lifecycleOwner = fragment
+
+      binding.beginSurveyButton.setOnClickListener {
+        startSurveySession(profileId, topicId, questionNames)
       }
-    )
-  }
 
-  private fun logSurveyPopUpShownEvent(
-    explorationId: String,
-    topicId: String,
-    profileId: ProfileId
-  ) {
-    analyticsController.logImportantEvent(
-      oppiaLogger.createShowSurveyPopupContext(
-        explorationId,
-        topicId
-      ),
-      profileId = profileId
-    )
+      binding.maybeLaterButton.setOnClickListener {
+        activity.supportFragmentManager
+          .beginTransaction()
+          .remove(fragment)
+          .commitNow()
+      }
+
+      profileManagementController.updateSurveyLastShownTimestamp(profileId)
+
+      logSurveyPopUpShownEvent(explorationId, topicId, profileId)
+
+      return binding.root
+    }
+
+    private fun startSurveySession(
+      profileId: ProfileId,
+      topicId: String,
+      questions: List<SurveyQuestionName>,
+    ) {
+      val startDataProvider = surveyController.startSurveySession(questions, profileId = profileId)
+      startDataProvider.toLiveData().observe(
+        activity,
+        {
+          when (it) {
+            is AsyncResult.Pending ->
+              oppiaLogger.d("SurveyWelcomeDialogFragment", "Starting a survey session")
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "SurveyWelcomeDialogFragment",
+                "Failed to start a survey session",
+                it.error,
+              )
+              activity.finish() // Can't recover from the session failing to start.
+            }
+            is AsyncResult.Success -> {
+              oppiaLogger.d("SurveyWelcomeDialogFragment", "Successfully started a survey session")
+              val intent =
+                SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId, explorationId)
+              fragment.startActivity(intent)
+              activity.finish()
+              val transaction = activity.supportFragmentManager.beginTransaction()
+              transaction.remove(fragment).commitAllowingStateLoss()
+            }
+          }
+        },
+      )
+    }
+
+    private fun logSurveyPopUpShownEvent(
+      explorationId: String,
+      topicId: String,
+      profileId: ProfileId,
+    ) {
+      analyticsController.logImportantEvent(
+        oppiaLogger.createShowSurveyPopupContext(
+          explorationId,
+          topicId,
+        ),
+        profileId = profileId,
+      )
+    }
   }
-}

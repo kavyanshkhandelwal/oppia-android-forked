@@ -7,7 +7,6 @@ import org.oppia.android.app.model.ProfileId
  * This class is not thread-safe, so owning classes should ensure synchronized access.
  */
 internal class TimerSessionState {
-
   /** The timestamp in millis when the timer was started. */
   internal var sessionStartTime: Long = 0L
 

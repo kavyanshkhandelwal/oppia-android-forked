@@ -120,7 +120,7 @@ private const val FRACTIONS_SUBTOPIC_LIST_SIZE = 4
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = RevisionCardActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class RevisionCardActivityTest {
   @get:Rule
@@ -163,13 +163,15 @@ class RevisionCardActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
-    val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
-      context,
-      profileId,
-      FRACTIONS_TOPIC_ID,
-      1,
-      FRACTIONS_SUBTOPIC_LIST_SIZE
-    ).extractCurrentAppScreenName()
+    val currentScreenName =
+      RevisionCardActivity
+        .createRevisionCardActivityIntent(
+          context,
+          profileId,
+          FRACTIONS_TOPIC_ID,
+          1,
+          FRACTIONS_SUBTOPIC_LIST_SIZE,
+        ).extractCurrentAppScreenName()
 
     assertThat(currentScreenName).isEqualTo(ScreenName.REVISION_CARD_ACTIVITY)
   }
@@ -179,7 +181,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       lateinit var title: CharSequence
       scenario.onActivity { activity -> title = activity.title }
@@ -196,7 +198,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
 
@@ -218,7 +220,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
 
@@ -240,7 +242,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
 
@@ -262,7 +264,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
 
@@ -285,7 +287,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = "test_topic_id_0",
-      subtopicId = 1
+      subtopicId = 1,
     ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("sample subtopic with dummy content"))))
@@ -300,7 +302,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = "test_topic_id_0",
-      subtopicId = 1
+      subtopicId = 1,
     ).use {
       onView(withId(R.id.revision_card_explanation_text))
         .check(matches(withText(containsString("محاكاة محتوى أكثر واقعية"))))
@@ -312,7 +314,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
         activity.onReturnToTopicRequested()
@@ -328,7 +330,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       scenario.onActivity { activity ->
         activity.onReturnToTopicRequested()
@@ -348,7 +350,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       onView(withContentDescription("Navigate up")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -364,7 +366,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       onView(withContentDescription("Navigate up")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -384,7 +386,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       pressBack()
       testCoroutineDispatchers.runCurrent()
@@ -400,7 +402,7 @@ class RevisionCardActivityTest {
     launchRevisionCardActivity(
       profileId = profileId,
       topicId = FRACTIONS_TOPIC_ID,
-      subtopicId = 1
+      subtopicId = 1,
     ).use { scenario ->
       pressBack()
       testCoroutineDispatchers.runCurrent()
@@ -422,11 +424,12 @@ class RevisionCardActivityTest {
   private fun launchRevisionCardActivity(
     profileId: ProfileId,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ): ActivityScenario<RevisionCardActivity> {
-    val scenario = ActivityScenario.launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(profileId, topicId, subtopicId)
-    )
+    val scenario =
+      ActivityScenario.launch<RevisionCardActivity>(
+        createRevisionCardActivityIntent(profileId, topicId, subtopicId),
+      )
     testCoroutineDispatchers.runCurrent()
     return scenario
   }
@@ -434,22 +437,28 @@ class RevisionCardActivityTest {
   private fun createRevisionCardActivityIntent(
     profileId: ProfileId,
     topicId: String,
-    subtopicId: Int
+    subtopicId: Int,
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
     context,
     profileId,
     topicId,
     subtopicId,
-    FRACTIONS_SUBTOPIC_LIST_SIZE
+    FRACTIONS_SUBTOPIC_LIST_SIZE,
   )
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
@@ -482,8 +491,8 @@ class RevisionCardActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -494,9 +503,13 @@ class RevisionCardActivityTest {
     fun inject(revisionCardActivityTest: RevisionCardActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerRevisionCardActivityTest_TestApplicationComponent.builder()
+      DaggerRevisionCardActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -505,9 +518,12 @@ class RevisionCardActivityTest {
       component.inject(revisionCardActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

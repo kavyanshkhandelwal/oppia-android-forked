@@ -16,47 +16,50 @@ import javax.inject.Inject
  * ViewModel once Gradle has been removed.
  */
 // TODO(#1619): Remove file post-Gradle
-class IntentFactoryShimImpl @Inject constructor(
-  private val topicActivityIntentFactory: TopicActivityIntentFactory,
-  private val recentlyPlayedActivityIntentFactory: RecentlyPlayedActivityIntentFactory
-) : IntentFactoryShim {
+class IntentFactoryShimImpl
+  @Inject
+  constructor(
+    private val topicActivityIntentFactory: TopicActivityIntentFactory,
+    private val recentlyPlayedActivityIntentFactory: RecentlyPlayedActivityIntentFactory,
+  ) : IntentFactoryShim {
+    /**
+     * Creates a topic activity intent for [PromotedStoryViewModel] and passes necessary string
+     * data.
+     */
+    override fun createTopicPlayStoryActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      classroomId: String,
+      topicId: String,
+      storyId: String,
+    ): Intent =
+      topicActivityIntentFactory.createIntent(
+        ProfileId
+          .newBuilder()
+          .apply {
+            internalId = internalProfileId
+          }.build(),
+        classroomId,
+        topicId,
+        storyId,
+      )
 
-  /**
-   * Creates a topic activity intent for [PromotedStoryViewModel] and passes necessary string
-   * data.
-   */
-  override fun createTopicPlayStoryActivityIntent(
-    context: Context,
-    internalProfileId: Int,
-    classroomId: String,
-    topicId: String,
-    storyId: String
-  ): Intent {
-    return topicActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
-        internalId = internalProfileId
-      }.build(),
-      classroomId,
-      topicId,
-      storyId
-    )
+    /**
+     * Creates a topic activity intent which opens info-tab.
+     */
+    override fun createTopicActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+      classroomId: String,
+      topicId: String,
+    ): Intent =
+      topicActivityIntentFactory.createIntent(
+        ProfileId
+          .newBuilder()
+          .apply {
+            internalId = internalProfileId
+          }.build(),
+        classroomId,
+        topicId,
+      )
   }
-
-  /**
-   * Creates a topic activity intent which opens info-tab.
-   */
-  override fun createTopicActivityIntent(
-    context: Context,
-    internalProfileId: Int,
-    classroomId: String,
-    topicId: String
-  ): Intent {
-    return topicActivityIntentFactory.createIntent(
-      ProfileId.newBuilder().apply {
-        internalId = internalProfileId
-      }.build(),
-      classroomId,
-      topicId
-    )
-  }
-}

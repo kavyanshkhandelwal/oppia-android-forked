@@ -9,31 +9,35 @@ import org.oppia.android.databinding.MathExpressionParserFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [MathExpressionParserFragment]. */
-class MathExpressionParserFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val viewModel: MathExpressionParserViewModel
-) {
-  /** Called when [MathExpressionParserFragment] is created. Handles UI for the fragment. */
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?
-  ): View {
-    val binding = MathExpressionParserFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot= */ false
-    )
+class MathExpressionParserFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val viewModel: MathExpressionParserViewModel,
+  ) {
+    /** Called when [MathExpressionParserFragment] is created. Handles UI for the fragment. */
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View {
+      val binding =
+        MathExpressionParserFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
+        )
 
-    binding.mathExpressionParserToolbar.setNavigationOnClickListener {
-      (activity as MathExpressionParserActivity).finish()
-    }
+      binding.mathExpressionParserToolbar.setNavigationOnClickListener {
+        (activity as MathExpressionParserActivity).finish()
+      }
 
-    binding.apply {
-      lifecycleOwner = fragment
-      viewModel = this@MathExpressionParserFragmentPresenter.viewModel
+      binding.apply {
+        lifecycleOwner = fragment
+        viewModel = this@MathExpressionParserFragmentPresenter.viewModel
+      }
+      viewModel.initialize(binding.mathExpressionParseResultTextView)
+      return binding.root
     }
-    viewModel.initialize(binding.mathExpressionParseResultTextView)
-    return binding.root
   }
-}

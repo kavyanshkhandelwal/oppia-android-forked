@@ -19,6 +19,6 @@ interface CommandExecutor {
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean = true
+    includeErrorOutput: Boolean = true,
   ): CommandResult
 }

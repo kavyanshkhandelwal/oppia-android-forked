@@ -26,8 +26,6 @@ class ProfileAndDeviceIdFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    return profileAndDeviceIdFragmentPresenter.handleCreateView(inflater, container)
-  }
+    savedInstanceState: Bundle?,
+  ): View = profileAndDeviceIdFragmentPresenter.handleCreateView(inflater, container)
 }

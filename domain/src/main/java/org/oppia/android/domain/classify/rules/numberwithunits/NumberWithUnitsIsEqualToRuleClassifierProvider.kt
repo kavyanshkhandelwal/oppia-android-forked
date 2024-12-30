@@ -17,45 +17,48 @@ import javax.inject.Inject
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/NumberWithUnits/directives/number-with-units-rules.service.ts#L34
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class NumberWithUnitsIsEqualToRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
+class NumberWithUnitsIsEqualToRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<NumberWithUnits> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS,
+        "f",
+        this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      InteractionObject.ObjectTypeCase.NUMBER_WITH_UNITS,
-      "f",
-      this
-    )
-  }
-
-  // TODO(#209): Determine whether additional sanitation of the input is necessary here.
-  override fun matches(
-    answer: NumberWithUnits,
-    input: NumberWithUnits,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    // The number types must match.
-    if (answer.numberTypeCase != input.numberTypeCase) {
-      return false
+    // TODO(#209): Determine whether additional sanitation of the input is necessary here.
+    override fun matches(
+      answer: NumberWithUnits,
+      input: NumberWithUnits,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      // The number types must match.
+      if (answer.numberTypeCase != input.numberTypeCase) {
+        return false
+      }
+      // Units must match, but in different orders is fine.
+      if (answer.unitList.toSet() != input.unitList.toSet()) {
+        return false
+      }
+      // Otherwise, verify the value itself matches.
+      return when (answer.numberTypeCase) {
+        NumberWithUnits.NumberTypeCase.REAL -> realMatches(answer.real, input.real)
+        NumberWithUnits.NumberTypeCase.FRACTION -> fractionMatches(answer.fraction, input.fraction)
+        else -> false // Unknown type never matches.
+      }
     }
-    // Units must match, but in different orders is fine.
-    if (answer.unitList.toSet() != input.unitList.toSet()) {
-      return false
-    }
-    // Otherwise, verify the value itself matches.
-    return when (answer.numberTypeCase) {
-      NumberWithUnits.NumberTypeCase.REAL -> realMatches(answer.real, input.real)
-      NumberWithUnits.NumberTypeCase.FRACTION -> fractionMatches(answer.fraction, input.fraction)
-      else -> false // Unknown type never matches.
-    }
-  }
 
-  private fun realMatches(answer: Double, input: Double): Boolean {
-    return input.isApproximatelyEqualTo(answer)
-  }
+    private fun realMatches(
+      answer: Double,
+      input: Double,
+    ): Boolean = input.isApproximatelyEqualTo(answer)
 
-  private fun fractionMatches(answer: Fraction, input: Fraction): Boolean {
-    return input == answer
+    private fun fractionMatches(
+      answer: Fraction,
+      input: Fraction,
+    ): Boolean = input == answer
   }
-}

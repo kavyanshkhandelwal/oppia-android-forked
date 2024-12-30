@@ -56,9 +56,7 @@ class SyncStatusTestModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -68,23 +66,27 @@ class SyncStatusTestModuleTest {
       TestModule::class, SyncStatusTestModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, TestLogReportingModule::class, LoggerModule::class,
       TestDispatcherModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      RobolectricModule::class
-    ]
+      RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
     fun inject(test: SyncStatusTestModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSyncStatusTestModuleTest_TestApplicationComponent.builder()
+      DaggerSyncStatusTestModuleTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

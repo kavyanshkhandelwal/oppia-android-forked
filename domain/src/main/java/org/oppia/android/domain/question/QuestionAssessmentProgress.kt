@@ -18,7 +18,7 @@ internal class QuestionAssessmentProgress {
   internal val stateDeck: StateDeck by lazy {
     StateDeck(
       stateList.getFirstState(),
-      this::isTopStateTerminal
+      this::isTopStateTerminal,
     )
   }
   private var isTopQuestionCompleted: Boolean = false
@@ -107,7 +107,7 @@ internal class QuestionAssessmentProgress {
         check(
           trainStage == TrainStage.LOADING_TRAINING_SESSION ||
             trainStage == TrainStage.VIEWING_STATE ||
-            trainStage == TrainStage.SUBMITTING_ANSWER
+            trainStage == TrainStage.SUBMITTING_ANSWER,
         ) {
           "Cannot transition to VIEWING_STATE from $trainStage"
         }
@@ -124,31 +124,23 @@ internal class QuestionAssessmentProgress {
   }
 
   /** Returns whether the learner has completed the assessment. */
-  internal fun isAssessmentCompleted(): Boolean {
-    return getCurrentQuestionIndex() == getTotalQuestionCount() - 1 && isTopQuestionCompleted
-  }
+  internal fun isAssessmentCompleted(): Boolean = getCurrentQuestionIndex() == getTotalQuestionCount() - 1 && isTopQuestionCompleted
 
   /** Returns the index of the current question being played. */
-  internal fun getCurrentQuestionIndex(): Int {
-    return stateDeck.getTopStateIndex()
-  }
+  internal fun getCurrentQuestionIndex(): Int = stateDeck.getTopStateIndex()
 
   /** Returns the next [State] that should be played. */
-  internal fun getNextState(): State {
-    return stateList.getState(getCurrentQuestionIndex() + 1)
-  }
+  internal fun getNextState(): State = stateList.getState(getCurrentQuestionIndex() + 1)
 
   /** Returns whether the learner is currently viewing the most recent question card. */
-  internal fun isViewingMostRecentQuestion(): Boolean {
-    return stateDeck.isCurrentStateTopOfDeck()
-  }
+  internal fun isViewingMostRecentQuestion(): Boolean = stateDeck.isCurrentStateTopOfDeck()
 
   /** Returns the number of questions in the assessment. */
-  internal fun getTotalQuestionCount(): Int {
-    return questionsList.size
-  }
+  internal fun getTotalQuestionCount(): Int = questionsList.size
 
-  private fun isTopStateTerminal(@Suppress("UNUSED_PARAMETER") state: State): Boolean {
+  private fun isTopStateTerminal(
+    @Suppress("UNUSED_PARAMETER") state: State,
+  ): Boolean {
     // There's a synthetic card at the end of the assessment to represent the terminal state.
     return stateDeck.isCurrentStateTopOfDeck() &&
       getCurrentQuestionIndex() == getTotalQuestionCount()
@@ -166,6 +158,6 @@ internal class QuestionAssessmentProgress {
     VIEWING_STATE,
 
     /** The controller is in the process of submitting an answer. */
-    SUBMITTING_ANSWER
+    SUBMITTING_ANSWER,
   }
 }

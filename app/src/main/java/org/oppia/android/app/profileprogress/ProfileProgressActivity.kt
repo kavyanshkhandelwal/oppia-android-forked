@@ -29,7 +29,6 @@ class ProfileProgressActivity :
   RouteToOngoingTopicListListener,
   RouteToRecentlyPlayedListener,
   ProfilePictureDialogInterface {
-
   @Inject
   lateinit var profileProgressActivityPresenter: ProfileProgressActivityPresenter
   private var internalProfileId = -1
@@ -48,13 +47,14 @@ class ProfileProgressActivity :
     internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     profileProgressActivityPresenter.handleOnCreate(internalProfileId)
 
-    resultLauncher = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-      if (result.resultCode == RESULT_OK) {
-        profileProgressActivityPresenter.updateProfileAvatar(result.data)
+    resultLauncher =
+      registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+      ) { result ->
+        if (result.resultCode == RESULT_OK) {
+          profileProgressActivityPresenter.updateProfileAvatar(result.data)
+        }
       }
-    }
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
@@ -69,7 +69,7 @@ class ProfileProgressActivity :
       DestinationScreen
         .newBuilder()
         .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-        .build()
+        .build(),
     )
   }
 
@@ -77,8 +77,8 @@ class ProfileProgressActivity :
     startActivity(
       CompletedStoryListActivity.createCompletedStoryListActivityIntent(
         this,
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     )
   }
 
@@ -86,15 +86,18 @@ class ProfileProgressActivity :
     startActivity(
       OngoingTopicListActivity.createOngoingTopicListActivityIntent(
         this,
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     )
   }
 
   companion object {
     // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
 
-    fun createProfileProgressActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createProfileProgressActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, ProfileProgressActivity::class.java).apply {
         decorateWithUserProfileId(profileId)
@@ -107,8 +110,8 @@ class ProfileProgressActivity :
     startActivity(
       ProfilePictureActivity.createProfilePictureActivityIntent(
         this,
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     )
   }
 

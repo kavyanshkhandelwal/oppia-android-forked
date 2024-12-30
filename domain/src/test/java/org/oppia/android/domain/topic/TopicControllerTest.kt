@@ -77,12 +77,19 @@ class TopicControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
   @Inject lateinit var topicController: TopicController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var translationController: TranslationController
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   private lateinit var profileId1: ProfileId
@@ -146,7 +153,7 @@ class TopicControllerTest {
     val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
     assertThat(topic.topicId).isEqualTo(RATIOS_TOPIC_ID)
     assertThat(topic.description.html).contains(
-      "Many everyday problems involve thinking about proportions"
+      "Many everyday problems involve thinking about proportions",
     )
   }
 
@@ -293,7 +300,10 @@ class TopicControllerTest {
   fun testRetrieveChapter_validChapter_returnsCorrectChapterSummary() {
     val chapterProvider =
       topicController.retrieveChapter(
-        profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, FRACTIONS_EXPLORATION_ID_0
+        profileId1,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        FRACTIONS_EXPLORATION_ID_0,
       )
 
     val chapterSummary = monitorFactory.waitForNextSuccessfulResult(chapterProvider).chapterSummary
@@ -305,7 +315,10 @@ class TopicControllerTest {
   fun testRetrieveChapter_invalidChapter_returnsFailure() {
     val chapterProvider =
       topicController.retrieveChapter(
-        profileId1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+        profileId1,
+        FRACTIONS_TOPIC_ID,
+        FRACTIONS_STORY_ID_0,
+        RATIOS_EXPLORATION_ID_0,
       )
 
     val error = monitorFactory.waitForNextFailureResult(chapterProvider)
@@ -504,8 +517,9 @@ class TopicControllerTest {
 
   @Test
   fun testGetConceptCard_fractionsSkill0_returnsCorrectConceptCard() {
-    val conceptCardProvider = topicController
-      .getConceptCard(profileId1, FRACTIONS_SKILL_ID_0)
+    val conceptCardProvider =
+      topicController
+        .getConceptCard(profileId1, FRACTIONS_SKILL_ID_0)
 
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardProvider)
     assertThat(ephemeralConceptCard.conceptCard.skillId).isEqualTo(FRACTIONS_SKILL_ID_0)
@@ -572,7 +586,7 @@ class TopicControllerTest {
   fun testRetrieveQuestionsForSkillIds_returnsAllQuestions() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1)
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1),
       )
 
     val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
@@ -580,9 +594,12 @@ class TopicControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        TEST_QUESTION_ID_0, TEST_QUESTION_ID_1,
-        TEST_QUESTION_ID_2, TEST_QUESTION_ID_0, TEST_QUESTION_ID_3
-      )
+        TEST_QUESTION_ID_0,
+        TEST_QUESTION_ID_1,
+        TEST_QUESTION_ID_2,
+        TEST_QUESTION_ID_0,
+        TEST_QUESTION_ID_3,
+      ),
     )
   }
 
@@ -597,9 +614,11 @@ class TopicControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        FRACTIONS_QUESTION_ID_0, FRACTIONS_QUESTION_ID_1,
-        FRACTIONS_QUESTION_ID_2, FRACTIONS_QUESTION_ID_3
-      )
+        FRACTIONS_QUESTION_ID_0,
+        FRACTIONS_QUESTION_ID_1,
+        FRACTIONS_QUESTION_ID_2,
+        FRACTIONS_QUESTION_ID_3,
+      ),
     )
   }
 
@@ -614,8 +633,10 @@ class TopicControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        FRACTIONS_QUESTION_ID_8, FRACTIONS_QUESTION_ID_9, FRACTIONS_QUESTION_ID_10
-      )
+        FRACTIONS_QUESTION_ID_8,
+        FRACTIONS_QUESTION_ID_9,
+        FRACTIONS_QUESTION_ID_10,
+      ),
     )
   }
 
@@ -630,9 +651,11 @@ class TopicControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        FRACTIONS_QUESTION_ID_4, FRACTIONS_QUESTION_ID_5,
-        FRACTIONS_QUESTION_ID_6, FRACTIONS_QUESTION_ID_7
-      )
+        FRACTIONS_QUESTION_ID_4,
+        FRACTIONS_QUESTION_ID_5,
+        FRACTIONS_QUESTION_ID_6,
+        FRACTIONS_QUESTION_ID_7,
+      ),
     )
   }
 
@@ -647,8 +670,8 @@ class TopicControllerTest {
     val questionIds = questionsList.map { it.questionId }
     assertThat(questionIds).containsExactlyElementsIn(
       mutableListOf(
-        RATIOS_QUESTION_ID_0
-      )
+        RATIOS_QUESTION_ID_0,
+      ),
     )
   }
 
@@ -657,7 +680,7 @@ class TopicControllerTest {
   fun testRetrieveQuestionsForInvalidSkillIds_returnsResultForValidSkillsOnly() {
     val questionsListProvider =
       topicController.retrieveQuestionsForSkillIds(
-        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID")
+        listOf(TEST_SKILL_ID_0, TEST_SKILL_ID_1, "NON_EXISTENT_SKILL_ID"),
       )
 
     val questionsList = monitorFactory.waitForNextSuccessfulResult(questionsListProvider)
@@ -681,8 +704,11 @@ class TopicControllerTest {
       .isEqualTo(ChapterPlayState.NOT_STARTED)
     assertThat(topic.storyList[0].chapterList[1].chapterPlayState)
       .isEqualTo(ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES)
-    assertThat(topic.storyList[0].chapterList[1].missingPrerequisiteChapter.title)
-      .isEqualTo(topic.storyList[0].chapterList[0].title)
+    assertThat(
+      topic.storyList[0]
+        .chapterList[1]
+        .missingPrerequisiteChapter.title,
+    ).isEqualTo(topic.storyList[0].chapterList[0].title)
   }
 
   @Test
@@ -877,7 +903,7 @@ class TopicControllerTest {
     assertThat(completedStoryList.completedStoryList[1].storyId).isEqualTo(RATIOS_STORY_ID_0)
   }
 
-  /* Localization-based tests. */
+  // Localization-based tests.
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
@@ -889,9 +915,12 @@ class TopicControllerTest {
 
     // The context should be just the language for English since the default strings of the lesson
     // are expected to be in English.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -928,9 +957,12 @@ class TopicControllerTest {
     val ephemeralConceptCard = monitorFactory.waitForNextSuccessfulResult(conceptCardDataProvider)
 
     // English translations means a context without translations.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(ephemeralConceptCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -976,9 +1008,12 @@ class TopicControllerTest {
 
     // The context should be just the language for English since the default strings of the lesson
     // are expected to be in English.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -1018,9 +1053,12 @@ class TopicControllerTest {
     val ephemeralRevisionCard = monitorFactory.waitForNextSuccessfulResult(revisionCardDataProvider)
 
     // English translations means a context without translations.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(ephemeralRevisionCard.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -1064,65 +1102,69 @@ class TopicControllerTest {
   private fun markFractionsStory0Chapter0AsCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markFractionsStory0Chapter1AsCompleted() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp1(
       profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markRatiosStory0Chapter0AsCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp0(
       profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markRatiosStory0Chapter1AsCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory0Exp1(
       profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun markRatiosStory1Chapter0AsCompleted() {
     storyProgressTestHelper.markCompletedRatiosStory1Exp0(
       profileId1,
-      timestampOlderThanOneWeek = false
+      timestampOlderThanOneWeek = false,
     )
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
-  private fun getExplorationIds(ephemeralSummary: EphemeralStorySummary): List<String> {
-    return ephemeralSummary.storySummary.chapterList.map(ChapterSummary::getExplorationId)
-  }
+  private fun getExplorationIds(ephemeralSummary: EphemeralStorySummary): List<String> =
+    ephemeralSummary.storySummary.chapterList.map(ChapterSummary::getExplorationId)
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -1140,8 +1182,7 @@ class TopicControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1153,8 +1194,8 @@ class TopicControllerTest {
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -1168,9 +1209,12 @@ class TopicControllerTest {
     fun inject(topicControllerTest: TopicControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTopicControllerTest_TestApplicationComponent.builder()
+      DaggerTopicControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

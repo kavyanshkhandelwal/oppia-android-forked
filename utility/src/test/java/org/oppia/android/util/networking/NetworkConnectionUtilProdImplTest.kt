@@ -36,7 +36,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NetworkConnectionUtilProdImplTest {
-
   private val NO_CONNECTION = -1
 
   @Inject
@@ -54,7 +53,8 @@ class NetworkConnectionUtilProdImplTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerNetworkConnectionUtilProdImplTest_TestApplicationComponent.builder()
+    DaggerNetworkConnectionUtilProdImplTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -64,7 +64,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_activeWifiConnection_returnsWifi() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
@@ -73,7 +73,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_inactiveWifiConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -82,7 +82,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_activeEthernetConnection_returnsWifi() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(LOCAL)
   }
@@ -91,7 +91,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_inactiveEthernetConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_ETHERNET,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -100,7 +100,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_activeCellularConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
@@ -109,7 +109,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_inactiveCellularConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -118,7 +118,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_activeWimaxConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(CELLULAR)
   }
@@ -127,7 +127,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_inactiveWimaxConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIMAX,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -136,7 +136,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_noActiveNetworkConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = NO_CONNECTION,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -145,7 +145,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testGetCurrentConnectionStatus_activeBluetoothConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_BLUETOOTH,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(networkConnectionUtil.getCurrentConnectionStatus()).isEqualTo(NONE)
   }
@@ -154,7 +154,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testLocalLogName_activeWifiConnection_returnsLocal() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(LOCAL.logName).isEqualTo("Local")
   }
@@ -163,7 +163,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testCellularLogName_activeCellularConnection_returnsCellular() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_MOBILE,
-      networkState = NetworkInfo.State.CONNECTED
+      networkState = NetworkInfo.State.CONNECTED,
     )
     assertThat(CELLULAR.logName).isEqualTo("Cellular")
   }
@@ -172,7 +172,7 @@ class NetworkConnectionUtilProdImplTest {
   fun testNoneLogName_inactiveWifiConnection_returnsNone() {
     networkConnectionTestUtil.setNetworkInfo(
       status = ConnectivityManager.TYPE_WIFI,
-      networkState = NetworkInfo.State.DISCONNECTED
+      networkState = NetworkInfo.State.DISCONNECTED,
     )
     assertThat(NONE.logName).isEqualTo("None")
   }
@@ -182,9 +182,7 @@ class NetworkConnectionUtilProdImplTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -206,8 +204,8 @@ class NetworkConnectionUtilProdImplTest {
   @Component(
     modules = [
       TestModule::class, NetworkConnectionUtilProdModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
+      RobolectricModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

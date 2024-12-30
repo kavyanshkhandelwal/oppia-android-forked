@@ -26,7 +26,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  manifest = Config.NONE, sdk = [Build.VERSION_CODES.P], shadows = [ShadowBidiFormatter::class]
+  manifest = Config.NONE,
+  sdk = [Build.VERSION_CODES.P],
+  shadows = [ShadowBidiFormatter::class],
 )
 class ShadowBidiFormatterTest {
   @Before
@@ -107,7 +109,8 @@ class ShadowBidiFormatterTest {
 
     val shadow = ShadowBidiFormatter.lookUpFormatter(Locale.US)
     assertThat(shadow?.getAllWrappedSequences())
-      .containsAtLeast("test string one", "test string two").inOrder()
+      .containsAtLeast("test string one", "test string two")
+      .inOrder()
   }
 
   @Test
@@ -120,7 +123,8 @@ class ShadowBidiFormatterTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerShadowBidiFormatterTest_TestApplicationComponent.builder()
+    DaggerShadowBidiFormatterTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -131,17 +135,15 @@ class ShadowBidiFormatterTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class
-    ]
+      TestModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

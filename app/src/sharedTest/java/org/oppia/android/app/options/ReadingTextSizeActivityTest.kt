@@ -91,7 +91,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ReadingTextSizeActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ReadingTextSizeActivityTest {
   @get:Rule
@@ -101,9 +101,12 @@ class ReadingTextSizeActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<ReadingTextSizeActivity> = ActivityTestRule(
-    ReadingTextSizeActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<ReadingTextSizeActivity> =
+    ActivityTestRule(
+      ReadingTextSizeActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject lateinit var context: Context
 
@@ -133,8 +136,7 @@ class ReadingTextSizeActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.reading_text_size_activity_title))
   }
 
-  private fun createReadingTextSizeActivityIntent() =
-    ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
+  private fun createReadingTextSizeActivityIntent() = ReadingTextSizeActivity.createReadingTextSizeActivityIntent(context, MEDIUM_TEXT_SIZE)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -165,8 +167,8 @@ class ReadingTextSizeActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -177,9 +179,13 @@ class ReadingTextSizeActivityTest {
     fun inject(readingTextSizeActivityTest: ReadingTextSizeActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerReadingTextSizeActivityTest_TestApplicationComponent.builder()
+      DaggerReadingTextSizeActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -188,9 +194,12 @@ class ReadingTextSizeActivityTest {
       component.inject(readingTextSizeActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

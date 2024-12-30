@@ -133,7 +133,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = NavigationDrawerActivityDebugTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class NavigationDrawerActivityDebugTest {
   @get:Rule
@@ -167,12 +167,11 @@ class NavigationDrawerActivityDebugTest {
     Intents.release()
   }
 
-  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent {
-    return NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
+  private fun createNavigationDrawerActivityIntent(internalProfileId: Int): Intent =
+    NavigationDrawerTestActivity.createNavigationDrawerTestActivity(
       context,
-      internalProfileId
+      internalProfileId,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -181,7 +180,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_navDrawerIsOpened() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.home_fragment_placeholder)).check(matches(isCompletelyDisplayed()))
@@ -192,7 +191,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_configChange_navDrawerIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -205,7 +204,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -219,14 +218,14 @@ class NavigationDrawerActivityDebugTest {
       onView(
         allOf(
           withText(R.string.developer_options),
-          isDescendantOfA(withId(R.id.developer_options_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.developer_options_linear_layout)),
+        ),
       ).check(
         matches(
           hasTextColor(
-            R.color.component_color_drawer_fragment_developer_options_selected_text_color
-          )
-        )
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color,
+          ),
+        ),
       )
     }
   }
@@ -236,7 +235,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_switchProfile_cancel_configChange_devOptionsIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -252,14 +251,14 @@ class NavigationDrawerActivityDebugTest {
       onView(
         allOf(
           withText(R.string.developer_options),
-          isDescendantOfA(withId(R.id.developer_options_linear_layout))
-        )
+          isDescendantOfA(withId(R.id.developer_options_linear_layout)),
+        ),
       ).check(
         matches(
           hasTextColor(
-            R.color.component_color_drawer_fragment_developer_options_selected_text_color
-          )
-        )
+            R.color.component_color_drawer_fragment_developer_options_selected_text_color,
+          ),
+        ),
       )
     }
   }
@@ -269,7 +268,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_pressBack_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -285,7 +284,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_openNavDrawer_debug_pressBack_configChange_homeIsSelected() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withText(R.string.developer_options)).perform(click())
@@ -300,7 +299,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_inDebugMode_openNavDrawer_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(withId(R.id.developer_options_linear_layout)).check(matches(isDisplayed()))
@@ -310,7 +309,7 @@ class NavigationDrawerActivityDebugTest {
   @Test
   fun testNavDrawer_inDebugMode_openNavDrawer_configChange_devOptionsIsDisplayed() {
     launch<NavigationDrawerTestActivity>(
-      createNavigationDrawerActivityIntent(internalProfileId)
+      createNavigationDrawerActivityIntent(internalProfileId),
     ).use {
       it.openNavigationDrawer()
       onView(isRoot()).perform(orientationLandscape())
@@ -323,16 +322,18 @@ class NavigationDrawerActivityDebugTest {
   fun testNavDrawer_inDebugMode_devOptionsMenuItem_opensDeveloperOptionsActivity() {
     launch<NavigationDrawerTestActivity>(
       createNavigationDrawerActivityIntent(
-        internalProfileId
-      )
+        internalProfileId,
+      ),
     ).use {
       it.openNavigationDrawer()
-      onView(withId(R.id.developer_options_linear_layout)).perform(nestedScrollTo())
-        .check(matches(isDisplayed())).perform(click())
+      onView(withId(R.id.developer_options_linear_layout))
+        .perform(nestedScrollTo())
+        .check(matches(isDisplayed()))
+        .perform(click())
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       intended(hasComponent(DeveloperOptionsActivity::class.java.name))
       intended(
-        hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId)
+        hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId),
       )
     }
   }
@@ -365,25 +366,26 @@ class NavigationDrawerActivityDebugTest {
   }
 
   /** Functions nestedScrollTo() and findFirstParentLayoutOfClass() taken from: https://stackoverflow.com/a/46037284/8860848 */
-  private fun nestedScrollTo(): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "View is not NestedScrollView"
-      }
+  private fun nestedScrollTo(): ViewAction =
+    object : ViewAction {
+      override fun getDescription(): String = "View is not NestedScrollView"
 
-      override fun getConstraints(): org.hamcrest.Matcher<View> {
-        return allOf(
-          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java))
+      override fun getConstraints(): org.hamcrest.Matcher<View> =
+        allOf(
+          isDescendantOfA(isAssignableFrom(NestedScrollView::class.java)),
         )
-      }
 
-      override fun perform(uiController: UiController, view: View) {
+      override fun perform(
+        uiController: UiController,
+        view: View,
+      ) {
         try {
           val nestedScrollView =
             findFirstParentLayoutOfClass(view, NestedScrollView::class.java) as NestedScrollView
           nestedScrollView.scrollTo(0, view.getTop())
         } catch (e: Exception) {
-          throw PerformException.Builder()
+          throw PerformException
+            .Builder()
             .withActionDescription(this.description)
             .withViewDescription(HumanReadables.describe(view))
             .withCause(e)
@@ -392,9 +394,11 @@ class NavigationDrawerActivityDebugTest {
         uiController.loopMainThreadUntilIdle()
       }
     }
-  }
 
-  private fun findFirstParentLayoutOfClass(view: View, parentClass: Class<out View>): View {
+  private fun findFirstParentLayoutOfClass(
+    view: View,
+    parentClass: Class<out View>,
+  ): View {
     var parent: ViewParent = FrameLayout(view.getContext())
     lateinit var incrementView: ViewParent
     var i = 0
@@ -410,13 +414,9 @@ class NavigationDrawerActivityDebugTest {
     return parent as View
   }
 
-  private fun findParent(view: View): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: View): ViewParent = view.getParent()
 
-  private fun findParent(view: ViewParent): ViewParent {
-    return view.getParent()
-  }
+  private fun findParent(view: ViewParent): ViewParent = view.getParent()
 
   private fun checkNavigationViewItemStatus(item: NavigationDrawerItem) =
     object : TypeSafeMatcher<View>() {
@@ -424,9 +424,7 @@ class NavigationDrawerActivityDebugTest {
         description.appendText("NavigationViewItem is checked")
       }
 
-      override fun matchesSafely(view: View): Boolean {
-        return (view as NavigationView).menu.getItem(item.ordinal).isChecked
-      }
+      override fun matchesSafely(view: View): Boolean = (view as NavigationView).menu.getItem(item.ordinal).isChecked
     }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -458,8 +456,8 @@ class NavigationDrawerActivityDebugTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -470,20 +468,25 @@ class NavigationDrawerActivityDebugTest {
     fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerNavigationDrawerActivityDebugTest_TestApplicationComponent.builder()
+      DaggerNavigationDrawerActivityDebugTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest) {
-      return component.inject(navigationDrawerActivityDebugTest)
-    }
+    fun inject(navigationDrawerActivityDebugTest: NavigationDrawerActivityDebugTest) = component.inject(navigationDrawerActivityDebugTest)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

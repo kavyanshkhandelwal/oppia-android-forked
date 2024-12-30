@@ -69,9 +69,9 @@ class TestBazelWorkspaceTest {
     assertThat(bazelRcFile.exists()).isTrue()
     assertThat(bazelRcFile.readText().trim()).isEqualTo(
       """
-        --noenable_bzlmod
-        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-      """.trimIndent()
+      --noenable_bzlmod
+      build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent(),
     )
   }
 
@@ -86,7 +86,7 @@ class TestBazelWorkspaceTest {
 
     // Verify that when initializing an empty workspace fails, an AssertionError is thrown (which
     // would fail for calling tests).
-    assertThrows<AssertionError>() { testBazelWorkspace.initEmptyWorkspace() }
+    assertThrows<AssertionError> { testBazelWorkspace.initEmptyWorkspace() }
   }
 
   @Test
@@ -108,7 +108,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("com.android.support:support-annotations:28.0.0"),
     )
 
     val workspaceFile = testBazelWorkspace.workspaceFile
@@ -121,7 +121,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("com.android.support:support-annotations:28.0.0"),
     )
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
@@ -133,15 +133,15 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("com.android.support:support-annotations:28.0.0"),
     )
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
     assertThat(bazelRcContent).isEqualTo(
       """
-        --noenable_bzlmod
-        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-      """.trimIndent()
+      --noenable_bzlmod
+      build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent(),
     )
   }
 
@@ -152,8 +152,8 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
       listOf(
         "com.android.support:support-annotations:28.0.0",
-        "io.fabric.sdk.android:fabric:1.4.7"
-      )
+        "io.fabric.sdk.android:fabric:1.4.7",
+      ),
     )
 
     val workspaceFile = testBazelWorkspace.workspaceFile
@@ -172,8 +172,8 @@ class TestBazelWorkspaceTest {
         "com.android.support:support-annotations:28.0.0",
         "io.fabric.sdk.android:fabric:1.4.7",
         "androidx.databinding:databinding-adapters:3.4.2",
-        "com.google.protobuf:protobuf-lite:3.0.0"
-      )
+        "com.google.protobuf:protobuf-lite:3.0.0",
+      ),
     )
 
     val workspaceFile = testBazelWorkspace.workspaceFile
@@ -190,11 +190,11 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("com.android.support:support-annotations:28.0.0"),
     )
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("io.fabric.sdk.android:fabric:1.4.7")
+      listOf("io.fabric.sdk.android:fabric:1.4.7"),
     )
 
     val workspaceFile = testBazelWorkspace.workspaceFile
@@ -209,7 +209,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
-      listOf("com.android.support:support-annotations:28.0.0")
+      listOf("com.android.support:support-annotations:28.0.0"),
     )
 
     val workspaceFile = testBazelWorkspace.workspaceFile
@@ -224,7 +224,7 @@ class TestBazelWorkspaceTest {
               "https://repo1.maven.org/maven2",
           ],
       )
-      """.trimIndent()
+      """.trimIndent(),
     )
   }
 
@@ -294,7 +294,7 @@ class TestBazelWorkspaceTest {
       sourceContent,
       testContent,
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
     val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
@@ -313,15 +313,15 @@ class TestBazelWorkspaceTest {
     val sourceContent = "fun main() { println(\"Hello, World!\") }"
     val testContent =
       """
-        import org.junit.Test
-        import kotlin.test.assertEquals
+      import org.junit.Test
+      import kotlin.test.assertEquals
 
-        class MainTest {
-            @Test
-            fun testMain() {
-                assertEquals(1, 1)
-            }
-        }
+      class MainTest {
+          @Test
+          fun testMain() {
+              assertEquals(1, 1)
+          }
+      }
       """.trimIndent()
 
     testBazelWorkspace.addSourceAndTestFileWithContent(
@@ -330,7 +330,7 @@ class TestBazelWorkspaceTest {
       sourceContent,
       testContent,
       sourceSubpackage = "coverage/main/java/com/example",
-      testSubpackage = "coverage/test/java/com/example"
+      testSubpackage = "coverage/test/java/com/example",
     )
 
     val sourceBuildFile = File(tempFolder.root, "coverage/main/java/com/example/BUILD.bazel")
@@ -339,29 +339,29 @@ class TestBazelWorkspaceTest {
     assertThat(sourceBuildFile.exists()).isTrue()
     assertThat(sourceBuildFile.readText()).contains(
       """
-        kt_jvm_library(
-            name = "main",
-            srcs = ["Main.kt"],
-            visibility = ["//visibility:public"]
-        )
-      """.trimIndent()
+      kt_jvm_library(
+          name = "main",
+          srcs = ["Main.kt"],
+          visibility = ["//visibility:public"]
+      )
+      """.trimIndent(),
     )
 
     assertThat(testBuildFile.exists()).isTrue()
     assertThat(testBuildFile.readText()).contains(
       """
-        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-        kt_jvm_test(
-            name = "MainTest",
-            srcs = ["MainTest.kt"],
-            deps = [
-                "//coverage/main/java/com/example:main",
-                "@maven//:junit_junit",
-            ],
-            visibility = ["//visibility:public"],
-            test_class = "com.example.MainTest",
-        )
-      """.trimIndent()
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      kt_jvm_test(
+          name = "MainTest",
+          srcs = ["MainTest.kt"],
+          deps = [
+              "//coverage/main/java/com/example:main",
+              "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.MainTest",
+      )
+      """.trimIndent(),
     )
   }
 
@@ -408,7 +408,7 @@ class TestBazelWorkspaceTest {
       sourceContent = sourceContent,
       testContentShared = testContentShared,
       testContentLocal = testContentLocal,
-      subpackage = "coverage"
+      subpackage = "coverage",
     )
 
     val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
@@ -468,62 +468,68 @@ class TestBazelWorkspaceTest {
       sourceContent = sourceContent,
       testContentShared = testContentShared,
       testContentLocal = testContentLocal,
-      subpackage = "coverage"
+      subpackage = "coverage",
     )
 
-    val sourceBuildFile = File(
-      tempFolder.root, "coverage/main/java/com/example/BUILD.bazel"
-    )
-    val testBuildFileShared = File(
-      tempFolder.root, "coverage/sharedTest/java/com/example/BUILD.bazel"
-    )
-    val testBuildFileLocal = File(
-      tempFolder.root, "coverage/test/java/com/example/BUILD.bazel"
-    )
+    val sourceBuildFile =
+      File(
+        tempFolder.root,
+        "coverage/main/java/com/example/BUILD.bazel",
+      )
+    val testBuildFileShared =
+      File(
+        tempFolder.root,
+        "coverage/sharedTest/java/com/example/BUILD.bazel",
+      )
+    val testBuildFileLocal =
+      File(
+        tempFolder.root,
+        "coverage/test/java/com/example/BUILD.bazel",
+      )
 
     assertThat(sourceBuildFile.exists()).isTrue()
     assertThat(sourceBuildFile.readText()).contains(
       """
-        kt_jvm_library(
-            name = "main",
-            srcs = ["Main.kt"],
-            visibility = ["//visibility:public"]
-        )
-      """.trimIndent()
+      kt_jvm_library(
+          name = "main",
+          srcs = ["Main.kt"],
+          visibility = ["//visibility:public"]
+      )
+      """.trimIndent(),
     )
 
     assertThat(testBuildFileShared.exists()).isTrue()
     assertThat(testBuildFileShared.readText()).contains(
       """
-        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-        kt_jvm_test(
-            name = "MainTest",
-            srcs = ["MainTest.kt"],
-            deps = [
-                "//coverage/main/java/com/example:main",
-                "@maven//:junit_junit",
-            ],
-            visibility = ["//visibility:public"],
-            test_class = "com.example.MainTest",
-        )
-      """.trimIndent()
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      kt_jvm_test(
+          name = "MainTest",
+          srcs = ["MainTest.kt"],
+          deps = [
+              "//coverage/main/java/com/example:main",
+              "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.MainTest",
+      )
+      """.trimIndent(),
     )
 
     assertThat(testBuildFileLocal.exists()).isTrue()
     assertThat(testBuildFileLocal.readText()).contains(
       """
-        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-        kt_jvm_test(
-            name = "MainLocalTest",
-            srcs = ["MainLocalTest.kt"],
-            deps = [
-                "//coverage/main/java/com/example:main",
-                "@maven//:junit_junit",
-            ],
-            visibility = ["//visibility:public"],
-            test_class = "com.example.MainLocalTest",
-        )
-      """.trimIndent()
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      kt_jvm_test(
+          name = "MainLocalTest",
+          srcs = ["MainLocalTest.kt"],
+          deps = [
+              "//coverage/main/java/com/example:main",
+              "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.MainLocalTest",
+      )
+      """.trimIndent(),
     )
   }
 
@@ -535,7 +541,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.addSourceContentAndBuildFile(
       "Main",
       sourceContent,
-      "coverage/main/java/com/example"
+      "coverage/main/java/com/example",
     )
 
     val sourceFile = File(tempFolder.root, "coverage/main/java/com/example/Main.kt")
@@ -547,28 +553,29 @@ class TestBazelWorkspaceTest {
     assertThat(buildFile.exists()).isTrue()
     assertThat(buildFile.readText()).contains(
       """
-        kt_jvm_library(
-            name = "main",
-            srcs = ["Main.kt"],
-            visibility = ["//visibility:public"]
-        )
-      """.trimIndent()
+      kt_jvm_library(
+          name = "main",
+          srcs = ["Main.kt"],
+          visibility = ["//visibility:public"]
+      )
+      """.trimIndent(),
     )
   }
 
   @Test
   fun testAddTestContentAndBuildFile_createsTestFileAndBuildFile() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
-    val testContent = "import org.junit.Test" +
-      "\nimport kotlin.test.assertEquals\n\nclass MainTest {" +
-      "\n@Test\nfun testMain() {\nassertEquals(1, 1)\n}\n}"
+    val testContent =
+      "import org.junit.Test" +
+        "\nimport kotlin.test.assertEquals\n\nclass MainTest {" +
+        "\n@Test\nfun testMain() {\nassertEquals(1, 1)\n}\n}"
 
     testBazelWorkspace.addTestContentAndBuildFile(
       "Main",
       "MainTest",
       testContent,
       "coverage/main/java/com/example",
-      "coverage/test/java/com/example"
+      "coverage/test/java/com/example",
     )
 
     val testFile = File(tempFolder.root, "coverage/test/java/com/example/MainTest.kt")
@@ -580,18 +587,18 @@ class TestBazelWorkspaceTest {
     assertThat(buildFile.exists()).isTrue()
     assertThat(buildFile.readText()).contains(
       """
-        load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
-        kt_jvm_test(
-            name = "MainTest",
-            srcs = ["MainTest.kt"],
-            deps = [
-                "//coverage/main/java/com/example:main",
-                "@maven//:junit_junit",
-            ],
-            visibility = ["//visibility:public"],
-            test_class = "com.example.MainTest",
-        )
-      """.trimIndent()
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+      kt_jvm_test(
+          name = "MainTest",
+          srcs = ["MainTest.kt"],
+          deps = [
+              "//coverage/main/java/com/example:main",
+              "@maven//:junit_junit",
+          ],
+          visibility = ["//visibility:public"],
+          test_class = "com.example.MainTest",
+      )
+      """.trimIndent(),
     )
   }
 
@@ -600,12 +607,13 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest(testName = "FirstTest")
 
-    val exception = assertThrows<IllegalStateException>() {
-      testBazelWorkspace.addTestToBuildFile(
-        testName = "FirstTest",
-        testFile = tempFolder.newFile("FirstTestOther.kt")
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        testBazelWorkspace.addTestToBuildFile(
+          testName = "FirstTest",
+          testFile = tempFolder.newFile("FirstTestOther.kt"),
+        )
+      }
 
     assertThat(exception).hasMessageThat().contains("Test 'FirstTest' already set up")
   }
@@ -616,7 +624,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     val workspaceContent = tempFolder.getWorkspaceFile().readText()
@@ -629,7 +637,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     val bazelVersionContent = tempFolder.getBazelVersionFile().readText().trim()
@@ -642,15 +650,15 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
     assertThat(bazelRcContent).isEqualTo(
       """
-        --noenable_bzlmod
-        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-      """.trimIndent()
+      --noenable_bzlmod
+      build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent(),
     )
   }
 
@@ -658,10 +666,11 @@ class TestBazelWorkspaceTest {
   fun testAddTestToBuildFile_firstTest_returnsTestBuildWorkspaceFiles() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "FirstTest",
+        testFile = tempFolder.newFile("FirstTest.kt"),
+      )
 
     assertThat(files.getFileNames()).containsExactly("WORKSPACE", "BUILD.bazel", "FirstTest.kt")
   }
@@ -671,14 +680,15 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
     val workspaceSize = tempFolder.getWorkspaceFile().length()
 
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "SecondTest",
-      testFile = tempFolder.newFile("SecondTest.kt")
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "SecondTest",
+        testFile = tempFolder.newFile("SecondTest.kt"),
+      )
 
     // WORKSPACE not included since it doesn't need to be reinitialized.
     assertThat(files.getFileNames()).containsExactly("BUILD.bazel", "SecondTest.kt")
@@ -691,7 +701,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     val buildContent = testBazelWorkspace.rootBuildFile.readText()
@@ -704,12 +714,12 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "SecondTest",
-      testFile = tempFolder.newFile("SecondTest.kt")
+      testFile = tempFolder.newFile("SecondTest.kt"),
     )
 
     // The load line should only exist once in the file.
@@ -723,7 +733,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
     // There should be 1 test in the file with empty deps and correct source.
@@ -740,7 +750,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
       testFile = tempFolder.newFile("FirstTest.kt"),
-      withGeneratedDependency = true
+      withGeneratedDependency = true,
     )
 
     // The build file should now be initialized for libraries.
@@ -755,7 +765,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
       testFile = tempFolder.newFile("FirstTest.kt"),
-      withGeneratedDependency = true
+      withGeneratedDependency = true,
     )
 
     // Ensure the test is arranged correctly.
@@ -772,11 +782,12 @@ class TestBazelWorkspaceTest {
   fun testAddTestToBuildFile_firstTest_withGeneratedDep_returnsTestDepBuildWorkspaceFiles() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt"),
-      withGeneratedDependency = true
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "FirstTest",
+        testFile = tempFolder.newFile("FirstTest.kt"),
+        withGeneratedDependency = true,
+      )
 
     assertThat(files.getFileNames())
       .containsExactly("WORKSPACE", "BUILD.bazel", "FirstTest.kt", "FirstTestDependency.kt")
@@ -787,14 +798,15 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
-      testFile = tempFolder.newFile("FirstTest.kt")
+      testFile = tempFolder.newFile("FirstTest.kt"),
     )
 
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "SecondTest",
-      testFile = tempFolder.newFile("SecondTest.kt"),
-      withGeneratedDependency = true
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "SecondTest",
+        testFile = tempFolder.newFile("SecondTest.kt"),
+        withGeneratedDependency = true,
+      )
 
     assertThat(files.getFileNames())
       .containsExactly("BUILD.bazel", "SecondTest.kt", "SecondTestDependency.kt")
@@ -807,7 +819,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
       testFile = tempFolder.newFile("FirstTest.kt"),
-      withExtraDependency = "//:ExtraDep"
+      withExtraDependency = "//:ExtraDep",
     )
 
     // Ensure the test is arranged correctly.
@@ -825,7 +837,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.addTestToBuildFile(
       testName = "FirstTest",
       testFile = tempFolder.newFile("subpackage/FirstTest.kt"),
-      subpackage = "subpackage"
+      subpackage = "subpackage",
     )
 
     // The root build file shouldn't be changed, but there should be new files in the subpackage
@@ -843,11 +855,12 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     tempFolder.newFolder("subpackage")
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "FirstTest",
-      testFile = tempFolder.newFile("subpackage/FirstTest.kt"),
-      subpackage = "subpackage"
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "FirstTest",
+        testFile = tempFolder.newFile("subpackage/FirstTest.kt"),
+        subpackage = "subpackage",
+      )
 
     assertThat(files.getRelativeFileNames(tempFolder.root))
       .containsExactly("WORKSPACE", "subpackage/BUILD.bazel", "subpackage/FirstTest.kt")
@@ -858,15 +871,18 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     val subpackage = "subpackage.first.second"
     tempFolder.newFolder(*(subpackage.split(".")).toTypedArray())
-    val files = testBazelWorkspace.addTestToBuildFile(
-      testName = "FirstTest",
-      testFile = tempFolder.newFile("subpackage/first/second/FirstTest.kt"),
-      subpackage = subpackage
-    )
+    val files =
+      testBazelWorkspace.addTestToBuildFile(
+        testName = "FirstTest",
+        testFile = tempFolder.newFile("subpackage/first/second/FirstTest.kt"),
+        subpackage = subpackage,
+      )
 
     assertThat(files.getRelativeFileNames(tempFolder.root))
       .containsExactly(
-        "WORKSPACE", "subpackage/first/second/BUILD.bazel", "subpackage/first/second/FirstTest.kt"
+        "WORKSPACE",
+        "subpackage/first/second/BUILD.bazel",
+        "subpackage/first/second/FirstTest.kt",
       )
   }
 
@@ -878,7 +894,7 @@ class TestBazelWorkspaceTest {
       testName = "FirstTest",
       testFile = tempFolder.newFile("FirstTest.kt"),
       withGeneratedDependency = true,
-      withExtraDependency = "//:ExtraDep"
+      withExtraDependency = "//:ExtraDep",
     )
 
     // Both dependencies should be included in the test's deps.
@@ -892,9 +908,10 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest(testName = "FirstTest")
 
-    val exception = assertThrows<IllegalStateException>() {
-      testBazelWorkspace.createTest(testName = "FirstTest")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        testBazelWorkspace.createTest(testName = "FirstTest")
+      }
 
     assertThat(exception).hasMessageThat().contains("Test 'FirstTest' already exists")
   }
@@ -928,9 +945,9 @@ class TestBazelWorkspaceTest {
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
     assertThat(bazelRcContent).isEqualTo(
       """
-        --noenable_bzlmod
-        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-      """.trimIndent()
+      --noenable_bzlmod
+      build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent(),
     )
   }
 
@@ -998,7 +1015,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.createTest(
       testName = "FirstTest",
-      withGeneratedDependency = true
+      withGeneratedDependency = true,
     )
 
     // The build file should now be initialized for libraries.
@@ -1012,7 +1029,7 @@ class TestBazelWorkspaceTest {
 
     testBazelWorkspace.createTest(
       testName = "FirstTest",
-      withGeneratedDependency = true
+      withGeneratedDependency = true,
     )
 
     // Ensure the test is arranged correctly.
@@ -1029,10 +1046,11 @@ class TestBazelWorkspaceTest {
   fun testCreateTest_firstTest_withGeneratedDep_returnsTestDepBuildWorkspaceFiles() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val files = testBazelWorkspace.createTest(
-      testName = "FirstTest",
-      withGeneratedDependency = true
-    )
+    val files =
+      testBazelWorkspace.createTest(
+        testName = "FirstTest",
+        withGeneratedDependency = true,
+      )
 
     assertThat(files.getFileNames())
       .containsExactly("WORKSPACE", "BUILD.bazel", "FirstTest.kt", "FirstTestDependency.kt")
@@ -1043,10 +1061,11 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest(testName = "FirstTest")
 
-    val files = testBazelWorkspace.createTest(
-      testName = "SecondTest",
-      withGeneratedDependency = true
-    )
+    val files =
+      testBazelWorkspace.createTest(
+        testName = "SecondTest",
+        withGeneratedDependency = true,
+      )
 
     assertThat(files.getFileNames())
       .containsExactly("BUILD.bazel", "SecondTest.kt", "SecondTestDependency.kt")
@@ -1095,14 +1114,17 @@ class TestBazelWorkspaceTest {
   fun testCreateTest_unusedTestName_withMultipleSubpackages_returnsNewBuildAndTestFiles() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val files = testBazelWorkspace.createTest(
-      testName = "FirstTest",
-      subpackage = "subpackage.first.second"
-    )
+    val files =
+      testBazelWorkspace.createTest(
+        testName = "FirstTest",
+        subpackage = "subpackage.first.second",
+      )
 
     assertThat(files.getRelativeFileNames(tempFolder.root))
       .containsExactly(
-        "WORKSPACE", "subpackage/first/second/BUILD.bazel", "subpackage/first/second/FirstTest.kt"
+        "WORKSPACE",
+        "subpackage/first/second/BUILD.bazel",
+        "subpackage/first/second/FirstTest.kt",
       )
   }
 
@@ -1113,7 +1135,7 @@ class TestBazelWorkspaceTest {
     testBazelWorkspace.createTest(
       testName = "FirstTest",
       withGeneratedDependency = true,
-      withExtraDependency = "//:ExtraDep"
+      withExtraDependency = "//:ExtraDep",
     )
 
     // Both dependencies should be included in the test's deps.
@@ -1153,9 +1175,9 @@ class TestBazelWorkspaceTest {
     val bazelRcContent = tempFolder.getBazelRcFile().readText().trim()
     assertThat(bazelRcContent).isEqualTo(
       """
-        --noenable_bzlmod
-        build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
-      """.trimIndent()
+      --noenable_bzlmod
+      build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
+      """.trimIndent(),
     )
   }
 
@@ -1215,9 +1237,10 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createLibrary(dependencyName = "FirstLib")
 
-    val exception = assertThrows<IllegalStateException>() {
-      testBazelWorkspace.createLibrary(dependencyName = "FirstLib")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        testBazelWorkspace.createLibrary(dependencyName = "FirstLib")
+      }
 
     assertThat(exception).hasMessageThat().contains("Library 'FirstLib' already exists")
   }
@@ -1251,7 +1274,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     // A non-existent test file cannot be retrieved.
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       testBazelWorkspace.retrieveTestFile(testName = "Invalid")
     }
   }
@@ -1273,7 +1296,7 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
     // A non-existent library file cannot be retrieved.
-    assertThrows<NoSuchElementException>() {
+    assertThrows<NoSuchElementException> {
       testBazelWorkspace.retrieveLibraryFile(dependencyName = "Invalid")
     }
   }
@@ -1294,9 +1317,10 @@ class TestBazelWorkspaceTest {
   fun testRetrieveTestDependencyFile_noTest_throwsExceptionWithHelpfulMessage() {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
 
-    val exception = assertThrows<IllegalStateException>() {
-      testBazelWorkspace.retrieveTestDependencyFile(testName = "Invalid")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        testBazelWorkspace.retrieveTestDependencyFile(testName = "Invalid")
+      }
 
     assertThat(exception).hasMessageThat().contains("No entry for 'Invalid'.")
     assertThat(exception).hasMessageThat().contains("Was the test created without dependencies?")
@@ -1307,9 +1331,10 @@ class TestBazelWorkspaceTest {
     val testBazelWorkspace = TestBazelWorkspace(tempFolder)
     testBazelWorkspace.createTest("ValidWithoutDep")
 
-    val exception = assertThrows<IllegalStateException>() {
-      testBazelWorkspace.retrieveTestDependencyFile(testName = "ValidWithoutDep")
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        testBazelWorkspace.retrieveTestDependencyFile(testName = "ValidWithoutDep")
+      }
 
     // Since the test does not have a generated dependency, there is no entry to retrieve.
     assertThat(exception).hasMessageThat().contains("No entry for 'ValidWithoutDep'.")
@@ -1338,9 +1363,10 @@ class TestBazelWorkspaceTest {
 
   private fun Iterable<File>.getFileNames(): List<String> = map { it.name }
 
-  private fun Iterable<File>.getRelativeFileNames(root: File): List<String> = map {
-    it.toRelativeString(root)
-  }
+  private fun Iterable<File>.getRelativeFileNames(root: File): List<String> =
+    map {
+      it.toRelativeString(root)
+    }
 
   private fun String.countMatches(regex: String): Int = Regex(regex).findAll(this).toList().size
 }

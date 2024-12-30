@@ -18,7 +18,10 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Fragment for displaying a story. */
-class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryFragmentScroller {
+class StoryFragment :
+  InjectableFragment(),
+  ExplorationSelectionListener,
+  StoryFragmentScroller {
   companion object {
     /** Arguments key for StoryFragment. */
     const val STORY_FRAGMENT_ARGUMENTS_KEY = "StoryFragment.arguments"
@@ -28,20 +31,23 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       internalProfileId: Int,
       classroomId: String,
       topicId: String,
-      storyId: String
+      storyId: String,
     ): StoryFragment {
-
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-      val args = StoryFragmentArguments.newBuilder().apply {
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-      }.build()
+      val args =
+        StoryFragmentArguments
+          .newBuilder()
+          .apply {
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+          }.build()
       return StoryFragment().apply {
-        arguments = Bundle().apply {
-          putProto(STORY_FRAGMENT_ARGUMENTS_KEY, args)
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(STORY_FRAGMENT_ARGUMENTS_KEY, args)
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -57,11 +63,12 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to StoryFragment."
-    }
+    val arguments =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to StoryFragment."
+      }
     val args =
       arguments.getProto(STORY_FRAGMENT_ARGUMENTS_KEY, StoryFragmentArguments.getDefaultInstance())
 
@@ -84,7 +91,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       internalProfileId,
       classroomId,
       topicId,
-      storyId
+      storyId,
     )
   }
 
@@ -97,7 +104,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
     canExplorationBeResumed: Boolean,
     canHavePartialProgressSaved: Boolean,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    explorationCheckpoint: ExplorationCheckpoint
+    explorationCheckpoint: ExplorationCheckpoint,
   ) {
     storyFragmentPresenter.handleSelectExploration(
       profileId,
@@ -108,7 +115,7 @@ class StoryFragment : InjectableFragment(), ExplorationSelectionListener, StoryF
       canExplorationBeResumed,
       canHavePartialProgressSaved,
       parentScreen,
-      explorationCheckpoint
+      explorationCheckpoint,
     )
   }
 

@@ -37,10 +37,9 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
      * A convenience function for creating a new [OnboardingLearnerIntroActivity] intent by prefilling
      * common params needed by the activity.
      */
-    fun createIntroActivity(context: Context): Intent {
-      return Intent(context, IntroActivity::class.java).apply {
+    fun createIntroActivity(context: Context): Intent =
+      Intent(context, IntroActivity::class.java).apply {
         decorateWithScreenName(INTRO_ACTIVITY)
       }
-    }
   }
 }

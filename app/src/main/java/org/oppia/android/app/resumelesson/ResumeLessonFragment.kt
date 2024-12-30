@@ -19,7 +19,6 @@ import javax.inject.Inject
 /** Fragment that allows the user to resume a saved exploration. */
 class ResumeLessonFragment : InjectableFragment() {
   companion object {
-
     /** Arguments key for [ResumeLessonFragment]. */
     const val RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY = "ResumeLessonFragment.arguments"
 
@@ -32,22 +31,26 @@ class ResumeLessonFragment : InjectableFragment() {
       explorationId: String,
       parentScreen: ExplorationActivityParams.ParentScreen,
       checkpoint: ExplorationCheckpoint,
-      readingTextSize: ReadingTextSize
+      readingTextSize: ReadingTextSize,
     ): ResumeLessonFragment {
-      val args = ResumeLessonFragmentArguments.newBuilder().apply {
-        this.profileId = profileId
-        this.classroomId = classroomId
-        this.topicId = topicId
-        this.storyId = storyId
-        this.explorationId = explorationId
-        this.parentScreen = parentScreen
-        this.checkpoint = checkpoint
-        this.readingTextSize = readingTextSize
-      }.build()
+      val args =
+        ResumeLessonFragmentArguments
+          .newBuilder()
+          .apply {
+            this.profileId = profileId
+            this.classroomId = classroomId
+            this.topicId = topicId
+            this.storyId = storyId
+            this.explorationId = explorationId
+            this.parentScreen = parentScreen
+            this.checkpoint = checkpoint
+            this.readingTextSize = readingTextSize
+          }.build()
       return ResumeLessonFragment().apply {
-        arguments = Bundle().apply {
-          putProto(RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -64,14 +67,15 @@ class ResumeLessonFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val args = checkNotNull(arguments) {
-      "Expected arguments to be provided for fragment."
-    }.getProto(
-      RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
-      ResumeLessonFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be provided for fragment."
+      }.getProto(
+        RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
+        ResumeLessonFragmentArguments.getDefaultInstance(),
+      )
     return resumeLessonFragmentPresenter.handleOnCreate(
       inflater,
       container,
@@ -81,7 +85,7 @@ class ResumeLessonFragment : InjectableFragment() {
       args.storyId,
       args.explorationId,
       args.parentScreen,
-      args.checkpoint
+      args.checkpoint,
     )
   }
 }

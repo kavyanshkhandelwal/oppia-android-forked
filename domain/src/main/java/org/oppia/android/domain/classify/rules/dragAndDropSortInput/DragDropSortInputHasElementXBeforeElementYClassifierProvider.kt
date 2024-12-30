@@ -24,33 +24,34 @@ private typealias ListOfContentIdSets2 = ListOfSetsOfTranslatableHtmlContentIds
  * https://github.com/oppia/oppia/blob/132b9d8f059253548ea1efadf1ff76416dfa2832/extensions/interactions/DragAndDropSortInput/directives/drag-and-drop-sort-input-rules.service.ts#L88
  */
 // TODO(#1580): Re-restrict access using Bazel visibilities
-class DragDropSortInputHasElementXBeforeElementYClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory
-) : RuleClassifierProvider,
-  GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfContentIdSets2, ContentId2, ContentId2> {
+class DragDropSortInputHasElementXBeforeElementYClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.MultiTypeDoubleInputMatcher<ListOfContentIdSets2, ContentId2, ContentId2> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createDoubleInputClassifier(
+        expectedAnswerObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
+        expectedObjectType1 = TRANSLATABLE_HTML_CONTENT_ID,
+        firstInputParameterName = "x",
+        expectedObjectType2 = TRANSLATABLE_HTML_CONTENT_ID,
+        secondInputParameterName = "y",
+        matcher = this,
+      )
 
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createDoubleInputClassifier(
-      expectedAnswerObjectType = LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS,
-      expectedObjectType1 = TRANSLATABLE_HTML_CONTENT_ID,
-      firstInputParameterName = "x",
-      expectedObjectType2 = TRANSLATABLE_HTML_CONTENT_ID,
-      secondInputParameterName = "y",
-      matcher = this
-    )
-  }
-
-  override fun matches(
-    answer: ListOfContentIdSets2,
-    firstInput: ContentId2,
-    secondInput: ContentId2,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val answerSets = answer.contentIdListsList.map { it.getContentIdSet() }
-    return answerSets.indexOfFirst {
-      firstInput.contentId in it
-    } < answerSets.indexOfFirst {
-      secondInput.contentId in it
+    override fun matches(
+      answer: ListOfContentIdSets2,
+      firstInput: ContentId2,
+      secondInput: ContentId2,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val answerSets = answer.contentIdListsList.map { it.getContentIdSet() }
+      return answerSets.indexOfFirst {
+        firstInput.contentId in it
+      } <
+        answerSets.indexOfFirst {
+          secondInput.contentId in it
+        }
     }
   }
-}

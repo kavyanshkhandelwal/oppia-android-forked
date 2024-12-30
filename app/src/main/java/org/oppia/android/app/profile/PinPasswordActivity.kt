@@ -21,15 +21,19 @@ class PinPasswordActivity :
   companion object {
     /** Params key for PinPasswordActivity. */
     const val PIN_PASSWORD_ACTIVITY_PARAMS_KEY = "PinPasswordActivity.params"
+
     fun createPinPasswordActivityIntent(
       context: Context,
       adminPin: String,
-      profileId: Int
+      profileId: Int,
     ): Intent {
-      val args = PinPasswordActivityParams.newBuilder().apply {
-        this.adminPin = adminPin
-        this.internalProfileId = profileId
-      }.build()
+      val args =
+        PinPasswordActivityParams
+          .newBuilder()
+          .apply {
+            this.adminPin = adminPin
+            this.internalProfileId = profileId
+          }.build()
       return Intent(context, PinPasswordActivity::class.java).apply {
         putProtoExtra(PIN_PASSWORD_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(PIN_PASSWORD_ACTIVITY)

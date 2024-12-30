@@ -96,11 +96,17 @@ class QuestionAssessmentProgressControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var questionTrainingController: QuestionTrainingController
+
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var translationController: TranslationController
 
   private lateinit var profileId1: ProfileId
@@ -134,7 +140,7 @@ class QuestionAssessmentProgressControllerTest {
     setUpTestApplicationWithSeed(questionSeed = 0)
 
     // Can't retrieve the current question until the training session is started.
-    assertThrows<UninitializedPropertyAccessException>() {
+    assertThrows<UninitializedPropertyAccessException> {
       questionAssessmentProgressController.getCurrentQuestion()
     }
   }
@@ -324,7 +330,11 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(1)
+    assertThat(
+      completedState
+        .getAnswer(0)
+        .userAnswer.answer.nonNegativeInt,
+    ).isEqualTo(1)
     assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
@@ -342,7 +352,11 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = ephemeralQuestion.ephemeralState.pendingState
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(
+      pendingState
+        .getWrongAnswer(0)
+        .userAnswer.answer.nonNegativeInt,
+    ).isEqualTo(0)
     assertThat(pendingState.getWrongAnswer(0).feedback.html).contains("Incorrect. Try again.")
   }
 
@@ -361,9 +375,17 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(ephemeralQuestion.totalQuestionCount).isEqualTo(3)
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = ephemeralQuestion.ephemeralState.completedState
-    assertThat(completedState.getAnswer(0).userAnswer.answer.nonNegativeInt).isEqualTo(0)
+    assertThat(
+      completedState
+        .getAnswer(0)
+        .userAnswer.answer.nonNegativeInt,
+    ).isEqualTo(0)
     assertThat(completedState.getAnswer(0).feedback.html).contains("Incorrect. Try again.")
-    assertThat(completedState.getAnswer(1).userAnswer.answer.nonNegativeInt).isEqualTo(1)
+    assertThat(
+      completedState
+        .getAnswer(1)
+        .userAnswer.answer.nonNegativeInt,
+    ).isEqualTo(1)
     assertThat(completedState.getAnswer(1).feedback.html).contains("That's correct!")
   }
 
@@ -483,7 +505,11 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
     val completedState = currentQuestion.ephemeralState.completedState
     assertThat(completedState.answerCount).isEqualTo(1)
-    assertThat(completedState.getAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(5.0)
+    assertThat(
+      completedState
+        .getAnswer(0)
+        .userAnswer.answer.real,
+    ).isWithin(TOLERANCE).of(5.0)
     assertThat(completedState.getAnswer(0).feedback.html).contains("That's correct!")
   }
 
@@ -504,7 +530,11 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     val pendingState = currentQuestion.ephemeralState.pendingState
     assertThat(pendingState.wrongAnswerCount).isEqualTo(1)
-    assertThat(pendingState.getWrongAnswer(0).userAnswer.answer.real).isWithin(TOLERANCE).of(4.0)
+    assertThat(
+      pendingState
+        .getWrongAnswer(0)
+        .userAnswer.answer.real,
+    ).isWithin(TOLERANCE).of(4.0)
     assertThat(pendingState.getWrongAnswer(0).feedback.html).isEmpty()
   }
 
@@ -617,7 +647,8 @@ class QuestionAssessmentProgressControllerTest {
 
     val exception = fakeExceptionLogger.getMostRecentException()
     assertThat(exception).isInstanceOf(IllegalStateException::class.java)
-    assertThat(exception).hasMessageThat()
+    assertThat(exception)
+      .hasMessageThat()
       .contains("Cannot navigate to next state; at most recent state.")
   }
 
@@ -637,7 +668,9 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralQuestion = waitForGetCurrentQuestionSuccessfulLoad()
     assertThat(ephemeralQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralQuestion.ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
-    val hintAndSolution = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    val hintAndSolution =
+      ephemeralQuestion.ephemeralState.state.interaction
+        .getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
   }
 
@@ -663,10 +696,12 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(currentQuestion.ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(currentQuestion.ephemeralState.pendingState.wrongAnswerCount)
       .isEqualTo(2)
-    val hintAndSolution = currentQuestion.ephemeralState.state.interaction.getHint(0)
+    val hintAndSolution =
+      currentQuestion.ephemeralState.state.interaction
+        .getHint(0)
     assertThat(hintAndSolution.hintContent.html).contains("Hint text will appear here")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
 
     // Verify that the current state updates. Hint revealed is true.
@@ -685,7 +720,7 @@ class QuestionAssessmentProgressControllerTest {
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
     // The actual reveal will fail due to it being invalid.
     monitorFactory.ensureDataProviderExecutes(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
     submitTextInputAnswerAndMoveToNextQuestion("1/3") // question 0 (wrong answer)
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -698,7 +733,7 @@ class QuestionAssessmentProgressControllerTest {
     assertThat(hintAndSolution.correctAnswer.normalizedString).contains("1/4")
 
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitSolutionIsRevealed()
+      questionAssessmentProgressController.submitSolutionIsRevealed(),
     )
 
     // Verify that the current state updates. Hint revealed is true.
@@ -728,10 +763,13 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion4()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
-    val grade = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.0
-      totalPointsAvailable = 3.0
-    }.build()
+    val grade =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 2.0
+          totalPointsAvailable = 3.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -760,10 +798,13 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion4()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
-    val grade = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.0
-      totalPointsAvailable = 3.0
-    }.build()
+    val grade =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 2.0
+          totalPointsAvailable = 3.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -792,10 +833,13 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion4()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
-    val grade = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.4
-      totalPointsAvailable = 3.0
-    }.build()
+    val grade =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 2.4
+          totalPointsAvailable = 3.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -818,10 +862,13 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion4()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_2)
-    val grade = FractionGrade.newBuilder().apply {
-      pointsReceived = 3.0
-      totalPointsAvailable = 3.0
-    }.build()
+    val grade =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 3.0
+          totalPointsAvailable = 3.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(grade)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(1)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_2))
@@ -853,7 +900,7 @@ class QuestionAssessmentProgressControllerTest {
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
     submitIncorrectAnswerForQuestion3("3/4")
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -861,18 +908,27 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.4
-      totalPointsAvailable = 3.0
-    }.build()
-    val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.4
-      totalPointsAvailable = 2.0
-    }.build()
-    val skill1Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 0.0
-      totalPointsAvailable = 1.0
-    }.build()
+    val totalScore =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.4
+          totalPointsAvailable = 3.0
+        }.build()
+    val skill0Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.4
+          totalPointsAvailable = 2.0
+        }.build()
+    val skill1Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 0.0
+          totalPointsAvailable = 1.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
@@ -916,7 +972,7 @@ class QuestionAssessmentProgressControllerTest {
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
     submitIncorrectAnswerForQuestion3("3/4")
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -924,18 +980,27 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 0.0
-      totalPointsAvailable = 3.0
-    }.build()
-    val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 0.0
-      totalPointsAvailable = 2.0
-    }.build()
-    val skill1Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 0.0
-      totalPointsAvailable = 1.0
-    }.build()
+    val totalScore =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 0.0
+          totalPointsAvailable = 3.0
+        }.build()
+    val skill0Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 0.0
+          totalPointsAvailable = 2.0
+        }.build()
+    val skill1Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 0.0
+          totalPointsAvailable = 1.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
@@ -968,18 +1033,27 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.4
-      totalPointsAvailable = 3.0
-    }.build()
-    val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.4
-      totalPointsAvailable = 2.0
-    }.build()
-    val skill1Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.0
-      totalPointsAvailable = 1.0
-    }.build()
+    val totalScore =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 2.4
+          totalPointsAvailable = 3.0
+        }.build()
+    val skill0Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.4
+          totalPointsAvailable = 2.0
+        }.build()
+    val skill1Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.0
+          totalPointsAvailable = 1.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
@@ -1011,18 +1085,27 @@ class QuestionAssessmentProgressControllerTest {
     submitCorrectAnswerForQuestion3()
 
     val userAssessmentPerformance = getExpectedGrade(TEST_SKILL_ID_LIST_01)
-    val totalScore = FractionGrade.newBuilder().apply {
-      pointsReceived = 2.5
-      totalPointsAvailable = 3.0
-    }.build()
-    val skill0Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.5
-      totalPointsAvailable = 2.0
-    }.build()
-    val skill1Score = FractionGrade.newBuilder().apply {
-      pointsReceived = 1.0
-      totalPointsAvailable = 1.0
-    }.build()
+    val totalScore =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 2.5
+          totalPointsAvailable = 3.0
+        }.build()
+    val skill0Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.5
+          totalPointsAvailable = 2.0
+        }.build()
+    val skill1Score =
+      FractionGrade
+        .newBuilder()
+        .apply {
+          pointsReceived = 1.0
+          totalPointsAvailable = 1.0
+        }.build()
     assertThat(userAssessmentPerformance.totalFractionScore).isEqualTo(totalScore)
     assertThat(userAssessmentPerformance.fractionScorePerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getFractionScorePerSkillMappingOrThrow(TEST_SKILL_ID_0))
@@ -1061,7 +1144,7 @@ class QuestionAssessmentProgressControllerTest {
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
     submitIncorrectAnswerForQuestion3("3/4")
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -1073,9 +1156,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1099,9 +1184,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1128,7 +1215,7 @@ class QuestionAssessmentProgressControllerTest {
     submitIncorrectAnswerForQuestion3("3/4")
     submitIncorrectAnswerForQuestion3("3/4")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
     submitIncorrectAnswerForQuestion3("3/4")
     testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(10))
@@ -1140,9 +1227,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1172,9 +1261,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = -0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1204,9 +1295,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.1
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1233,9 +1326,11 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
   @Test
@@ -1262,12 +1357,14 @@ class QuestionAssessmentProgressControllerTest {
     val skill1Mastery = 0.0
     assertThat(userAssessmentPerformance.masteryPerSkillMappingCount).isEqualTo(2)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_0))
-      .isWithin(TOLERANCE).of(skill0Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill0Mastery)
     assertThat(userAssessmentPerformance.getMasteryPerSkillMappingOrThrow(TEST_SKILL_ID_1))
-      .isWithin(TOLERANCE).of(skill1Mastery)
+      .isWithin(TOLERANCE)
+      .of(skill1Mastery)
   }
 
-  /* Localization-based tests. */
+  // Localization-based tests.
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL]) // Languages unsupported in Gradle builds.
@@ -1280,9 +1377,12 @@ class QuestionAssessmentProgressControllerTest {
 
     // The context should be the default instance for English since the default strings of the
     // lesson are expected to be in English.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = OppiaLanguage.ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = OppiaLanguage.ENGLISH
+        }.build()
     assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -1323,9 +1423,12 @@ class QuestionAssessmentProgressControllerTest {
     val ephemeralState = waitForGetCurrentQuestionSuccessfulLoad().ephemeralState
 
     // English translations means only a language specification.
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = OppiaLanguage.ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = OppiaLanguage.ENGLISH
+        }.build()
     assertThat(ephemeralState.writtenTranslationContext).isEqualTo(expectedContext)
   }
 
@@ -1371,43 +1474,38 @@ class QuestionAssessmentProgressControllerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralQuestion {
-    return monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.getCurrentQuestion()
+  private fun waitForGetCurrentQuestionSuccessfulLoad(): EphemeralQuestion =
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.getCurrentQuestion(),
     )
-  }
 
   private fun startSuccessfulTrainingSession(skillIdList: List<String>) {
     startSuccessfulTrainingSession(profileId1, skillIdList)
   }
 
-  private fun startSuccessfulTrainingSession(profileId: ProfileId, skillIdList: List<String>) {
+  private fun startSuccessfulTrainingSession(
+    profileId: ProfileId,
+    skillIdList: List<String>,
+  ) {
     monitorFactory.waitForNextSuccessfulResult(
-      questionTrainingController.startQuestionTrainingSession(profileId, skillIdList)
+      questionTrainingController.startQuestionTrainingSession(profileId, skillIdList),
     )
   }
 
-  private fun startFailureTrainingSession(skillIdList: List<String>): Throwable {
-    return monitorFactory.waitForNextFailureResult(
-      questionTrainingController.startQuestionTrainingSession(profileId1, skillIdList)
+  private fun startFailureTrainingSession(skillIdList: List<String>): Throwable =
+    monitorFactory.waitForNextFailureResult(
+      questionTrainingController.startQuestionTrainingSession(profileId1, skillIdList),
     )
-  }
 
-  private fun submitMultipleChoiceAnswer(choiceIndex: Int): EphemeralQuestion {
-    return submitAnswer(createMultipleChoiceAnswer(choiceIndex))
-  }
+  private fun submitMultipleChoiceAnswer(choiceIndex: Int): EphemeralQuestion = submitAnswer(createMultipleChoiceAnswer(choiceIndex))
 
-  private fun submitTextInputAnswer(textAnswer: String): EphemeralQuestion {
-    return submitAnswer(createTextInputAnswer(textAnswer))
-  }
+  private fun submitTextInputAnswer(textAnswer: String): EphemeralQuestion = submitAnswer(createTextInputAnswer(textAnswer))
 
-  private fun submitNumericInputAnswer(numericAnswer: Double): EphemeralQuestion {
-    return submitAnswer(createNumericInputAnswer(numericAnswer))
-  }
+  private fun submitNumericInputAnswer(numericAnswer: Double): EphemeralQuestion = submitAnswer(createNumericInputAnswer(numericAnswer))
 
   private fun submitAnswer(answer: UserAnswer): EphemeralQuestion {
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitAnswer(answer)
+      questionAssessmentProgressController.submitAnswer(answer),
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
@@ -1422,9 +1520,7 @@ class QuestionAssessmentProgressControllerTest {
     return moveToNextQuestion()
   }
 
-  private fun submitNumericInputAnswerAndMoveToNextQuestion(
-    numericAnswer: Double
-  ): EphemeralQuestion {
+  private fun submitNumericInputAnswerAndMoveToNextQuestion(numericAnswer: Double): EphemeralQuestion {
     submitNumericInputAnswer(numericAnswer)
     return moveToNextQuestion()
   }
@@ -1432,7 +1528,7 @@ class QuestionAssessmentProgressControllerTest {
   private fun moveToNextQuestion(): EphemeralQuestion {
     // This operation might fail for some tests.
     monitorFactory.ensureDataProviderExecutes(
-      questionAssessmentProgressController.moveToNextQuestion()
+      questionAssessmentProgressController.moveToNextQuestion(),
     )
     return waitForGetCurrentQuestionSuccessfulLoad()
   }
@@ -1451,68 +1547,63 @@ class QuestionAssessmentProgressControllerTest {
     endTrainingSession()
   }
 
-  private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
-    return UserAnswer.newBuilder()
+  private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer =
+    UserAnswer
+      .newBuilder()
       .setAnswer(InteractionObject.newBuilder().setNonNegativeInt(choiceIndex))
       .setPlainAnswer(choiceIndex.toString())
       .build()
-  }
 
-  private fun createTextInputAnswer(textAnswer: String): UserAnswer {
-    return UserAnswer.newBuilder()
+  private fun createTextInputAnswer(textAnswer: String): UserAnswer =
+    UserAnswer
+      .newBuilder()
       .setAnswer(InteractionObject.newBuilder().setNormalizedString(textAnswer).build())
       .setPlainAnswer(textAnswer)
       .build()
-  }
 
-  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer {
-    return UserAnswer.newBuilder()
+  private fun createNumericInputAnswer(numericAnswer: Double): UserAnswer =
+    UserAnswer
+      .newBuilder()
       .setAnswer(InteractionObject.newBuilder().setReal(numericAnswer).build())
       .setPlainAnswer(numericAnswer.toString())
       .build()
-  }
 
-  private fun submitCorrectAnswerForQuestion0(): EphemeralQuestion {
-    return submitTextInputAnswerAndMoveToNextQuestion("1/2")
-  }
+  private fun submitCorrectAnswerForQuestion0(): EphemeralQuestion = submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
-  private fun submitIncorrectAnswerForQuestion0(answer: String): EphemeralQuestion {
-    return submitTextInputAnswerAndMoveToNextQuestion(answer)
-  }
+  private fun submitIncorrectAnswerForQuestion0(answer: String): EphemeralQuestion = submitTextInputAnswerAndMoveToNextQuestion(answer)
 
-  private fun submitCorrectAnswerForQuestion1(): EphemeralQuestion {
-    return submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
-  }
+  private fun submitCorrectAnswerForQuestion1(): EphemeralQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
-  private fun submitIncorrectAnswerForQuestion1(answer: Int): EphemeralQuestion {
-    return submitMultipleChoiceAnswerAndMoveToNextQuestion(answer)
-  }
+  private fun submitIncorrectAnswerForQuestion1(answer: Int): EphemeralQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(answer)
 
-  private fun viewHintForQuestion1(ephemeralQuestion: EphemeralQuestion, index: Int) {
-    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(index)
+  private fun viewHintForQuestion1(
+    ephemeralQuestion: EphemeralQuestion,
+    index: Int,
+  ) {
+    val hint =
+      ephemeralQuestion.ephemeralState.state.interaction
+        .getHint(index)
     if (index == 0) {
       assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
     } else if (index == 1) {
       assertThat(hint.hintContent.html).contains("<p>Second hint text will appear here</p>")
     }
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = index)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = index),
     )
   }
 
-  private fun submitCorrectAnswerForQuestion2(): EphemeralQuestion {
-    return submitNumericInputAnswerAndMoveToNextQuestion(3.0)
-  }
+  private fun submitCorrectAnswerForQuestion2(): EphemeralQuestion = submitNumericInputAnswerAndMoveToNextQuestion(3.0)
 
-  private fun submitIncorrectAnswerForQuestion2(answer: Double): EphemeralQuestion {
-    return submitNumericInputAnswerAndMoveToNextQuestion(answer)
-  }
+  private fun submitIncorrectAnswerForQuestion2(answer: Double): EphemeralQuestion = submitNumericInputAnswerAndMoveToNextQuestion(answer)
 
   private fun viewHintForQuestion2(ephemeralQuestion: EphemeralQuestion) {
-    val hint = ephemeralQuestion.ephemeralState.state.interaction.getHint(0)
+    val hint =
+      ephemeralQuestion.ephemeralState.state.interaction
+        .getHint(0)
     assertThat(hint.hintContent.html).contains("<p>Hint text will appear here</p>")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0)
+      questionAssessmentProgressController.submitHintIsRevealed(hintIndex = 0),
     )
   }
 
@@ -1520,70 +1611,64 @@ class QuestionAssessmentProgressControllerTest {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.real).isWithin(1e-5).of(3.0)
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitSolutionIsRevealed()
+      questionAssessmentProgressController.submitSolutionIsRevealed(),
     )
   }
 
-  private fun submitCorrectAnswerForQuestion3(): EphemeralQuestion {
-    return submitTextInputAnswerAndMoveToNextQuestion("1/2")
-  }
+  private fun submitCorrectAnswerForQuestion3(): EphemeralQuestion = submitTextInputAnswerAndMoveToNextQuestion("1/2")
 
-  private fun submitIncorrectAnswerForQuestion3(answer: String): EphemeralQuestion {
-    return submitTextInputAnswerAndMoveToNextQuestion(answer)
-  }
+  private fun submitIncorrectAnswerForQuestion3(answer: String): EphemeralQuestion = submitTextInputAnswerAndMoveToNextQuestion(answer)
 
   private fun viewSolutionForQuestion3(ephemeralQuestion: EphemeralQuestion) {
     val solution = ephemeralQuestion.ephemeralState.state.interaction.solution
     assertThat(solution.correctAnswer.normalizedString).isEqualTo("1/2")
     monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.submitSolutionIsRevealed()
+      questionAssessmentProgressController.submitSolutionIsRevealed(),
     )
   }
 
-  private fun submitCorrectAnswerForQuestion4(): EphemeralQuestion {
-    return submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
-  }
+  private fun submitCorrectAnswerForQuestion4(): EphemeralQuestion = submitMultipleChoiceAnswerAndMoveToNextQuestion(1)
 
-  private fun submitCorrectAnswerForQuestion5(): EphemeralQuestion {
-    return submitNumericInputAnswerAndMoveToNextQuestion(5.0)
-  }
+  private fun submitCorrectAnswerForQuestion5(): EphemeralQuestion = submitNumericInputAnswerAndMoveToNextQuestion(5.0)
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
-  private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean {
-    return pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
-  }
+  private fun EphemeralState.isHintRevealed(hintIndex: Int): Boolean =
+    pendingState.helpIndex.isHintRevealed(hintIndex, state.interaction.hintList)
 
-  private fun EphemeralState.isSolutionRevealed(): Boolean =
-    pendingState.helpIndex.isSolutionRevealed()
+  private fun EphemeralState.isSolutionRevealed(): Boolean = pendingState.helpIndex.isSolutionRevealed()
 
-  private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance {
-    return monitorFactory.waitForNextSuccessfulResult(
-      questionAssessmentProgressController.calculateScores(skillIdList)
+  private fun getExpectedGrade(skillIdList: List<String>): UserAssessmentPerformance =
+    monitorFactory.waitForNextSuccessfulResult(
+      questionAssessmentProgressController.calculateScores(skillIdList),
     )
-  }
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -1667,8 +1752,8 @@ class QuestionAssessmentProgressControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -1682,9 +1767,12 @@ class QuestionAssessmentProgressControllerTest {
     fun inject(controllerTest: QuestionAssessmentProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
+      DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

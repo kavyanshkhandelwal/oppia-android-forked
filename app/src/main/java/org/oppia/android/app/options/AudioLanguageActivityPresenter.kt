@@ -15,52 +15,64 @@ import javax.inject.Inject
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
-class AudioLanguageActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
-  private lateinit var audioLanguage: AudioLanguage
+class AudioLanguageActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+  ) {
+    private lateinit var audioLanguage: AudioLanguage
 
-  /** Handles when the activity is first created. */
-  fun handleOnCreate(audioLanguage: AudioLanguage, profileId: ProfileId) {
-    this.audioLanguage = audioLanguage
+    /** Handles when the activity is first created. */
+    fun handleOnCreate(
+      audioLanguage: AudioLanguage,
+      profileId: ProfileId,
+    ) {
+      this.audioLanguage = audioLanguage
 
-    val binding: AudioLanguageActivityBinding =
-      DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
-    binding.audioLanguageToolbar.setNavigationOnClickListener {
-      finishWithResult()
-    }
-    if (getAudioLanguageFragment() == null) {
-      val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage, profileId)
-      activity.supportFragmentManager.beginTransaction()
-        .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
-    }
-  }
-
-  /** Updates the currently selected [AudioLanguage] to the specified [audioLanguage]. */
-  fun setLanguageSelected(audioLanguage: AudioLanguage) {
-    this.audioLanguage = audioLanguage
-  }
-
-  /** Returns the current [AudioLanguage] selected in the activity. */
-  fun getLanguageSelected(): AudioLanguage = audioLanguage
-
-  /**
-   * Finishes the current activity with a result (specifically, an intent result with
-   * [AudioLanguageActivityResultBundle] populated with the [AudioLanguage] that was selected in the
-   * activity).
-   */
-  fun finishWithResult() {
-    val intent = Intent().apply {
-      val result = AudioLanguageActivityResultBundle.newBuilder().apply {
-        this.audioLanguage = this@AudioLanguageActivityPresenter.audioLanguage
-      }.build()
-      putProtoExtra(MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, result)
+      val binding: AudioLanguageActivityBinding =
+        DataBindingUtil.setContentView(activity, R.layout.audio_language_activity)
+      binding.audioLanguageToolbar.setNavigationOnClickListener {
+        finishWithResult()
+      }
+      if (getAudioLanguageFragment() == null) {
+        val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage, profileId)
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(R.id.audio_language_fragment_container, audioLanguageFragment)
+          .commitNow()
+      }
     }
 
-    activity.setResult(RESULT_OK, intent)
-    activity.finish()
-  }
+    /** Updates the currently selected [AudioLanguage] to the specified [audioLanguage]. */
+    fun setLanguageSelected(audioLanguage: AudioLanguage) {
+      this.audioLanguage = audioLanguage
+    }
 
-  private fun getAudioLanguageFragment(): AudioLanguageFragment? {
-    return activity.supportFragmentManager
-      .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
+    /** Returns the current [AudioLanguage] selected in the activity. */
+    fun getLanguageSelected(): AudioLanguage = audioLanguage
+
+    /**
+     * Finishes the current activity with a result (specifically, an intent result with
+     * [AudioLanguageActivityResultBundle] populated with the [AudioLanguage] that was selected in the
+     * activity).
+     */
+    fun finishWithResult() {
+      val intent =
+        Intent().apply {
+          val result =
+            AudioLanguageActivityResultBundle
+              .newBuilder()
+              .apply {
+                this.audioLanguage = this@AudioLanguageActivityPresenter.audioLanguage
+              }.build()
+          putProtoExtra(MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, result)
+        }
+
+      activity.setResult(RESULT_OK, intent)
+      activity.finish()
+    }
+
+    private fun getAudioLanguageFragment(): AudioLanguageFragment? =
+      activity.supportFragmentManager
+        .findFragmentById(R.id.audio_language_fragment_container) as? AudioLanguageFragment
   }
-}

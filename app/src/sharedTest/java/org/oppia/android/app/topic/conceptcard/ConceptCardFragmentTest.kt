@@ -139,7 +139,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ConceptCardFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ConceptCardFragmentTest {
   @get:Rule
@@ -203,8 +203,8 @@ class ConceptCardFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.concept_card_toolbar))
-        )
+          withParent(withId(R.id.concept_card_toolbar)),
+        ),
       ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
     }
   }
@@ -220,8 +220,8 @@ class ConceptCardFragmentTest {
       onView(
         allOf(
           instanceOf(TextView::class.java),
-          withParent(withId(R.id.concept_card_toolbar))
-        )
+          withParent(withId(R.id.concept_card_toolbar)),
+        ),
       ).inRoot(isDialog()).check(matches(withText(R.string.concept_card_toolbar_title)))
     }
   }
@@ -378,14 +378,16 @@ class ConceptCardFragmentTest {
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragment =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         assertThat(activity.supportFragmentManager.fragments).hasSize(1)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(fragment)
@@ -400,17 +402,21 @@ class ConceptCardFragmentTest {
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill0 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill1 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         assertThat(fragmentSkill1).isNotNull()
         assertThat(activity.supportFragmentManager.fragments).hasSize(1)
         assertThat(activity.supportFragmentManager.fragments[0]).isEqualTo(fragmentSkill1)
@@ -426,17 +432,21 @@ class ConceptCardFragmentTest {
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill0 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill1 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         assertThat(fragmentSkill1).isNotEqualTo(fragmentSkill0)
         fragmentSkill0.showNow(activity.supportFragmentManager, fragmentSkill0.tag)
         assertThat(activity.supportFragmentManager.fragments).hasSize(2)
@@ -458,17 +468,21 @@ class ConceptCardFragmentTest {
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill0 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_1,
           ProfileId.getDefaultInstance(),
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill1 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
         assertThat(fragmentSkill1).isNotEqualTo(fragmentSkill0)
 
         // Assert that the fragment manager only has two fragments: the first and the last
@@ -502,18 +516,22 @@ class ConceptCardFragmentTest {
         ConceptCardFragment.bringToFrontOrCreateIfNew(
           TEST_SKILL_ID_0,
           profileId,
-          activity.supportFragmentManager
+          activity.supportFragmentManager,
         )
         val fragmentSkill0 =
-          activity.supportFragmentManager.fragments.filterIsInstance<ConceptCardFragment>().single()
+          activity.supportFragmentManager.fragments
+            .filterIsInstance<ConceptCardFragment>()
+            .single()
 
-        val arguments = checkNotNull(fragmentSkill0.arguments) {
-          "Expected arguments to be passed to ConceptCardFragment"
-        }
-        val args = arguments.getProto(
-          ConceptCardFragment.CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
-          ConceptCardFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(fragmentSkill0.arguments) {
+            "Expected arguments to be passed to ConceptCardFragment"
+          }
+        val args =
+          arguments.getProto(
+            ConceptCardFragment.CONCEPT_CARD_FRAGMENT_ARGUMENTS_KEY,
+            ConceptCardFragmentArguments.getDefaultInstance(),
+          )
         val skillId =
           checkNotNull(args.skillId) {
             "Expected skillId to be passed to ConceptCardFragment"
@@ -527,66 +545,74 @@ class ConceptCardFragmentTest {
   }
 
   private fun launchTestActivity(): ActivityScenario<ConceptCardFragmentTestActivity> {
-    val scenario = ActivityScenario.launch<ConceptCardFragmentTestActivity>(
-      ConceptCardFragmentTestActivity.createIntent(context, profileId)
-    )
+    val scenario =
+      ActivityScenario.launch<ConceptCardFragmentTestActivity>(
+        ConceptCardFragmentTestActivity.createIntent(context, profileId),
+      )
     testCoroutineDispatchers.runCurrent()
     return scenario
   }
 
-  private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      profileId,
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        selectedLanguage = language
-      }.build()
-    )
+  private fun updateContentLanguage(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        profileId,
+        WrittenTranslationLanguageSelection
+          .newBuilder()
+          .apply {
+            selectedLanguage = language
+          }.build(),
+      )
     monitorFactory.waitForNextSuccessfulResult(updateProvider)
   }
 
-  private fun openClickableSpan(text: String): ViewAction {
-    return object : ViewAction {
+  private fun openClickableSpan(text: String): ViewAction =
+    object : ViewAction {
       override fun getDescription(): String = "openClickableSpan"
 
       override fun getConstraints(): Matcher<View> = hasClickableSpanWithText(text)
 
-      override fun perform(uiController: UiController?, view: View?) {
+      override fun perform(
+        uiController: UiController?,
+        view: View?,
+      ) {
         // The view shouldn't be null if the constraints are being met.
         (view as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text)?.onClick(view)
       }
     }
-  }
 
-  private fun hasClickableSpanWithText(text: String): Matcher<View> {
-    return object : TypeSafeMatcher<View>(TextView::class.java) {
+  private fun hasClickableSpanWithText(text: String): Matcher<View> =
+    object : TypeSafeMatcher<View>(TextView::class.java) {
       override fun describeTo(description: Description?) {
         description?.appendText("has ClickableSpan with text")?.appendValue(text)
       }
 
-      override fun matchesSafely(item: View?): Boolean {
-        return (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
-      }
+      override fun matchesSafely(item: View?): Boolean = (item as? TextView)?.getClickableSpans()?.findMatchingTextOrNull(text) != null
     }
-  }
 
   private fun TextView.getClickableSpans(): List<Pair<String, ClickableSpan>> {
     val viewText = text
-    return (viewText as Spannable).getSpans(
-      /* start= */ 0, /* end= */ text.length, ClickableSpan::class.java
-    ).map {
-      viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
-    }
+    return (viewText as Spannable)
+      .getSpans(
+        // start=
+        0, // end=
+        text.length,
+        ClickableSpan::class.java,
+      ).map {
+        viewText.subSequence(viewText.getSpanStart(it), viewText.getSpanEnd(it)).toString() to it
+      }
   }
 
-  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) =
-    find { text in it.first }?.second
+  private fun List<Pair<String, ClickableSpan>>.findMatchingTextOrNull(text: String) = find { text in it.first }?.second
 
   @Module
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
 
     @Provides
     @LoadImagesFromAssets
@@ -622,8 +648,8 @@ class ConceptCardFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -634,9 +660,13 @@ class ConceptCardFragmentTest {
     fun inject(conceptCardFragmentTest: ConceptCardFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerConceptCardFragmentTest_TestApplicationComponent.builder()
+      DaggerConceptCardFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -645,9 +675,12 @@ class ConceptCardFragmentTest {
       component.inject(conceptCardFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
@@ -657,8 +690,6 @@ class TestFragment : InjectableDialogFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return TextView(activity)
-  }
+    savedInstanceState: Bundle?,
+  ): View? = TextView(activity)
 }

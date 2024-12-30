@@ -13,7 +13,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 
 /** Activity for testing [MarkStoriesCompletedFragment]. */
 class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   private var internalProfileId = -1
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,22 +27,25 @@ class MarkStoriesCompletedTestActivity : InjectableAutoLocalizedAppCompatActivit
 
     if (getMarkStoriesCompletedFragment() == null) {
       val markStoriesCompletedFragment = MarkStoriesCompletedFragment.newInstance(internalProfileId)
-      supportFragmentManager.beginTransaction().add(
-        R.id.mark_stories_completed_container,
-        markStoriesCompletedFragment
-      ).commitNow()
+      supportFragmentManager
+        .beginTransaction()
+        .add(
+          R.id.mark_stories_completed_container,
+          markStoriesCompletedFragment,
+        ).commitNow()
     }
   }
 
-  private fun getMarkStoriesCompletedFragment(): MarkStoriesCompletedFragment? {
-    return supportFragmentManager
+  private fun getMarkStoriesCompletedFragment(): MarkStoriesCompletedFragment? =
+    supportFragmentManager
       .findFragmentById(R.id.mark_stories_completed_container) as MarkStoriesCompletedFragment?
-  }
 
   companion object {
-
     /** Returns an [Intent] for [MarkStoriesCompletedTestActivity]. */
-    fun createMarkStoriesCompletedTestIntent(context: Context, internalProfileId: Int): Intent {
+    fun createMarkStoriesCompletedTestIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val intent = Intent(context, MarkStoriesCompletedTestActivity::class.java)
       intent.decorateWithUserProfileId(profileId)

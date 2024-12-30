@@ -18,68 +18,73 @@ import javax.inject.Inject
 
 /** The ViewModel for [ProfileChooserFragment]. */
 @FragmentScope
-class ProfileChooserViewModel @Inject constructor(
-  fragment: Fragment,
-  private val oppiaLogger: OppiaLogger,
-  private val profileManagementController: ProfileManagementController,
-  private val machineLocale: OppiaLocale.MachineLocale
-) : ObservableViewModel() {
+class ProfileChooserViewModel
+  @Inject
+  constructor(
+    fragment: Fragment,
+    private val oppiaLogger: OppiaLogger,
+    private val profileManagementController: ProfileManagementController,
+    private val machineLocale: OppiaLocale.MachineLocale,
+  ) : ObservableViewModel() {
+    private val routeToAdminPinListener = fragment as RouteToAdminPinListener
 
-  private val routeToAdminPinListener = fragment as RouteToAdminPinListener
-
-  val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
-    Transformations.map(
-      profileManagementController.getProfiles().toLiveData(), ::processGetProfilesResult
-    )
-  }
-
-  lateinit var adminPin: String
-  lateinit var adminProfileId: ProfileId
-
-  val usedColors = mutableListOf<Int>()
-
-  /** Sorts profiles alphabetically by name and put Admin in front. */
-  private fun processGetProfilesResult(
-    profilesResult: AsyncResult<List<Profile>>
-  ): List<ProfileChooserUiModel> {
-    val profileList = when (profilesResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ProfileChooserViewModel", "Failed to retrieve the list of profiles", profilesResult.error
-        )
-        emptyList()
-      }
-      is AsyncResult.Pending -> emptyList()
-      is AsyncResult.Success -> profilesResult.value
-    }.map {
-      ProfileChooserUiModel.newBuilder().setProfile(it).build()
-    }.toMutableList()
-
-    profileList.forEach {
-      if (it.profile.avatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
-        usedColors.add(it.profile.avatar.avatarColorRgb)
-      }
+    val profiles: LiveData<List<ProfileChooserUiModel>> by lazy {
+      Transformations.map(
+        profileManagementController.getProfiles().toLiveData(),
+        ::processGetProfilesResult,
+      )
     }
 
-    val sortedProfileList = profileList.sortedBy {
-      machineLocale.run { it.profile.name.toMachineLowerCase() }
-    }.toMutableList()
+    lateinit var adminPin: String
+    lateinit var adminProfileId: ProfileId
 
-    val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
+    val usedColors = mutableListOf<Int>()
 
-    sortedProfileList.remove(adminProfile)
-    adminPin = adminProfile.profile.pin
-    adminProfileId = adminProfile.profile.id
-    sortedProfileList.add(0, adminProfile)
+    /** Sorts profiles alphabetically by name and put Admin in front. */
+    private fun processGetProfilesResult(profilesResult: AsyncResult<List<Profile>>): List<ProfileChooserUiModel> {
+      val profileList =
+        when (profilesResult) {
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "ProfileChooserViewModel",
+              "Failed to retrieve the list of profiles",
+              profilesResult.error,
+            )
+            emptyList()
+          }
+          is AsyncResult.Pending -> emptyList()
+          is AsyncResult.Success -> profilesResult.value
+        }.map {
+          ProfileChooserUiModel.newBuilder().setProfile(it).build()
+        }.toMutableList()
 
-    if (sortedProfileList.size < 10) {
-      sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())
+      profileList.forEach {
+        if (it.profile.avatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
+          usedColors.add(it.profile.avatar.avatarColorRgb)
+        }
+      }
+
+      val sortedProfileList =
+        profileList
+          .sortedBy {
+            machineLocale.run { it.profile.name.toMachineLowerCase() }
+          }.toMutableList()
+
+      val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
+
+      sortedProfileList.remove(adminProfile)
+      adminPin = adminProfile.profile.pin
+      adminProfileId = adminProfile.profile.id
+      sortedProfileList.add(0, adminProfile)
+
+      if (sortedProfileList.size < 10) {
+        sortedProfileList.add(ProfileChooserUiModel.newBuilder().setAddProfile(true).build())
+      }
+
+      return sortedProfileList
     }
 
-    return sortedProfileList
+    fun onAdministratorControlsButtonClicked() {
+      routeToAdminPinListener.routeToAdminPin()
+    }
   }
-
-  fun onAdministratorControlsButtonClicked() {
-    routeToAdminPinListener.routeToAdminPin()
-  }
-}

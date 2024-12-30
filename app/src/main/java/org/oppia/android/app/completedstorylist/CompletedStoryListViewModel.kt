@@ -18,70 +18,68 @@ import javax.inject.Inject
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
-class CompletedStoryListViewModel @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val intentFactoryShim: IntentFactoryShim,
-  private val topicController: TopicController,
-  private val oppiaLogger: OppiaLogger,
-  private val translationController: TranslationController,
-  @StoryHtmlParserEntityType private val entityType: String
-) : ObservableViewModel() {
-  /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
-  private var internalProfileId: Int = -1
+class CompletedStoryListViewModel
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val intentFactoryShim: IntentFactoryShim,
+    private val topicController: TopicController,
+    private val oppiaLogger: OppiaLogger,
+    private val translationController: TranslationController,
+    @StoryHtmlParserEntityType private val entityType: String,
+  ) : ObservableViewModel() {
+    /** [internalProfileId] needs to be set before any of the live data members can be accessed. */
+    private var internalProfileId: Int = -1
 
-  private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
-    topicController.getCompletedStoryList(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    ).toLiveData()
-  }
+    private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
+      topicController
+        .getCompletedStoryList(
+          ProfileId.newBuilder().setInternalId(internalProfileId).build(),
+        ).toLiveData()
+    }
 
-  private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
-    Transformations.map(completedStoryListResultLiveData, ::processCompletedStoryListResult)
-  }
+    private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
+      Transformations.map(completedStoryListResultLiveData, ::processCompletedStoryListResult)
+    }
 
-  /** [LiveData] list displayed to user on [CompletedStoryListFragment]. */
-  val completedStoryListLiveData: LiveData<List<CompletedStoryItemViewModel>> by lazy {
-    Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
-  }
+    /** [LiveData] list displayed to user on [CompletedStoryListFragment]. */
+    val completedStoryListLiveData: LiveData<List<CompletedStoryItemViewModel>> by lazy {
+      Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
+    }
 
-  /** Sets internalProfileId to this ViewModel. */
-  fun setProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
-  }
+    /** Sets internalProfileId to this ViewModel. */
+    fun setProfileId(internalProfileId: Int) {
+      this.internalProfileId = internalProfileId
+    }
 
-  private fun processCompletedStoryListResult(
-    completedStoryListResult: AsyncResult<CompletedStoryList>
-  ): CompletedStoryList {
-    return when (completedStoryListResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "CompletedStoryListFragment",
-          "Failed to retrieve CompletedStory list: ",
-          completedStoryListResult.error
-        )
-        CompletedStoryList.getDefaultInstance()
+    private fun processCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList =
+      when (completedStoryListResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "CompletedStoryListFragment",
+            "Failed to retrieve CompletedStory list: ",
+            completedStoryListResult.error,
+          )
+          CompletedStoryList.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
+        is AsyncResult.Success -> completedStoryListResult.value
       }
-      is AsyncResult.Pending -> CompletedStoryList.getDefaultInstance()
-      is AsyncResult.Success -> completedStoryListResult.value
+
+    private fun processCompletedStoryList(completedStoryList: CompletedStoryList): List<CompletedStoryItemViewModel> {
+      val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
+      itemViewModelList.addAll(
+        completedStoryList.completedStoryList.map { completedStory ->
+          CompletedStoryItemViewModel(
+            activity,
+            internalProfileId,
+            completedStory,
+            entityType,
+            intentFactoryShim,
+            translationController,
+          )
+        },
+      )
+      return itemViewModelList
     }
   }
-
-  private fun processCompletedStoryList(
-    completedStoryList: CompletedStoryList
-  ): List<CompletedStoryItemViewModel> {
-    val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
-    itemViewModelList.addAll(
-      completedStoryList.completedStoryList.map { completedStory ->
-        CompletedStoryItemViewModel(
-          activity,
-          internalProfileId,
-          completedStory,
-          entityType,
-          intentFactoryShim,
-          translationController
-        )
-      }
-    )
-    return itemViewModelList
-  }
-}

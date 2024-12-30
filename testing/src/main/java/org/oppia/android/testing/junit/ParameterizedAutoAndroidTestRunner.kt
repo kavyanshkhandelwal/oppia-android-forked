@@ -28,7 +28,7 @@ class ParameterizedAutoAndroidTestRunner internal constructor(
   testClass: Class<*>,
   private val parameterizedMethods: Map<String, ParameterizedMethod>,
   private val methodName: String?,
-  private val iterationName: String?
+  private val iterationName: String?,
 ) : Runner(),
   Filterable,
   Sortable,
@@ -48,9 +48,12 @@ class ParameterizedAutoAndroidTestRunner internal constructor(
 
     // Load the runner class using reflection since the Robolectric implementation relies on
     // Robolectric (which can't be pulled into Espresso builds of shared tests).
-    val targetRunnerName = if (runningOnAndroid) {
-      "org.oppia.android.testing.junit.ParameterizedAndroidJunit4TestRunner"
-    } else "org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner"
+    val targetRunnerName =
+      if (runningOnAndroid) {
+        "org.oppia.android.testing.junit.ParameterizedAndroidJunit4TestRunner"
+      } else {
+        "org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner"
+      }
     return@lazy try {
       Class.forName(targetRunnerName)
     } catch (e: Exception) {
@@ -58,18 +61,25 @@ class ParameterizedAutoAndroidTestRunner internal constructor(
         "Failed to load delegate test runner class ($targetRunnerName). Did you forget to add" +
           " either parameterized_android_junit4_class_runner or" +
           " parameterized_robolectric_test_runner as a dependency?",
-        e
+        e,
       )
     }
   }
 
   private val delegate by lazy {
     checkNotNull(
-      runnerClass.getConstructor(
-        Class::class.java, Map::class.java, String::class.java, String::class.java
-      ).newInstance(
-        testClass, parameterizedMethods, methodName, iterationName
-      ) as? ParameterizedRunnerOverrideMethods
+      runnerClass
+        .getConstructor(
+          Class::class.java,
+          Map::class.java,
+          String::class.java,
+          String::class.java,
+        ).newInstance(
+          testClass,
+          parameterizedMethods,
+          methodName,
+          iterationName,
+        ) as? ParameterizedRunnerOverrideMethods,
     ) {
       "Expected runner to be an instance of ParameterizedRunnerOverrideMethods for runner" +
         " delegation"
@@ -91,14 +101,14 @@ class ParameterizedAutoAndroidTestRunner internal constructor(
     checkNotNull(delegate as? Sortable) { "Delegate runner isn't sortable: $delegate" }
   }
 
-  override fun getChildren(): MutableList<FrameworkMethod> =
-    delegateParameterizedRunner.getChildren()
+  override fun getChildren(): MutableList<FrameworkMethod> = delegateParameterizedRunner.getChildren()
 
-  override fun testName(method: FrameworkMethod?): String =
-    delegateParameterizedRunner.testName(method)
+  override fun testName(method: FrameworkMethod?): String = delegateParameterizedRunner.testName(method)
 
-  override fun methodInvoker(method: FrameworkMethod?, test: Any?): Statement =
-    delegateParameterizedRunner.methodInvoker(method, test)
+  override fun methodInvoker(
+    method: FrameworkMethod?,
+    test: Any?,
+  ): Statement = delegateParameterizedRunner.methodInvoker(method, test)
 
   override fun getDescription(): Description = delegateRunner.description
 

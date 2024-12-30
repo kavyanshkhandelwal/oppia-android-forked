@@ -35,7 +35,7 @@ class ControlButtonsViewModel private constructor(
   private val analyticsController: AnalyticsController,
   private val syncStatusManager: SyncStatusManager,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val viewModels: List<ProfileListItemViewModel>
+  private val viewModels: List<ProfileListItemViewModel>,
 ) : ProfileListItemViewModel(ProfileListViewModel.ProfileListItemViewType.SHARE_IDS) {
   private var monitoredUploadProgress: LiveData<ForceSyncProgress> =
     MutableLiveData(ForceSyncProgress())
@@ -56,49 +56,52 @@ class ControlButtonsViewModel private constructor(
     // Reference: https://developer.android.com/guide/components/intents-common#Email from
     // https://stackoverflow.com/a/15022153/3689782.
     val logs = retrieveEventLogs(viewModels.filterIsInstance<ProfileLearnerIdItemViewModel>())
-    val sharedText = viewModels.mapNotNull { viewModel ->
-      when (viewModel) {
-        is DeviceIdItemViewModel -> listOf("Oppia app installation ID: ${viewModel.deviceId.value}")
-        is ProfileLearnerIdItemViewModel -> {
-          val profile = viewModel.profile
-          val stats = viewModel.profileSpecificEventsUploadStats.value
-          val learnerStats = stats?.learnerStats
-          val uncategorizedStats = stats?.uncategorizedStats
-          listOfNotNull(
-            "- Profile name: ${profile.name}, learner ID: ${profile.learnerId}",
-            learnerStats?.awaitingUploadEventCountText?.let { "  - Uploading learner events: $it" },
-            learnerStats?.uploadedEventCountText?.let { "  - Uploaded learner events: $it" },
-            uncategorizedStats?.awaitingUploadEventCountText?.let {
-              "  - Uploading uncategorized events: $it"
-            },
-            uncategorizedStats?.uploadedEventCountText?.let {
-              "  - Uploaded uncategorized events: $it"
+    val sharedText =
+      viewModels
+        .mapNotNull { viewModel ->
+          when (viewModel) {
+            is DeviceIdItemViewModel -> listOf("Oppia app installation ID: ${viewModel.deviceId.value}")
+            is ProfileLearnerIdItemViewModel -> {
+              val profile = viewModel.profile
+              val stats = viewModel.profileSpecificEventsUploadStats.value
+              val learnerStats = stats?.learnerStats
+              val uncategorizedStats = stats?.uncategorizedStats
+              listOfNotNull(
+                "- Profile name: ${profile.name}, learner ID: ${profile.learnerId}",
+                learnerStats?.awaitingUploadEventCountText?.let { "  - Uploading learner events: $it" },
+                learnerStats?.uploadedEventCountText?.let { "  - Uploaded learner events: $it" },
+                uncategorizedStats?.awaitingUploadEventCountText?.let {
+                  "  - Uploading uncategorized events: $it"
+                },
+                uncategorizedStats?.uploadedEventCountText?.let {
+                  "  - Uploaded uncategorized events: $it"
+                },
+              )
             }
-          )
-        }
-        is SyncStatusItemViewModel -> {
-          val halfLineCount = BASE64_LINE_WRAP_LIMIT / 2
-          val logsStr = logs?.toCompressedBase64()
-          listOf(
-            "Current sync status: ${viewModel.syncStatus.value}.",
-            "Event log encoding integrity checks:",
-            "- First $halfLineCount chars of encoded string: ${logsStr?.take(halfLineCount)}",
-            "- Last $halfLineCount chars of encoded string: ${logsStr?.takeLast(halfLineCount)}",
-            "- SHA-1 hash (unwrapped event string): ${logsStr?.computeSha1Hash(machineLocale)}",
-            "- Total event string length (unwrapped): ${logsStr?.length}",
-            "Encoded event logs:"
-          ) + (logsStr?.chunked(BASE64_LINE_WRAP_LIMIT) ?: listOf("Missing"))
-        }
-        else -> null
-      }
-    }.flatten().joinToString(separator = "\n")
+            is SyncStatusItemViewModel -> {
+              val halfLineCount = BASE64_LINE_WRAP_LIMIT / 2
+              val logsStr = logs?.toCompressedBase64()
+              listOf(
+                "Current sync status: ${viewModel.syncStatus.value}.",
+                "Event log encoding integrity checks:",
+                "- First $halfLineCount chars of encoded string: ${logsStr?.take(halfLineCount)}",
+                "- Last $halfLineCount chars of encoded string: ${logsStr?.takeLast(halfLineCount)}",
+                "- SHA-1 hash (unwrapped event string): ${logsStr?.computeSha1Hash(machineLocale)}",
+                "- Total event string length (unwrapped): ${logsStr?.length}",
+                "Encoded event logs:",
+              ) + (logsStr?.chunked(BASE64_LINE_WRAP_LIMIT) ?: listOf("Missing"))
+            }
+            else -> null
+          }
+        }.flatten()
+        .joinToString(separator = "\n")
     try {
       activity.startActivity(
         Intent(Intent.ACTION_SEND).apply {
           type = "text/plain"
           addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
           putExtra(Intent.EXTRA_TEXT, sharedText)
-        }
+        },
       )
     } catch (e: ActivityNotFoundException) {
       oppiaLogger.e("ControlButtonsViewModel", "No activity found to receive shared IDs.", e)
@@ -117,7 +120,8 @@ class ControlButtonsViewModel private constructor(
   fun onUploadLogsNowButtonClicked() {
     monitoredUploadProgress =
       Transformations.map(
-        analyticsController.uploadEventLogs().toLiveData(), this::processUploadedEventLogs
+        analyticsController.uploadEventLogs().toLiveData(),
+        this::processUploadedEventLogs,
       )
     notifyChange() // Recompute bindings since the live data instance has changed.
   }
@@ -133,53 +137,62 @@ class ControlButtonsViewModel private constructor(
    * implementation to work around this case by assuming that either value missing means no
    * determination can be made whether logs can start being uploaded.
    */
-  fun canStartUploadingLogs(isCurrentlyUploading: Boolean?, syncStatus: SyncStatus?): Boolean =
-    isCurrentlyUploading == false && syncStatus == SyncStatus.WAITING_TO_START_UPLOADING
+  fun canStartUploadingLogs(
+    isCurrentlyUploading: Boolean?,
+    syncStatus: SyncStatus?,
+  ): Boolean = isCurrentlyUploading == false && syncStatus == SyncStatus.WAITING_TO_START_UPLOADING
 
   private fun retrieveEventLogs(viewModels: List<ProfileLearnerIdItemViewModel>): OppiaEventLogs? =
-    viewModels.firstOrNull()?.oppiaEventLogs?.value?.let { processEventLogs(it) }
+    viewModels
+      .firstOrNull()
+      ?.oppiaEventLogs
+      ?.value
+      ?.let { processEventLogs(it) }
 
-  private fun processUploadedEventLogs(result: AsyncResult<Pair<Int, Int>>): ForceSyncProgress {
-    return when (result) {
+  private fun processUploadedEventLogs(result: AsyncResult<Pair<Int, Int>>): ForceSyncProgress =
+    when (result) {
       is AsyncResult.Pending -> ForceSyncProgress(eventsUploaded = 0, totalEventsToUpload = 0)
       is AsyncResult.Success -> {
         val (currentUploadedEventCount, totalEventCount) = result.value
         ForceSyncProgress(currentUploadedEventCount, totalEventCount)
       }
-      is AsyncResult.Failure -> ForceSyncProgress().also {
-        oppiaLogger.e(
-          "ControlButtonsViewModel", "Encountered failure while uploading events.", result.error
-        )
-      }
+      is AsyncResult.Failure ->
+        ForceSyncProgress().also {
+          oppiaLogger.e(
+            "ControlButtonsViewModel",
+            "Encountered failure while uploading events.",
+            result.error,
+          )
+        }
     }
-  }
 
-  private fun processSyncStatus(result: AsyncResult<SyncStatus>): SyncStatus {
-    return when (result) {
+  private fun processSyncStatus(result: AsyncResult<SyncStatus>): SyncStatus =
+    when (result) {
       is AsyncResult.Pending -> SyncStatus.INITIAL_UNKNOWN
       is AsyncResult.Success -> result.value
-      is AsyncResult.Failure -> SyncStatus.INITIAL_UNKNOWN.also {
-        oppiaLogger.e(
-          "ControlButtonsViewModel",
-          "Encountered failure while retrieving sync status.",
-          result.error
-        )
-      }
+      is AsyncResult.Failure ->
+        SyncStatus.INITIAL_UNKNOWN.also {
+          oppiaLogger.e(
+            "ControlButtonsViewModel",
+            "Encountered failure while retrieving sync status.",
+            result.error,
+          )
+        }
     }
-  }
 
-  private fun processEventLogs(result: AsyncResult<OppiaEventLogs>): OppiaEventLogs? {
-    return when (result) {
+  private fun processEventLogs(result: AsyncResult<OppiaEventLogs>): OppiaEventLogs? =
+    when (result) {
       is AsyncResult.Pending -> null
       is AsyncResult.Success -> result.value
       is AsyncResult.Failure -> {
         oppiaLogger.e(
-          "ControlButtonsViewModel", "Encountered failure while on-disk event logs.", result.error
+          "ControlButtonsViewModel",
+          "Encountered failure while on-disk event logs.",
+          result.error,
         )
         null
       }
     }
-  }
 
   /**
    * Progress representation structure that provides the UI with an indication of how much of an
@@ -195,7 +208,7 @@ class ControlButtonsViewModel private constructor(
    */
   data class ForceSyncProgress(
     val eventsUploaded: Int = 0,
-    val totalEventsToUpload: Int = DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT
+    val totalEventsToUpload: Int = DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT,
   ) {
     /** Returns whether there are events that can be uploaded. */
     fun hasEventsToUpload(): Boolean = totalEventsToUpload != DEFAULT_UNKNOWN_EVENTS_TO_UPLOAD_COUNT
@@ -205,20 +218,26 @@ class ControlButtonsViewModel private constructor(
   }
 
   /** Factory for creating new [ControlButtonsViewModel]s. */
-  class Factory @Inject constructor(
-    private val oppiaLogger: OppiaLogger,
-    private val activity: AppCompatActivity,
-    private val analyticsController: AnalyticsController,
-    private val syncStatusManager: SyncStatusManager,
-    private val machineLocale: OppiaLocale.MachineLocale
-  ) {
-    /** Returns a new [ControlButtonsViewModel]. */
-    fun create(viewModels: List<ProfileListItemViewModel>): ControlButtonsViewModel {
-      return ControlButtonsViewModel(
-        oppiaLogger, activity, analyticsController, syncStatusManager, machineLocale, viewModels
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val oppiaLogger: OppiaLogger,
+      private val activity: AppCompatActivity,
+      private val analyticsController: AnalyticsController,
+      private val syncStatusManager: SyncStatusManager,
+      private val machineLocale: OppiaLocale.MachineLocale,
+    ) {
+      /** Returns a new [ControlButtonsViewModel]. */
+      fun create(viewModels: List<ProfileListItemViewModel>): ControlButtonsViewModel =
+        ControlButtonsViewModel(
+          oppiaLogger,
+          activity,
+          analyticsController,
+          syncStatusManager,
+          machineLocale,
+          viewModels,
+        )
     }
-  }
 
   private companion object {
     private const val BASE64_LINE_WRAP_LIMIT = 80
@@ -226,9 +245,11 @@ class ControlButtonsViewModel private constructor(
 
     // Copied from ProtoStringEncoder (which isn't available in production code).
     private fun <M : MessageLite> M.toCompressedBase64(): String {
-      val compressedMessage = ByteArrayOutputStream().also { byteOutputStream ->
-        GZIPOutputStream(byteOutputStream).use(::writeTo)
-      }.toByteArray()
+      val compressedMessage =
+        ByteArrayOutputStream()
+          .also { byteOutputStream ->
+            GZIPOutputStream(byteOutputStream).use(::writeTo)
+          }.toByteArray()
       return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Base64.getEncoder().encodeToString(compressedMessage)
       } else {
@@ -236,12 +257,12 @@ class ControlButtonsViewModel private constructor(
       }
     }
 
-    private fun String.computeSha1Hash(machineLocale: OppiaLocale.MachineLocale): String {
-      return machineLocale.run {
-        MessageDigest.getInstance("SHA-1")
+    private fun String.computeSha1Hash(machineLocale: OppiaLocale.MachineLocale): String =
+      machineLocale.run {
+        MessageDigest
+          .getInstance("SHA-1")
           .digest(this@computeSha1Hash.toByteArray())
           .joinToString("") { "%02x".formatForMachines(it) }
       }
-    }
   }
 }

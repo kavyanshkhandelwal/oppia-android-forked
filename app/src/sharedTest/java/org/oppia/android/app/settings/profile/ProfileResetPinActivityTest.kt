@@ -95,7 +95,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileResetPinActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileResetPinActivityTest {
   @get:Rule
@@ -105,9 +105,12 @@ class ProfileResetPinActivityTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
-    ProfileResetPinActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> =
+    ActivityTestRule(
+      ProfileResetPinActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var context: Context
@@ -145,7 +148,7 @@ class ProfileResetPinActivityTest {
       createProfileResetPinActivityIntent(
         internalProfileId,
         isAdmin = true,
-      )
+      ),
     )
     val title = activityTestRule.activity.title
 
@@ -156,12 +159,13 @@ class ProfileResetPinActivityTest {
 
   private fun createProfileResetPinActivityIntent(
     internalProfileId: Int,
-    isAdmin: Boolean
-  ): Intent {
-    return ProfileResetPinActivity.createProfileResetPinActivity(
-      ApplicationProvider.getApplicationContext(), internalProfileId, isAdmin
+    isAdmin: Boolean,
+  ): Intent =
+    ProfileResetPinActivity.createProfileResetPinActivity(
+      ApplicationProvider.getApplicationContext(),
+      internalProfileId,
+      isAdmin,
     )
-  }
 
   @After
   fun tearDown() {
@@ -201,8 +205,8 @@ class ProfileResetPinActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -213,9 +217,13 @@ class ProfileResetPinActivityTest {
     fun inject(profileResetPinActivityTest: ProfileResetPinActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileResetPinActivityTest_TestApplicationComponent.builder()
+      DaggerProfileResetPinActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -224,9 +232,12 @@ class ProfileResetPinActivityTest {
       component.inject(profileResetPinActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

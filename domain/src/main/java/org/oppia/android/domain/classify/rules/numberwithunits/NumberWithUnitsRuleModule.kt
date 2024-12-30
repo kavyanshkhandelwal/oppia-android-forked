@@ -15,7 +15,7 @@ class NumberWithUnitsRuleModule {
   @StringKey("IsEqualTo")
   @NumberWithUnitsRules
   internal fun provideNumberWithUnitsIsEqualToRuleClassifier(
-    classifierProvider: NumberWithUnitsIsEqualToRuleClassifierProvider
+    classifierProvider: NumberWithUnitsIsEqualToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 
   @Provides
@@ -23,6 +23,6 @@ class NumberWithUnitsRuleModule {
   @StringKey("IsEquivalentTo")
   @NumberWithUnitsRules
   internal fun provideNumberWithUnitsIsEquivalentToRuleClassifier(
-    classifierProvider: NumberWithUnitsIsEquivalentToRuleClassifierProvider
+    classifierProvider: NumberWithUnitsIsEquivalentToRuleClassifierProvider,
   ): RuleClassifier = classifierProvider.createRuleClassifier()
 }

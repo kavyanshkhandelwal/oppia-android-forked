@@ -26,85 +26,91 @@ import javax.inject.Inject
 
 /** The presenter for [WalkthroughWelcomeFragment]. */
 @FragmentScope
-class WalkthroughWelcomeFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val profileManagementController: ProfileManagementController,
-  private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
-) : WalkthroughPageChanger {
-  private lateinit var binding: WalkthroughWelcomeFragmentBinding
-  private val routeToNextPage = activity as WalkthroughFragmentChangeListener
-  private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
-  private var internalProfileId: Int = -1
-  private lateinit var profileId: ProfileId
-  private lateinit var profileName: String
+class WalkthroughWelcomeFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val profileManagementController: ProfileManagementController,
+    private val oppiaLogger: OppiaLogger,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) : WalkthroughPageChanger {
+    private lateinit var binding: WalkthroughWelcomeFragmentBinding
+    private val routeToNextPage = activity as WalkthroughFragmentChangeListener
+    private lateinit var walkthroughWelcomeViewModel: WalkthroughWelcomeViewModel
+    private var internalProfileId: Int = -1
+    private lateinit var profileId: ProfileId
+    private lateinit var profileName: String
 
-  fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
-    binding =
-      WalkthroughWelcomeFragmentBinding.inflate(
-        inflater,
-        container,
-        /* attachToRoot= */ false
-      )
-
-    internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
-
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.presenter = this
-      it.viewModel = walkthroughWelcomeViewModel
-    }
-
-    subscribeToProfileLiveData()
-    return binding.root
-  }
-
-  private val profileLiveData: LiveData<Profile> by lazy {
-    getProfileData()
-  }
-
-  private fun getProfileData(): LiveData<Profile> {
-    return Transformations.map(
-      profileManagementController.getProfile(profileId).toLiveData(),
-      ::processGetProfileResult
-    )
-  }
-
-  private fun subscribeToProfileLiveData() {
-    profileLiveData.observe(
-      activity,
-      Observer<Profile> { result ->
-        profileName = result.name
-        setProfileName()
-      }
-    )
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    return when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "WalkthroughWelcomeFragment", "Failed to retrieve profile", profileResult.error
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+    ): View? {
+      binding =
+        WalkthroughWelcomeFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot=
+          false,
         )
-        Profile.getDefaultInstance()
-      }
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
-    }
-  }
 
-  private fun setProfileName() {
-    if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
-      walkthroughWelcomeViewModel.profileName.set(
-        resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName)
+      internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
+      profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+      walkthroughWelcomeViewModel = WalkthroughWelcomeViewModel()
+
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.presenter = this
+        it.viewModel = walkthroughWelcomeViewModel
+      }
+
+      subscribeToProfileLiveData()
+      return binding.root
+    }
+
+    private val profileLiveData: LiveData<Profile> by lazy {
+      getProfileData()
+    }
+
+    private fun getProfileData(): LiveData<Profile> =
+      Transformations.map(
+        profileManagementController.getProfile(profileId).toLiveData(),
+        ::processGetProfileResult,
+      )
+
+    private fun subscribeToProfileLiveData() {
+      profileLiveData.observe(
+        activity,
+        Observer<Profile> { result ->
+          profileName = result.name
+          setProfileName()
+        },
       )
     }
-  }
 
-  override fun changePage() {
-    routeToNextPage.currentPage(WalkthroughPages.TOPIC_LIST.value)
+    private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile =
+      when (profileResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "WalkthroughWelcomeFragment",
+            "Failed to retrieve profile",
+            profileResult.error,
+          )
+          Profile.getDefaultInstance()
+        }
+        is AsyncResult.Pending -> Profile.getDefaultInstance()
+        is AsyncResult.Success -> profileResult.value
+      }
+
+    private fun setProfileName() {
+      if (::walkthroughWelcomeViewModel.isInitialized && ::profileName.isInitialized) {
+        walkthroughWelcomeViewModel.profileName.set(
+          resourceHandler.getStringInLocaleWithWrapping(R.string.welcome, profileName),
+        )
+      }
+    }
+
+    override fun changePage() {
+      routeToNextPage.currentPage(WalkthroughPages.TOPIC_LIST.value)
+    }
   }
-}

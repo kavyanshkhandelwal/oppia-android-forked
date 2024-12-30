@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
-
   private val ITEM_SET_1_ITEM_1 = listOf("content_id_1")
   private val ITEM_SET_1_ITEMS_12 = listOf("content_id_1", "content_id_2")
   private val ITEM_SET_2_ITEM_3 = listOf("content_id_3")
@@ -33,21 +32,29 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
 
   private val LIST_OF_SETS_12_3_4 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_1_ITEMS_12, ITEM_SET_2_ITEM_3, ITEM_SET_3_ITEM_4
+      ITEM_SET_1_ITEMS_12,
+      ITEM_SET_2_ITEM_3,
+      ITEM_SET_3_ITEM_4,
     )
   private val LIST_OF_SETS_3_12_4 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_2_ITEM_3, ITEM_SET_1_ITEMS_12, ITEM_SET_3_ITEM_4
+      ITEM_SET_2_ITEM_3,
+      ITEM_SET_1_ITEMS_12,
+      ITEM_SET_3_ITEM_4,
     )
   private val LIST_OF_SETS_3_INVALID12_4 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_2_ITEM_3, ITEM_SET_4_INVALID_12, ITEM_SET_3_ITEM_4
+      ITEM_SET_2_ITEM_3,
+      ITEM_SET_4_INVALID_12,
+      ITEM_SET_3_ITEM_4,
     )
   private val LIST_OF_SETS_3_12 =
     createListOfSetsOfTranslatableHtmlContentIds(ITEM_SET_2_ITEM_3, ITEM_SET_1_ITEMS_12)
   private val LIST_OF_SETS_1_3_4 =
     createListOfSetsOfTranslatableHtmlContentIds(
-      ITEM_SET_1_ITEM_1, ITEM_SET_2_ITEM_3, ITEM_SET_3_ITEM_4
+      ITEM_SET_1_ITEM_1,
+      ITEM_SET_2_ITEM_3,
+      ITEM_SET_3_ITEM_4,
     )
 
   @Inject
@@ -71,7 +78,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -85,7 +92,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -99,7 +106,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -113,7 +120,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -127,7 +134,7 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
       isEqualToOrderingClassifierProvider.matches(
         answer = LIST_OF_SETS_12_3_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -137,13 +144,14 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
   fun testAnswer_testLisOfSetsOfHtmlString_incorrectInputMap_throwsException() {
     val inputs = mapOf("y" to LIST_OF_SETS_12_3_4)
 
-    val exception = assertThrows<IllegalStateException>() {
-      isEqualToOrderingClassifierProvider.matches(
-        answer = LIST_OF_SETS_12_3_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        isEqualToOrderingClassifierProvider.matches(
+          answer = LIST_OF_SETS_12_3_4,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -153,7 +161,9 @@ class DragDropSortInputIsEqualToOrderingClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerDragDropSortInputIsEqualToOrderingClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

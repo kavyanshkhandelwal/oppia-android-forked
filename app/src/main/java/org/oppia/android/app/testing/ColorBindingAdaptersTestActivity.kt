@@ -12,15 +12,16 @@ class ColorBindingAdaptersTestActivity : InjectableAutoLocalizedAppCompatActivit
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_color_binding_adapters_test)
 
-    supportFragmentManager.beginTransaction().add(
-      R.id.background,
-      ColorBindingAdaptersTestFragment()
-    ).commitNow()
+    supportFragmentManager
+      .beginTransaction()
+      .add(
+        R.id.background,
+        ColorBindingAdaptersTestFragment(),
+      ).commitNow()
   }
 
   companion object {
     /** Intent to open this activity. */
-    fun createIntent(context: Context): Intent =
-      Intent(context, ColorBindingAdaptersTestActivity::class.java)
+    fun createIntent(context: Context): Intent = Intent(context, ColorBindingAdaptersTestActivity::class.java)
   }
 }

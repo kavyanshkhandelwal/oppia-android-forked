@@ -42,19 +42,18 @@ sealed class AndroidLocaleProfile {
   data class LanguageAndRegionProfile(
     val languageCode: String,
     val regionCode: String,
-    private val regionCodeUpperCase: String
+    private val regionCodeUpperCase: String,
   ) : AndroidLocaleProfile() {
     // The region code is usually uppercase in IETF BCP-47 tags when extending a language code.
     override val ietfLanguageTag = "$languageCode-$regionCodeUpperCase"
 
-    override fun matches(otherProfile: AndroidLocaleProfile): Boolean {
-      return when (otherProfile) {
+    override fun matches(otherProfile: AndroidLocaleProfile): Boolean =
+      when (otherProfile) {
         is LanguageAndRegionProfile ->
           languageCode == otherProfile.languageCode && regionCode == otherProfile.regionCode
         is LanguageAndWildcardRegionProfile -> languageCode == otherProfile.languageCode
         is LanguageOnlyProfile, is RegionOnlyProfile, is RootProfile -> false
       }
-    }
 
     override fun computeAndroidLocale(): Locale = Locale(languageCode, regionCode)
   }
@@ -67,7 +66,9 @@ sealed class AndroidLocaleProfile {
    *
    * @property regionCode the lowercase two-letter region code in this profile
    */
-  data class RegionOnlyProfile(val regionCode: String) : AndroidLocaleProfile() {
+  data class RegionOnlyProfile(
+    val regionCode: String,
+  ) : AndroidLocaleProfile() {
     override val ietfLanguageTag = regionCode
 
     override fun matches(otherProfile: AndroidLocaleProfile): Boolean =
@@ -84,16 +85,17 @@ sealed class AndroidLocaleProfile {
    *
    * @property languageCode the lowercase two-letter language code in this profile
    */
-  data class LanguageOnlyProfile(val languageCode: String) : AndroidLocaleProfile() {
+  data class LanguageOnlyProfile(
+    val languageCode: String,
+  ) : AndroidLocaleProfile() {
     override val ietfLanguageTag = languageCode
 
-    override fun matches(otherProfile: AndroidLocaleProfile): Boolean {
-      return when (otherProfile) {
+    override fun matches(otherProfile: AndroidLocaleProfile): Boolean =
+      when (otherProfile) {
         is LanguageOnlyProfile -> languageCode == otherProfile.languageCode
         is LanguageAndWildcardRegionProfile -> languageCode == otherProfile.languageCode
         is LanguageAndRegionProfile, is RegionOnlyProfile, is RootProfile -> false
       }
-    }
 
     override fun computeAndroidLocale(): Locale = Locale(languageCode)
   }
@@ -107,17 +109,18 @@ sealed class AndroidLocaleProfile {
    *
    * @property languageCode the lowercase two-letter language code in this profile
    */
-  data class LanguageAndWildcardRegionProfile(val languageCode: String) : AndroidLocaleProfile() {
+  data class LanguageAndWildcardRegionProfile(
+    val languageCode: String,
+  ) : AndroidLocaleProfile() {
     override val ietfLanguageTag = languageCode
 
-    override fun matches(otherProfile: AndroidLocaleProfile): Boolean {
-      return when (otherProfile) {
+    override fun matches(otherProfile: AndroidLocaleProfile): Boolean =
+      when (otherProfile) {
         is LanguageAndRegionProfile -> languageCode == otherProfile.languageCode
         is LanguageAndWildcardRegionProfile -> languageCode == otherProfile.languageCode
         is LanguageOnlyProfile -> languageCode == otherProfile.languageCode
         is RegionOnlyProfile, is RootProfile -> false
       }
-    }
 
     override fun computeAndroidLocale(): Locale = Locale(languageCode)
   }
@@ -137,128 +140,142 @@ sealed class AndroidLocaleProfile {
   }
 
   /** An application-injectable factory for creating new [AndroidLocaleProfile]s. */
-  class Factory @Inject constructor(private val machineLocale: OppiaLocale.MachineLocale) {
-    /** Returns a new [AndroidLocaleProfile] that represents the specified Android [Locale]. */
-    fun createFrom(androidLocale: Locale): AndroidLocaleProfile {
-      val languageCode = androidLocale.language
-      val regionCode = androidLocale.country
-      return when {
-        languageCode.isNotEmpty() && regionCode.isNotEmpty() -> {
-          LanguageAndRegionProfile(
-            languageCode.asLowerCase(), regionCode.asLowerCase(), regionCode.asUpperCase()
-          )
-        }
-        regionCode.isNotEmpty() -> RegionOnlyProfile(regionCode.asLowerCase())
-        languageCode.isNotEmpty() -> LanguageOnlyProfile(languageCode.asLowerCase())
-        else -> RootProfile
-      }
-    }
-
-    /**
-     * Returns a new [AndroidLocaleProfile] using the IETF BCP 47 tag in the provided [LanguageId].
-     *
-     * This will return null in a number of scenarios:
-     * - If the provided [LanguageId] doesn't have an IETF BCP 47 ID
-     * - If the IETF BCP 47 tag is malformed
-     * - If the provided [RegionSupportDefinition] doesn't have an IETF BCP 47 region ID
-     *
-     * Further, this method will only use the provided [regionDefinition] if the IETF BCP 47
-     * language tag doesn't include a region component. If the [regionDefinition] is null then the
-     * returned [AndroidLocaleProfile] will have a wildcard match against any region (meaning only
-     * the language code needs to match).
-     */
-    fun createFromIetfDefinitions(
-      languageId: LanguageId,
-      regionDefinition: RegionSupportDefinition?
-    ): AndroidLocaleProfile? {
-      return when {
-        !languageId.hasIetfBcp47Id() -> null
-        "-" in languageId.ietfBcp47Id.ietfLanguageTag -> {
-          val (languageCode, regionCode) =
-            languageId.ietfBcp47Id.ietfLanguageTag.divide("-") ?: return null
-          maybeConstructProfile(languageCode, regionCode)
-        }
-        regionDefinition != null -> {
-          if (!regionDefinition.hasRegionId()) return null
-          maybeConstructProfile(
-            languageId.ietfBcp47Id.ietfLanguageTag, regionDefinition.regionId.ietfRegionTag
-          )
-        }
-        else -> {
-          maybeConstructProfile(
-            languageId.ietfBcp47Id.ietfLanguageTag, regionCode = "", emptyRegionAsWildcard = true
-          )
+  class Factory
+    @Inject
+    constructor(
+      private val machineLocale: OppiaLocale.MachineLocale,
+    ) {
+      /** Returns a new [AndroidLocaleProfile] that represents the specified Android [Locale]. */
+      fun createFrom(androidLocale: Locale): AndroidLocaleProfile {
+        val languageCode = androidLocale.language
+        val regionCode = androidLocale.country
+        return when {
+          languageCode.isNotEmpty() && regionCode.isNotEmpty() -> {
+            LanguageAndRegionProfile(
+              languageCode.asLowerCase(),
+              regionCode.asLowerCase(),
+              regionCode.asUpperCase(),
+            )
+          }
+          regionCode.isNotEmpty() -> RegionOnlyProfile(regionCode.asLowerCase())
+          languageCode.isNotEmpty() -> LanguageOnlyProfile(languageCode.asLowerCase())
+          else -> RootProfile
         }
       }
-    }
 
-    /**
-     * Returns a new [AndroidLocaleProfile] using the macaronic ID in the provided [LanguageId].
-     *
-     * This will return null if the [LanguageId] either doesn't have a macaronic ID defined, or if
-     * it's malformed. Macaronic IDs are always expected to include language and region components,
-     * so both fields are guaranteed to be populated in a returned [AndroidLocaleProfile].
-     */
-    fun createFromMacaronicLanguage(languageId: LanguageId): AndroidLocaleProfile? {
-      if (!languageId.hasMacaronicId()) return null
-      val (languageCode, regionCode) =
-        languageId.macaronicId.combinedLanguageCode.divide("-") ?: return null
-      return maybeConstructProfile(languageCode, regionCode)
-    }
-
-    /**
-     * Returns a new [AndroidLocaleProfile] using the provided [languageId]'s
-     * [LanguageId.getAndroidResourcesLanguageId] as the basis of the profile, or null if none can
-     * be created.
-     *
-     * This is meant to be used in cases when an [AndroidLocaleProfile] is needed to match a
-     * specific Android-compatible [Locale] (e.g. via [AndroidLocaleProfile.computeAndroidLocale])
-     * that can correctly match to specific Android app strings.
-     */
-    fun createFromAndroidResourcesLanguageId(languageId: LanguageId): AndroidLocaleProfile? {
-      val languageCode = languageId.androidResourcesLanguageId.languageCode
-      val regionCode = languageId.androidResourcesLanguageId.regionCode
-      return when {
-        !languageId.hasAndroidResourcesLanguageId() -> null
-        languageCode.isEmpty() -> null
-        // Empty region codes are allowed for Android resource IDs since they should always be used
-        // verbatim to ensure the correct Android resource string can be computed (such as for macro
-        // languages).
-        regionCode.isEmpty() -> LanguageAndWildcardRegionProfile(languageCode.asLowerCase())
-        else -> {
-          LanguageAndRegionProfile(
-            languageCode.asLowerCase(), regionCode.asLowerCase(), regionCode.asUpperCase()
-          )
+      /**
+       * Returns a new [AndroidLocaleProfile] using the IETF BCP 47 tag in the provided [LanguageId].
+       *
+       * This will return null in a number of scenarios:
+       * - If the provided [LanguageId] doesn't have an IETF BCP 47 ID
+       * - If the IETF BCP 47 tag is malformed
+       * - If the provided [RegionSupportDefinition] doesn't have an IETF BCP 47 region ID
+       *
+       * Further, this method will only use the provided [regionDefinition] if the IETF BCP 47
+       * language tag doesn't include a region component. If the [regionDefinition] is null then the
+       * returned [AndroidLocaleProfile] will have a wildcard match against any region (meaning only
+       * the language code needs to match).
+       */
+      fun createFromIetfDefinitions(
+        languageId: LanguageId,
+        regionDefinition: RegionSupportDefinition?,
+      ): AndroidLocaleProfile? {
+        return when {
+          !languageId.hasIetfBcp47Id() -> null
+          "-" in languageId.ietfBcp47Id.ietfLanguageTag -> {
+            val (languageCode, regionCode) =
+              languageId.ietfBcp47Id.ietfLanguageTag.divide("-") ?: return null
+            maybeConstructProfile(languageCode, regionCode)
+          }
+          regionDefinition != null -> {
+            if (!regionDefinition.hasRegionId()) return null
+            maybeConstructProfile(
+              languageId.ietfBcp47Id.ietfLanguageTag,
+              regionDefinition.regionId.ietfRegionTag,
+            )
+          }
+          else -> {
+            maybeConstructProfile(
+              languageId.ietfBcp47Id.ietfLanguageTag,
+              regionCode = "",
+              emptyRegionAsWildcard = true,
+            )
+          }
         }
       }
-    }
 
-    private fun maybeConstructProfile(
-      languageCode: String,
-      regionCode: String,
-      emptyRegionAsWildcard: Boolean = false
-    ): AndroidLocaleProfile? {
-      return when {
-        languageCode.isEmpty() -> null
-        regionCode.isNotEmpty() -> {
-          LanguageAndRegionProfile(
-            languageCode.asLowerCase(), regionCode.asLowerCase(), regionCode.asUpperCase()
-          )
-        }
-        emptyRegionAsWildcard -> LanguageAndWildcardRegionProfile(languageCode.asLowerCase())
-        else -> null
+      /**
+       * Returns a new [AndroidLocaleProfile] using the macaronic ID in the provided [LanguageId].
+       *
+       * This will return null if the [LanguageId] either doesn't have a macaronic ID defined, or if
+       * it's malformed. Macaronic IDs are always expected to include language and region components,
+       * so both fields are guaranteed to be populated in a returned [AndroidLocaleProfile].
+       */
+      fun createFromMacaronicLanguage(languageId: LanguageId): AndroidLocaleProfile? {
+        if (!languageId.hasMacaronicId()) return null
+        val (languageCode, regionCode) =
+          languageId.macaronicId.combinedLanguageCode.divide("-") ?: return null
+        return maybeConstructProfile(languageCode, regionCode)
       }
+
+      /**
+       * Returns a new [AndroidLocaleProfile] using the provided [languageId]'s
+       * [LanguageId.getAndroidResourcesLanguageId] as the basis of the profile, or null if none can
+       * be created.
+       *
+       * This is meant to be used in cases when an [AndroidLocaleProfile] is needed to match a
+       * specific Android-compatible [Locale] (e.g. via [AndroidLocaleProfile.computeAndroidLocale])
+       * that can correctly match to specific Android app strings.
+       */
+      fun createFromAndroidResourcesLanguageId(languageId: LanguageId): AndroidLocaleProfile? {
+        val languageCode = languageId.androidResourcesLanguageId.languageCode
+        val regionCode = languageId.androidResourcesLanguageId.regionCode
+        return when {
+          !languageId.hasAndroidResourcesLanguageId() -> null
+          languageCode.isEmpty() -> null
+          // Empty region codes are allowed for Android resource IDs since they should always be used
+          // verbatim to ensure the correct Android resource string can be computed (such as for macro
+          // languages).
+          regionCode.isEmpty() -> LanguageAndWildcardRegionProfile(languageCode.asLowerCase())
+          else -> {
+            LanguageAndRegionProfile(
+              languageCode.asLowerCase(),
+              regionCode.asLowerCase(),
+              regionCode.asUpperCase(),
+            )
+          }
+        }
+      }
+
+      private fun maybeConstructProfile(
+        languageCode: String,
+        regionCode: String,
+        emptyRegionAsWildcard: Boolean = false,
+      ): AndroidLocaleProfile? =
+        when {
+          languageCode.isEmpty() -> null
+          regionCode.isNotEmpty() -> {
+            LanguageAndRegionProfile(
+              languageCode.asLowerCase(),
+              regionCode.asLowerCase(),
+              regionCode.asUpperCase(),
+            )
+          }
+          emptyRegionAsWildcard -> LanguageAndWildcardRegionProfile(languageCode.asLowerCase())
+          else -> null
+        }
+
+      private fun String.divide(delimiter: String): Pair<String, String>? {
+        val results = split(delimiter)
+        return if (results.size == 2) {
+          results[0] to results[1]
+        } else {
+          null
+        }
+      }
+
+      private fun String.asLowerCase() = machineLocale.run { toMachineLowerCase() }
+
+      private fun String.asUpperCase() = machineLocale.run { toMachineUpperCase() }
     }
-
-    private fun String.divide(delimiter: String): Pair<String, String>? {
-      val results = split(delimiter)
-      return if (results.size == 2) {
-        results[0] to results[1]
-      } else null
-    }
-
-    private fun String.asLowerCase() = machineLocale.run { toMachineLowerCase() }
-
-    private fun String.asUpperCase() = machineLocale.run { toMachineUpperCase() }
-  }
 }

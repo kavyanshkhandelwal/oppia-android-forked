@@ -24,7 +24,5 @@ class BetaNoticeDialogFragment : InjectableDialogFragment() {
     (fragmentComponent as FragmentComponentImpl).inject(this)
   }
 
-  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return presenter.handleOnCreateDialog()
-  }
+  override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = presenter.handleOnCreateDialog()
 }

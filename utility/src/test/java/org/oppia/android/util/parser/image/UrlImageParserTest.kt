@@ -39,7 +39,9 @@ class UrlImageParserTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var urlImageParserFactory: UrlImageParser.Factory
+
   @Inject lateinit var context: Context
+
   @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
 
   private lateinit var testView: TextView
@@ -49,13 +51,14 @@ class UrlImageParserTest {
   fun setUp() {
     setUpTestApplicationComponent()
     testView = TextView(context)
-    urlImageParser = urlImageParserFactory.create(
-      testView,
-      gcsResourceName = "test_gcs_bucket",
-      entityType = "test_entity_type",
-      entityId = "test_entity_id",
-      imageCenterAlign = true
-    )
+    urlImageParser =
+      urlImageParserFactory.create(
+        testView,
+        gcsResourceName = "test_gcs_bucket",
+        entityType = "test_entity_type",
+        entityId = "test_entity_id",
+        imageCenterAlign = true,
+      )
   }
 
   // TODO(#277): Add more test cases for loading images. The below doesn't include layout or
@@ -150,7 +153,9 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_inlineType_loadsInlineLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -163,7 +168,9 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_blockType_loadsBlockLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -176,16 +183,24 @@ class UrlImageParserTest {
   @Test
   fun testLoadDrawable_latex_multiple_loadsEachLatexImage() {
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{1}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{1}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE,
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 19f, type = INLINE_TEXT_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 19f,
+      type = INLINE_TEXT_IMAGE,
     )
     urlImageParser.loadMathDrawable(
-      rawLatex = "\\frac{2}{6}", lineHeight = 20f, type = BLOCK_IMAGE
+      rawLatex = "\\frac{2}{6}",
+      lineHeight = 20f,
+      type = BLOCK_IMAGE,
     )
 
     val mathDrawables = testGlideImageLoader.getLoadedMathDrawables()
@@ -193,7 +208,8 @@ class UrlImageParserTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerUrlImageParserTest_TestApplicationComponent.builder()
+    DaggerUrlImageParserTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -212,14 +228,15 @@ class UrlImageParserTest {
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, TestImageLoaderModule::class,
       CachingTestModule::class, ImageParsingModule::class, AssetModule::class,
-      LocaleProdModule::class
-    ]
+      LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

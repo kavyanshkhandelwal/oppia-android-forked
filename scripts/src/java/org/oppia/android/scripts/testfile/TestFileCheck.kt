@@ -34,21 +34,23 @@ fun main(vararg args: String) {
  */
 class TestFileCheck(
   private val repoPath: String,
-  private val testFileExemptiontextProto: String
+  private val testFileExemptiontextProto: String,
 ) {
   /** Executes the test file presence check mechanism for the repository. */
   fun execute() {
     // TODO(#3436): Develop a mechanism for permanently exempting files which do not ever need tests.
-    val testFileExemptionList = loadTestFileExemptionsProto(testFileExemptiontextProto)
-      .testFileExemptionList
-      .filter { it.testFileNotRequired }
-      .map { it.exemptedFilePath }
+    val testFileExemptionList =
+      loadTestFileExemptionsProto(testFileExemptiontextProto)
+        .testFileExemptionList
+        .filter { it.testFileNotRequired }
+        .map { it.exemptedFilePath }
 
-    val searchFiles = RepositoryFile.collectSearchFiles(
-      repoPath = repoPath,
-      expectedExtension = ".kt",
-      exemptionsList = testFileExemptionList
-    )
+    val searchFiles =
+      RepositoryFile.collectSearchFiles(
+        repoPath = repoPath,
+        expectedExtension = ".kt",
+        exemptionsList = testFileExemptionList,
+      )
 
     // A list of all the prod files present in the repo.
     val prodFilesList = searchFiles.filter { file -> !file.name.endsWith("Test.kt") }
@@ -57,18 +59,19 @@ class TestFileCheck(
     val testFilesList = searchFiles.filter { file -> file.name.endsWith("Test.kt") }
 
     // A list of all the prod files that do not have a corresponding test file.
-    val matchedFiles = prodFilesList.filter { prodFile ->
-      !testFilesList.any { testFile ->
-        testFile.name == computeExpectedTestFileName(prodFile)
+    val matchedFiles =
+      prodFilesList.filter { prodFile ->
+        !testFilesList.any { testFile ->
+          testFile.name == computeExpectedTestFileName(prodFile)
+        }
       }
-    }
 
     logFailures(matchedFiles)
 
     if (matchedFiles.isNotEmpty()) {
       println(
         "Refer to https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks" +
-          "#test-file-presence-check for more details on how to fix this.\n"
+          "#test-file-presence-check for more details on how to fix this.\n",
       )
     }
 
@@ -80,9 +83,7 @@ class TestFileCheck(
   }
 }
 
-private fun computeExpectedTestFileName(prodFile: File): String {
-  return "${prodFile.nameWithoutExtension}Test.kt"
-}
+private fun computeExpectedTestFileName(prodFile: File): String = "${prodFile.nameWithoutExtension}Test.kt"
 
 private fun logFailures(matchedFiles: List<File>) {
   if (matchedFiles.isNotEmpty()) {
@@ -101,8 +102,9 @@ private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): Tes
   // and this method is bounded by the generic type T.
   @Suppress("UNCHECKED_CAST")
   val protoObj: TestFileExemptions =
-    FileInputStream(protoBinaryFile).use {
-      builder.mergeFrom(it)
-    }.build() as TestFileExemptions
+    FileInputStream(protoBinaryFile)
+      .use {
+        builder.mergeFrom(it)
+      }.build() as TestFileExemptions
   return protoObj
 }

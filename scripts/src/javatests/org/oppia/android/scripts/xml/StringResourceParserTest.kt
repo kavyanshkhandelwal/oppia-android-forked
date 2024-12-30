@@ -27,30 +27,35 @@ class StringResourceParserTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private companion object {
-    private val ARABIC_STRINGS = mapOf(
-      "shared_string" to "مشغل رحلة الاستكشاف",
-      "arabic_only_string" to "خيارات"
-    )
+    private val ARABIC_STRINGS =
+      mapOf(
+        "shared_string" to "مشغل رحلة الاستكشاف",
+        "arabic_only_string" to "خيارات",
+      )
 
-    private val BRAZILIAN_PORTUGUESE_STRINGS = mapOf(
-      "shared_string" to "Meus Downloads",
-      "brazilian_portuguese_only_string" to "Reprodutor de Exploração"
-    )
+    private val BRAZILIAN_PORTUGUESE_STRINGS =
+      mapOf(
+        "shared_string" to "Meus Downloads",
+        "brazilian_portuguese_only_string" to "Reprodutor de Exploração",
+      )
 
-    private val ENGLISH_STRINGS = mapOf(
-      "shared_string" to "Exploration Player",
-      "english_only_string" to "Help"
-    )
+    private val ENGLISH_STRINGS =
+      mapOf(
+        "shared_string" to "Exploration Player",
+        "english_only_string" to "Help",
+      )
 
-    private val SWAHILI_STRINGS = mapOf(
-      "shared_string" to "Kicheza Ugunduzi",
-      "swahili_only_string" to "Badili Wasifu"
-    )
+    private val SWAHILI_STRINGS =
+      mapOf(
+        "shared_string" to "Kicheza Ugunduzi",
+        "swahili_only_string" to "Badili Wasifu",
+      )
 
-    private val NIGERIAN_PIDGIN_STRINGS = mapOf(
-      "shared_string" to "Pause di audio",
-      "nigerian_pidgin_only_string" to "Abeg select all di correct choices."
-    )
+    private val NIGERIAN_PIDGIN_STRINGS =
+      mapOf(
+        "shared_string" to "Pause di audio",
+        "nigerian_pidgin_only_string" to "Abeg select all di correct choices.",
+      )
   }
 
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
@@ -70,13 +75,13 @@ class StringResourceParserTest {
   fun testRetrieveBaseStringFile_noStrings_throwsException() {
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
         "Missing translation strings for language(s): ARABIC, BRAZILIAN_PORTUGUESE, ENGLISH," +
-          " SWAHILI"
+          " SWAHILI",
       )
   }
 
@@ -88,7 +93,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -103,7 +108,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -118,7 +123,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -133,7 +138,7 @@ class StringResourceParserTest {
     populateNigerianPidginTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -148,7 +153,7 @@ class StringResourceParserTest {
     populateSwahiliTranslations()
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
@@ -161,13 +166,13 @@ class StringResourceParserTest {
     populateTranslations(appResources, "values-fake", mapOf())
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
         "Strings file 'app/src/main/res/values-fake/strings.xml' does not correspond to a known" +
-          " language: values-fake"
+          " language: values-fake",
       )
   }
 
@@ -180,7 +185,7 @@ class StringResourceParserTest {
     populateTranslations(utilityResources, "values", mapOf())
     val parser = StringResourceParser(tempFolder.root)
 
-    val exception = assertThrows<IllegalStateException>() { parser.retrieveBaseStringFile() }
+    val exception = assertThrows<IllegalStateException> { parser.retrieveBaseStringFile() }
 
     // An exception is still thrown since resources outside the app directory are ignored.
     assertThat(exception)
@@ -197,7 +202,7 @@ class StringResourceParserTest {
     writeTranslationsFile(appResources, "values", "<bad XML>")
     val parser = StringResourceParser(tempFolder.root)
 
-    assertThrows<SAXParseException>() { parser.retrieveBaseStringFile() }
+    assertThrows<SAXParseException> { parser.retrieveBaseStringFile() }
   }
 
   @Test
@@ -289,20 +294,25 @@ class StringResourceParserTest {
   private fun populateTranslations(
     resourceDir: File,
     valuesDirName: String,
-    translations: Map<String, String>
+    translations: Map<String, String>,
   ) {
     val document = documentBuilderFactory.newDocumentBuilder().newDocument()
     val resourcesRoot = document.createElement("resources").also { document.appendChild(it) }
-    translations.map { (name, value) ->
-      document.createElement("string").also {
-        it.setAttribute("name", name)
-        it.textContent = value
-      }
-    }.forEach(resourcesRoot::appendChild)
+    translations
+      .map { (name, value) ->
+        document.createElement("string").also {
+          it.setAttribute("name", name)
+          it.textContent = value
+        }
+      }.forEach(resourcesRoot::appendChild)
     writeTranslationsFile(resourceDir, valuesDirName, document.toSource())
   }
 
-  private fun writeTranslationsFile(resourceDir: File, valuesDirName: String, contents: String) {
+  private fun writeTranslationsFile(
+    resourceDir: File,
+    valuesDirName: String,
+    contents: String,
+  ) {
     val valuesDir = File(resourceDir, valuesDirName).also { check(it.mkdir()) }
     File(valuesDir, "strings.xml").writeText(contents)
   }
@@ -310,8 +320,9 @@ class StringResourceParserTest {
   private fun Document.toSource(): String {
     // Reference: https://stackoverflow.com/a/5456836.
     val transformer = transformerFactory.newTransformer()
-    return StringWriter().apply {
-      transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
-    }.toString()
+    return StringWriter()
+      .apply {
+        transformer.transform(DOMSource(this@toSource), StreamResult(this@apply))
+      }.toString()
   }
 }

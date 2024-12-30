@@ -8,9 +8,11 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 // https://stackoverflow.com/questions/47398659/check-the-font-size-height-and-width-of-the-edittext-with-espresso
+
 /** This class mainly provides a custom matcher to test whether the text matches expected font size. */
-class FontSizeMatcher(private val expectedSize: Float) :
-  TypeSafeMatcher<View?>(View::class.java) {
+class FontSizeMatcher(
+  private val expectedSize: Float,
+) : TypeSafeMatcher<View?>(View::class.java) {
   override fun matchesSafely(target: View?): Boolean {
     if (target !is TextView) {
       return false
@@ -31,8 +33,6 @@ class FontSizeMatcher(private val expectedSize: Float) :
      *  .withFontSize(context.resources.getDimension(R.dimen.space_16dp))))
      */
     @CheckResult
-    fun withFontSize(fontSize: Float): Matcher<View?>? {
-      return FontSizeMatcher(fontSize)
-    }
+    fun withFontSize(fontSize: Float): Matcher<View?>? = FontSizeMatcher(fontSize)
   }
 }

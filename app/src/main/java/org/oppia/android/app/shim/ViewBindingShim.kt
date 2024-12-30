@@ -25,7 +25,6 @@ import org.oppia.android.util.parser.html.HtmlParser
  */
 // TODO(#1619): Remove file post-Gradle
 interface ViewBindingShim {
-
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SortInteraction and returns the
    * binding's view.
@@ -33,18 +32,14 @@ interface ViewBindingShim {
   fun provideDragDropSortInteractionInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /** Handles setting [DragDropInteractionItemsBinding]. */
-  fun setDragDropInteractionItemsBinding(
-    view: View
-  )
+  fun setDragDropInteractionItemsBinding(view: View)
 
   /** Handles setting [DragDropInteractionItemsBinding]'s adapter. */
-  fun setDragDropInteractionItemsBindingAdapter(
-    adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
-  )
+  fun setDragDropInteractionItemsBindingAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
 
   /** Returns [DragDropInteractionItemsBinding]'s RecyclerView. */
   fun getDragDropInteractionItemsBindingRecyclerView(): RecyclerView
@@ -59,9 +54,7 @@ interface ViewBindingShim {
   fun getDragDropInteractionItemsBindingAccessibleContainer(): LinearLayout
 
   /** Handles setting [DragDropInteractionItemsBinding]'s view model. */
-  fun setDragDropInteractionItemsBindingViewModel(
-    viewModel: DragDropInteractionContentViewModel
-  )
+  fun setDragDropInteractionItemsBindingViewModel(viewModel: DragDropInteractionContentViewModel)
 
   /**
    * Handles binding inflation for [DragDropSortInteractionView]'s SingleItemInteraction and returns
@@ -70,13 +63,11 @@ interface ViewBindingShim {
   fun provideDragDropSingleItemInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /** Handles setting [DragDropSingleItemBinding]. */
-  fun setDragDropSingleItemBinding(
-    view: View
-  )
+  fun setDragDropSingleItemBinding(view: View)
 
   /** Handles setting [DragDropSingleItemBinding]'s html content. */
   fun setDragDropSingleItemBindingHtmlContent(
@@ -84,7 +75,7 @@ interface ViewBindingShim {
     resourceBucketName: String,
     entityType: String,
     entityId: String,
-    viewModel: String
+    viewModel: String,
   )
 
   /** Returns [ClickableAreasImage]'s default region. */
@@ -96,7 +87,7 @@ interface ViewBindingShim {
   fun providePromotedStoryCardInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /**
@@ -105,20 +96,20 @@ interface ViewBindingShim {
    */
   fun providePromotedStoryViewModel(
     view: View,
-    viewModel: PromotedStoryViewModel
+    viewModel: PromotedStoryViewModel,
   )
 
   /** Handles binding inflation for [ComingSoonTopicsListView]. */
   fun provideComingSoonTopicViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /** Handles binding inflation for [ComingSoonTopicsListView] and returns the view model. */
   fun provideComingSoonTopicsViewViewModel(
     view: View,
-    viewModel: ComingSoonTopicsViewModel
+    viewModel: ComingSoonTopicsViewModel,
   )
 
   /**
@@ -128,7 +119,7 @@ interface ViewBindingShim {
   fun provideSelectionInteractionViewInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /**
@@ -142,7 +133,7 @@ interface ViewBindingShim {
     resourceBucketName: String,
     entityType: String,
     entityId: String,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
   )
 
   /**
@@ -152,7 +143,7 @@ interface ViewBindingShim {
   fun provideMultipleChoiceInteractionItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /**
@@ -166,7 +157,7 @@ interface ViewBindingShim {
     resourceBucketName: String,
     entityType: String,
     entityId: String,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
   )
 
   /**
@@ -176,7 +167,7 @@ interface ViewBindingShim {
   fun provideMultipleChoiceItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /**
@@ -185,7 +176,7 @@ interface ViewBindingShim {
    */
   fun provideMultipleChoiceOptionViewModel(
     view: View,
-    viewModel: MultipleChoiceOptionContentViewModel
+    viewModel: MultipleChoiceOptionContentViewModel,
   )
 
   /**
@@ -195,7 +186,7 @@ interface ViewBindingShim {
   fun provideNpsItemsInflatedView(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    attachToParent: Boolean
+    attachToParent: Boolean,
   ): View
 
   /**
@@ -204,6 +195,6 @@ interface ViewBindingShim {
    */
   fun provideNpsItemsViewModel(
     view: View,
-    viewModel: MultipleChoiceOptionContentViewModel
+    viewModel: MultipleChoiceOptionContentViewModel,
   )
 }

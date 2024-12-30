@@ -40,13 +40,14 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   cacheName: String,
   private val initialValue: T,
-  directory: File = application.filesDir
+  directory: File = application.filesDir,
 ) : DataProvider<T>(application) {
   private val cacheFileName = "$cacheName.cache"
   private val providerId = PersistentCacheStoreId(cacheFileName)
   private val failureLock = ReentrantLock()
 
   private val cacheFile = File(directory, cacheFileName)
+
   @GuardedBy("failureLock")
   private var deferredLoadCacheFailure: Throwable? = null
   private val cache =
@@ -133,33 +134,34 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   fun primeInMemoryAndDiskCacheAsync(
     updateMode: UpdateMode,
     publishMode: PublishMode,
-    update: (T) -> T = { it }
+    update: (T) -> T = { it },
   ): Deferred<Any> {
     return cache.updateIfPresentAsync { cachePayload ->
       // It's expected 'oldState' to match 'cachePayload' unless the cache hasn't yet been read
       // (since then 'cachePayload' will be based on the store's default value).
-      val (oldState, newState) = when (cachePayload.state) {
-        CacheState.UNLOADED -> {
-          val loadedPayload = loadFileCache(cachePayload)
-          when (loadedPayload.state) {
-            // The state should never stay as UNLOADED.
-            CacheState.UNLOADED ->
-              error("Something went wrong loading the cache during priming: $cacheFile")
-            CacheState.IN_MEMORY_ONLY -> {
-              // Needs saving. In this case, there is no "old" value since the cache was never
-              // initialized.
-              val storedPayload = storeFileCache(loadedPayload, update)
-              storedPayload to storedPayload
+      val (oldState, newState) =
+        when (cachePayload.state) {
+          CacheState.UNLOADED -> {
+            val loadedPayload = loadFileCache(cachePayload)
+            when (loadedPayload.state) {
+              // The state should never stay as UNLOADED.
+              CacheState.UNLOADED ->
+                error("Something went wrong loading the cache during priming: $cacheFile")
+              CacheState.IN_MEMORY_ONLY -> {
+                // Needs saving. In this case, there is no "old" value since the cache was never
+                // initialized.
+                val storedPayload = storeFileCache(loadedPayload, update)
+                storedPayload to storedPayload
+              }
+              CacheState.IN_MEMORY_AND_ON_DISK -> // Loaded from disk successfully.
+                loadedPayload to loadedPayload.maybeReprimePayload(updateMode, update)
             }
-            CacheState.IN_MEMORY_AND_ON_DISK -> // Loaded from disk successfully.
-              loadedPayload to loadedPayload.maybeReprimePayload(updateMode, update)
           }
+          // Generally indicates that the cache was loaded but never written.
+          CacheState.IN_MEMORY_ONLY -> cachePayload to storeFileCache(cachePayload, update)
+          CacheState.IN_MEMORY_AND_ON_DISK ->
+            cachePayload to cachePayload.maybeReprimePayload(updateMode, update)
         }
-        // Generally indicates that the cache was loaded but never written.
-        CacheState.IN_MEMORY_ONLY -> cachePayload to storeFileCache(cachePayload, update)
-        CacheState.IN_MEMORY_AND_ON_DISK ->
-          cachePayload to cachePayload.maybeReprimePayload(updateMode, update)
-      }
 
       // The returned payload is always expected to be IN_MEMORY_AND_ON_DISK, but the in-memory copy
       // may be intentionally kept out-of-date so that cache reads pick up the original version
@@ -182,14 +184,15 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * @return a deferred value that contains the value of the cached payload.
    */
   fun readDataAsync(): Deferred<T> {
-    val deferred = cache.updateWithCustomChannelIfPresentAsync { cachePayload ->
-      if (cachePayload.state == CacheState.UNLOADED) {
-        val filePayload = loadFileCache(cachePayload)
-        Pair(filePayload, filePayload.value)
-      } else {
-        Pair(cachePayload, cachePayload.value)
+    val deferred =
+      cache.updateWithCustomChannelIfPresentAsync { cachePayload ->
+        if (cachePayload.state == CacheState.UNLOADED) {
+          val filePayload = loadFileCache(cachePayload)
+          Pair(filePayload, filePayload.value)
+        } else {
+          Pair(cachePayload, cachePayload.value)
+        }
       }
-    }
     deferred.invokeOnCompletion {
       failureLock.withLock {
         deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
@@ -210,33 +213,38 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    *     whether they update the in-memory cache to avoid complex potential in-memory/on-disk sync
    *     issues.
    */
-  fun storeDataAsync(updateInMemoryCache: Boolean = true, update: (T) -> T): Deferred<Any> {
-    return cache.updateIfPresentAsync { cachedPayload ->
+  fun storeDataAsync(
+    updateInMemoryCache: Boolean = true,
+    update: (T) -> T,
+  ): Deferred<Any> =
+    cache.updateIfPresentAsync { cachedPayload ->
       val updatedPayload = storeFileCache(cachedPayload, update)
       if (updateInMemoryCache) updatedPayload else cachedPayload
     }
-  }
 
   /** See [storeDataAsync]. Stores data and allows for a custom deferred result. */
   fun <V> storeDataWithCustomChannelAsync(
     updateInMemoryCache: Boolean = true,
-    update: suspend (T) -> Pair<T, V>
-  ): Deferred<V> {
-    return cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
+    update: suspend (T) -> Pair<T, V>,
+  ): Deferred<V> =
+    cache.updateWithCustomChannelIfPresentAsync { cachedPayload ->
       val (updatedPayload, customResult) = storeFileCacheWithCustomChannel(cachedPayload, update)
-      if (updateInMemoryCache) Pair(updatedPayload, customResult) else Pair(
-        cachedPayload,
-        customResult
-      )
+      if (updateInMemoryCache) {
+        Pair(updatedPayload, customResult)
+      } else {
+        Pair(
+          cachedPayload,
+          customResult,
+        )
+      }
     }
-  }
 
   /**
    * Returns a [Deferred] indicating when the cache was cleared and its on-disk file, removed. This
    * does notify subscribers.
    */
-  fun clearCacheAsync(): Deferred<Any> {
-    return cache.updateIfPresentAsync { currentPayload ->
+  fun clearCacheAsync(): Deferred<Any> =
+    cache.updateIfPresentAsync { currentPayload ->
       if (cacheFile.exists()) {
         cacheFile.delete()
       }
@@ -248,17 +256,17 @@ class PersistentCacheStore<T : MessageLite> private constructor(
       // it).
       currentPayload.copy(state = CacheState.UNLOADED, value = initialValue)
     }
-  }
 
   private fun deferLoadFile() {
-    cache.updateIfPresentAsync { cachePayload ->
-      loadFileCache(cachePayload)
-    }.invokeOnCompletion {
-      failureLock.withLock {
-        // Other failures should be captured for reporting.
-        deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
+    cache
+      .updateIfPresentAsync { cachePayload ->
+        loadFileCache(cachePayload)
+      }.invokeOnCompletion {
+        failureLock.withLock {
+          // Other failures should be captured for reporting.
+          deferredLoadCacheFailure = it ?: deferredLoadCacheFailure
+        }
       }
-    }
   }
 
   /**
@@ -282,7 +290,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     return try {
       currentPayload.copy(
         state = CacheState.IN_MEMORY_AND_ON_DISK,
-        value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T
+        value = FileInputStream(cacheFile).use { cacheBuilder.mergeFrom(it) }.build() as T,
       )
     } catch (e: IOException) {
       failureLock.withLock {
@@ -298,7 +306,10 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * Stores the file store to disk, and returns the persisted payload. This should only be called
    * from the cache's update thread.
    */
-  private fun storeFileCache(currentPayload: CachePayload<T>, update: (T) -> T): CachePayload<T> {
+  private fun storeFileCache(
+    currentPayload: CachePayload<T>,
+    update: (T) -> T,
+  ): CachePayload<T> {
     val updatedCacheValue = update(currentPayload.value)
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue)
@@ -307,28 +318,29 @@ class PersistentCacheStore<T : MessageLite> private constructor(
   /** See [storeFileCache]. Returns payload and custom result. */
   private suspend fun <V> storeFileCacheWithCustomChannel(
     currentPayload: CachePayload<T>,
-    update: suspend (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>,
   ): Pair<CachePayload<T>, V> {
     val (updatedCacheValue, customResult) = update(currentPayload.value)
     // TODO(#4264): Move this over to using an I/O-specific dispatcher.
     FileOutputStream(cacheFile).use { updatedCacheValue.writeTo(it) }
     return Pair(
       currentPayload.copy(state = CacheState.IN_MEMORY_AND_ON_DISK, value = updatedCacheValue),
-      customResult
+      customResult,
     )
   }
 
   private fun CachePayload<T>.maybeReprimePayload(
     updateMode: UpdateMode,
-    initialize: (T) -> T
-  ): CachePayload<T> {
-    return when (updateMode) {
+    initialize: (T) -> T,
+  ): CachePayload<T> =
+    when (updateMode) {
       UpdateMode.UPDATE_IF_NEW_CACHE -> this // Nothing extra to do.
       UpdateMode.UPDATE_ALWAYS -> storeFileCache(this, initialize) // Recompute the payload.
     }
-  }
 
-  private data class PersistentCacheStoreId(private val id: String)
+  private data class PersistentCacheStoreId(
+    private val id: String,
+  )
 
   /** Represents different states the cache store can be in. */
   private enum class CacheState {
@@ -339,10 +351,13 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     IN_MEMORY_ONLY,
 
     /** Indicates that the cache exists both in memory and on disk. */
-    IN_MEMORY_AND_ON_DISK
+    IN_MEMORY_AND_ON_DISK,
   }
 
-  private data class CachePayload<T>(val state: CacheState, val value: T)
+  private data class CachePayload<T>(
+    val state: CacheState,
+    val value: T,
+  )
 
   /**
    * The mode of on-disk data updating that can be configured for specific operations like cache
@@ -357,7 +372,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     /**
      * Indicates that the on-disk cache should always be changed regardless of if it already exists.
      */
-    UPDATE_ALWAYS
+    UPDATE_ALWAYS,
   }
 
   /**
@@ -374,7 +389,7 @@ class PersistentCacheStore<T : MessageLite> private constructor(
     PUBLISH_TO_IN_MEMORY_CACHE,
 
     /** Indicates that data changes should not change the in-memory cache. */
-    DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE
+    DO_NOT_PUBLISH_TO_IN_MEMORY_CACHE,
   }
 
   /**
@@ -382,46 +397,50 @@ class PersistentCacheStore<T : MessageLite> private constructor(
    * from central controllers since they can't be placed directly in the Dagger graph.
    */
   @Singleton
-  class Factory @Inject constructor(
-    private val application: Application,
-    private val cacheFactory: InMemoryBlockingCache.Factory,
-    private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
-    private val directoryManagementUtil: DirectoryManagementUtil
-  ) {
-    /**
-     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
-     * the shared directory context.filesDir.
-     *
-     * Use this method when data is shared by all profiles.
-     */
-    fun <T : MessageLite> create(cacheName: String, initialValue: T): PersistentCacheStore<T> {
-      return PersistentCacheStore(
-        application,
-        cacheFactory,
-        asyncDataSubscriptionManager,
-        cacheName,
-        initialValue
-      )
-    }
+  class Factory
+    @Inject
+    constructor(
+      private val application: Application,
+      private val cacheFactory: InMemoryBlockingCache.Factory,
+      private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
+      private val directoryManagementUtil: DirectoryManagementUtil,
+    ) {
+      /**
+       * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+       * the shared directory context.filesDir.
+       *
+       * Use this method when data is shared by all profiles.
+       */
+      fun <T : MessageLite> create(
+        cacheName: String,
+        initialValue: T,
+      ): PersistentCacheStore<T> =
+        PersistentCacheStore(
+          application,
+          cacheFactory,
+          asyncDataSubscriptionManager,
+          cacheName,
+          initialValue,
+        )
 
-    /**
-     * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
-     * the directory specified by profileId. Use this method when data is unique to each profile.
-     */
-    fun <T : MessageLite> createPerProfile(
-      cacheName: String,
-      initialValue: T,
-      profileId: ProfileId
-    ): PersistentCacheStore<T> {
-      val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
-      return PersistentCacheStore(
-        application,
-        cacheFactory,
-        asyncDataSubscriptionManager,
-        cacheName,
-        initialValue,
-        profileDirectory
-      )
+      /**
+       * Returns a new [PersistentCacheStore] with the specified cache name and initial value under
+       * the directory specified by profileId. Use this method when data is unique to each profile.
+       */
+      fun <T : MessageLite> createPerProfile(
+        cacheName: String,
+        initialValue: T,
+        profileId: ProfileId,
+      ): PersistentCacheStore<T> {
+        val profileDirectory = directoryManagementUtil.getOrCreateDir(profileId.internalId.toString())
+        return PersistentCacheStore(
+          application,
+          cacheFactory,
+          asyncDataSubscriptionManager,
+          cacheName,
+          initialValue,
+          profileDirectory,
+        )
+      }
     }
-  }
 }

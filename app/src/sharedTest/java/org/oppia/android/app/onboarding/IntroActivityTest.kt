@@ -93,9 +93,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = IntroActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
-
 class IntroActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -123,7 +122,8 @@ class IntroActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      IntroActivity.createIntroActivity(context)
+      IntroActivity
+        .createIntroActivity(context)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.INTRO_ACTIVITY)
@@ -142,14 +142,14 @@ class IntroActivityTest {
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
-    ActivityScenario<IntroActivity>? {
-      val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(context)
+  private fun launchOnboardingLearnerIntroActivity(): ActivityScenario<IntroActivity>? {
+    val scenario =
+      ActivityScenario.launch<IntroActivity>(
+        IntroActivity.createIntroActivity(context),
       )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -184,10 +184,9 @@ class IntroActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder
@@ -195,9 +194,13 @@ class IntroActivityTest {
     fun inject(introActivityTest: IntroActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerIntroActivityTest_TestApplicationComponent.builder()
+      DaggerIntroActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -206,9 +209,12 @@ class IntroActivityTest {
       component.inject(introActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

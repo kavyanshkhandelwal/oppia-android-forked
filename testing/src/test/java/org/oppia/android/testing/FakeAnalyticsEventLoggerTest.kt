@@ -31,8 +31,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FakeAnalyticsEventLoggerTest {
-
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
   @Inject lateinit var analyticsEventLogger: AnalyticsEventLogger
 
   private val eventLog1 = EventLog.newBuilder().setPriority(Priority.ESSENTIAL).build()
@@ -75,7 +75,7 @@ class FakeAnalyticsEventLoggerTest {
 
   @Test
   fun testFakeEventLogger_logNothing_getMostRecent_returnsFailure() {
-    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getMostRecentEvent() }
+    assertThrows<NoSuchElementException> { fakeAnalyticsEventLogger.getMostRecentEvent() }
   }
 
   @Test
@@ -83,9 +83,10 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     fakeAnalyticsEventLogger.clearAllEvents()
 
-    val eventException = assertThrows<NoSuchElementException>() {
-      fakeAnalyticsEventLogger.getMostRecentEvent()
-    }
+    val eventException =
+      assertThrows<NoSuchElementException> {
+        fakeAnalyticsEventLogger.getMostRecentEvent()
+      }
 
     assertThat(eventException).isInstanceOf(NoSuchElementException::class.java)
   }
@@ -141,7 +142,7 @@ class FakeAnalyticsEventLoggerTest {
 
   @Test
   fun testGetOldestEvent_noEventsLogged_throwsException() {
-    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException> { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -169,7 +170,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     fakeAnalyticsEventLogger.clearAllEvents()
 
-    assertThrows<NoSuchElementException>() { fakeAnalyticsEventLogger.getOldestEvent() }
+    assertThrows<NoSuchElementException> { fakeAnalyticsEventLogger.getOldestEvent() }
   }
 
   @Test
@@ -234,7 +235,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    assertThrows<IllegalArgumentException>() {
+    assertThrows<IllegalArgumentException> {
       fakeAnalyticsEventLogger.getMostRecentEvents(count = -1)
     }
   }
@@ -312,7 +313,7 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog2)
     analyticsEventLogger.logEvent(eventLog1)
 
-    assertThrows<IllegalArgumentException>() {
+    assertThrows<IllegalArgumentException> {
       fakeAnalyticsEventLogger.getOldestEvents(count = -1)
     }
   }
@@ -344,24 +345,27 @@ class FakeAnalyticsEventLoggerTest {
     analyticsEventLogger.logEvent(eventLog1)
     analyticsEventLogger.logEvent(eventLog2)
 
-    val loggedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.priority == Priority.ESSENTIAL
-    }
+    val loggedEvent =
+      fakeAnalyticsEventLogger.getLoggedEvent {
+        it.priority == Priority.ESSENTIAL
+      }
 
     assertThat(loggedEvent).isEqualTo(eventLog1)
   }
 
   @Test
   fun testLoggedEvent_noEventsLogged_getLoggedEvent_returnsNull() {
-    val loggedEvent = fakeAnalyticsEventLogger.getLoggedEvent {
-      it.priority == Priority.ESSENTIAL
-    }
+    val loggedEvent =
+      fakeAnalyticsEventLogger.getLoggedEvent {
+        it.priority == Priority.ESSENTIAL
+      }
 
     assertThat(loggedEvent).isNull()
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerFakeAnalyticsEventLoggerTest_TestApplicationComponent.builder()
+    DaggerFakeAnalyticsEventLoggerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -372,9 +376,7 @@ class FakeAnalyticsEventLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -382,14 +384,15 @@ class FakeAnalyticsEventLoggerTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
-    ]
+      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

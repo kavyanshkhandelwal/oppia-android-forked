@@ -100,7 +100,7 @@ private const val TEST_FRAGMENT_TAG = "welcome_view_model_test_fragment"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = WelcomeViewModelTest.TestApplication::class,
-  manifest = Config.NONE
+  manifest = Config.NONE,
 )
 class WelcomeViewModelTest {
   @get:Rule
@@ -126,7 +126,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_reflexiveBasicWelcomeViewModel_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -141,7 +141,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_symmetricBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -158,7 +158,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_transitiveBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -166,15 +166,15 @@ class WelcomeViewModelTest {
         val welcomeViewModelProfile1MorningCopy2 = createBasicWelcomeViewModel(activity)
         val welcomeViewModelProfile1MorningCopy3 = createBasicWelcomeViewModel(activity)
         assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(
-          welcomeViewModelProfile1MorningCopy2
+          welcomeViewModelProfile1MorningCopy2,
         )
         assertThat(welcomeViewModelProfile1MorningCopy2).isEqualTo(
-          welcomeViewModelProfile1MorningCopy3
+          welcomeViewModelProfile1MorningCopy3,
         )
 
         // Verify the transitive property of equals(): if a == b & b == c, then a == c
         assertThat(welcomeViewModelProfile1MorningCopy1).isEqualTo(
-          welcomeViewModelProfile1MorningCopy3
+          welcomeViewModelProfile1MorningCopy3,
         )
       }
     }
@@ -183,7 +183,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_consistentBasicWelcomeViewModels_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -201,7 +201,7 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_basicWelcomeViewModelAndNull_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
@@ -216,21 +216,23 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_profile1MorningAndProfile2Morning_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
         setTimeToMorning()
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
-        val welcomeViewModelProfile2Morning = WelcomeViewModel(
-          "Profile 2",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
+        val welcomeViewModelProfile1Morning =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
+        val welcomeViewModelProfile2Morning =
+          WelcomeViewModel(
+            "Profile 2",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile2Morning)
       }
@@ -240,22 +242,24 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelEquals_profile1MorningAndProfile1Evening_isNotEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
         setTimeToMorning()
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
+        val welcomeViewModelProfile1Morning =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
         setTimeToEvening()
-        val welcomeViewModelProfile1Evening = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
+        val welcomeViewModelProfile1Evening =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
 
         assertThat(welcomeViewModelProfile1Morning).isNotEqualTo(welcomeViewModelProfile1Evening)
       }
@@ -265,21 +269,23 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelHashCode_viewModelsEqualHashCodesEqual_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
         setTimeToMorning()
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
-        val welcomeViewModelProfile1MorningCopy = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
+        val welcomeViewModelProfile1Morning =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
+        val welcomeViewModelProfile1MorningCopy =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
         assertThat(welcomeViewModelProfile1Morning).isEqualTo(welcomeViewModelProfile1MorningCopy)
 
         // Verify that if a == b, then a.hashCode == b.hashCode
@@ -292,16 +298,17 @@ class WelcomeViewModelTest {
   @Test
   fun testWelcomeViewModelHashCode_sameViewModelHashCodeDoesNotChange_isEqual() {
     launch<HomeFragmentTestActivity>(
-      createHomeFragmentTestActivity(context)
+      createHomeFragmentTestActivity(context),
     ).use { activityScenario ->
       activityScenario.onActivity { activity ->
         setUpTestFragment(activity)
         setTimeToMorning()
-        val welcomeViewModelProfile1Morning = WelcomeViewModel(
-          "Profile 1",
-          activity.appLanguageResourceHandler,
-          activity.dateTimeUtil
-        )
+        val welcomeViewModelProfile1Morning =
+          WelcomeViewModel(
+            "Profile 1",
+            activity.appLanguageResourceHandler,
+            activity.dateTimeUtil,
+          )
 
         // Verify that hashCode consistently returns the same value.
         val firstHash = welcomeViewModelProfile1Morning.hashCode()
@@ -316,7 +323,9 @@ class WelcomeViewModelTest {
   }
 
   private fun setUpTestFragment(activity: HomeFragmentTestActivity) {
-    activity.supportFragmentManager.beginTransaction().add(testFragment, TEST_FRAGMENT_TAG)
+    activity.supportFragmentManager
+      .beginTransaction()
+      .add(testFragment, TEST_FRAGMENT_TAG)
       .commitNow()
   }
 
@@ -331,7 +340,9 @@ class WelcomeViewModelTest {
   private fun createBasicWelcomeViewModel(activity: HomeFragmentTestActivity): WelcomeViewModel {
     setTimeToMorning()
     return WelcomeViewModel(
-      "Profile 1", activity.appLanguageResourceHandler, activity.dateTimeUtil
+      "Profile 1",
+      activity.appLanguageResourceHandler,
+      activity.dateTimeUtil,
     )
   }
 
@@ -363,8 +374,8 @@ class WelcomeViewModelTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -375,9 +386,13 @@ class WelcomeViewModelTest {
     fun inject(welcomeViewModelTest: WelcomeViewModelTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerWelcomeViewModelTest_TestApplicationComponent.builder()
+      DaggerWelcomeViewModelTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -386,9 +401,12 @@ class WelcomeViewModelTest {
       component.inject(welcomeViewModelTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

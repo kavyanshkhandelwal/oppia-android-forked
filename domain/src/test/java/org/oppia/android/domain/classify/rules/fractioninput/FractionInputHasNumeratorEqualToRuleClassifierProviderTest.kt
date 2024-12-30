@@ -23,39 +23,38 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
-
   private val NON_NEGATIVE_VALUE_TEST_0 =
     InteractionObjectTestBuilder.createNonNegativeInt(
-      value = 0
+      value = 0,
     )
   private val WHOLE_NUMBER_VALUE_TEST_123 =
     InteractionObjectTestBuilder.createWholeNumber(
       isNegative = false,
-      value = 123
+      value = 123,
     )
   private val FRACTION_VALUE_TEST_2_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = false,
       numerator = 2,
-      denominator = 4
+      denominator = 4,
     )
   private val FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4 =
     InteractionObjectTestBuilder.createFraction(
       isNegative = true,
       numerator = -2,
-      denominator = 4
+      denominator = 4,
     )
   private val SIGNED_INT_VALUE_TEST_1 =
     InteractionObjectTestBuilder.createSignedInt(
-      value = 1
+      value = 1,
     )
   private val SIGNED_INT_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createSignedInt(
-      value = 2
+      value = 2,
     )
   private val SIGNED_INT_NEGATIVE_VALUE_TEST_2 =
     InteractionObjectTestBuilder.createSignedInt(
-      value = -2
+      value = -2,
     )
 
   @Inject
@@ -79,7 +78,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_NEGATIVE_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -93,7 +92,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
       numeratorIsEqualClassifierProvider.matches(
         answer = WHOLE_NUMBER_VALUE_TEST_123,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -107,7 +106,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -121,7 +120,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isFalse()
@@ -135,7 +134,7 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
       numeratorIsEqualClassifierProvider.matches(
         answer = FRACTION_VALUE_TEST_2_OVER_4,
         inputs = inputs,
-        classificationContext = ClassificationContext()
+        classificationContext = ClassificationContext(),
       )
 
     assertThat(matches).isTrue()
@@ -145,18 +144,19 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   fun testNumeratorEquals_nonNegativeInput_inputWithIncorrectType_throwsException() {
     val inputs = mapOf("x" to NON_NEGATIVE_VALUE_TEST_0)
 
-    val exception = assertThrows<IllegalStateException>() {
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        numeratorIsEqualClassifierProvider.matches(
+          answer = FRACTION_VALUE_TEST_2_OVER_4,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
       .contains(
-        "Expected input value to be of type SIGNED_INT not NON_NEGATIVE_INT"
+        "Expected input value to be of type SIGNED_INT not NON_NEGATIVE_INT",
       )
   }
 
@@ -164,13 +164,14 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   fun testNumeratorEquals_missingInputF_throwsException() {
     val inputs = mapOf("y" to FRACTION_VALUE_TEST_2_OVER_4)
 
-    val exception = assertThrows<IllegalStateException>() {
-      numeratorIsEqualClassifierProvider.matches(
-        answer = FRACTION_VALUE_TEST_2_OVER_4,
-        inputs = inputs,
-        classificationContext = ClassificationContext()
-      )
-    }
+    val exception =
+      assertThrows<IllegalStateException> {
+        numeratorIsEqualClassifierProvider.matches(
+          answer = FRACTION_VALUE_TEST_2_OVER_4,
+          inputs = inputs,
+          classificationContext = ClassificationContext(),
+        )
+      }
 
     assertThat(exception)
       .hasMessageThat()
@@ -180,7 +181,9 @@ class FractionInputHasNumeratorEqualToRuleClassifierProviderTest {
   private fun setUpTestApplicationComponent() {
     DaggerFractionInputHasNumeratorEqualToRuleClassifierProviderTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

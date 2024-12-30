@@ -63,7 +63,7 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
  */
 class ComparableOperationSubject private constructor(
   metadata: FailureMetadata,
-  private val actual: ComparableOperation
+  private val actual: ComparableOperation,
 ) : LiteProtoSubject(metadata, actual) {
   /**
    * Begins the structure syntax matcher for [ComparableOperation] being tested as the subject.
@@ -96,7 +96,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class ComparableOperationComparator private constructor(
-    private val operation: ComparableOperation
+    private val operation: ComparableOperation,
   ) {
     /**
      * Returns a [BooleanSubject] to test [ComparableOperation.getIsNegated].
@@ -123,7 +123,7 @@ class ComparableOperationSubject private constructor(
      */
     fun commutativeAccumulationWithType(
       type: ComparableOperation.CommutativeAccumulation.AccumulationType,
-      init: CommutativeAccumulationComparator.() -> Unit
+      init: CommutativeAccumulationComparator.() -> Unit,
     ) {
       CommutativeAccumulationComparator.createFrom(type, operation).also(init)
     }
@@ -135,9 +135,7 @@ class ComparableOperationSubject private constructor(
      * This method will fail if the represented operation is not a non-commutative operation. See
      * [NonCommutativeOperationComparator] for example syntax.
      */
-    fun nonCommutativeOperation(
-      init: NonCommutativeOperationComparator.() -> Unit
-    ) {
+    fun nonCommutativeOperation(init: NonCommutativeOperationComparator.() -> Unit) {
       NonCommutativeOperationComparator.createFrom(operation).also(init)
     }
 
@@ -168,8 +166,7 @@ class ComparableOperationSubject private constructor(
        * Returns a new [ComparableOperationComparator] corresponding to the specified
        * [ComparableOperation].
        */
-      fun createFrom(operation: ComparableOperation): ComparableOperationComparator =
-        ComparableOperationComparator(operation)
+      fun createFrom(operation: ComparableOperation): ComparableOperationComparator = ComparableOperationComparator(operation)
     }
   }
 
@@ -197,7 +194,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class CommutativeAccumulationComparator private constructor(
-    private val accumulation: ComparableOperation.CommutativeAccumulation
+    private val accumulation: ComparableOperation.CommutativeAccumulation,
   ) {
     /**
      * Returns a [IntegerSubject] to test
@@ -218,11 +215,12 @@ class ComparableOperationSubject private constructor(
      */
     fun index(
       index: Int,
-      init: ComparableOperationComparator.() -> Unit
+      init: ComparableOperationComparator.() -> Unit,
     ) {
-      ComparableOperationComparator.createFrom(
-        accumulation.combinedOperationsList[index]
-      ).also(init)
+      ComparableOperationComparator
+        .createFrom(
+          accumulation.combinedOperationsList[index],
+        ).also(init)
     }
 
     internal companion object {
@@ -233,7 +231,7 @@ class ComparableOperationSubject private constructor(
        */
       fun createFrom(
         type: ComparableOperation.CommutativeAccumulation.AccumulationType,
-        operation: ComparableOperation
+        operation: ComparableOperation,
       ): CommutativeAccumulationComparator {
         assertThat(operation.comparisonTypeCase)
           .isEqualTo(ComparisonTypeCase.COMMUTATIVE_ACCUMULATION)
@@ -257,7 +255,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class NonCommutativeOperationComparator private constructor(
-    private val operation: ComparableOperation.NonCommutativeOperation
+    private val operation: ComparableOperation.NonCommutativeOperation,
   ) {
     /**
      * Begins structure matching for this operation as an exponentiation per
@@ -275,7 +273,7 @@ class ComparableOperationSubject private constructor(
      */
     fun exponentiation(init: BinaryOperationComparator.() -> Unit) {
       verifyTypeAs(
-        ComparableOperation.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION
+        ComparableOperation.NonCommutativeOperation.OperationTypeCase.EXPONENTIATION,
       )
       BinaryOperationComparator.createFrom(operation.exponentiation).also(init)
     }
@@ -294,16 +292,12 @@ class ComparableOperationSubject private constructor(
      * }
      * ```
      */
-    fun squareRootWithArgument(
-      init: ComparableOperationComparator.() -> Unit
-    ) {
+    fun squareRootWithArgument(init: ComparableOperationComparator.() -> Unit) {
       verifyTypeAs(ComparableOperation.NonCommutativeOperation.OperationTypeCase.SQUARE_ROOT)
       ComparableOperationComparator.createFrom(operation.squareRoot).also(init)
     }
 
-    private fun verifyTypeAs(
-      type: ComparableOperation.NonCommutativeOperation.OperationTypeCase
-    ) {
+    private fun verifyTypeAs(type: ComparableOperation.NonCommutativeOperation.OperationTypeCase) {
       assertThat(operation.operationTypeCase).isEqualTo(type)
     }
 
@@ -342,7 +336,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class BinaryOperationComparator private constructor(
-    private val operation: ComparableOperation.NonCommutativeOperation.BinaryOperation
+    private val operation: ComparableOperation.NonCommutativeOperation.BinaryOperation,
   ) {
     /**
      * Begins structure matching this operation's left operand per
@@ -352,9 +346,7 @@ class ComparableOperationSubject private constructor(
      * This method provides an [ComparableOperationComparator] to use to verify the constituent
      * properties of the operand.
      */
-    fun leftOperand(
-      init: ComparableOperationComparator.() -> Unit
-    ) {
+    fun leftOperand(init: ComparableOperationComparator.() -> Unit) {
       ComparableOperationComparator.createFrom(operation.leftOperand).also(init)
     }
 
@@ -366,9 +358,7 @@ class ComparableOperationSubject private constructor(
      * This method provides an [ComparableOperationComparator] to use to verify the constituent
      * properties of the operand.
      */
-    fun rightOperand(
-      init: ComparableOperationComparator.() -> Unit
-    ) {
+    fun rightOperand(init: ComparableOperationComparator.() -> Unit) {
       ComparableOperationComparator.createFrom(operation.rightOperand).also(init)
     }
 
@@ -377,9 +367,8 @@ class ComparableOperationSubject private constructor(
        * Returns a new [BinaryOperationComparator] corresponding to the specified non-commutative
        * binary operation.
        */
-      fun createFrom(
-        operation: ComparableOperation.NonCommutativeOperation.BinaryOperation
-      ): BinaryOperationComparator = BinaryOperationComparator(operation)
+      fun createFrom(operation: ComparableOperation.NonCommutativeOperation.BinaryOperation): BinaryOperationComparator =
+        BinaryOperationComparator(operation)
     }
   }
 
@@ -398,7 +387,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class ConstantTermComparator private constructor(
-    private val constant: Real
+    private val constant: Real,
   ) {
     /**
      * Returns a [RealSubject] to verify the constant that's being represented by this comparator.
@@ -432,7 +421,7 @@ class ComparableOperationSubject private constructor(
    */
   @ComparableOperationComparatorMarker
   class VariableTermComparator private constructor(
-    private val variableName: String
+    private val variableName: String,
   ) {
     /**
      * Returns a [StringSubject] to verify the variable that's being represented by this comparator.
@@ -459,7 +448,6 @@ class ComparableOperationSubject private constructor(
      * Returns a new [ComparableOperationSubject] to verify aspects of the specified
      * [ComparableOperation] value.
      */
-    fun assertThat(actual: ComparableOperation): ComparableOperationSubject =
-      assertAbout(::ComparableOperationSubject).that(actual)
+    fun assertThat(actual: ComparableOperation): ComparableOperationSubject = assertAbout(::ComparableOperationSubject).that(actual)
   }
 }

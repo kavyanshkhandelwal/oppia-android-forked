@@ -42,7 +42,10 @@ import javax.inject.Inject
  * spotlight interactions, and handles lifecycle related functionality for spotlights, such as
  * surviving orientation changes and marking spotlights as seen.
  */
-class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, SpotlightManager {
+class SpotlightFragment :
+  InjectableFragment(),
+  SpotlightNavigationListener,
+  SpotlightManager {
   @Inject
   lateinit var activity: AppCompatActivity
 
@@ -83,12 +86,13 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // and positions of the anchor view are measured, which can be achieved by using doOnPreDraw:
     // https://betterprogramming.pub/stop-using-post-postdelayed-in-your-android-views-9d1c8eeaadf2
     spotlightTarget.anchor.doOnPreDraw {
-      val targetAfterViewFullyDrawn = SpotlightTarget(
-        it,
-        spotlightTarget.hint,
-        spotlightTarget.shape,
-        spotlightTarget.feature
-      )
+      val targetAfterViewFullyDrawn =
+        SpotlightTarget(
+          it,
+          spotlightTarget.hint,
+          spotlightTarget.shape,
+          spotlightTarget.feature,
+        )
       requestSpotlight(targetAfterViewFullyDrawn)
     }
     spotlightTarget.anchor.invalidate()
@@ -99,15 +103,18 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
     if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
-    val profileId = ProfileId.newBuilder()
-      .setInternalId(internalProfileId)
-      .build()
+    val profileId =
+      ProfileId
+        .newBuilder()
+        .setInternalId(internalProfileId)
+        .build()
 
     val featureViewStateLiveData =
-      spotlightStateController.retrieveSpotlightViewState(
-        profileId,
-        spotlightTarget.feature
-      ).toLiveData()
+      spotlightStateController
+        .retrieveSpotlightViewState(
+          profileId,
+          spotlightTarget.feature,
+        ).toLiveData()
 
     // Use activity as observer because this fragment's view hasn't been created yet.
     featureViewStateLiveData.observe(
@@ -121,7 +128,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
             featureViewStateLiveData.removeObserver(this)
           }
         }
-      }
+      },
     )
   }
 
@@ -130,22 +137,27 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun createTarget(spotlightTarget: SpotlightTarget) {
-    val target = Target.Builder()
-      .setShape(getShape(spotlightTarget))
-      .setOverlay(requestOverlayResource(spotlightTarget))
-      .setOnTargetListener(object : OnTargetListener {
-        override fun onStarted() {
-        }
+    val target =
+      Target
+        .Builder()
+        .setShape(getShape(spotlightTarget))
+        .setOverlay(requestOverlayResource(spotlightTarget))
+        .setOnTargetListener(
+          object : OnTargetListener {
+            override fun onStarted() {
+            }
 
-        override fun onEnded() {
-          if (targetList.isNotEmpty()) targetList.removeFirst()
-          val profileId = ProfileId.newBuilder()
-            .setInternalId(internalProfileId)
-            .build()
-          spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
-        }
-      })
-      .build(spotlightTarget.anchor)
+            override fun onEnded() {
+              if (targetList.isNotEmpty()) targetList.removeFirst()
+              val profileId =
+                ProfileId
+                  .newBuilder()
+                  .setInternalId(internalProfileId)
+                  .build()
+              spotlightStateController.markSpotlightViewed(profileId, spotlightTarget.feature)
+            }
+          },
+        ).build(spotlightTarget.anchor)
 
     targetList.add(target)
     if (!isSpotlightActive) startSpotlight()
@@ -153,22 +165,25 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   private fun startSpotlight() {
     if (targetList.isNullOrEmpty()) return
-    spotlight = Spotlight.Builder(activity)
-      .setTargets(targetList)
-      .setBackgroundColorRes(R.color.component_color_shared_spotlight_overlay_background_color)
-      .setDuration(500L)
-      .setAnimation(AccelerateInterpolator(0.5f))
-      .setOnSpotlightListener(object : OnSpotlightListener {
-        override fun onStarted() {
-          isSpotlightActive = true
-        }
+    spotlight =
+      Spotlight
+        .Builder(activity)
+        .setTargets(targetList)
+        .setBackgroundColorRes(R.color.component_color_shared_spotlight_overlay_background_color)
+        .setDuration(500L)
+        .setAnimation(AccelerateInterpolator(0.5f))
+        .setOnSpotlightListener(
+          object : OnSpotlightListener {
+            override fun onStarted() {
+              isSpotlightActive = true
+            }
 
-        override fun onEnded() {
-          isSpotlightActive = false
-          startSpotlight()
-        }
-      })
-      .build()
+            override fun onEnded() {
+              isSpotlightActive = false
+              startSpotlight()
+            }
+          },
+        ).build()
 
     spotlight.start()
   }
@@ -179,9 +194,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         RoundedRectangle(
           spotlightTarget.anchorHeight.toFloat(),
           spotlightTarget.anchorWidth.toFloat(),
-          resources.getDimensionPixelSize(
-            R.dimen.spotlight_highlight_rectangle_corner_radius
-          ).toFloat()
+          resources
+            .getDimensionPixelSize(
+              R.dimen.spotlight_highlight_rectangle_corner_radius,
+            ).toFloat(),
         )
       }
       SpotlightShape.Circle -> {
@@ -194,24 +210,16 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     }
   }
 
-  private fun getArrowWidth(): Float {
-    return this.resources.getDimension(R.dimen.spotlight_arrow_width)
-  }
+  private fun getArrowWidth(): Float = this.resources.getDimension(R.dimen.spotlight_arrow_width)
 
-  private fun getArrowHeight(): Float {
-    return this.resources.getDimension(R.dimen.spotlight_arrow_height)
-  }
+  private fun getArrowHeight(): Float = this.resources.getDimension(R.dimen.spotlight_arrow_height)
 
-  private fun getScreenCentreY(): Int {
-    return screenHeight / 2
-  }
+  private fun getScreenCentreY(): Int = screenHeight / 2
 
-  private fun getScreenCentreX(): Int {
-    return screenWidth / 2
-  }
+  private fun getScreenCentreX(): Int = screenWidth / 2
 
-  private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget): AnchorPosition {
-    return if (spotlightTarget.anchorCentreX > getScreenCentreX()) {
+  private fun calculateAnchorPosition(spotlightTarget: SpotlightTarget): AnchorPosition =
+    if (spotlightTarget.anchorCentreX > getScreenCentreX()) {
       if (spotlightTarget.anchorCentreY > getScreenCentreY()) {
         AnchorPosition.BottomRight
       } else {
@@ -222,10 +230,9 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     } else {
       AnchorPosition.TopLeft
     }
-  }
 
-  private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View {
-    return when (calculateAnchorPosition(spotlightTarget)) {
+  private fun requestOverlayResource(spotlightTarget: SpotlightTarget): View =
+    when (calculateAnchorPosition(spotlightTarget)) {
       AnchorPosition.TopLeft -> {
         if (isRtl) {
           configureTopRightOverlay(spotlightTarget)
@@ -255,12 +262,12 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
       }
     }
-  }
 
   private fun configureBottomLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    val overlayBinding = BottomLeftOverlayBinding.inflate(this.layoutInflater).also {
-      this.overlayBinding = it
-    }
+    val overlayBinding =
+      BottomLeftOverlayBinding.inflate(this.layoutInflater).also {
+        this.overlayBinding = it
+      }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
     overlayBinding.spotlightHintText.text = spotlightTarget.hint
@@ -271,9 +278,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureBottomRightOverlay(spotlightTarget: SpotlightTarget): View {
-    val overlayBinding = BottomRightOverlayBinding.inflate(this.layoutInflater).also {
-      this.overlayBinding = it
-    }
+    val overlayBinding =
+      BottomRightOverlayBinding.inflate(this.layoutInflater).also {
+        this.overlayBinding = it
+      }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
     overlayBinding.spotlightHintText.text = spotlightTarget.hint
@@ -284,9 +292,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureTopRightOverlay(spotlightTarget: SpotlightTarget): View {
-    val overlayBinding = TopRightOverlayBinding.inflate(this.layoutInflater).also {
-      this.overlayBinding = it
-    }
+    val overlayBinding =
+      TopRightOverlayBinding.inflate(this.layoutInflater).also {
+        this.overlayBinding = it
+      }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
     overlayBinding.spotlightHintText.text = spotlightTarget.hint
@@ -297,9 +306,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   }
 
   private fun configureTopLeftOverlay(spotlightTarget: SpotlightTarget): View {
-    val overlayBinding = TopLeftOverlayBinding.inflate(this.layoutInflater).also {
-      this.overlayBinding = it
-    }
+    val overlayBinding =
+      TopLeftOverlayBinding.inflate(this.layoutInflater).also {
+        this.overlayBinding = it
+      }
     overlayBinding.lifecycleOwner = this
     overlayBinding.listener = this
     overlayBinding.spotlightHintText.text = spotlightTarget.hint
@@ -311,52 +321,60 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
 
   private fun MarginLayoutParams.computeMargins(
     anchorPosition: AnchorPosition,
-    spotlightTarget: SpotlightTarget
+    spotlightTarget: SpotlightTarget,
   ) {
     setMargins(
       computeLeftMargin(anchorPosition, spotlightTarget),
       computeTopMargin(anchorPosition, spotlightTarget),
       computeRightMargin(anchorPosition, spotlightTarget),
-      computeBottomMargin()
+      computeBottomMargin(),
     )
   }
 
-  private fun computeLeftMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
-    return when (anchorPosition) {
+  private fun computeLeftMargin(
+    anchorPosition: AnchorPosition,
+    target: SpotlightTarget,
+  ): Int =
+    when (anchorPosition) {
       AnchorPosition.BottomLeft, AnchorPosition.TopLeft ->
         if (isRtl) screenWidth - target.anchorLeft.toInt() else target.anchorLeft.toInt()
       AnchorPosition.BottomRight, AnchorPosition.TopRight -> {
         if (isRtl) {
           resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-        } else (target.anchorLeft + target.anchorWidth - getArrowWidth()).toInt()
+        } else {
+          (target.anchorLeft + target.anchorWidth - getArrowWidth()).toInt()
+        }
       }
     }
-  }
 
-  private fun computeTopMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
-    return when (anchorPosition) {
+  private fun computeTopMargin(
+    anchorPosition: AnchorPosition,
+    target: SpotlightTarget,
+  ): Int =
+    when (anchorPosition) {
       AnchorPosition.BottomLeft, AnchorPosition.BottomRight ->
         (target.anchorTop - getArrowHeight()).toInt()
       AnchorPosition.TopLeft, AnchorPosition.TopRight ->
         (target.anchorTop + target.anchorHeight).toInt()
     }
-  }
 
-  private fun computeRightMargin(anchorPosition: AnchorPosition, target: SpotlightTarget): Int {
-    return when (anchorPosition) {
+  private fun computeRightMargin(
+    anchorPosition: AnchorPosition,
+    target: SpotlightTarget,
+  ): Int =
+    when (anchorPosition) {
       AnchorPosition.BottomLeft, AnchorPosition.TopLeft ->
         resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
       AnchorPosition.BottomRight, AnchorPosition.TopRight -> {
         if (isRtl) {
           screenWidth - (target.anchorLeft + getArrowWidth()).toInt()
-        } else resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        } else {
+          resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
+        }
       }
     }
-  }
 
-  private fun computeBottomMargin(): Int {
-    return resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
-  }
+  private fun computeBottomMargin(): Int = resources.getDimensionPixelSize(R.dimen.spotlight_overlay_arrow_left_margin)
 
   private fun calculateScreenSize() {
     val displayMetrics = DisplayMetrics()
@@ -387,9 +405,10 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
     fun newInstance(internalProfileId: Int): SpotlightFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return SpotlightFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }

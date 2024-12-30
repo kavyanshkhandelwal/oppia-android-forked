@@ -92,7 +92,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -156,7 +156,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -220,7 +220,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -236,7 +236,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -252,7 +252,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -322,7 +322,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -338,7 +338,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -354,7 +354,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -426,7 +426,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_SHORT, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -442,7 +442,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -458,7 +458,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
@@ -531,7 +531,7 @@ class SurveyGatingControllerTest {
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
 
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
@@ -541,7 +541,7 @@ class SurveyGatingControllerTest {
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     val gatingProvider = surveyGatingController.maybeShowSurvey(PROFILE_ID_1, TEST_TOPIC_ID_0)
@@ -573,16 +573,16 @@ class SurveyGatingControllerTest {
   @Test
   fun testGating_criteriaMetOnProfileTwo_afterSurveyShownOnProfileOne_triggersSurveyProfileTwo() {
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_0)
+      profileManagementController.loginToProfile(PROFILE_ID_0),
     )
 
     // The surveyLastShownTimestamp is updated every time a survey is shown
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0)
+      profileManagementController.updateSurveyLastShownTimestamp(PROFILE_ID_0),
     )
 
     monitorFactory.ensureDataProviderExecutes(
-      profileManagementController.loginToProfile(PROFILE_ID_1)
+      profileManagementController.loginToProfile(PROFILE_ID_1),
     )
 
     // The default surveyLastShownTimestamp is set to the beginning of epoch which will always be
@@ -605,7 +605,7 @@ class SurveyGatingControllerTest {
   private fun startAndEndExplorationSession(
     sessionLengthMs: Long,
     profileId: ProfileId,
-    topicId: String
+    topicId: String,
   ) {
     explorationActiveTimeController.onAppInForeground()
     explorationActiveTimeController.onExplorationStarted(profileId, topicId)
@@ -614,7 +614,8 @@ class SurveyGatingControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -626,9 +627,7 @@ class SurveyGatingControllerTest {
 
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     @EnableConsoleLog
@@ -663,8 +662,8 @@ class SurveyGatingControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestPlatformParameterModule::class
-    ]
+      TestLoggingIdentifierModule::class, TestPlatformParameterModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -678,9 +677,12 @@ class SurveyGatingControllerTest {
     fun inject(surveyGatingControllerTest: SurveyGatingControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyGatingControllerTest_TestApplicationComponent.builder()
+      DaggerSurveyGatingControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

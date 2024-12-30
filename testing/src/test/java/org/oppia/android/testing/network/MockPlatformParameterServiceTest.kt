@@ -35,7 +35,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MockPlatformParameterServiceTest {
-
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService
 
@@ -58,7 +57,7 @@ class MockPlatformParameterServiceTest {
     val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
     assertThat(response.body()).containsEntry(
       TEST_STRING_PARAM_NAME,
-      TEST_STRING_PARAM_SERVER_VALUE
+      TEST_STRING_PARAM_SERVER_VALUE,
     )
   }
 
@@ -67,7 +66,7 @@ class MockPlatformParameterServiceTest {
     val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
     assertThat(response.body()).containsEntry(
       TEST_INTEGER_PARAM_NAME,
-      TEST_INTEGER_PARAM_SERVER_VALUE
+      TEST_INTEGER_PARAM_SERVER_VALUE,
     )
   }
 
@@ -76,12 +75,13 @@ class MockPlatformParameterServiceTest {
     val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
     assertThat(response.body()).containsEntry(
       TEST_BOOLEAN_PARAM_NAME,
-      TEST_BOOLEAN_PARAM_SERVER_VALUE
+      TEST_BOOLEAN_PARAM_SERVER_VALUE,
     )
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMockPlatformParameterServiceTest_TestApplicationComponent.builder()
+    DaggerMockPlatformParameterServiceTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -96,9 +96,7 @@ class MockPlatformParameterServiceTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton
@@ -115,13 +113,14 @@ class MockPlatformParameterServiceTest {
     modules = [
       TestModule::class, NetworkModule::class, TestDispatcherModule::class,
       RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

@@ -14,7 +14,7 @@ const val TOTAL_NUMBER_OF_SLIDES = 4
 class OnboardingSlideViewModel(
   val context: Context,
   viewPagerSlide: ViewPagerSlide,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
 ) : OnboardingViewPagerViewModel() {
   val slideImage = ObservableField(R.drawable.ic_portrait_onboarding_0)
   val title =

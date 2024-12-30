@@ -98,7 +98,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ForceNetworkTypeActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ForceNetworkTypeActivityTest {
   @get:Rule
@@ -108,11 +108,14 @@ class ForceNetworkTypeActivityTest {
   lateinit var context: Context
 
   @get:Rule
-  val activityTestRule = ActivityTestRule(
-    ForceNetworkTypeActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  val activityTestRule =
+    ActivityTestRule(
+      ForceNetworkTypeActivity::class.java,
+      // initialTouchMode=
+      true,
+      // launchActivity=
+      false,
+    )
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -143,7 +146,7 @@ class ForceNetworkTypeActivityTest {
   fun testForceNetworkTypeActivity_forceNetworkTypeFragmentIsDisplayed() {
     launch(ForceNetworkTypeActivity::class.java).use {
       onView(withId(R.id.force_network_type_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -153,7 +156,7 @@ class ForceNetworkTypeActivityTest {
     launch(ForceNetworkTypeActivity::class.java).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.force_network_type_fragment_container)).check(
-        matches(isDisplayed())
+        matches(isDisplayed()),
       )
     }
   }
@@ -162,10 +165,10 @@ class ForceNetworkTypeActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createForceNetworkTypeActivityIntent(): Intent =
-    ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(context)
+  private fun createForceNetworkTypeActivityIntent(): Intent = ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+  /** [ApplicationComponent] for [ForceNetworkTypeActivityTest]. */
   @Singleton
   @Component(
     modules = [
@@ -194,10 +197,9 @@ class ForceNetworkTypeActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-  /** [ApplicationComponent] for [ForceNetworkTypeActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
@@ -213,9 +215,13 @@ class ForceNetworkTypeActivityTest {
   }
 
   /** [Application] class for [ForceNetworkTypeActivityTest]. */
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerForceNetworkTypeActivityTest_TestApplicationComponent.builder()
+      DaggerForceNetworkTypeActivityTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -225,9 +231,12 @@ class ForceNetworkTypeActivityTest {
       component.inject(forceNetworkTypeActivityTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

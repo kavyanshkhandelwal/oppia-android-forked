@@ -8,7 +8,5 @@ import org.oppia.android.util.logging.MetricLogScheduler
 @Module
 abstract class MetricLogSchedulerModule {
   @Binds
-  abstract fun provideMetricLogScheduler(
-    performanceMetricLogScheduler: PerformanceMetricsLogScheduler
-  ): MetricLogScheduler
+  abstract fun provideMetricLogScheduler(performanceMetricLogScheduler: PerformanceMetricsLogScheduler): MetricLogScheduler
 }

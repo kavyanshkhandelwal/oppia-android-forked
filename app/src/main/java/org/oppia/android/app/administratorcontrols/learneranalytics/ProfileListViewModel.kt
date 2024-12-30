@@ -24,33 +24,34 @@ class ProfileListViewModel private constructor(
   private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
   private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
   private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-  private val shareIdsViewModelFactory: ControlButtonsViewModel.Factory
+  private val shareIdsViewModelFactory: ControlButtonsViewModel.Factory,
 ) : ObservableViewModel() {
   /** The list of [ProfileListItemViewModel] to display. */
   val profileModels: LiveData<List<ProfileListItemViewModel>> by lazy {
     Transformations.map(profileManagementController.getProfiles().toLiveData(), ::processProfiles)
   }
 
-  private fun processProfiles(
-    profilesResult: AsyncResult<List<Profile>>
-  ): List<ProfileListItemViewModel> {
+  private fun processProfiles(profilesResult: AsyncResult<List<Profile>>): List<ProfileListItemViewModel> {
     val deviceIdViewModel = deviceIdItemViewModelFactory.create()
 
-    val learnerIdModels = when (profilesResult) {
-      is AsyncResult.Pending -> listOf()
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ProfileListViewModel", "Failed to retrieve the list of profiles", profilesResult.error
-        )
-        listOf()
+    val learnerIdModels =
+      when (profilesResult) {
+        is AsyncResult.Pending -> listOf()
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "ProfileListViewModel",
+            "Failed to retrieve the list of profiles",
+            profilesResult.error,
+          )
+          listOf()
+        }
+        is AsyncResult.Success -> {
+          // Ensure that admins are listed first, then profiles should be sorted by name.
+          profilesResult.value
+            .sortedWith(compareByDescending(Profile::getIsAdmin).thenBy(Profile::getName))
+            .map(profileLearnerIdItemViewModelFactory::create)
+        }
       }
-      is AsyncResult.Success -> {
-        // Ensure that admins are listed first, then profiles should be sorted by name.
-        profilesResult.value
-          .sortedWith(compareByDescending(Profile::getIsAdmin).thenBy(Profile::getName))
-          .map(profileLearnerIdItemViewModelFactory::create)
-      }
-    }
 
     val syncStatusViewModel = syncStatusItemViewModelFactory.create()
     val displayViewModels = listOf(deviceIdViewModel) + learnerIdModels + syncStatusViewModel
@@ -67,7 +68,7 @@ class ProfileListViewModel private constructor(
    * @property viewType the [ProfileListItemViewType] corresponding to this model.
    */
   abstract class ProfileListItemViewModel(
-    val viewType: ProfileListItemViewType
+    val viewType: ProfileListItemViewType,
   ) : ObservableViewModel()
 
   /** Represents the different types of views that may be shown by [ProfileListViewModel]. */
@@ -82,28 +83,29 @@ class ProfileListViewModel private constructor(
     SYNC_STATUS,
 
     /** Corresponds to [ControlButtonsViewModel]. */
-    SHARE_IDS
+    SHARE_IDS,
   }
 
   /** Factory to create new [ProfileListViewModel]s. */
-  class Factory @Inject constructor(
-    private val profileManagementController: ProfileManagementController,
-    private val oppiaLogger: OppiaLogger,
-    private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
-    private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
-    private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
-    private val controlButtonsViewModelFactory: ControlButtonsViewModel.Factory
-  ) {
-    /** Returns a new [ProfileListViewModel]. */
-    fun create(): ProfileListViewModel {
-      return ProfileListViewModel(
-        profileManagementController,
-        oppiaLogger,
-        deviceIdItemViewModelFactory,
-        syncStatusItemViewModelFactory,
-        profileLearnerIdItemViewModelFactory,
-        controlButtonsViewModelFactory
-      )
+  class Factory
+    @Inject
+    constructor(
+      private val profileManagementController: ProfileManagementController,
+      private val oppiaLogger: OppiaLogger,
+      private val deviceIdItemViewModelFactory: DeviceIdItemViewModel.Factory,
+      private val syncStatusItemViewModelFactory: SyncStatusItemViewModel.Factory,
+      private val profileLearnerIdItemViewModelFactory: ProfileLearnerIdItemViewModel.Factory,
+      private val controlButtonsViewModelFactory: ControlButtonsViewModel.Factory,
+    ) {
+      /** Returns a new [ProfileListViewModel]. */
+      fun create(): ProfileListViewModel =
+        ProfileListViewModel(
+          profileManagementController,
+          oppiaLogger,
+          deviceIdItemViewModelFactory,
+          syncStatusItemViewModelFactory,
+          profileLearnerIdItemViewModelFactory,
+          controlButtonsViewModelFactory,
+        )
     }
-  }
 }

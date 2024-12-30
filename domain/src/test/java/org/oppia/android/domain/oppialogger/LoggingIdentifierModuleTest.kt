@@ -42,7 +42,8 @@ class LoggingIdentifierModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerLoggingIdentifierModuleTest_TestApplicationComponent.builder()
+    DaggerLoggingIdentifierModuleTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -53,17 +54,16 @@ class LoggingIdentifierModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // FakeOppiaClock can't be used since this test suite needs to verify an injection-time clock
     // call, and the fake defaults to wall-clock time and can't be configured until after injection
     // time.
     @Provides
-    fun provideOppiaClock(): OppiaClock = object : OppiaClock {
-      override fun getCurrentTimeMs(): Long = FIXED_CURRENT_TIME_MS
-    }
+    fun provideOppiaClock(): OppiaClock =
+      object : OppiaClock {
+        override fun getCurrentTimeMs(): Long = FIXED_CURRENT_TIME_MS
+      }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -74,6 +74,7 @@ class LoggingIdentifierModuleTest {
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 

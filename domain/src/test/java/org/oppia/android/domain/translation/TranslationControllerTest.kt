@@ -100,7 +100,7 @@ class TranslationControllerTest {
     setUpTestApplicationComponent()
   }
 
-  /* Tests for getSystemLanguageLocale */
+  // Tests for getSystemLanguageLocale
 
   @Test
   fun testGetSystemLanguageLocale_rootLocale_returnsLocaleWithBlankContext() {
@@ -162,7 +162,7 @@ class TranslationControllerTest {
     assertThat(context.regionDefinition.region).isEqualTo(INDIA)
   }
 
-  /* Tests for app language functions */
+  // Tests for app language functions
 
   @Test
   fun testUpdateAppLanguage_returnsSuccess() {
@@ -195,9 +195,11 @@ class TranslationControllerTest {
   fun testUpdateAppLanguage_getAppLanguage_returnsUpdatedLanguage() {
     forceDefaultLocale(Locale.ROOT)
 
-    val resultProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0, createAppLanguageSelection(BRAZILIAN_PORTUGUESE)
-    )
+    val resultProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0,
+        createAppLanguageSelection(BRAZILIAN_PORTUGUESE),
+      )
     val updateMonitor = monitorFactory.createMonitor(resultProvider)
     updateMonitor.waitForNextSuccessResult()
 
@@ -493,13 +495,17 @@ class TranslationControllerTest {
   fun testUpdateAppLanguage_uninitializedToSystem_returnsUninitialized() {
     forceDefaultLocale(Locale.ROOT)
 
-    val languageSelection = AppLanguageSelection.newBuilder().apply {
-      useSystemLanguageOrAppDefault = true
-    }.build()
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      languageSelection
-    )
+    val languageSelection =
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          useSystemLanguageOrAppDefault = true
+        }.build()
+    val updateProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0,
+        languageSelection,
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -510,13 +516,17 @@ class TranslationControllerTest {
   fun testUpdateAppLanguage_uninitializedToEnglish_returnsUninitialized() {
     forceDefaultLocale(Locale.ROOT)
 
-    val expectedLanguageSelection = AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = ENGLISH
-    }.build()
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      expectedLanguageSelection
-    )
+    val expectedLanguageSelection =
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          selectedLanguage = ENGLISH
+        }.build()
+    val updateProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0,
+        expectedLanguageSelection,
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -528,10 +538,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedToUseSystem(PROFILE_ID_0)
 
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    val updateProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0,
+        AppLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build(),
+      )
 
     // The previous selection was system language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -543,10 +554,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureAppLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
-    val updateProvider = translationController.updateAppLanguage(
-      PROFILE_ID_0,
-      AppLanguageSelection.newBuilder().apply { selectedLanguage = BRAZILIAN_PORTUGUESE }.build()
-    )
+    val updateProvider =
+      translationController.updateAppLanguage(
+        PROFILE_ID_0,
+        AppLanguageSelection.newBuilder().apply { selectedLanguage = BRAZILIAN_PORTUGUESE }.build(),
+      )
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -554,7 +566,7 @@ class TranslationControllerTest {
     assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
 
-  /* Tests for written translation content functions */
+  // Tests for written translation content functions
 
   @Test
   fun testUpdateWrittenContentLanguage_returnsSuccess() {
@@ -562,7 +574,8 @@ class TranslationControllerTest {
 
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
-        PROFILE_ID_0, createWrittenTranslationLanguageSelection(ENGLISH)
+        PROFILE_ID_0,
+        createWrittenTranslationLanguageSelection(ENGLISH),
       )
 
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
@@ -579,7 +592,8 @@ class TranslationControllerTest {
     // language not being updated).
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
-        PROFILE_ID_0, createWrittenTranslationLanguageSelection(BRAZILIAN_PORTUGUESE)
+        PROFILE_ID_0,
+        createWrittenTranslationLanguageSelection(BRAZILIAN_PORTUGUESE),
       )
     val updateMonitor = monitorFactory.createMonitor(resultProvider)
 
@@ -910,10 +924,11 @@ class TranslationControllerTest {
   fun testUpdateWrittenContentLanguage_uninitializedToUseApp_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      PROFILE_ID_0,
-      WrittenTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
-    )
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        PROFILE_ID_0,
+        WrittenTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build(),
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -924,10 +939,11 @@ class TranslationControllerTest {
   fun testUpdateWrittenContentLanguage_uninitializedToEnglish_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      PROFILE_ID_0,
-      WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        PROFILE_ID_0,
+        WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build(),
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -939,10 +955,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureWrittenTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
 
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      PROFILE_ID_0,
-      WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        PROFILE_ID_0,
+        WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build(),
+      )
 
     // The previous selection was to use the app language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -954,10 +971,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureWrittenTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
-    val updateProvider = translationController.updateWrittenTranslationContentLanguage(
-      PROFILE_ID_0,
-      WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = HINDI }.build()
-    )
+    val updateProvider =
+      translationController.updateWrittenTranslationContentLanguage(
+        PROFILE_ID_0,
+        WrittenTranslationLanguageSelection.newBuilder().apply { selectedLanguage = HINDI }.build(),
+      )
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -965,7 +983,7 @@ class TranslationControllerTest {
     assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
 
-  /* Tests for audio translation content functions */
+  // Tests for audio translation content functions
 
   @Test
   fun testUpdateAudioLanguage_returnsSuccess() {
@@ -973,7 +991,8 @@ class TranslationControllerTest {
 
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
-        PROFILE_ID_0, createAudioTranslationLanguageSelection(ENGLISH)
+        PROFILE_ID_0,
+        createAudioTranslationLanguageSelection(ENGLISH),
       )
 
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
@@ -990,7 +1009,8 @@ class TranslationControllerTest {
     // language not being updated).
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
-        PROFILE_ID_0, createAudioTranslationLanguageSelection(BRAZILIAN_PORTUGUESE)
+        PROFILE_ID_0,
+        createAudioTranslationLanguageSelection(BRAZILIAN_PORTUGUESE),
       )
     val updateMonitor = monitorFactory.createMonitor(resultProvider)
 
@@ -1316,10 +1336,11 @@ class TranslationControllerTest {
   fun testGetAudioContentSelection_uninitializedToUseApp_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
-    val updateProvider = translationController.updateAudioTranslationContentLanguage(
-      PROFILE_ID_0,
-      AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build()
-    )
+    val updateProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        AudioTranslationLanguageSelection.newBuilder().apply { useAppLanguage = true }.build(),
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1330,10 +1351,11 @@ class TranslationControllerTest {
   fun testGetAudioContentSelection_uninitializedToEnglish_returnsUninitializedSelection() {
     forceDefaultLocale(Locale.ROOT)
 
-    val updateProvider = translationController.updateAudioTranslationContentLanguage(
-      PROFILE_ID_0,
-      AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    val updateProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build(),
+      )
 
     // The previous selection was uninitialized.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1345,10 +1367,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureAudioTranslationsLanguageIsUpdatedToUseApp(PROFILE_ID_0)
 
-    val updateProvider = translationController.updateAudioTranslationContentLanguage(
-      PROFILE_ID_0,
-      AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build()
-    )
+    val updateProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = ENGLISH }.build(),
+      )
 
     // The previous selection was to use the app language.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1360,10 +1383,11 @@ class TranslationControllerTest {
     forceDefaultLocale(Locale.ROOT)
     ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, ENGLISH)
 
-    val updateProvider = translationController.updateAudioTranslationContentLanguage(
-      PROFILE_ID_0,
-      AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = HINDI }.build()
-    )
+    val updateProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        AudioTranslationLanguageSelection.newBuilder().apply { selectedLanguage = HINDI }.build(),
+      )
 
     // The previous selection was English.
     val selection = monitorFactory.waitForNextSuccessfulResult(updateProvider)
@@ -1371,13 +1395,14 @@ class TranslationControllerTest {
     assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
 
-  /* Tests for string extraction functions */
+  // Tests for string extraction functions
 
   @Test
   fun testExtractString_defaultSubtitledHtml_defaultContext_returnsEmptyString() {
     val extracted =
       translationController.extractString(
-        SubtitledHtml.getDefaultInstance(), WrittenTranslationContext.getDefaultInstance()
+        SubtitledHtml.getDefaultInstance(),
+        WrittenTranslationContext.getDefaultInstance(),
       )
 
     assertThat(extracted).isEmpty()
@@ -1385,14 +1410,19 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_defaultSubtitledHtml_validContext_returnsEmptyString() {
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "other_content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "other_content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
         }.build()
-      )
-    }.build()
 
     val extracted = translationController.extractString(SubtitledHtml.getDefaultInstance(), context)
 
@@ -1401,14 +1431,18 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledHtml_defaultContext_returnsUntranslatedHtml() {
-    val subtitledHtml = SubtitledHtml.newBuilder().apply {
-      contentId = "content_id"
-      html = "default html"
-    }.build()
+    val subtitledHtml =
+      SubtitledHtml
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          html = "default html"
+        }.build()
 
     val extracted =
       translationController.extractString(
-        subtitledHtml, WrittenTranslationContext.getDefaultInstance()
+        subtitledHtml,
+        WrittenTranslationContext.getDefaultInstance(),
       )
 
     assertThat(extracted).isEqualTo("default html")
@@ -1416,18 +1450,26 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledHtml_validContext_missingContentId_returnsUntranslatedHtml() {
-    val subtitledHtml = SubtitledHtml.newBuilder().apply {
-      contentId = "content_id"
-      html = "default html"
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "other_content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val subtitledHtml =
+      SubtitledHtml
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          html = "default html"
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "other_content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractString(subtitledHtml, context)
 
@@ -1437,18 +1479,26 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledHtml_validContext_includesContentId_returnsTranslatedHtml() {
-    val subtitledHtml = SubtitledHtml.newBuilder().apply {
-      contentId = "content_id"
-      html = "default html"
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val subtitledHtml =
+      SubtitledHtml
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          html = "default html"
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractString(subtitledHtml, context)
 
@@ -1460,7 +1510,8 @@ class TranslationControllerTest {
   fun testExtractString_defaultSubtitledUnicode_defaultContext_returnsEmptyString() {
     val extracted =
       translationController.extractString(
-        SubtitledUnicode.getDefaultInstance(), WrittenTranslationContext.getDefaultInstance()
+        SubtitledUnicode.getDefaultInstance(),
+        WrittenTranslationContext.getDefaultInstance(),
       )
 
     assertThat(extracted).isEmpty()
@@ -1468,14 +1519,19 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_defaultSubtitledUnicode_validContext_returnsEmptyString() {
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "other_content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "other_content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
         }.build()
-      )
-    }.build()
 
     val extracted =
       translationController.extractString(SubtitledUnicode.getDefaultInstance(), context)
@@ -1485,14 +1541,18 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledUnicode_defaultContext_returnsUntranslatedUnicode() {
-    val subtitledUnicode = SubtitledUnicode.newBuilder().apply {
-      contentId = "content_id"
-      unicodeStr = "default str"
-    }.build()
+    val subtitledUnicode =
+      SubtitledUnicode
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          unicodeStr = "default str"
+        }.build()
 
     val extracted =
       translationController.extractString(
-        subtitledUnicode, WrittenTranslationContext.getDefaultInstance()
+        subtitledUnicode,
+        WrittenTranslationContext.getDefaultInstance(),
       )
 
     assertThat(extracted).isEqualTo("default str")
@@ -1500,18 +1560,26 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledUnicode_validContext_missingContentId_returnsUnxlatedUnicode() {
-    val subtitledUnicode = SubtitledUnicode.newBuilder().apply {
-      contentId = "content_id"
-      unicodeStr = "default str"
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "other_content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val subtitledUnicode =
+      SubtitledUnicode
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          unicodeStr = "default str"
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "other_content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractString(subtitledUnicode, context)
 
@@ -1521,18 +1589,26 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractString_subtitledUnicode_validContext_includesContentId_returnsTranslatedUnicode() {
-    val subtitledUnicode = SubtitledUnicode.newBuilder().apply {
-      contentId = "content_id"
-      unicodeStr = "default str"
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          html = "Translated string"
+    val subtitledUnicode =
+      SubtitledUnicode
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          unicodeStr = "default str"
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "Translated string"
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractString(subtitledUnicode, context)
 
@@ -1553,17 +1629,25 @@ class TranslationControllerTest {
   @Test
   fun testExtractStringList_defaultSet_validContext_returnsEmptyList() {
     val stringList = TranslatableSetOfNormalizedString.getDefaultInstance()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          htmlList = HtmlTranslationList.newBuilder().apply {
-            addHtml("First translated string")
-            addHtml("Second translated string")
-          }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                htmlList =
+                  HtmlTranslationList
+                    .newBuilder()
+                    .apply {
+                      addHtml("First translated string")
+                      addHtml("Second translated string")
+                    }.build()
+              }.build(),
+          )
         }.build()
-      )
-    }.build()
 
     val extracted = translationController.extractStringList(stringList, context)
 
@@ -1572,10 +1656,13 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractStringList_defaultContext_returnsUntranslatedList() {
-    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
-      contentId = "content_id"
-      addAllNormalizedStrings(listOf("First string", "Second string"))
-    }.build()
+    val stringList =
+      TranslatableSetOfNormalizedString
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          addAllNormalizedStrings(listOf("First string", "Second string"))
+        }.build()
     val context = WrittenTranslationContext.getDefaultInstance()
 
     val extracted = translationController.extractStringList(stringList, context)
@@ -1585,20 +1672,31 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractStringList_validContext_emptyList_returnsTranslatedList() {
-    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
-      contentId = "content_id"
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          htmlList = HtmlTranslationList.newBuilder().apply {
-            addHtml("First translated string")
-            addHtml("Second translated string")
-          }.build()
+    val stringList =
+      TranslatableSetOfNormalizedString
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                htmlList =
+                  HtmlTranslationList
+                    .newBuilder()
+                    .apply {
+                      addHtml("First translated string")
+                      addHtml("Second translated string")
+                    }.build()
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractStringList(stringList, context)
 
@@ -1609,21 +1707,32 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractStringList_validContext_doesNotMatchContentId_returnsUntranslatedList() {
-    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
-      contentId = "content_id"
-      addAllNormalizedStrings(listOf("First string", "Second string"))
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "different_content_id",
-        Translation.newBuilder().apply {
-          htmlList = HtmlTranslationList.newBuilder().apply {
-            addHtml("First translated string")
-            addHtml("Second translated string")
-          }.build()
+    val stringList =
+      TranslatableSetOfNormalizedString
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          addAllNormalizedStrings(listOf("First string", "Second string"))
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "different_content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                htmlList =
+                  HtmlTranslationList
+                    .newBuilder()
+                    .apply {
+                      addHtml("First translated string")
+                      addHtml("Second translated string")
+                    }.build()
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractStringList(stringList, context)
 
@@ -1632,21 +1741,32 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractStringList_validContext_matchesContentId_returnsTranslatedList() {
-    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
-      contentId = "content_id"
-      addAllNormalizedStrings(listOf("First string", "Second string"))
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          htmlList = HtmlTranslationList.newBuilder().apply {
-            addHtml("First translated string")
-            addHtml("Second translated string")
-          }.build()
+    val stringList =
+      TranslatableSetOfNormalizedString
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          addAllNormalizedStrings(listOf("First string", "Second string"))
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                htmlList =
+                  HtmlTranslationList
+                    .newBuilder()
+                    .apply {
+                      addHtml("First translated string")
+                      addHtml("Second translated string")
+                    }.build()
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractStringList(stringList, context)
 
@@ -1655,18 +1775,26 @@ class TranslationControllerTest {
 
   @Test
   fun testExtractStringList_validContextWithoutList_matchesContentId_returnsUntranslatedList() {
-    val stringList = TranslatableSetOfNormalizedString.newBuilder().apply {
-      contentId = "content_id"
-      addNormalizedStrings("First string")
-    }.build()
-    val context = WrittenTranslationContext.newBuilder().apply {
-      putTranslations(
-        "content_id",
-        Translation.newBuilder().apply {
-          html = "First translated string"
+    val stringList =
+      TranslatableSetOfNormalizedString
+        .newBuilder()
+        .apply {
+          contentId = "content_id"
+          addNormalizedStrings("First string")
         }.build()
-      )
-    }.build()
+    val context =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          putTranslations(
+            "content_id",
+            Translation
+              .newBuilder()
+              .apply {
+                html = "First translated string"
+              }.build(),
+          )
+        }.build()
 
     val extracted = translationController.extractStringList(stringList, context)
 
@@ -1685,9 +1813,12 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(translationContext).isEqualTo(expectedContext)
   }
 
@@ -1701,9 +1832,12 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(translationContext).isEqualTo(expectedContext)
   }
 
@@ -1716,9 +1850,12 @@ class TranslationControllerTest {
     val translationContext =
       translationController.computeWrittenTranslationContext(writtenTranslationsMap, contentLocale)
 
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ENGLISH
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ENGLISH
+        }.build()
     assertThat(translationContext).isEqualTo(expectedContext)
   }
 
@@ -1731,12 +1868,16 @@ class TranslationControllerTest {
 
     val translationContext =
       translationController.computeWrittenTranslationContext(
-        writtenTranslationsWithoutArabicMap, contentLocale
+        writtenTranslationsWithoutArabicMap,
+        contentLocale,
       )
 
-    val expectedContext = WrittenTranslationContext.newBuilder().apply {
-      language = ARABIC
-    }.build()
+    val expectedContext =
+      WrittenTranslationContext
+        .newBuilder()
+        .apply {
+          language = ARABIC
+        }.build()
     assertThat(translationContext).isEqualTo(expectedContext)
   }
 
@@ -1796,7 +1937,8 @@ class TranslationControllerTest {
 
     val translationContext =
       translationController.computeWrittenTranslationContext(
-        writtenTranslationsWithoutBrazilianPortugueseMap, contentLocale
+        writtenTranslationsWithoutBrazilianPortugueseMap,
+        contentLocale,
       )
 
     // Without Brazilian Portuguese translations, the context should fall back to Portuguese.
@@ -1821,7 +1963,8 @@ class TranslationControllerTest {
   }
 
   private fun forceDefaultLocale(locale: Locale) {
-    context.applicationContext.resources.configuration.setLocale(locale)
+    context.applicationContext.resources.configuration
+      .setLocale(locale)
     Locale.setDefault(locale)
   }
 
@@ -1836,25 +1979,30 @@ class TranslationControllerTest {
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun ensureAppLanguageIsUpdatedTo(profileId: ProfileId, language: OppiaLanguage) {
+  private fun ensureAppLanguageIsUpdatedTo(
+    profileId: ProfileId,
+    language: OppiaLanguage,
+  ) {
     val resultProvider =
       translationController.updateAppLanguage(profileId, createAppLanguageSelection(language))
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun createAppLanguageSelection(language: OppiaLanguage): AppLanguageSelection {
-    return AppLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-    }.build()
-  }
+  private fun createAppLanguageSelection(language: OppiaLanguage): AppLanguageSelection =
+    AppLanguageSelection
+      .newBuilder()
+      .apply {
+        selectedLanguage = language
+      }.build()
 
   private fun ensureWrittenTranslationsLanguageIsUpdatedTo(
     profileId: ProfileId,
-    language: OppiaLanguage
+    language: OppiaLanguage,
   ) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
-        profileId, createWrittenTranslationLanguageSelection(language)
+        profileId,
+        createWrittenTranslationLanguageSelection(language),
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
@@ -1862,26 +2010,27 @@ class TranslationControllerTest {
   private fun ensureWrittenTranslationsLanguageIsUpdatedToUseApp(profileId: ProfileId) {
     val resultProvider =
       translationController.updateWrittenTranslationContentLanguage(
-        profileId, WRITTEN_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE
+        profileId,
+        WRITTEN_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE,
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun createWrittenTranslationLanguageSelection(
-    language: OppiaLanguage
-  ): WrittenTranslationLanguageSelection {
-    return WrittenTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-    }.build()
-  }
+  private fun createWrittenTranslationLanguageSelection(language: OppiaLanguage): WrittenTranslationLanguageSelection =
+    WrittenTranslationLanguageSelection
+      .newBuilder()
+      .apply {
+        selectedLanguage = language
+      }.build()
 
   private fun ensureAudioTranslationsLanguageIsUpdatedTo(
     profileId: ProfileId,
-    language: OppiaLanguage
+    language: OppiaLanguage,
   ) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
-        profileId, createAudioTranslationLanguageSelection(language)
+        profileId,
+        createAudioTranslationLanguageSelection(language),
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
@@ -1889,27 +2038,25 @@ class TranslationControllerTest {
   private fun ensureAudioTranslationsLanguageIsUpdatedToUseApp(profileId: ProfileId) {
     val resultProvider =
       translationController.updateAudioTranslationContentLanguage(
-        profileId, AUDIO_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE
+        profileId,
+        AUDIO_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE,
       )
     monitorFactory.waitForNextSuccessfulResult(resultProvider)
   }
 
-  private fun createAudioTranslationLanguageSelection(
-    language: OppiaLanguage
-  ): AudioTranslationLanguageSelection {
-    return AudioTranslationLanguageSelection.newBuilder().apply {
-      selectedLanguage = language
-    }.build()
-  }
+  private fun createAudioTranslationLanguageSelection(language: OppiaLanguage): AudioTranslationLanguageSelection =
+    AudioTranslationLanguageSelection
+      .newBuilder()
+      .apply {
+        selectedLanguage = language
+      }.build()
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -1921,8 +2068,8 @@ class TranslationControllerTest {
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
-    ]
+      PlatformParameterSingletonModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -1936,9 +2083,12 @@ class TranslationControllerTest {
     fun inject(translationControllerTest: TranslationControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerTranslationControllerTest_TestApplicationComponent.builder()
+      DaggerTranslationControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -1956,27 +2106,40 @@ class TranslationControllerTest {
     private val INDIA_HINDI_LOCALE = Locale("hi", "IN")
     private val KENYA_KISWAHILI_LOCALE = Locale("sw", "KE")
 
-    private val PROFILE_ID_0 = ProfileId.newBuilder().apply {
-      internalId = 0
-    }.build()
+    private val PROFILE_ID_0 =
+      ProfileId
+        .newBuilder()
+        .apply {
+          internalId = 0
+        }.build()
 
-    private val PROFILE_ID_1 = ProfileId.newBuilder().apply {
-      internalId = 1
-    }.build()
+    private val PROFILE_ID_1 =
+      ProfileId
+        .newBuilder()
+        .apply {
+          internalId = 1
+        }.build()
 
-    private val APP_LANGUAGE_SELECTION_SYSTEM = AppLanguageSelection.newBuilder().apply {
-      useSystemLanguageOrAppDefault = true
-    }.build()
+    private val APP_LANGUAGE_SELECTION_SYSTEM =
+      AppLanguageSelection
+        .newBuilder()
+        .apply {
+          useSystemLanguageOrAppDefault = true
+        }.build()
 
     private val WRITTEN_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE =
-      WrittenTranslationLanguageSelection.newBuilder().apply {
-        useAppLanguage = true
-      }.build()
+      WrittenTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          useAppLanguage = true
+        }.build()
 
     private val AUDIO_TRANSLATION_LANGUAGE_SELECTION_APP_LANGUAGE =
-      AudioTranslationLanguageSelection.newBuilder().apply {
-        useAppLanguage = true
-      }.build()
+      AudioTranslationLanguageSelection
+        .newBuilder()
+        .apply {
+          useAppLanguage = true
+        }.build()
 
     private const val TEST_CONTENT_ID = "content_id"
     private const val TEST_AR_TRANSLATION = "test ar translation string"
@@ -1984,27 +2147,33 @@ class TranslationControllerTest {
     private const val TEST_PT_BR_TRANSLATION = "test pt-BR translation string"
     private val TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES =
       mapOf(
-        TEST_CONTENT_ID to TranslationMapping.newBuilder().apply {
-          putTranslationMapping("ar", createSingleTranslation(TEST_AR_TRANSLATION))
-          // Note that this language code is intentionally capitalized to help ensure that the
-          // controller can perform case-insensitive matching.
-          putTranslationMapping("PT", createSingleTranslation(TEST_PT_TRANSLATION))
-          putTranslationMapping("pt-BR", createSingleTranslation(TEST_PT_BR_TRANSLATION))
-        }.build()
+        TEST_CONTENT_ID to
+          TranslationMapping
+            .newBuilder()
+            .apply {
+              putTranslationMapping("ar", createSingleTranslation(TEST_AR_TRANSLATION))
+              // Note that this language code is intentionally capitalized to help ensure that the
+              // controller can perform case-insensitive matching.
+              putTranslationMapping("PT", createSingleTranslation(TEST_PT_TRANSLATION))
+              putTranslationMapping("pt-BR", createSingleTranslation(TEST_PT_BR_TRANSLATION))
+            }.build(),
       )
 
-    private fun createSingleTranslation(translation: String) = Translation.newBuilder().apply {
-      html = translation
-    }.build()
+    private fun createSingleTranslation(translation: String) =
+      Translation
+        .newBuilder()
+        .apply {
+          html = translation
+        }.build()
 
-    private fun createTranslationMappingWithout(
-      languageCode: String
-    ): Map<String, TranslationMapping> {
-      return TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES.toMutableMap().also {
-        it[TEST_CONTENT_ID] = it[TEST_CONTENT_ID]?.toBuilder().apply {
-          this?.removeTranslationMapping(languageCode)
-        }?.build()
+    private fun createTranslationMappingWithout(languageCode: String): Map<String, TranslationMapping> =
+      TEST_TRANSLATION_MAPPING_MULTIPLE_LANGUAGES.toMutableMap().also {
+        it[TEST_CONTENT_ID] =
+          it[TEST_CONTENT_ID]
+            ?.toBuilder()
+            .apply {
+              this?.removeTranslationMapping(languageCode)
+            }?.build()
       }
-    }
   }
 }

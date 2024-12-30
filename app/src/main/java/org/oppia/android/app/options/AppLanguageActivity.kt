@@ -31,7 +31,7 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     profileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
     appLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
-      profileId!!
+      profileId!!,
     )
   }
 
@@ -43,39 +43,45 @@ class AppLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createAppLanguageActivityIntent(
       context: Context,
       oppiaLanguage: OppiaLanguage,
-      internalProfileId: Int?
+      internalProfileId: Int?,
     ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId!!).build()
       return Intent(context, AppLanguageActivity::class.java).apply {
-        val arguments = AppLanguageActivityParams.newBuilder().apply {
-          this.oppiaLanguage = oppiaLanguage
-        }.build()
+        val arguments =
+          AppLanguageActivityParams
+            .newBuilder()
+            .apply {
+              this.oppiaLanguage = oppiaLanguage
+            }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(APP_LANGUAGE_ACTIVITY)
       }
     }
 
-    private fun Intent.retrieveLanguageFromParams(): OppiaLanguage {
-      return getProtoExtra(
-        ACTIVITY_PARAMS_KEY, AppLanguageActivityParams.getDefaultInstance()
+    private fun Intent.retrieveLanguageFromParams(): OppiaLanguage =
+      getProtoExtra(
+        ACTIVITY_PARAMS_KEY,
+        AppLanguageActivityParams.getDefaultInstance(),
       ).oppiaLanguage
-    }
 
-    private fun Bundle.retrieveLanguageFromSavedState(): OppiaLanguage {
-      return getProto(
-        ACTIVITY_SAVED_STATE_KEY, AppLanguageActivityStateBundle.getDefaultInstance()
+    private fun Bundle.retrieveLanguageFromSavedState(): OppiaLanguage =
+      getProto(
+        ACTIVITY_SAVED_STATE_KEY,
+        AppLanguageActivityStateBundle.getDefaultInstance(),
       ).oppiaLanguage
-    }
   }
 
   override fun onBackPressed() = finish()
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AppLanguageActivityStateBundle.newBuilder().apply {
-      oppiaLanguage = appLanguageActivityPresenter.getLanguageSelected()
-    }.build()
+    val state =
+      AppLanguageActivityStateBundle
+        .newBuilder()
+        .apply {
+          oppiaLanguage = appLanguageActivityPresenter.getLanguageSelected()
+        }.build()
     outState.putProto(ACTIVITY_SAVED_STATE_KEY, state)
   }
 }

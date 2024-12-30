@@ -11,6 +11,6 @@ interface RuleClassifier {
   fun matches(
     answer: InteractionObject,
     inputs: Map<String, InteractionObject>,
-    classificationContext: ClassificationContext
+    classificationContext: ClassificationContext,
   ): Boolean
 }

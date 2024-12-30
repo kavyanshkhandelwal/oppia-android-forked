@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 /** Test activity used for testing [SpotlightFragment]. */
 class SpotlightFragmentTestActivity : TestActivity() {
-
   @Inject
   lateinit var spotlightFragmentTestActivityPresenter: SpotlightFragmentTestActivityPresenter
 
@@ -21,7 +20,7 @@ class SpotlightFragmentTestActivity : TestActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     spotlightFragmentTestActivityPresenter.handleOnCreate(
-      intent?.extractCurrentUserProfileId()?.internalId ?: -1
+      intent?.extractCurrentUserProfileId()?.internalId ?: -1,
     )
   }
 

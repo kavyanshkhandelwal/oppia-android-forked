@@ -38,15 +38,16 @@ class PoliciesFragment : InjectableFragment() {
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
-    val args = checkNotNull(arguments) {
-      "Expected arguments to be passed to PoliciesFragment"
-    }
+    val args =
+      checkNotNull(arguments) {
+        "Expected arguments to be passed to PoliciesFragment"
+      }
     val policies =
       args.getProto(
         POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
-        PoliciesFragmentArguments.getDefaultInstance()
+        PoliciesFragmentArguments.getDefaultInstance(),
       )
     return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
   }

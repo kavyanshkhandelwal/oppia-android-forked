@@ -84,9 +84,13 @@ import javax.inject.Singleton
 @Config(application = ExplorationDataControllerTest.TestApplication::class)
 class ExplorationDataControllerTest {
   @Inject lateinit var explorationDataController: ExplorationDataController
+
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject lateinit var explorationCheckpointController: ExplorationCheckpointController
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -192,7 +196,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -204,7 +208,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     stopExploration()
 
@@ -212,8 +216,9 @@ class ExplorationDataControllerTest {
       explorationDataController.startPlayingNewExploration(
         profileId.internalId,
         TEST_CLASSROOM_ID_0,
-        TEST_TOPIC_ID_0, TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -225,7 +230,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     stopExploration(isCompletion = false)
 
@@ -237,7 +242,7 @@ class ExplorationDataControllerTest {
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
         TEST_EXPLORATION_ID_2,
-        checkpoint
+        checkpoint,
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -251,7 +256,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -263,7 +268,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     stopExploration(isCompletion = false)
 
@@ -273,7 +278,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -287,7 +292,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(startProvider)
@@ -299,7 +304,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
     stopExploration()
 
@@ -309,7 +314,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
-        TEST_EXPLORATION_ID_2
+        TEST_EXPLORATION_ID_2,
       )
 
     monitorFactory.waitForNextSuccessfulResult(secondStartProvider)
@@ -321,7 +326,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
 
     val dataProvider =
@@ -330,7 +335,7 @@ class ExplorationDataControllerTest {
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_1,
         TEST_STORY_ID_2,
-        TEST_EXPLORATION_ID_4
+        TEST_EXPLORATION_ID_4,
       )
 
     // The new session overwrites the previous.
@@ -352,7 +357,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
 
     val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = false)
@@ -366,7 +371,7 @@ class ExplorationDataControllerTest {
       TEST_CLASSROOM_ID_0,
       TEST_TOPIC_ID_0,
       TEST_STORY_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
 
     val resultProvider = explorationDataController.stopPlayingExploration(isCompletion = true)
@@ -382,11 +387,15 @@ class ExplorationDataControllerTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ) {
     val startPlayingProvider =
       explorationDataController.startPlayingNewExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -395,11 +404,15 @@ class ExplorationDataControllerTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ) {
     val startPlayingProvider =
       explorationDataController.restartExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
@@ -408,22 +421,23 @@ class ExplorationDataControllerTest {
     classroomId: String,
     topicId: String,
     storyId: String,
-    explorationId: String
+    explorationId: String,
   ) {
     val startPlayingProvider =
       explorationDataController.replayExploration(
-        profileId.internalId, classroomId, topicId, storyId, explorationId
+        profileId.internalId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
       )
     monitorFactory.waitForNextSuccessfulResult(startPlayingProvider)
   }
 
-  private fun retrieveExplorationCheckpoint(
-    explorationId: String
-  ): ExplorationCheckpoint {
-    return monitorFactory.waitForNextSuccessfulResult(
-      explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId)
+  private fun retrieveExplorationCheckpoint(explorationId: String): ExplorationCheckpoint =
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationCheckpointController.retrieveExplorationCheckpoint(profileId, explorationId),
     )
-  }
 
   private fun stopExploration(isCompletion: Boolean = true) {
     val stopProvider = explorationDataController.stopPlayingExploration(isCompletion)
@@ -435,9 +449,7 @@ class ExplorationDataControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
@@ -455,8 +467,7 @@ class ExplorationDataControllerTest {
 
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean = testEnvironmentConfig.isUsingBazel()
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -476,8 +487,8 @@ class ExplorationDataControllerTest {
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
-    ]
+      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class,
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -491,9 +502,12 @@ class ExplorationDataControllerTest {
     fun inject(explorationDataControllerTest: ExplorationDataControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationDataControllerTest_TestApplicationComponent.builder()
+      DaggerExplorationDataControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

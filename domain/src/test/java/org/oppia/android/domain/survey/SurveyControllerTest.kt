@@ -63,11 +63,12 @@ class SurveyControllerTest {
   @Inject
   lateinit var surveyProgressController: SurveyProgressController
 
-  private val questions = listOf(
-    SurveyQuestionName.USER_TYPE,
-    SurveyQuestionName.MARKET_FIT,
-    SurveyQuestionName.NPS
-  )
+  private val questions =
+    listOf(
+      SurveyQuestionName.USER_TYPE,
+      SurveyQuestionName.MARKET_FIT,
+      SurveyQuestionName.NPS,
+    )
   private val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
@@ -108,7 +109,7 @@ class SurveyControllerTest {
     surveyController.startSurveySession(
       mandatoryQuestionNames = mandatoryQuestionNameList,
       showOptionalQuestion = false,
-      profileId = profileId
+      profileId = profileId,
     )
 
     val result = surveyProgressController.getCurrentQuestion()
@@ -122,7 +123,7 @@ class SurveyControllerTest {
     surveyController.startSurveySession(
       mandatoryQuestionNames = mandatoryQuestionNameList,
       showOptionalQuestion = true,
-      profileId = profileId
+      profileId = profileId,
     )
 
     val result = surveyProgressController.getCurrentQuestion()
@@ -138,7 +139,7 @@ class SurveyControllerTest {
     surveyController.startSurveySession(
       mandatoryQuestionNames = mandatoryQuestionNameList,
       showOptionalQuestion = false,
-      profileId = profileId
+      profileId = profileId,
     )
 
     val result = surveyProgressController.getCurrentQuestion()
@@ -160,7 +161,8 @@ class SurveyControllerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>()
+    ApplicationProvider
+      .getApplicationContext<TestApplication>()
       .inject(this)
   }
 
@@ -168,9 +170,7 @@ class SurveyControllerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     @EnableConsoleLog
@@ -213,7 +213,7 @@ class SurveyControllerTest {
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
@@ -227,9 +227,12 @@ class SurveyControllerTest {
     fun inject(surveyControllerTest: SurveyControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyControllerTest_TestApplicationComponent.builder()
+      DaggerSurveyControllerTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }

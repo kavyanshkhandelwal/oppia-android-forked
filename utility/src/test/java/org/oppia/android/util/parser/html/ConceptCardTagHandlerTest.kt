@@ -65,11 +65,15 @@ class ConceptCardTagHandlerTest {
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Mock lateinit var mockImageRetriever: FakeImageRetriever
+
   @Mock lateinit var mockConceptCardLinkClickListener: ConceptCardLinkClickListener
+
   @Captor lateinit var viewCaptor: ArgumentCaptor<View>
+
   @Captor lateinit var stringCaptor: ArgumentCaptor<String>
 
   @Inject lateinit var context: Context
+
   @Inject lateinit var consoleLogger: ConsoleLogger
 
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
@@ -80,12 +84,14 @@ class ConceptCardTagHandlerTest {
   fun setUp() {
     setUpTestApplicationComponent()
     noTagHandlers = mapOf()
-    tagHandlersWithConceptCardSupport = mapOf(
-      CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
-        mockConceptCardLinkClickListener,
-        consoleLogger
+    tagHandlersWithConceptCardSupport =
+      mapOf(
+        CUSTOM_CONCEPT_CARD_TAG to
+          ConceptCardTagHandler(
+            mockConceptCardLinkClickListener,
+            consoleLogger,
+          ),
       )
-    )
     testView = TextView(context)
   }
 
@@ -97,7 +103,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -110,7 +116,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -123,7 +129,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     assertThat(parsedHtml.toString()).contains("refresher lesson")
@@ -135,7 +141,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_WITHOUT_SKILL_ID_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -149,7 +155,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_WITHOUT_TEXT_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -163,7 +169,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -177,7 +183,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -190,7 +196,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "$CONCEPT_CARD_LINK_MARKUP_1 and $CONCEPT_CARD_LINK_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     assertThat(parsedHtml.toString()).contains("refresher lesson and other lesson")
@@ -202,14 +208,14 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = CONCEPT_CARD_LINK_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     clickableSpans.first().onClick(testView)
     verify(mockConceptCardLinkClickListener).onConceptCardLinkClicked(
       capture(viewCaptor),
-      capture(stringCaptor)
+      capture(stringCaptor),
     )
     assertThat(viewCaptor.value).isEqualTo(testView)
     assertThat(stringCaptor.value).isEqualTo("skill_id_1")
@@ -221,7 +227,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "Test and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     // Set a custom clickable span rather than using an anchor since the latter requires an activity
@@ -229,7 +235,10 @@ class ConceptCardTagHandlerTest {
     parsedHtml.setSpan(
       object : ClickableSpan() {
         override fun onClick(widget: View) {}
-      }, /* start= */ 0, /* end= */ 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      }, // start=
+      0, // end=
+      4,
+      Spannable.SPAN_INCLUSIVE_EXCLUSIVE,
     )
 
     // There should be two clickable spans, and clicking the first (for the anchor) should not lead
@@ -247,7 +256,7 @@ class ConceptCardTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "$CONCEPT_CARD_LINK_MARKUP_2 and $CONCEPT_CARD_LINK_MARKUP_1",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithConceptCardSupport
+        customTagHandlers = tagHandlersWithConceptCardSupport,
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -256,7 +265,7 @@ class ConceptCardTagHandlerTest {
     clickableSpans.forEach { it.onClick(testView) }
     verify(mockConceptCardLinkClickListener, times(2)).onConceptCardLinkClicked(
       capture(viewCaptor),
-      capture(stringCaptor)
+      capture(stringCaptor),
     )
     // Verify that both are called with the test view, and with their respective skill IDs (in
     // order). This ensures cases that have multiple concept cards result in the correct skill ID
@@ -269,7 +278,8 @@ class ConceptCardTagHandlerTest {
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
   private fun setUpTestApplicationComponent() {
-    DaggerConceptCardTagHandlerTest_TestApplicationComponent.builder()
+    DaggerConceptCardTagHandlerTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -286,14 +296,15 @@ class ConceptCardTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
-    ]
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
@@ -304,5 +315,7 @@ class ConceptCardTagHandlerTest {
    * A fake image retriever that satisfies both the contracts of [Html.ImageGetter] and
    * [CustomHtmlContentHandler.ImageRetriever].
    */
-  interface FakeImageRetriever : Html.ImageGetter, CustomHtmlContentHandler.ImageRetriever
+  interface FakeImageRetriever :
+    Html.ImageGetter,
+    CustomHtmlContentHandler.ImageRetriever
 }

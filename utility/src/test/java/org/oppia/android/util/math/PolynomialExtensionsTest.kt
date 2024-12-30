@@ -25,74 +25,122 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 class PolynomialExtensionsTest {
   private companion object {
-    private val ONE_THIRD_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 3
-    }.build()
+    private val ONE_THIRD_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 3
+        }.build()
 
-    private val ONE_AND_ONE_HALF_FRACTION = Fraction.newBuilder().apply {
-      numerator = 1
-      denominator = 2
-      wholeNumber = 1
-    }.build()
+    private val ONE_AND_ONE_HALF_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 1
+          denominator = 2
+          wholeNumber = 1
+        }.build()
 
-    private val THREE_ONES_FRACTION = Fraction.newBuilder().apply {
-      numerator = 3
-      denominator = 1
-    }.build()
+    private val THREE_ONES_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          numerator = 3
+          denominator = 1
+        }.build()
 
-    private val THREE_FRACTION = Fraction.newBuilder().apply {
-      wholeNumber = 3
-      denominator = 1
-    }.build()
+    private val THREE_FRACTION =
+      Fraction
+        .newBuilder()
+        .apply {
+          wholeNumber = 3
+          denominator = 1
+        }.build()
 
-    private val TWO_REAL = Real.newBuilder().apply {
-      integer = 2
-    }.build()
+    private val TWO_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          integer = 2
+        }.build()
 
-    private val THREE_REAL = Real.newBuilder().apply {
-      integer = 3
-    }.build()
+    private val THREE_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          integer = 3
+        }.build()
 
-    private val FOUR_REAL = Real.newBuilder().apply {
-      integer = 4
-    }.build()
+    private val FOUR_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          integer = 4
+        }.build()
 
-    private val FIVE_REAL = Real.newBuilder().apply {
-      integer = 5
-    }.build()
+    private val FIVE_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          integer = 5
+        }.build()
 
-    private val SEVEN_REAL = Real.newBuilder().apply {
-      integer = 7
-    }.build()
+    private val SEVEN_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          integer = 7
+        }.build()
 
-    private val ONE_THIRD_REAL = Real.newBuilder().apply {
-      rational = ONE_THIRD_FRACTION
-    }.build()
+    private val ONE_THIRD_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          rational = ONE_THIRD_FRACTION
+        }.build()
 
-    private val ONE_AND_ONE_HALF_REAL = Real.newBuilder().apply {
-      rational = ONE_AND_ONE_HALF_FRACTION
-    }.build()
+    private val ONE_AND_ONE_HALF_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          rational = ONE_AND_ONE_HALF_FRACTION
+        }.build()
 
-    private val THREE_ONES_REAL = Real.newBuilder().apply {
-      rational = THREE_ONES_FRACTION
-    }.build()
+    private val THREE_ONES_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          rational = THREE_ONES_FRACTION
+        }.build()
 
-    private val THREE_FRACTION_REAL = Real.newBuilder().apply {
-      rational = THREE_FRACTION
-    }.build()
+    private val THREE_FRACTION_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          rational = THREE_FRACTION
+        }.build()
 
-    private val ONE_POINT_FIVE_REAL = Real.newBuilder().apply {
-      irrational = 1.5
-    }.build()
+    private val ONE_POINT_FIVE_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          irrational = 1.5
+        }.build()
 
-    private val TWO_DOUBLE_REAL = Real.newBuilder().apply {
-      irrational = 2.0
-    }.build()
+    private val TWO_DOUBLE_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          irrational = 2.0
+        }.build()
 
-    private val PI_REAL = Real.newBuilder().apply {
-      irrational = 3.14
-    }.build()
+    private val PI_REAL =
+      Real
+        .newBuilder()
+        .apply {
+          irrational = 3.14
+        }.build()
 
     private val TWO_POLYNOMIAL = createPolynomial(createTerm(coefficient = TWO_REAL))
 
@@ -125,12 +173,14 @@ class PolynomialExtensionsTest {
     private val ONE_PLUS_X_POLYNOMIAL =
       createPolynomial(
         createTerm(coefficient = ONE),
-        createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
       )
   }
 
   @Parameter lateinit var var1: String
+
   @Parameter lateinit var var2: String
+
   @Parameter lateinit var var3: String
 
   @Test
@@ -263,14 +313,22 @@ class PolynomialExtensionsTest {
   fun testGetConstant_oneHalf_returnsOneHalf() {
     val result = ONE_HALF_POLYNOMIAL.getConstant()
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(0.5)
   }
 
   @Test
   fun testGetConstant_negativeOneHalf_returnsNegativeOneHalf() {
     val result = NEGATIVE_ONE_HALF_POLYNOMIAL.getConstant()
 
-    assertThat(result).isRationalThat().evaluatesToDoubleThat().isWithin(1e-5).of(-0.5)
+    assertThat(result)
+      .isRationalThat()
+      .evaluatesToDoubleThat()
+      .isWithin(1e-5)
+      .of(-0.5)
   }
 
   @Test
@@ -366,10 +424,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testToPlainText_oneAndNegativeX_returnsOneMinusXString() {
-    val oneMinusXPolynomial = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1))
-    )
+    val oneMinusXPolynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = oneMinusXPolynomial.toPlainText()
 
@@ -378,10 +437,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testToPlainText_oneAndOneHalfXAndY_returnsThreeHalvesXPlusYString() {
-    val oneMinusXPolynomial = createPolynomial(
-      createTerm(coefficient = ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val oneMinusXPolynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result = oneMinusXPolynomial.toPlainText()
 
@@ -390,11 +450,12 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testToPlainText_oneAndXAndXSquared_returnsOnePlusXPlusXSquaredString() {
-    val oneMinusXPolynomial = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val oneMinusXPolynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = oneMinusXPolynomial.toPlainText()
 
@@ -403,11 +464,12 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testToPlainText_xSquaredAndXAndOne_returnsXSquaredPlusXPlusOneString() {
-    val oneMinusXPolynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
+    val oneMinusXPolynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = oneMinusXPolynomial.toPlainText()
 
@@ -417,11 +479,12 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testToPlainText_xSquaredYCubedAndOne_returnsXSquaredYCubedPlusOneString() {
-    val oneMinusXPolynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 3)),
-      createTerm(coefficient = ONE)
-    )
+    val oneMinusXPolynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 3)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = oneMinusXPolynomial.toPlainText()
 
@@ -430,9 +493,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_zeroX_returnsZero() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -442,10 +506,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_xPlusZero_returnsX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ZERO)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ZERO),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -455,10 +520,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_zeroXPlusOne_returnsOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -468,10 +534,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_zeroXPlusZero_returnsZero() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ZERO)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ZERO),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -481,11 +548,12 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_zeroXSquaredPlusZeroXPlusTwo_returnsTwo() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = TWO_REAL)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = TWO_REAL),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -495,12 +563,13 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testRemoveUnnecessaryVariables_zeroPlusOnePlusZeroXPlusZero_returnsOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ZERO),
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ZERO)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ZERO),
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ZERO, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ZERO),
+      )
 
     val result = polynomial.removeUnnecessaryVariables()
 
@@ -510,9 +579,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSimplifyRationals_oneX_returnsOneX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.simplifyRationals()
 
@@ -522,9 +592,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSimplifyRationals_oneHalfX_returnsOneHalfX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE_HALF, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE_HALF, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.simplifyRationals()
 
@@ -542,9 +613,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSimplifyRationals_threeOnesX_returnsThreeOnesX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = THREE_ONES_REAL, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = THREE_ONES_REAL, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.simplifyRationals()
 
@@ -562,9 +634,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSimplifyRationals_negativeThreeXAsFraction_returnsNegativeThreeXWithInteger() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = -THREE_FRACTION_REAL, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = -THREE_FRACTION_REAL, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.simplifyRationals()
 
@@ -582,10 +655,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSimplifyRationals_xPlusThreeFractionXSquared_returnsXPlusThreeXSquared() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = THREE_FRACTION_REAL, createVariable(name = "x", power = 2))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = THREE_FRACTION_REAL, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial.simplifyRationals()
 
@@ -618,9 +692,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_x_returnsX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -639,9 +714,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_onePlusTwo_returnsTwoPlusOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE), createTerm(coefficient = TWO_REAL)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = TWO_REAL),
+      )
 
     val result = polynomial.sort()
 
@@ -661,9 +738,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_twoPlusOne_returnsTwoPlusOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = TWO_REAL), createTerm(coefficient = ONE)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = TWO_REAL),
+        createTerm(coefficient = ONE),
+      )
 
     val result = polynomial.sort()
 
@@ -683,10 +762,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xPlusX_returnsXPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -714,10 +794,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xPlusOne_returnsXPlusOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = polynomial.sort()
 
@@ -741,10 +822,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_onePlusX_returnsXPlusOne() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -768,10 +850,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xPlusTwoX_returnsTwoXPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -799,10 +882,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xPlusXSquared_returnsXSquaredPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial.sort()
 
@@ -830,10 +914,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xSquaredPlusX_returnsXSquaredPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -861,10 +946,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xMinusXSquared_returnsNegativeXSquaredPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial.sort()
 
@@ -892,10 +978,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_negativeXSquaredPlusX_returnsNegativeXSquaredPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -923,14 +1010,15 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_yPlusXy_returnsXyPlusY() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result = polynomial.sort()
 
@@ -962,14 +1050,15 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xPlusXy_returnsXyPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result = polynomial.sort()
 
@@ -1001,19 +1090,20 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xyPlusZyx_returnsXyzPlusXy() {
-    val polynomial = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1),
-        createVariable(name = "z", power = 1)
+    val polynomial =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+          createVariable(name = "z", power = 1),
+        ),
       )
-    )
 
     val result = polynomial.sort()
 
@@ -1054,18 +1144,19 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_zyPlusYx_returnsXyPlusYz() {
-    val polynomial = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "z", power = 1),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val polynomial =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "z", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result = polynomial.sort()
 
@@ -1101,19 +1192,20 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xyzPlusYXSquared_returnsXSquaredYPlusXyz() {
-    val polynomial = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "y", power = 1),
-        createVariable(name = "x", power = 2)
+    val polynomial =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "y", power = 1),
+          createVariable(name = "x", power = 2),
+        ),
       )
-    )
 
     val result = polynomial.sort()
 
@@ -1154,16 +1246,17 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testSort_xSquaredY_plusX_plusYCubed_plusXSquared_returnsYCubedPlusXSqYPlusXSqPlusX() {
-    val polynomial = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 3)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 3)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial.sort()
 
@@ -1219,11 +1312,12 @@ class PolynomialExtensionsTest {
   @Iteration("z+x+y", "var1=z", "var2=x", "var3=y")
   @Iteration("z+y+x", "var1=z", "var2=y", "var3=x")
   fun testSort_xPlusYPlusZ_inAnyOrder_returnsXPlusYPlusZ() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = var1, power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = var2, power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = var3, power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = var1, power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = var2, power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = var3, power = 1)),
+      )
 
     val result = polynomial.sort()
 
@@ -1258,7 +1352,7 @@ class PolynomialExtensionsTest {
     }
   }
 
-  /* Equality checks. Note that these are symmetrical to reduce the number of needed test cases. */
+  // Equality checks. Note that these are symmetrical to reduce the number of needed test cases.
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsDefault_secondIsDefault_returnsTrue() {
@@ -1374,13 +1468,17 @@ class PolynomialExtensionsTest {
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfInt2_secondIsPolyOfDouble2PlusMargin_returnsTrue() {
     val first = createPolynomial(createTerm(coefficient = TWO_REAL))
-    val second = createPolynomial(
-      createTerm(
-        coefficient = Real.newBuilder().apply {
-          irrational = 2.00000000000000001
-        }.build()
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient =
+            Real
+              .newBuilder()
+              .apply {
+                irrational = 2.00000000000000001
+              }.build(),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1417,13 +1515,17 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsDoublePointThrees_secondIsFracOneThird_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = Real.newBuilder().apply {
-          irrational = 0.33333333333333333
-        }.build()
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient =
+            Real
+              .newBuilder()
+              .apply {
+                irrational = 0.33333333333333333
+              }.build(),
+        ),
       )
-    )
     val second = createPolynomial(createTerm(coefficient = ONE_THIRD_REAL))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -1436,12 +1538,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfVarX_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1452,12 +1556,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfVarY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1468,9 +1574,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarX_secondIsPolyOfInt2_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
     val second = createPolynomial(createTerm(coefficient = TWO_REAL))
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -1482,16 +1589,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarX_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1503,16 +1612,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1524,20 +1635,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarsXy_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1548,20 +1661,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsPolyOfVarsXy_secondIsPolyOfVarsYx_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "y", power = 1),
-        createVariable(name = "x", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "y", power = 1),
+          createVariable(name = "x", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1573,12 +1688,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXSquared_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1589,12 +1706,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsNegativeXSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1606,12 +1725,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsTwoXSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 2))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 2)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1623,12 +1744,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsX_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1640,12 +1763,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXCubed_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 3))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 3)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1657,16 +1782,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquared_secondIsXSquaredY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
       )
-    )
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1678,20 +1805,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXSquaredY_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1702,20 +1831,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXy_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1727,20 +1858,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXYSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 2)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 2),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1752,20 +1885,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsXSquaredYSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 2)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 2),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1777,20 +1912,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsYXSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "y", power = 1),
-        createVariable(name = "x", power = 2)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "y", power = 1),
+          createVariable(name = "x", power = 2),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1802,20 +1939,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsNegativeXSquaredY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = -ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = -ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1827,20 +1966,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXSquaredY_secondIsTwoXSquaredY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val first =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val second = createPolynomial(
-      createTerm(
-        coefficient = TWO_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val second =
+      createPolynomial(
+        createTerm(
+          coefficient = TWO_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1852,14 +1993,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusY_returnsTrue() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1870,14 +2013,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusYSquared_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 2))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 2)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1889,14 +2034,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsXPlusFiveY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = FIVE_REAL, createVariable(name = "y", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = FIVE_REAL, createVariable(name = "y", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1908,14 +2055,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_firstIsXPlusY_secondIsNegativeXPlusY_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1927,22 +2076,23 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_allTermsSame_returnsTrue() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
 
     val result = polynomial.isApproximatelyEqualTo(polynomial)
 
@@ -1951,38 +2101,40 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_oneItemOutOfOrder_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "y", power = 1),
-        createVariable(name = "x", power = 2)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "y", power = 1),
+          createVariable(name = "x", power = 2),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -1994,38 +2146,40 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_oneItemDifferent_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
-    val second = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL - ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
+    val second =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL - ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
 
     val result1 = first.isApproximatelyEqualTo(second)
     val result2 = second.isApproximatelyEqualTo(first)
@@ -2037,22 +2191,23 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testIsApproximatelyEqualTo_complexMultiTermMultiVarPolys_compareToDefault_returnsFalse() {
-    val first = createPolynomial(
-      createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
-      createTerm(
-        coefficient = FIVE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 3),
-        createVariable(name = "z", power = 1)
-      ),
-      createTerm(
-        coefficient = -PI_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
-      ),
-      createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
-      createTerm(coefficient = SEVEN_REAL)
-    )
+    val first =
+      createPolynomial(
+        createTerm(coefficient = -ONE_AND_ONE_HALF_REAL, createVariable(name = "x", power = 1)),
+        createTerm(
+          coefficient = FIVE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 3),
+          createVariable(name = "z", power = 1),
+        ),
+        createTerm(
+          coefficient = -PI_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
+        createTerm(coefficient = ONE, createVariable(name = "z", power = 1)),
+        createTerm(coefficient = SEVEN_REAL),
+      )
     val second = Polynomial.getDefaultInstance()
 
     val result1 = first.isApproximatelyEqualTo(second)
@@ -2062,7 +2217,7 @@ class PolynomialExtensionsTest {
     assertThat(result2).isFalse()
   }
 
-  /* Operator tests. */
+  // Operator tests.
 
   @Test
   fun testUnaryMinus_zero_returnsZero() {
@@ -2086,9 +2241,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testUnaryMinus_x_returnsNegativeX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = -polynomial
 
@@ -2108,9 +2264,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testUnaryMinus_negativeX_returnsX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = -polynomial
 
@@ -2130,10 +2287,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testUnaryMinus_xSquaredPlusX_returnsNegativeXSquaredMinusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = -polynomial
 
@@ -2161,10 +2319,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testUnaryMinus_oneMinusX_returnsNegativeOnePlusX() {
-    val polynomial = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = -polynomial
 
@@ -2313,9 +2472,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPlus_xSquaredAndX_returnsXSquaredPlusX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_X_POLYNOMIAL
 
     val result = polynomial1 + polynomial2
@@ -2522,9 +2682,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testMinus_xSquaredAndX_returnsXSquaredMinusX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_X_POLYNOMIAL
 
     val result = polynomial1 - polynomial2
@@ -2650,12 +2811,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_threeXSquaredAndTwoX_returnsSixXCubed() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = THREE_REAL, createVariable(name = "x", power = 2))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = THREE_REAL, createVariable(name = "x", power = 2)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2675,12 +2838,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_twoXAndThreeXSquared_returnsSixXCubed() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = THREE_REAL, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = THREE_REAL, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2763,12 +2928,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_negativeFiveX_sevenX_returnsNegativeThirtyFiveXSquared() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -FIVE_REAL, createVariable(name = "x", power = 1))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = SEVEN_REAL, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -FIVE_REAL, createVariable(name = "x", power = 1)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = SEVEN_REAL, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2788,14 +2955,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_onePlusX_onePlusX_returnsOnePlus2XPlusXSquared() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2827,14 +2996,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_xPlusOne_xMinusOne_returnsXSquaredMinusOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = -ONE),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2858,14 +3029,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_xMinusOne_xPlusOne_returnsXSquaredMinusOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = -ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = -ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = polynomial1 * polynomial2
 
@@ -2889,20 +3062,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testTimes_twoXy_threeXSquaredY_returnsSixXCubedYSquared() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = TWO_REAL,
-        createVariable(name = "x", power = 1),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = TWO_REAL,
+          createVariable(name = "x", power = 1),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(
-        coefficient = THREE_REAL,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial2 =
+      createPolynomial(
+        createTerm(
+          coefficient = THREE_REAL,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
 
     val result = polynomial1 * polynomial2
 
@@ -3009,9 +3184,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquared_x_returnsX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_X_POLYNOMIAL
 
     val result = polynomial1 / polynomial2
@@ -3032,15 +3208,17 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_onePlus2XPlusXSquared_onePlusX_returnsOnePlusX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3064,15 +3242,17 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredPlus2XPlusOne_onePlusX_returnsOnePlusX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3096,15 +3276,17 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredPlus2XPlusOne_oneMinusX_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3114,12 +3296,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_negativeXCubed_xSquared_returnsNegativeX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 3))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 3)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3139,14 +3323,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredMinusOne_xPlusOne_returnsXMinusOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3170,14 +3356,16 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredMinusOne_xMinusOne_returnsXPlusOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = -ONE),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3201,10 +3389,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredMinusOne_x_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
     val polynomial2 = ONE_X_POLYNOMIAL
 
     val result = polynomial1 / polynomial2
@@ -3215,10 +3404,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredMinusOne_negativeOne_negativeXSquaredPlusOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
     val polynomial2 = createPolynomial(createTerm(coefficient = -ONE))
 
     val result = polynomial1 / polynomial2
@@ -3243,10 +3433,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredMinusOne_two_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
     val polynomial2 = TWO_POLYNOMIAL
 
     val result = polynomial1 / polynomial2
@@ -3271,12 +3462,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_negativeThreeXSquared_xSquared_returnsNegativeThree() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -THREE_REAL, createVariable(name = "x", power = 2))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -THREE_REAL, createVariable(name = "x", power = 2)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3292,12 +3485,14 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_negativeThreeXSquared_negativeXSquared_returnsThree() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -THREE_REAL, createVariable(name = "x", power = 2))
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -THREE_REAL, createVariable(name = "x", power = 2)),
+      )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3313,16 +3508,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredY_y_returnsXSquared() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 1))
-    )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 1)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3342,16 +3539,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredY_x_returnsXTimesY() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3375,16 +3574,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredY_xSquared_returnsY() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3404,20 +3605,22 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredY_yXSquared_returnsOne() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "y", power = 1),
-        createVariable(name = "x", power = 2)
+    val polynomial2 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "y", power = 1),
+          createVariable(name = "x", power = 2),
+        ),
       )
-    )
 
     val result = polynomial1 / polynomial2
 
@@ -3427,16 +3630,18 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testDiv_xSquaredY_ySquared_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(
-        coefficient = ONE,
-        createVariable(name = "x", power = 2),
-        createVariable(name = "y", power = 1)
+    val polynomial1 =
+      createPolynomial(
+        createTerm(
+          coefficient = ONE,
+          createVariable(name = "x", power = 2),
+          createVariable(name = "y", power = 1),
+        ),
       )
-    )
-    val polynomial2 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "y", power = 2))
-    )
+    val polynomial2 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "y", power = 2)),
+      )
 
     val result = polynomial1 / polynomial2
 
@@ -3543,10 +3748,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_onePlusX_two_onePlus2XPlusXSquared() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
     val polynomial2 = TWO_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3612,10 +3818,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_onePlusX_oneHalf_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 1))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 1)),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3626,11 +3833,12 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_onePlus2XPlusXSquared_oneHalf_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE),
-      createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE),
+        createTerm(coefficient = TWO_REAL, createVariable(name = "x", power = 1)),
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3641,10 +3849,11 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_xSquaredMinusOne_oneHalf_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
-      createTerm(coefficient = -ONE)
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+        createTerm(coefficient = -ONE),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3655,9 +3864,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_xSquared_oneHalf_returnsX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3678,9 +3888,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_fourXSquared_oneHalf_returnsTwoX() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = FOUR_REAL, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = FOUR_REAL, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3701,9 +3912,10 @@ class PolynomialExtensionsTest {
 
   @Test
   fun testPow_xSquared_negativeOneHalf_returnsNull() {
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -ONE, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -ONE, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = ONE_HALF_POLYNOMIAL
 
     val result = polynomial1 pow polynomial2
@@ -3715,9 +3927,10 @@ class PolynomialExtensionsTest {
   @Test
   fun testPow_negativeTwentySevenXCubed_oneThird_returnsNegativeThreeX() {
     val twentySevenReal = checkNotNull(THREE_REAL pow THREE_REAL)
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = -twentySevenReal, createVariable(name = "x", power = 3))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = -twentySevenReal, createVariable(name = "x", power = 3)),
+      )
     val polynomial2 = createPolynomial(createTerm(coefficient = ONE_THIRD_REAL))
 
     val result = polynomial1 pow polynomial2
@@ -3740,9 +3953,10 @@ class PolynomialExtensionsTest {
   @Test
   fun testPow_xSquared_oneThird_returnsNull() {
     val twentySevenReal = checkNotNull(THREE_REAL pow THREE_REAL)
-    val polynomial1 = createPolynomial(
-      createTerm(coefficient = twentySevenReal, createVariable(name = "x", power = 2))
-    )
+    val polynomial1 =
+      createPolynomial(
+        createTerm(coefficient = twentySevenReal, createVariable(name = "x", power = 2)),
+      )
     val polynomial2 = createPolynomial(createTerm(coefficient = ONE_THIRD_REAL))
 
     val result = polynomial1 pow polynomial2
@@ -3764,16 +3978,29 @@ class PolynomialExtensionsTest {
   }
 }
 
-private fun createVariable(name: String, power: Int) = Variable.newBuilder().apply {
-  this.name = name
-  this.power = power
-}.build()
+private fun createVariable(
+  name: String,
+  power: Int,
+) = Variable
+  .newBuilder()
+  .apply {
+    this.name = name
+    this.power = power
+  }.build()
 
-private fun createTerm(coefficient: Real, vararg variables: Variable) = Term.newBuilder().apply {
-  this.coefficient = coefficient
-  addAllVariable(variables.toList())
-}.build()
+private fun createTerm(
+  coefficient: Real,
+  vararg variables: Variable,
+) = Term
+  .newBuilder()
+  .apply {
+    this.coefficient = coefficient
+    addAllVariable(variables.toList())
+  }.build()
 
-private fun createPolynomial(vararg terms: Term) = Polynomial.newBuilder().apply {
-  addAllTerm(terms.toList())
-}.build()
+private fun createPolynomial(vararg terms: Term) =
+  Polynomial
+    .newBuilder()
+    .apply {
+      addAllTerm(terms.toList())
+    }.build()

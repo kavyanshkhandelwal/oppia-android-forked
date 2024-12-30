@@ -103,7 +103,7 @@ class TodoIssueResolvedCheckTest {
     tempFile1.writeText(testContent1)
     tempFile2.writeText(testContent2)
 
-    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
+    val exception = assertThrows<Exception> { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -146,7 +146,7 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    val exception = assertThrows<Exception>() { runScript(169877, "abmzuyt") }
+    val exception = assertThrows<Exception> { runScript(169877, "abmzuyt") }
 
     assertThat(exception).hasMessageThat().contains(CLOSED_ISSUE_CHECK_FAILED_OUTPUT_INDICATOR)
     val failureMessage =
@@ -190,18 +190,22 @@ class TodoIssueResolvedCheckTest {
     tempFile2.writeText(testContent2)
     tempFile3.writeText(testContent3)
 
-    assertThrows<Exception>() { runScript(169877, "abmzuyt") }
+    assertThrows<Exception> { runScript(169877, "abmzuyt") }
     val fileContentList = File("${tempFolder.root}/testfiles/script_failures.txt").readLines()
-    assertThat(fileContentList).containsExactly(
-      "The issue is reopened because of the following unresolved TODOs:",
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile1.kt#L1",
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile2.bazel#L3",
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L1",
-      "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L4"
-    ).inOrder()
+    assertThat(fileContentList)
+      .containsExactly(
+        "The issue is reopened because of the following unresolved TODOs:",
+        "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile1.kt#L1",
+        "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile2.bazel#L3",
+        "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L1",
+        "https://github.com/oppia/oppia-android/blob/abmzuyt/TempFile3.xml#L4",
+      ).inOrder()
   }
 
-  private fun runScript(closedIssueNumber: Int, latestCommitHash: String) {
+  private fun runScript(
+    closedIssueNumber: Int,
+    latestCommitHash: String,
+  ) {
     main("${tempFolder.root}/testfiles", closedIssueNumber.toString(), latestCommitHash)
   }
 }

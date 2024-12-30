@@ -8,11 +8,10 @@ import com.bumptech.glide.load.resource.transcode.ResourceTranscoder
 
 /** Transcoder for [ScalableVectorGraphic]s to [BlockPictureDrawable]s. */
 class BlockSvgDrawableTranscoder(
-  private val context: Context
+  private val context: Context,
 ) : ResourceTranscoder<ScalableVectorGraphic?, BlockPictureDrawable?> {
   override fun transcode(
     toTranscode: Resource<ScalableVectorGraphic?>,
-    options: Options
-  ): Resource<BlockPictureDrawable?> =
-    SimpleResource(BlockPictureDrawable(context, toTranscode.get()))
+    options: Options,
+  ): Resource<BlockPictureDrawable?> = SimpleResource(BlockPictureDrawable(context, toTranscode.get()))
 }

@@ -108,7 +108,7 @@ class ActivityRouterTest {
   @get:Rule
   var activityRule =
     ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
+      TestActivity.createIntent(ApplicationProvider.getApplicationContext()),
     )
 
   @Before
@@ -130,21 +130,22 @@ class ActivityRouterTest {
         RecentlyPlayedActivityParams
           .newBuilder()
           .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-          .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
+          .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES)
+          .build()
       activityRouter.routeToScreen(
         DestinationScreen
           .newBuilder()
           .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-          .build()
+          .build(),
       )
       intended(
         allOf(
           hasProtoExtra(
             RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-            recentlyPlayedActivityParams
+            recentlyPlayedActivityParams,
           ),
-          hasComponent(RecentlyPlayedActivity::class.java.name)
-        )
+          hasComponent(RecentlyPlayedActivity::class.java.name),
+        ),
       )
     }
   }
@@ -192,8 +193,8 @@ class ActivityRouterTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -207,9 +208,13 @@ class ActivityRouterTest {
     fun inject(activityRouterTest: ActivityRouterTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerActivityRouterTest_TestApplicationComponent.builder()
+      DaggerActivityRouterTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build()
     }
@@ -218,9 +223,12 @@ class ActivityRouterTest {
       component.inject(activityRouterTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

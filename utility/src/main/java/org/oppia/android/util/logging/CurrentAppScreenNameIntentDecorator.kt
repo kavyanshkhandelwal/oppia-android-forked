@@ -19,15 +19,14 @@ object CurrentAppScreenNameIntentDecorator {
   fun Intent.decorateWithScreenName(screenName: ScreenName) {
     putProtoExtra(
       CURRENT_APP_SCREEN_NAME_KEY,
-      CurrentAppScreen.newBuilder().setScreenName(screenName).build()
+      CurrentAppScreen.newBuilder().setScreenName(screenName).build(),
     )
   }
 
   /** Returns the [ScreenName] packed in the intent via [decorateWithScreenName]. */
-  fun Intent.extractCurrentAppScreenName(): ScreenName {
-    return getProtoExtra(
+  fun Intent.extractCurrentAppScreenName(): ScreenName =
+    getProtoExtra(
       CURRENT_APP_SCREEN_NAME_KEY,
-      CurrentAppScreen.getDefaultInstance()
+      CurrentAppScreen.getDefaultInstance(),
     ).screenName
-  }
 }

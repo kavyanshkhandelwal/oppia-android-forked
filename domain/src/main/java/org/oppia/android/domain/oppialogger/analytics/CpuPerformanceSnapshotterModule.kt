@@ -13,7 +13,6 @@ import javax.inject.Singleton
 /** Provides dependencies that are needed for logging CPU usage. */
 @Module
 class CpuPerformanceSnapshotterModule {
-
   @Singleton
   @Provides
   fun providesCpuPerformanceSnapshotter(
@@ -24,17 +23,18 @@ class CpuPerformanceSnapshotterModule {
     @BackgroundDispatcher backgroundCoroutineDispatcher: CoroutineDispatcher,
     @ForegroundCpuLoggingTimePeriodMillis foregroundCpuLoggingTimePeriodMillis: Long,
     @BackgroundCpuLoggingTimePeriodMillis backgroundCpuLoggingTimePeriodMillis: Long,
-    @InitialIconificationCutOffTimePeriodMillis initialIconificationCutOffTimePeriodMillis: Long
-  ): CpuPerformanceSnapshotter = CpuPerformanceSnapshotter(
-    backgroundCoroutineDispatcher,
-    performanceMetricsLogger,
-    consoleLogger,
-    exceptionLogger,
-    performanceMetricsAssessor,
-    foregroundCpuLoggingTimePeriodMillis,
-    backgroundCpuLoggingTimePeriodMillis,
-    initialIconificationCutOffTimePeriodMillis
-  )
+    @InitialIconificationCutOffTimePeriodMillis initialIconificationCutOffTimePeriodMillis: Long,
+  ): CpuPerformanceSnapshotter =
+    CpuPerformanceSnapshotter(
+      backgroundCoroutineDispatcher,
+      performanceMetricsLogger,
+      consoleLogger,
+      exceptionLogger,
+      performanceMetricsAssessor,
+      foregroundCpuLoggingTimePeriodMillis,
+      backgroundCpuLoggingTimePeriodMillis,
+      initialIconificationCutOffTimePeriodMillis,
+    )
 
   @Provides
   @ForegroundCpuLoggingTimePeriodMillis

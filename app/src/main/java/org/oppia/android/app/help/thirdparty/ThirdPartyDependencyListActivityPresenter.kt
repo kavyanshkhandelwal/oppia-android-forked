@@ -10,48 +10,51 @@ import javax.inject.Inject
 
 /** The presenter for [ThirdPartyDependencyListActivity]. */
 @ActivityScope
-class ThirdPartyDependencyListActivityPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val resourceHandler: AppLanguageResourceHandler
-) {
+class ThirdPartyDependencyListActivityPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val resourceHandler: AppLanguageResourceHandler,
+  ) {
+    /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
+    fun handleOnCreate(isMultipane: Boolean) {
+      val binding =
+        DataBindingUtil.setContentView<ThirdPartyDependencyListActivityBinding>(
+          activity,
+          R.layout.third_party_dependency_list_activity,
+        )
+      binding.apply {
+        lifecycleOwner = activity
+      }
 
-  /** Handles onCreate() method of the [ThirdPartyDependencyListActivity]. */
-  fun handleOnCreate(isMultipane: Boolean) {
-    val binding =
-      DataBindingUtil.setContentView<ThirdPartyDependencyListActivityBinding>(
-        activity,
-        R.layout.third_party_dependency_list_activity
-      )
-    binding.apply {
-      lifecycleOwner = activity
+      val thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
+      activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
+      activity.supportActionBar!!.title =
+        resourceHandler.getStringInLocale(
+          R.string.third_party_dependency_list_activity_title,
+        )
+      activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
+      activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+      binding.thirdPartyDependencyListActivityToolbar.setNavigationOnClickListener {
+        (activity as ThirdPartyDependencyListActivity).finish()
+      }
+
+      if (getThirdPartyDependencyListFragment() == null) {
+        val thirdPartyDependencyListFragment =
+          ThirdPartyDependencyListFragment.newInstance(isMultipane)
+        activity.supportFragmentManager
+          .beginTransaction()
+          .add(
+            R.id.third_party_dependency_list_fragment_placeholder,
+            thirdPartyDependencyListFragment,
+          ).commitNow()
+      }
     }
 
-    val thirdPartyDependencyListActivityToolbar = binding.thirdPartyDependencyListActivityToolbar
-    activity.setSupportActionBar(thirdPartyDependencyListActivityToolbar)
-    activity.supportActionBar!!.title = resourceHandler.getStringInLocale(
-      R.string.third_party_dependency_list_activity_title
-    )
-    activity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-    activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-    binding.thirdPartyDependencyListActivityToolbar.setNavigationOnClickListener {
-      (activity as ThirdPartyDependencyListActivity).finish()
-    }
-
-    if (getThirdPartyDependencyListFragment() == null) {
-      val thirdPartyDependencyListFragment =
-        ThirdPartyDependencyListFragment.newInstance(isMultipane)
-      activity.supportFragmentManager.beginTransaction().add(
-        R.id.third_party_dependency_list_fragment_placeholder,
-        thirdPartyDependencyListFragment
-      ).commitNow()
-    }
+    private fun getThirdPartyDependencyListFragment(): ThirdPartyDependencyListFragment? =
+      activity
+        .supportFragmentManager
+        .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder) as
+        ThirdPartyDependencyListFragment?
   }
-
-  private fun getThirdPartyDependencyListFragment(): ThirdPartyDependencyListFragment? {
-    return activity
-      .supportFragmentManager
-      .findFragmentById(R.id.third_party_dependency_list_fragment_placeholder) as
-      ThirdPartyDependencyListFragment?
-  }
-}

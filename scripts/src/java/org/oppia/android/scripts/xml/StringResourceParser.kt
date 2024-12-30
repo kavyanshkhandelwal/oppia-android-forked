@@ -12,7 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory
  *
  * @property repoRoot the root of the Oppia Android repository being processed
  */
-class StringResourceParser(private val repoRoot: File) {
+class StringResourceParser(
+  private val repoRoot: File,
+) {
   private val translations by lazy { parseTranslations() }
   private val documentBuilderFactory by lazy { DocumentBuilderFactory.newInstance() }
 
@@ -32,25 +34,28 @@ class StringResourceParser(private val repoRoot: File) {
 
   private fun parseTranslations(): Map<TranslationLanguage, StringFile> {
     // A list of all XML files in the repo to be analyzed.
-    val stringFiles = RepositoryFile.collectSearchFiles(
-      repoPath = repoRoot.absolutePath,
-      expectedExtension = ".xml"
-    ).filter {
-      it.toRelativeString(repoRoot).startsWith("app/") && it.nameWithoutExtension == "strings"
-    }.associateBy {
-      checkNotNull(it.parentFile?.name?.let(::findTranslationLanguage)) {
-        "Strings file '${it.toRelativeString(repoRoot)}' does not correspond to a known language:" +
-          " ${it.parentFile?.name}"
-      }
-    }.toSortedMap() // Sorted for consistent output.
+    val stringFiles =
+      RepositoryFile
+        .collectSearchFiles(
+          repoPath = repoRoot.absolutePath,
+          expectedExtension = ".xml",
+        ).filter {
+          it.toRelativeString(repoRoot).startsWith("app/") && it.nameWithoutExtension == "strings"
+        }.associateBy {
+          checkNotNull(it.parentFile?.name?.let(::findTranslationLanguage)) {
+            "Strings file '${it.toRelativeString(repoRoot)}' does not correspond to a known language:" +
+              " ${it.parentFile?.name}"
+          }
+        }.toSortedMap() // Sorted for consistent output.
     val expectedLanguages = TranslationLanguage.values().toSet()
     check(expectedLanguages == stringFiles.keys) {
       "Missing translation strings for language(s):" +
         " ${(expectedLanguages - stringFiles.keys).joinToString() }"
     }
-    return stringFiles.map { (language, file) ->
-      language to StringFile(language, file, file.parseStrings())
-    }.toMap()
+    return stringFiles
+      .map { (language, file) ->
+        language to StringFile(language, file, file.parseStrings())
+      }.toMap()
   }
 
   private fun File.parseStrings(): Map<String, String> {
@@ -68,7 +73,9 @@ class StringResourceParser(private val repoRoot: File) {
    * @property valuesDirectoryName the name of the resource values directory that is expected to
    *     contain a strings.xml file for strings related to this language
    */
-  enum class TranslationLanguage(val valuesDirectoryName: String) {
+  enum class TranslationLanguage(
+    val valuesDirectoryName: String,
+  ) {
     /** Corresponds to Arabic (ar) translations. */
     ARABIC(valuesDirectoryName = "values-ar"),
 
@@ -82,7 +89,7 @@ class StringResourceParser(private val repoRoot: File) {
     SWAHILI(valuesDirectoryName = "values-sw"),
 
     /** Corresponds to Nigerian Pidgin (pcm) translations. */
-    NIGERIAN_PIDGIN(valuesDirectoryName = "values-pcm-rNG")
+    NIGERIAN_PIDGIN(valuesDirectoryName = "values-pcm-rNG"),
   }
 
   /**
@@ -96,7 +103,7 @@ class StringResourceParser(private val repoRoot: File) {
   data class StringFile(
     val language: TranslationLanguage,
     val file: File,
-    val strings: Map<String, String>
+    val strings: Map<String, String>,
   )
 
   private companion object {

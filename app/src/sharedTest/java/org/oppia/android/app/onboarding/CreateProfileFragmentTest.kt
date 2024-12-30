@@ -130,21 +130,27 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = CreateProfileFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class CreateProfileFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var editTextInputAction: EditTextInputAction
+
   @Inject
   lateinit var testGlideImageLoader: TestGlideImageLoader
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
@@ -172,11 +178,11 @@ class CreateProfileFragmentTest {
               isDisplayed(),
               withText(
                 context.getString(
-                  R.string.create_profile_activity_nickname_label
-                )
-              )
-            )
-          )
+                  R.string.create_profile_activity_nickname_label,
+                ),
+              ),
+            ),
+          ),
         )
     }
   }
@@ -191,11 +197,11 @@ class CreateProfileFragmentTest {
               isDisplayed(),
               withText(
                 context.getString(
-                  R.string.onboarding_step_count_three
-                )
-              )
-            )
-          )
+                  R.string.onboarding_step_count_three,
+                ),
+              ),
+            ),
+          ),
         )
     }
   }
@@ -206,7 +212,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -219,8 +225,8 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
-        )
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR),
+        ),
       )
     }
   }
@@ -232,7 +238,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -269,7 +275,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -282,8 +288,8 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
-        )
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR),
+        ),
       )
     }
   }
@@ -300,7 +306,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.create_profile_activity_nickname_error))
@@ -316,7 +322,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -329,8 +335,8 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
-        )
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR),
+        ),
       )
     }
   }
@@ -341,7 +347,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue))
@@ -379,7 +385,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_continue))
@@ -391,8 +397,8 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
-        )
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR),
+        ),
       )
     }
   }
@@ -483,7 +489,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
 
       testCoroutineDispatchers.runCurrent()
@@ -504,7 +510,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
 
       testCoroutineDispatchers.runCurrent()
@@ -523,7 +529,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -547,7 +553,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -560,7 +566,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -575,7 +581,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John123"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -591,7 +597,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
       testCoroutineDispatchers.runCurrent()
 
@@ -613,7 +619,7 @@ class CreateProfileFragmentTest {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
           editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
+          closeSoftKeyboard(),
         )
 
       testCoroutineDispatchers.runCurrent()
@@ -628,31 +634,32 @@ class CreateProfileFragmentTest {
 
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
-    val imageUri = Uri.parse(
-      ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-        resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
-        resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
-        resources.getResourceEntryName(R.mipmap.launcher_icon)
-    )
+    val imageUri =
+      Uri.parse(
+        ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+          resources.getResourcePackageName(R.mipmap.launcher_icon) + '/' +
+          resources.getResourceTypeName(R.mipmap.launcher_icon) + '/' +
+          resources.getResourceEntryName(R.mipmap.launcher_icon),
+      )
     val resultIntent = Intent()
     resultIntent.data = imageUri
     return Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent)
   }
 
-  private fun launchNewLearnerProfileActivity():
-    ActivityScenario<CreateProfileActivity>? {
-      val intent = CreateProfileActivity.createProfileActivityIntent(context)
-      intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
-      intent.putProtoExtra(
-        CREATE_PROFILE_PARAMS_KEY,
-        CreateProfileActivityParams.newBuilder()
-          .setProfileType(ProfileType.SOLE_LEARNER)
-          .build()
-      )
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+  private fun launchNewLearnerProfileActivity(): ActivityScenario<CreateProfileActivity>? {
+    val intent = CreateProfileActivity.createProfileActivityIntent(context)
+    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+    intent.putProtoExtra(
+      CREATE_PROFILE_PARAMS_KEY,
+      CreateProfileActivityParams
+        .newBuilder()
+        .setProfileType(ProfileType.SOLE_LEARNER)
+        .build(),
+    )
+    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -688,7 +695,7 @@ class CreateProfileFragmentTest {
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class, TestImageLoaderModule::class,
-    ]
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -697,9 +704,13 @@ class CreateProfileFragmentTest {
     fun inject(newLearnerProfileFragmentTest: CreateProfileFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerCreateProfileFragmentTest_TestApplicationComponent.builder()
+      DaggerCreateProfileFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -708,9 +719,12 @@ class CreateProfileFragmentTest {
       component.inject(newLearnerProfileFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

@@ -104,27 +104,20 @@ class OngoingTopicListSpanTest {
     Intents.release()
   }
 
-  private fun getOngoingRecyclerViewGridLayoutManager(
-    activity: OngoingTopicListActivity
-  ): GridLayoutManager {
-    return getOngoingRecyclerView(activity).layoutManager as GridLayoutManager
-  }
+  private fun getOngoingRecyclerViewGridLayoutManager(activity: OngoingTopicListActivity): GridLayoutManager =
+    getOngoingRecyclerView(activity).layoutManager as GridLayoutManager
 
-  private fun getOngoingRecyclerView(activity: OngoingTopicListActivity): RecyclerView {
-    return getOngoingTopicListFragment(activity).view?.findViewWithTag<View>(
-      activity.resources.getString(R.string.ongoing_recycler_view_tag)
+  private fun getOngoingRecyclerView(activity: OngoingTopicListActivity): RecyclerView =
+    getOngoingTopicListFragment(activity).view?.findViewWithTag<View>(
+      activity.resources.getString(R.string.ongoing_recycler_view_tag),
     )!! as RecyclerView
-  }
 
-  private fun getOngoingTopicListFragment(
-    activity: OngoingTopicListActivity
-  ): OngoingTopicListFragment {
-    return activity
+  private fun getOngoingTopicListFragment(activity: OngoingTopicListActivity): OngoingTopicListFragment =
+    activity
       .supportFragmentManager
       .findFragmentByTag(
-        OngoingTopicListFragment.ONGOING_TOPIC_LIST_FRAGMENT_TAG
+        OngoingTopicListFragment.ONGOING_TOPIC_LIST_FRAGMENT_TAG,
       ) as OngoingTopicListFragment
-  }
 
   @Test
   fun testOngoingTopicList_checkRecyclerView_hasCorrectSpanCount() {
@@ -194,8 +187,8 @@ class OngoingTopicListSpanTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -206,9 +199,13 @@ class OngoingTopicListSpanTest {
     fun inject(ongoingTopicListSpanTest: OngoingTopicListSpanTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOngoingTopicListSpanTest_TestApplicationComponent.builder()
+      DaggerOngoingTopicListSpanTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -217,9 +214,12 @@ class OngoingTopicListSpanTest {
       component.inject(ongoingTopicListSpanTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

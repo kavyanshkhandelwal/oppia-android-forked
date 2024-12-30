@@ -26,7 +26,6 @@ class TopicTestActivity :
   RouteToStoryListener,
   RouteToExplorationListener,
   RouteToRevisionCardListener {
-
   @Inject
   lateinit var topicActivityPresenter: TopicActivityPresenter
 
@@ -38,15 +37,17 @@ class TopicTestActivity :
       profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
-      storyId = ""
+      storyId = "",
     )
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
     startActivity(
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
-        this, skillIdList, ProfileId.getDefaultInstance()
-      )
+        this,
+        skillIdList,
+        ProfileId.getDefaultInstance(),
+      ),
     )
   }
 
@@ -54,7 +55,7 @@ class TopicTestActivity :
     internalProfileId: Int,
     classroomId: String,
     topicId: String,
-    storyId: String
+    storyId: String,
   ) {
     startActivity(
       StoryActivity.createStoryActivityIntent(
@@ -62,8 +63,8 @@ class TopicTestActivity :
         internalProfileId,
         classroomId,
         topicId,
-        storyId
-      )
+        storyId,
+      ),
     )
   }
 
@@ -74,7 +75,7 @@ class TopicTestActivity :
     storyId: String,
     explorationId: String,
     parentScreen: ExplorationActivityParams.ParentScreen,
-    isCheckpointingEnabled: Boolean
+    isCheckpointingEnabled: Boolean,
   ) {
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
@@ -85,8 +86,8 @@ class TopicTestActivity :
         storyId,
         explorationId,
         parentScreen,
-        isCheckpointingEnabled
-      )
+        isCheckpointingEnabled,
+      ),
     )
   }
 
@@ -94,12 +95,16 @@ class TopicTestActivity :
     profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
-    subtopicListSize: Int
+    subtopicListSize: Int,
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, profileId, topicId, subtopicId, subtopicListSize
-      )
+        this,
+        profileId,
+        topicId,
+        subtopicId,
+        subtopicListSize,
+      ),
     )
   }
 }

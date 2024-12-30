@@ -14,11 +14,10 @@ import java.security.MessageDigest
 data class MathModel(
   val rawLatex: String,
   val lineHeight: Float,
-  val useInlineRendering: Boolean
+  val useInlineRendering: Boolean,
 ) {
   /** Returns a Glide [Key] signature (see [MathModelSignature] for specifics). */
-  fun toKeySignature(): MathModelSignature =
-    MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering)
+  fun toKeySignature(): MathModelSignature = MathModelSignature.createSignature(rawLatex, lineHeight, useInlineRendering)
 
   /**
    * Glide [Key] that provides caching support by allowing individual renderable math scenarios to
@@ -33,18 +32,20 @@ data class MathModel(
   data class MathModelSignature(
     val rawLatex: String,
     val lineHeightHundredX: Int,
-    val useInlineRendering: Boolean
+    val useInlineRendering: Boolean,
   ) : Key {
     // Impl reference: http://bumptech.github.io/glide/doc/caching.html#custom-cache-invalidation.
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
       val rawLatexBytes = rawLatex.encodeToByteArray()
       messageDigest.update(
-        ByteBuffer.allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1).apply {
-          put(rawLatexBytes)
-          putInt(lineHeightHundredX)
-          put(if (useInlineRendering) 1 else 0)
-        }.array()
+        ByteBuffer
+          .allocate(rawLatexBytes.size + Int.SIZE_BYTES + 1)
+          .apply {
+            put(rawLatexBytes)
+            putInt(lineHeightHundredX)
+            put(if (useInlineRendering) 1 else 0)
+          }.array(),
       )
     }
 
@@ -53,7 +54,7 @@ data class MathModel(
       internal fun createSignature(
         rawLatex: String,
         lineHeight: Float,
-        useInlineRendering: Boolean
+        useInlineRendering: Boolean,
       ): MathModelSignature {
         val lineHeightHundredX = (lineHeight * 100f).toInt()
         return MathModelSignature(rawLatex, lineHeightHundredX, useInlineRendering)

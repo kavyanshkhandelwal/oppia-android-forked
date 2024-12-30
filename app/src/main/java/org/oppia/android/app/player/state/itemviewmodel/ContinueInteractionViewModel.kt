@@ -30,47 +30,57 @@ class ContinueInteractionViewModel private constructor(
   val isSplitView: Boolean,
   private val writtenTranslationContext: WrittenTranslationContext,
   val shouldAnimateContinueButton: Boolean,
-  val continueButtonAnimationTimestampMs: Long
-) : StateItemViewModel(ViewType.CONTINUE_INTERACTION), InteractionAnswerHandler {
+  val continueButtonAnimationTimestampMs: Long,
+) : StateItemViewModel(ViewType.CONTINUE_INTERACTION),
+  InteractionAnswerHandler {
   override fun isExplicitAnswerSubmissionRequired(): Boolean = false
 
   override fun isAutoNavigating(): Boolean = true
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    answer = InteractionObject.newBuilder().apply {
-      normalizedString = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
-    }.build()
-    this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
-  }.build()
+  override fun getPendingAnswer(): UserAnswer =
+    UserAnswer
+      .newBuilder()
+      .apply {
+        answer =
+          InteractionObject
+            .newBuilder()
+            .apply {
+              normalizedString = DEFAULT_CONTINUE_INTERACTION_TEXT_ANSWER
+            }.build()
+        this.writtenTranslationContext = this@ContinueInteractionViewModel.writtenTranslationContext
+      }.build()
 
   fun handleButtonClicked() {
     interactionAnswerReceiver.onAnswerReadyForSubmission(getPendingAnswer())
   }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(private val fragment: Fragment) : InteractionItemFactory {
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return ContinueInteractionViewModel(
-        interactionAnswerReceiver,
-        hasConversationView,
-        hasPreviousButton,
-        fragment as PreviousNavigationButtonListener,
-        isSplitView,
-        writtenTranslationContext,
-        shouldAnimateContinueButton = timeToStartNoticeAnimationMs != null,
-        continueButtonAnimationTimestampMs = timeToStartNoticeAnimationMs ?: 0L
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val fragment: Fragment,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        ContinueInteractionViewModel(
+          interactionAnswerReceiver,
+          hasConversationView,
+          hasPreviousButton,
+          fragment as PreviousNavigationButtonListener,
+          isSplitView,
+          writtenTranslationContext,
+          shouldAnimateContinueButton = timeToStartNoticeAnimationMs != null,
+          continueButtonAnimationTimestampMs = timeToStartNoticeAnimationMs ?: 0L,
+        )
     }
-  }
 }

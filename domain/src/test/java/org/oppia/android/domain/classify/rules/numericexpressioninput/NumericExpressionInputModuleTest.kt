@@ -47,7 +47,7 @@ class NumericExpressionInputModuleTest {
   @Test
   fun testModule_hasNoDuplicateClassifiers() {
     assertThat(numericExpressionInputClassifiers.values.toSet()).hasSize(
-      numericExpressionInputClassifiers.size
+      numericExpressionInputClassifiers.size,
     )
   }
 
@@ -69,7 +69,9 @@ class NumericExpressionInputModuleTest {
   private fun setUpTestApplicationComponent() {
     DaggerNumericExpressionInputModuleTest_TestApplicationComponent
       .builder()
-      .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
+      .setApplication(ApplicationProvider.getApplicationContext())
+      .build()
+      .inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -77,9 +79,7 @@ class NumericExpressionInputModuleTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -88,8 +88,8 @@ class NumericExpressionInputModuleTest {
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      NumericExpressionInputModule::class
-    ]
+      NumericExpressionInputModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder

@@ -14,7 +14,6 @@ import javax.inject.Inject
 
 /** Activity to display profile picture. */
 class ProfilePictureActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   @Inject
   lateinit var profilePictureActivityPresenter: ProfilePictureActivityPresenter
 
@@ -26,7 +25,10 @@ class ProfilePictureActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    fun createProfilePictureActivityIntent(context: Context, internalProfileId: Int): Intent {
+    fun createProfilePictureActivityIntent(
+      context: Context,
+      internalProfileId: Int,
+    ): Intent {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, ProfilePictureActivity::class.java).apply {
         decorateWithScreenName(PROFILE_PICTURE_ACTIVITY)

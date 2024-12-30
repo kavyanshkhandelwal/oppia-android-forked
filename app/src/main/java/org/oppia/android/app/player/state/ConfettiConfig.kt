@@ -16,16 +16,15 @@ enum class ConfettiConfig(
   // Confetti pieces with mass make the animation more active and dynamic.
   private val sizeWithMass: Size,
   private val numPieces: Int,
-  private val shapes: Array<Shape>
+  private val shapes: Array<Shape>,
 ) {
-
   LARGE_CONFETTI_BURST(
     minSpeed = 5f,
     maxSpeed = 12f,
     sizeInDp = Size(sizeInDp = 12),
     sizeWithMass = Size(sizeInDp = 11, mass = 3f),
     numPieces = 60,
-    shapes = arrayOf(Shape.Circle, Shape.Square)
+    shapes = arrayOf(Shape.Circle, Shape.Square),
   ),
   MEDIUM_CONFETTI_BURST(
     minSpeed = 4f,
@@ -33,7 +32,7 @@ enum class ConfettiConfig(
     sizeInDp = Size(sizeInDp = 8),
     sizeWithMass = Size(sizeInDp = 7, mass = 3f),
     numPieces = 35,
-    shapes = arrayOf(Shape.Circle, Shape.Square)
+    shapes = arrayOf(Shape.Circle, Shape.Square),
   ),
   MINI_CONFETTI_BURST(
     minSpeed = 2f,
@@ -41,8 +40,9 @@ enum class ConfettiConfig(
     sizeInDp = Size(sizeInDp = 8),
     sizeWithMass = Size(sizeInDp = 7, mass = 3f),
     numPieces = 7,
-    shapes = arrayOf(Shape.Circle)
-  );
+    shapes = arrayOf(Shape.Circle),
+  ),
+  ;
 
   fun startConfettiBurst(
     confettiView: KonfettiView,
@@ -52,9 +52,10 @@ enum class ConfettiConfig(
     maxAngle: Double,
     timeToLiveMs: Long,
     delayMs: Long,
-    colorsList: List<Int>
+    colorsList: List<Int>,
   ) {
-    confettiView.build()
+    confettiView
+      .build()
       .setDelay(delayMs)
       .setFadeOutEnabled(true)
       .addColors(colorsList)
@@ -69,10 +70,11 @@ enum class ConfettiConfig(
 
   companion object {
     /** Primary colors to use for the confetti. */
-    val primaryColors: List<Int> = listOf(
-      R.color.component_color_confetti_red_color,
-      R.color.component_color_confetti_yellow_color,
-      R.color.component_color_confetti_blue_color
-    )
+    val primaryColors: List<Int> =
+      listOf(
+        R.color.component_color_confetti_red_color,
+        R.color.component_color_confetti_yellow_color,
+        R.color.component_color_confetti_blue_color,
+      )
   }
 }

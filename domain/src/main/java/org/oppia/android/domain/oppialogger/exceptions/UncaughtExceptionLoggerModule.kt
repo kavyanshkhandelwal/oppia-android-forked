@@ -8,10 +8,7 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 /** Binds [UncaughtExceptionLoggerStartupListener] as an [ApplicationStartupListener]. */
 @Module
 interface UncaughtExceptionLoggerModule {
-
   @Binds
   @IntoSet
-  fun bindExceptionHandler(
-    uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener
-  ): ApplicationStartupListener
+  fun bindExceptionHandler(uncaughtExceptionLoggerStartupListener: UncaughtExceptionLoggerStartupListener): ApplicationStartupListener
 }

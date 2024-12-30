@@ -23,56 +23,56 @@ import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraic
  *
  * See this class's tests for a list of supported cases (both for matching and not matching).
  */
-class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider @Inject constructor(
-  private val classifierFactory: GenericRuleClassifier.Factory,
-  private val consoleLogger: ConsoleLogger
-) : RuleClassifierProvider, GenericRuleClassifier.SingleInputMatcher<String> {
-  override fun createRuleClassifier(): RuleClassifier {
-    return classifierFactory.createSingleInputClassifier(
-      expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
-      inputParameterName = "x",
-      matcher = this
-    )
-  }
+class AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider
+  @Inject
+  constructor(
+    private val classifierFactory: GenericRuleClassifier.Factory,
+    private val consoleLogger: ConsoleLogger,
+  ) : RuleClassifierProvider,
+    GenericRuleClassifier.SingleInputMatcher<String> {
+    override fun createRuleClassifier(): RuleClassifier =
+      classifierFactory.createSingleInputClassifier(
+        expectedObjectType = InteractionObject.ObjectTypeCase.MATH_EXPRESSION,
+        inputParameterName = "x",
+        matcher = this,
+      )
 
-  override fun matches(
-    answer: String,
-    input: String,
-    classificationContext: ClassificationContext
-  ): Boolean {
-    val allowedVariables = classificationContext.extractAllowedVariables()
-    val answerExpression =
-      parseAlgebraicExpression(answer, allowedVariables, ALL_ERRORS) ?: return false
-    val inputExpression =
-      parseAlgebraicExpression(input, allowedVariables, REQUIRED_ONLY) ?: return false
-    return answerExpression.isApproximatelyEqualTo(inputExpression.stripRedundantGroups())
-  }
+    override fun matches(
+      answer: String,
+      input: String,
+      classificationContext: ClassificationContext,
+    ): Boolean {
+      val allowedVariables = classificationContext.extractAllowedVariables()
+      val answerExpression =
+        parseAlgebraicExpression(answer, allowedVariables, ALL_ERRORS) ?: return false
+      val inputExpression =
+        parseAlgebraicExpression(input, allowedVariables, REQUIRED_ONLY) ?: return false
+      return answerExpression.isApproximatelyEqualTo(inputExpression.stripRedundantGroups())
+    }
 
-  private fun parseAlgebraicExpression(
-    rawExpression: String,
-    allowedVariables: List<String>,
-    checkingMode: ErrorCheckingMode
-  ): MathExpression? {
-    return when (val expResult = parseExpression(rawExpression, allowedVariables, checkingMode)) {
-      is MathParsingResult.Success -> expResult.result
-      is MathParsingResult.Failure -> {
-        consoleLogger.e(
-          "AlgebraExpMatchesExact",
-          "Encountered expression that failed parsing. Expression: $rawExpression." +
-            " Failure: ${expResult.error}."
-        )
-        null
+    private fun parseAlgebraicExpression(
+      rawExpression: String,
+      allowedVariables: List<String>,
+      checkingMode: ErrorCheckingMode,
+    ): MathExpression? =
+      when (val expResult = parseExpression(rawExpression, allowedVariables, checkingMode)) {
+        is MathParsingResult.Success -> expResult.result
+        is MathParsingResult.Failure -> {
+          consoleLogger.e(
+            "AlgebraExpMatchesExact",
+            "Encountered expression that failed parsing. Expression: $rawExpression." +
+              " Failure: ${expResult.error}.",
+          )
+          null
+        }
       }
-    }
-  }
 
-  private companion object {
-    private fun ClassificationContext.extractAllowedVariables(): List<String> {
-      return customizationArgs["customOskLetters"]
-        ?.schemaObjectList
-        ?.schemaObjectList
-        ?.map { it.normalizedString }
-        ?: listOf()
+    private companion object {
+      private fun ClassificationContext.extractAllowedVariables(): List<String> =
+        customizationArgs["customOskLetters"]
+          ?.schemaObjectList
+          ?.schemaObjectList
+          ?.map { it.normalizedString }
+          ?: listOf()
     }
   }
-}

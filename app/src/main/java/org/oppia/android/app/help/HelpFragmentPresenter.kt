@@ -14,44 +14,48 @@ import javax.inject.Inject
 
 /** The presenter for [HelpFragment]. */
 @FragmentScope
-class HelpFragmentPresenter @Inject constructor(
-  private val activity: AppCompatActivity,
-  private val fragment: Fragment,
-  private val helpListViewModel: HelpListViewModel,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
-) {
-  private lateinit var binding: HelpFragmentBinding
+class HelpFragmentPresenter
+  @Inject
+  constructor(
+    private val activity: AppCompatActivity,
+    private val fragment: Fragment,
+    private val helpListViewModel: HelpListViewModel,
+    private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  ) {
+    private lateinit var binding: HelpFragmentBinding
 
-  fun handleCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    isMultipane: Boolean
-  ): View? {
-    val viewModel = helpListViewModel
-    viewModel.isMultipane.set(isMultipane)
+    fun handleCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      isMultipane: Boolean,
+    ): View? {
+      val viewModel = helpListViewModel
+      viewModel.isMultipane.set(isMultipane)
 
-    binding = HelpFragmentBinding.inflate(
-      inflater,
-      container,
-      /* attachToRoot = */ false
-    )
-    binding.helpFragmentRecyclerView.apply {
-      layoutManager = LinearLayoutManager(activity.applicationContext)
-      adapter = createRecyclerViewAdapter()
+      binding =
+        HelpFragmentBinding.inflate(
+          inflater,
+          container,
+          // attachToRoot =
+          false,
+        )
+      binding.helpFragmentRecyclerView.apply {
+        layoutManager = LinearLayoutManager(activity.applicationContext)
+        adapter = createRecyclerViewAdapter()
+      }
+
+      binding.let {
+        it.lifecycleOwner = fragment
+        it.viewModel = viewModel
+      }
+      return binding.root
     }
 
-    binding.let {
-      it.lifecycleOwner = fragment
-      it.viewModel = viewModel
-    }
-    return binding.root
+    private fun createRecyclerViewAdapter(): BindableAdapter<HelpItemViewModel> =
+      singleTypeBuilderFactory
+        .create<HelpItemViewModel>()
+        .registerViewDataBinderWithSameModelType(
+          inflateDataBinding = HelpItemBinding::inflate,
+          setViewModel = HelpItemBinding::setViewModel,
+        ).build()
   }
-
-  private fun createRecyclerViewAdapter(): BindableAdapter<HelpItemViewModel> {
-    return singleTypeBuilderFactory.create<HelpItemViewModel>()
-      .registerViewDataBinderWithSameModelType(
-        inflateDataBinding = HelpItemBinding::inflate,
-        setViewModel = HelpItemBinding::setViewModel
-      ).build()
-  }
-}

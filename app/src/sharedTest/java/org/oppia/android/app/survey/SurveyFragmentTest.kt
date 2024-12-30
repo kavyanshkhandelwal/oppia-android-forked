@@ -127,7 +127,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = SurveyFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class SurveyFragmentTest {
   @get:Rule
@@ -137,9 +137,12 @@ class SurveyFragmentTest {
   val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
-  var activityTestRule: ActivityTestRule<SurveyActivity> = ActivityTestRule(
-    SurveyActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  var activityTestRule: ActivityTestRule<SurveyActivity> =
+    ActivityTestRule(
+      SurveyActivity::class.java, // initialTouchMode=
+      true, // launchActivity=
+      false,
+    )
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -173,8 +176,9 @@ class SurveyFragmentTest {
 
   @Test
   fun testSurveyActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createSurveyActivityIntent()
-      .extractCurrentAppScreenName()
+    val screenName =
+      createSurveyActivityIntent()
+        .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.SURVEY_ACTIVITY)
   }
@@ -182,14 +186,14 @@ class SurveyFragmentTest {
   @Test
   fun testSurveyFragment_closeButtonIsDisplayed() {
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withContentDescription(R.string.survey_exit_button_description))
         .check(
           matches(
-            withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)
-          )
+            withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
+          ),
         )
     }
   }
@@ -197,7 +201,7 @@ class SurveyFragmentTest {
   @Test
   fun testSurveyFragment_progressBarIsDisplayed() {
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.survey_progress_bar))
@@ -208,7 +212,7 @@ class SurveyFragmentTest {
   @Test
   fun testSurveyFragment_progressTextIsDisplayed() {
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.survey_progress_text))
@@ -221,7 +225,7 @@ class SurveyFragmentTest {
   @Test
   fun testSurveyFragment_navigationContainerIsDisplayed() {
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.survey_navigation_buttons_container))
@@ -233,7 +237,7 @@ class SurveyFragmentTest {
   fun testSurveyFragment_beginSurvey_initialQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.user_type_question))
@@ -249,14 +253,15 @@ class SurveyFragmentTest {
   fun testSurveyFragment_beginSurvey_initialQuestion_correctOptionsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.survey_answers_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      ).check(matches(hasDescendant(withText(R.string.user_type_answer_learner))))
+      onView(withId(R.id.survey_answers_recycler_view))
+        .perform(
+          RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+            0,
+          ),
+        ).check(matches(hasDescendant(withText(R.string.user_type_answer_learner))))
     }
   }
 
@@ -264,7 +269,7 @@ class SurveyFragmentTest {
   fun testSurveyFragment_beginSurvey_closeButtonClicked_exitConfirmationDialogDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       onView(withContentDescription(R.string.navigate_up)).perform(click())
       onView(withText(context.getString(R.string.survey_exit_confirmation_text)))
@@ -277,7 +282,7 @@ class SurveyFragmentTest {
   fun testSurveyFragment_nextButtonClicked_marketFitQuestionIsDisplayedWithCorrectOptions() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -290,11 +295,12 @@ class SurveyFragmentTest {
       onView(withId(R.id.survey_previous_button))
         .check(matches(isDisplayed()))
 
-      onView(withId(R.id.survey_answers_recycler_view)).perform(
-        RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
-      ).check(matches(hasDescendant(withText(R.string.market_fit_answer_very_disappointed))))
+      onView(withId(R.id.survey_answers_recycler_view))
+        .perform(
+          RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+            0,
+          ),
+        ).check(matches(hasDescendant(withText(R.string.market_fit_answer_very_disappointed))))
     }
   }
 
@@ -302,7 +308,7 @@ class SurveyFragmentTest {
   fun testSurveyNavigation_submitMarketFitAnswer_NpsQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -315,10 +321,9 @@ class SurveyFragmentTest {
       onView(
         withText(
           "On a scale from 0–10, how likely are you to recommend Oppia to a friend" +
-            " or colleague?"
-        )
-      )
-        .check(matches(isDisplayed()))
+            " or colleague?",
+        ),
+      ).check(matches(isDisplayed()))
 
       onView(withId(R.id.survey_answers_recycler_view))
         .check(matches(hasDescendant(withText("0"))))
@@ -335,7 +340,7 @@ class SurveyFragmentTest {
   fun testSurveyNavigation_submitNpsScoreOf3_detractorFeedbackQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -363,7 +368,7 @@ class SurveyFragmentTest {
   fun testSurveyNavigation_submitNpsScoreOf8_passiveFeedbackQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -391,7 +396,7 @@ class SurveyFragmentTest {
   fun testSurveyNavigation_submitNpsScoreOf10_promoterFeedbackQuestionIsDisplayed() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -407,8 +412,8 @@ class SurveyFragmentTest {
       onView(
         withText(
           "We are glad you have enjoyed your experience with Oppia. Please share " +
-            "what helped you the most:"
-        )
+            "what helped you the most:",
+        ),
       ).check(matches(isDisplayed()))
 
       onView(withId(R.id.submit_button)).check(matches(isDisplayed()))
@@ -421,7 +426,7 @@ class SurveyFragmentTest {
   fun testNavigation_moveToNextQuestion_thenMoveToPreviousQuestion_previousSelectionIsRestored() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -441,17 +446,17 @@ class SurveyFragmentTest {
           atPositionOnView(
             recyclerViewId = R.id.survey_answers_recycler_view,
             position = 0,
-            targetViewId = R.id.multiple_choice_radio_button
-          )
-        )
+            targetViewId = R.id.multiple_choice_radio_button,
+          ),
+        ),
       ).check(matches(isChecked()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.survey_answers_recycler_view,
           position = 0,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
+          targetViewId = R.id.multiple_choice_content_text_view,
+        ),
       ).check(matches(withText(R.string.user_type_answer_learner)))
     }
   }
@@ -460,7 +465,7 @@ class SurveyFragmentTest {
   fun testNavigation_moveTwoQuestionsAhead_thenMoveToInitialQuestion_previousSelectionIsRestored() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -482,17 +487,17 @@ class SurveyFragmentTest {
           atPositionOnView(
             recyclerViewId = R.id.survey_answers_recycler_view,
             position = 0,
-            targetViewId = R.id.multiple_choice_radio_button
-          )
-        )
+            targetViewId = R.id.multiple_choice_radio_button,
+          ),
+        ),
       ).check(matches(isChecked()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.survey_answers_recycler_view,
           position = 0,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
+          targetViewId = R.id.multiple_choice_content_text_view,
+        ),
       ).check(matches(withText(R.string.market_fit_answer_very_disappointed)))
 
       // Move back to UserType question
@@ -505,17 +510,17 @@ class SurveyFragmentTest {
           atPositionOnView(
             recyclerViewId = R.id.survey_answers_recycler_view,
             position = 0,
-            targetViewId = R.id.multiple_choice_radio_button
-          )
-        )
+            targetViewId = R.id.multiple_choice_radio_button,
+          ),
+        ),
       ).check(matches(isChecked()))
 
       onView(
         atPositionOnView(
           recyclerViewId = R.id.survey_answers_recycler_view,
           position = 0,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
+          targetViewId = R.id.multiple_choice_content_text_view,
+        ),
       ).check(matches(withText(R.string.user_type_answer_learner)))
     }
   }
@@ -524,7 +529,7 @@ class SurveyFragmentTest {
   fun testSurveyFragment_beginSurvey_logsBeginSurveyEvent() {
     startSurveySession()
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -540,19 +545,23 @@ class SurveyFragmentTest {
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     launch<SurveyActivity>(
-      createSurveyActivityIntent()
+      createSurveyActivityIntent(),
     ).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val surveyFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.survey_fragment_placeholder) as SurveyFragment
-        val args = surveyFragment.arguments!!.getProto(
-          SurveyFragment.SURVEY_FRAGMENT_ARGUMENTS_KEY,
-          SurveyFragmentArguments.getDefaultInstance()
-        )
-        val receivedInternalProfileId = surveyFragment.arguments!!
-          .extractCurrentUserProfileId().internalId
+        val surveyFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.survey_fragment_placeholder) as SurveyFragment
+        val args =
+          surveyFragment.arguments!!.getProto(
+            SurveyFragment.SURVEY_FRAGMENT_ARGUMENTS_KEY,
+            SurveyFragmentArguments.getDefaultInstance(),
+          )
+        val receivedInternalProfileId =
+          surveyFragment.arguments!!
+            .extractCurrentUserProfileId()
+            .internalId
         val receivedTopicId = args.topicId!!
         val receivedExplorationId = args.explorationId!!
 
@@ -567,8 +576,8 @@ class SurveyFragmentTest {
     onView(
       allOf(
         withText(npsScore.toString()),
-        isDescendantOfA(withId(R.id.survey_answers_recycler_view))
-      )
+        isDescendantOfA(withId(R.id.survey_answers_recycler_view)),
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
 
@@ -581,8 +590,8 @@ class SurveyFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.survey_answers_recycler_view,
         position = choiceIndex,
-        targetViewId = R.id.multiple_choice_radio_button
-      )
+        targetViewId = R.id.multiple_choice_radio_button,
+      ),
     ).perform(click())
     testCoroutineDispatchers.runCurrent()
 
@@ -596,24 +605,24 @@ class SurveyFragmentTest {
   }
 
   private fun startSurveySession() {
-    val questions = listOf(
-      SurveyQuestionName.USER_TYPE,
-      SurveyQuestionName.MARKET_FIT,
-      SurveyQuestionName.NPS
-    )
+    val questions =
+      listOf(
+        SurveyQuestionName.USER_TYPE,
+        SurveyQuestionName.MARKET_FIT,
+        SurveyQuestionName.NPS,
+      )
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
     surveyController.startSurveySession(questions, profileId = profileId)
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun createSurveyActivityIntent(): Intent {
-    return SurveyActivity.createSurveyActivityIntent(
+  private fun createSurveyActivityIntent(): Intent =
+    SurveyActivity.createSurveyActivityIntent(
       context = context,
       profileId = profileId,
       TEST_TOPIC_ID_0,
-      TEST_EXPLORATION_ID_2
+      TEST_EXPLORATION_ID_2,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -648,8 +657,8 @@ class SurveyFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -658,9 +667,13 @@ class SurveyFragmentTest {
     fun inject(surveyFragmentTest: SurveyFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerSurveyFragmentTest_TestApplicationComponent.builder()
+      DaggerSurveyFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -669,9 +682,12 @@ class SurveyFragmentTest {
       component.inject(surveyFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

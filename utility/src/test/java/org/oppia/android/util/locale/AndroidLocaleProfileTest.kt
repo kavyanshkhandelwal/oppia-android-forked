@@ -48,7 +48,7 @@ class AndroidLocaleProfileTest {
     setUpTestApplicationComponent()
   }
 
-  /* Tests for createFrom */
+  // Tests for createFrom
 
   @Test
   fun testCreateProfile_fromRootLocale_returnsRootProfile() {
@@ -85,13 +85,14 @@ class AndroidLocaleProfileTest {
     assertThat(regionOnlyProfile?.regionCode).isEqualTo("ke")
   }
 
-  /* Tests for createFromIetfDefinitions */
+  // Tests for createFromIetfDefinitions
 
   @Test
   fun testCreateProfileFromIetf_defaultLanguageId_nullRegion_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(
-        languageId = LanguageId.getDefaultInstance(), regionDefinition = null
+        languageId = LanguageId.getDefaultInstance(),
+        regionDefinition = null,
       )
 
     assertThat(profile).isNull()
@@ -99,11 +100,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithoutIetf_withRegion_returnsNull() {
-    val languageWithoutIetf = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = "hi-en"
-      }.build()
-    }.build()
+    val languageWithoutIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = "hi-en"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(languageWithoutIetf, REGION_INDIA)
@@ -114,11 +121,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithEmptyIetf_withRegion_returnsNull() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = ""
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = ""
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
@@ -129,11 +142,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithMalformedIetf_withRegion_returnsNull() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "mal-form-ed"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "mal-form-ed"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
@@ -144,11 +163,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withRegion_returnsCombinedProfile() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
@@ -163,11 +188,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_withIetfLanguageRegionTag_withRegion_returnsIetfRegionProfile() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt-BR"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt-BR"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(languageWithIetf, REGION_INDIA)
@@ -181,15 +212,22 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withDefaultRegion_returnsNull() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(
-        languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
+        languageWithIetf,
+        regionDefinition = RegionSupportDefinition.getDefaultInstance(),
       )
 
     // The region is needed in this case, so it needs to be provided.
@@ -198,15 +236,22 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_languageIdWithIetfLanguageCode_withEmptyRegion_returnsNull() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(
-        languageWithIetf, regionDefinition = RegionSupportDefinition.getDefaultInstance()
+        languageWithIetf,
+        regionDefinition = RegionSupportDefinition.getDefaultInstance(),
       )
 
     // The region is needed in this case, so a valid one needs to be provided.
@@ -215,15 +260,22 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromIetf_withIetfLanguageCode_withNullRegion_returnsWildcardProfile() {
-    val languageWithIetf = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt"
-      }.build()
-    }.build()
+    val languageWithIetf =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt"
+              }.build()
+        }.build()
 
     val profile =
       androidLocaleProfileFactory.createFromIetfDefinitions(
-        languageWithIetf, regionDefinition = null
+        languageWithIetf,
+        regionDefinition = null,
       )
 
     // A null region specifically means to use a wildcard match for regions.
@@ -232,13 +284,13 @@ class AndroidLocaleProfileTest {
     assertThat(languageAndWildcardRegionProfile?.languageCode).isEqualTo("pt")
   }
 
-  /* Tests for createFromMacaronicLanguage */
+  // Tests for createFromMacaronicLanguage
 
   @Test
   fun testCreateProfileFromMacaronic_defaultLanguageId_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromMacaronicLanguage(
-        languageId = LanguageId.getDefaultInstance()
+        languageId = LanguageId.getDefaultInstance(),
       )
 
     assertThat(profile).isNull()
@@ -246,11 +298,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageIdWithoutMacaronic_returnsNull() {
-    val languageWithoutMacaronic = LanguageId.newBuilder().apply {
-      ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-        ietfLanguageTag = "pt"
-      }.build()
-    }.build()
+    val languageWithoutMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          ietfBcp47Id =
+            IetfBcp47LanguageId
+              .newBuilder()
+              .apply {
+                ietfLanguageTag = "pt"
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithoutMacaronic)
 
@@ -260,11 +318,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageIdWithEmptyMacaronic_returnsNull() {
-    val languageWithMacaronic = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = ""
-      }.build()
-    }.build()
+    val languageWithMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = ""
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
@@ -274,11 +338,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageIdWithMalformedMacaronic_extraFields__returnsNull() {
-    val languageWithMacaronic = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = "mal-form-ed"
-      }.build()
-    }.build()
+    val languageWithMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = "mal-form-ed"
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
@@ -288,11 +358,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageId_malformedMacaronic_missingSecondLang_returnsNull() {
-    val languageWithMacaronic = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = "hi"
-      }.build()
-    }.build()
+    val languageWithMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = "hi"
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
@@ -303,11 +379,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageId_emptyMacaronicRegion_returnsNull() {
-    val languageWithMacaronic = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = "hi-"
-      }.build()
-    }.build()
+    val languageWithMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = "hi-"
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
@@ -317,11 +399,17 @@ class AndroidLocaleProfileTest {
 
   @Test
   fun testCreateProfileFromMacaronic_languageIdWithValidMacaronic_returnsProfile() {
-    val languageWithMacaronic = LanguageId.newBuilder().apply {
-      macaronicId = MacaronicLanguageId.newBuilder().apply {
-        combinedLanguageCode = "hi-en"
-      }.build()
-    }.build()
+    val languageWithMacaronic =
+      LanguageId
+        .newBuilder()
+        .apply {
+          macaronicId =
+            MacaronicLanguageId
+              .newBuilder()
+              .apply {
+                combinedLanguageCode = "hi-en"
+              }.build()
+        }.build()
 
     val profile = androidLocaleProfileFactory.createFromMacaronicLanguage(languageWithMacaronic)
 
@@ -332,13 +420,13 @@ class AndroidLocaleProfileTest {
     assertThat(languageAndRegionProfile?.regionCode).isEqualTo("en")
   }
 
-  /* Tests for createFromAndroidResourcesLanguageId(). */
+  // Tests for createFromAndroidResourcesLanguageId().
 
   @Test
   fun testCreateFromAndroidResourcesLanguageId_defaultLanguageId_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.getDefaultInstance()
+        languageId = LanguageId.getDefaultInstance(),
       )
 
     assertThat(profile).isNull()
@@ -348,11 +436,17 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_ietfBcp47LanguageId_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          ietfBcp47Id = IetfBcp47LanguageId.newBuilder().apply {
-            ietfLanguageTag = "pt-BR"
-          }.build()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              ietfBcp47Id =
+                IetfBcp47LanguageId
+                  .newBuilder()
+                  .apply {
+                    ietfLanguageTag = "pt-BR"
+                  }.build()
+            }.build(),
       )
 
     // This method only creates a profile when provided with a valid Android resources language ID.
@@ -363,11 +457,17 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_macaronicLanguageId_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          macaronicId = MacaronicLanguageId.newBuilder().apply {
-            combinedLanguageCode = "hi-en"
-          }.build()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              macaronicId =
+                MacaronicLanguageId
+                  .newBuilder()
+                  .apply {
+                    combinedLanguageCode = "hi-en"
+                  }.build()
+            }.build(),
       )
 
     // This method only creates a profile when provided with a valid Android resources language ID.
@@ -378,9 +478,12 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_defaultAndroidLanguageId_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          androidResourcesLanguageId = AndroidLanguageId.getDefaultInstance()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              androidResourcesLanguageId = AndroidLanguageId.getDefaultInstance()
+            }.build(),
       )
 
     // This method only creates a profile when provided with a valid Android resources language ID.
@@ -391,11 +494,17 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_regionOnly_returnsNull() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
-            regionCode = "BR"
-          }.build()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              androidResourcesLanguageId =
+                AndroidLanguageId
+                  .newBuilder()
+                  .apply {
+                    regionCode = "BR"
+                  }.build()
+            }.build(),
       )
 
     // A valid Android language ID must include at least a language code.
@@ -406,11 +515,17 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_langOnly_returnsLangWildcard() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
-            languageCode = "pt"
-          }.build()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              androidResourcesLanguageId =
+                AndroidLanguageId
+                  .newBuilder()
+                  .apply {
+                    languageCode = "pt"
+                  }.build()
+            }.build(),
       )
 
     // If no region is provided, match against all regions.
@@ -423,12 +538,18 @@ class AndroidLocaleProfileTest {
   fun testCreateFromAndroidResourcesLanguageId_androidLanguageId_returnsLangAndRegionProfile() {
     val profile =
       androidLocaleProfileFactory.createFromAndroidResourcesLanguageId(
-        languageId = LanguageId.newBuilder().apply {
-          androidResourcesLanguageId = AndroidLanguageId.newBuilder().apply {
-            languageCode = "pt"
-            regionCode = "BR"
-          }.build()
-        }.build()
+        languageId =
+          LanguageId
+            .newBuilder()
+            .apply {
+              androidResourcesLanguageId =
+                AndroidLanguageId
+                  .newBuilder()
+                  .apply {
+                    languageCode = "pt"
+                    regionCode = "BR"
+                  }.build()
+            }.build(),
       )
 
     // Both the language & region codes should be represented in the profile.
@@ -438,7 +559,7 @@ class AndroidLocaleProfileTest {
     assertThat(languageAndRegionProfile?.regionCode).isEqualTo("br")
   }
 
-  /* Tests for matches() */
+  // Tests for matches()
 
   @Test
   fun testMatchProfile_rootProfile_andRootProfile_matches() {
@@ -809,7 +930,7 @@ class AndroidLocaleProfileTest {
     assertThat(matches).isFalse()
   }
 
-  /* Tests for computeIetfLanguageTag */
+  // Tests for computeIetfLanguageTag
 
   @Test
   fun testIetfLanguageTag_rootProfile_isEmptyString() {
@@ -859,7 +980,7 @@ class AndroidLocaleProfileTest {
     assertThat(ietfLanguageTag).isEqualTo("pt")
   }
 
-  /* Tests for computeAndroidLocale() */
+  // Tests for computeAndroidLocale()
 
   @Test
   fun testComputeAndroidLocale_rootProfile_returnsRootLocale() {
@@ -912,7 +1033,8 @@ class AndroidLocaleProfileTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerAndroidLocaleProfileTest_TestApplicationComponent.builder()
+    DaggerAndroidLocaleProfileTest_TestApplicationComponent
+      .builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -923,17 +1045,15 @@ class AndroidLocaleProfileTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
-    ]
+      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+    ],
   )
   interface TestApplicationComponent {
     @Component.Builder
@@ -948,11 +1068,17 @@ class AndroidLocaleProfileTest {
   }
 
   private companion object {
-    private val REGION_INDIA = RegionSupportDefinition.newBuilder().apply {
-      region = OppiaRegion.INDIA
-      regionId = IetfBcp47RegionId.newBuilder().apply {
-        ietfRegionTag = "IN"
-      }.build()
-    }.build()
+    private val REGION_INDIA =
+      RegionSupportDefinition
+        .newBuilder()
+        .apply {
+          region = OppiaRegion.INDIA
+          regionId =
+            IetfBcp47RegionId
+              .newBuilder()
+              .apply {
+                ietfRegionTag = "IN"
+              }.build()
+        }.build()
   }
 }

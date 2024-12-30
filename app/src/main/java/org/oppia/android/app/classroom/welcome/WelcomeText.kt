@@ -23,29 +23,30 @@ const val WELCOME_TEST_TAG = "TEST_TAG.welcome"
 fun WelcomeText(welcomeViewModel: WelcomeViewModel) {
   val outerPadding = dimensionResource(id = R.dimen.home_welcome_outer_padding)
   val textMarginEnd = dimensionResource(id = R.dimen.home_welcome_text_view_margin_end)
-  val greetingLineColor = colorResource(
-    id = R.color.component_color_home_activity_layout_greeting_text_line_color
-  )
+  val greetingLineColor =
+    colorResource(
+      id = R.color.component_color_home_activity_layout_greeting_text_line_color,
+    )
 
   Text(
     text = welcomeViewModel.computeWelcomeText(),
-    modifier = Modifier
-      .testTag(WELCOME_TEST_TAG)
-      .padding(
-        start = outerPadding,
-        top = outerPadding,
-        end = outerPadding + textMarginEnd,
-      )
-      .drawBehind {
-        val strokeWidthPx = 6.dp.toPx()
-        val verticalOffset = size.height + 4.dp.toPx()
-        drawLine(
-          color = greetingLineColor,
-          strokeWidth = strokeWidthPx,
-          start = Offset(x = 0f, y = verticalOffset),
-          end = Offset(x = size.width, y = verticalOffset),
-        )
-      },
+    modifier =
+      Modifier
+        .testTag(WELCOME_TEST_TAG)
+        .padding(
+          start = outerPadding,
+          top = outerPadding,
+          end = outerPadding + textMarginEnd,
+        ).drawBehind {
+          val strokeWidthPx = 6.dp.toPx()
+          val verticalOffset = size.height + 4.dp.toPx()
+          drawLine(
+            color = greetingLineColor,
+            strokeWidth = strokeWidthPx,
+            start = Offset(x = 0f, y = verticalOffset),
+            end = Offset(x = size.width, y = verticalOffset),
+          )
+        },
     color = colorResource(id = R.color.component_color_shared_primary_text_color),
     fontSize = dimensionResource(id = R.dimen.home_welcome_text_size).value.sp,
     fontFamily = FontFamily.SansSerif,

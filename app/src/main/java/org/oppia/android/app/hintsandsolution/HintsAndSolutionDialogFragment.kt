@@ -19,12 +19,11 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-/* Fragment that displays a fullscreen dialog for Hints and Solutions. */
+// Fragment that displays a fullscreen dialog for Hints and Solutions.
 class HintsAndSolutionDialogFragment :
   InjectableDialogFragment(),
   ExpandedHintListIndexListener,
   RevealSolutionInterface {
-
   @Inject
   lateinit var hintsAndSolutionDialogFragmentPresenter: HintsAndSolutionDialogFragmentPresenter
 
@@ -36,7 +35,6 @@ class HintsAndSolutionDialogFragment :
   private var isSolutionRevealed: Boolean? = null
 
   companion object {
-
     internal const val PROFILE_ID_KEY =
       "HintsAndSolutionDialogFragment.profile_id"
 
@@ -64,18 +62,22 @@ class HintsAndSolutionDialogFragment :
       id: String,
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
     ): HintsAndSolutionDialogFragment {
-      val args = HintsAndSolutionDialogFragmentArguments.newBuilder().apply {
-        this.idArgument = id
-        this.state = state
-        this.helpIndex = helpIndex
-        this.writtenTranslationContext = writtenTranslationContext
-      }.build()
+      val args =
+        HintsAndSolutionDialogFragmentArguments
+          .newBuilder()
+          .apply {
+            this.idArgument = id
+            this.state = state
+            this.helpIndex = helpIndex
+            this.writtenTranslationContext = writtenTranslationContext
+          }.build()
       return HintsAndSolutionDialogFragment().apply {
-        arguments = Bundle().apply {
-          putProto(HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
-        }
+        arguments =
+          Bundle().apply {
+            putProto(HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
+          }
       }
     }
   }
@@ -93,15 +95,14 @@ class HintsAndSolutionDialogFragment :
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View {
-
     if (savedInstanceState != null) {
-
-      val stateArgs = savedInstanceState.getProto(
-        HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
-        HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance()
-      )
+      val stateArgs =
+        savedInstanceState.getProto(
+          HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY,
+          HintsAndSolutionDialogFragmentStateBundle.getDefaultInstance(),
+        )
       expandedItemsList = stateArgs?.currentExpandedItemsList?.let { ArrayList(it) } ?: ArrayList()
 
       index = stateArgs?.hintIndex ?: -1
@@ -114,16 +115,17 @@ class HintsAndSolutionDialogFragment :
 
     val arguments =
       checkNotNull(
-        arguments
+        arguments,
       ) { "Expected arguments to be passed to HintsAndSolutionDialogFragment" }
-    val args = arguments.getProto(
-      HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY,
-      HintsAndSolutionDialogFragmentArguments.getDefaultInstance()
-    )
+    val args =
+      arguments.getProto(
+        HINT_AND_SOLUTION_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+        HintsAndSolutionDialogFragmentArguments.getDefaultInstance(),
+      )
 
     val id =
       checkNotNull(
-        args.idArgument
+        args.idArgument,
       ) { "Expected id to be passed to HintsAndSolutionDialogFragment" }
 
     val state = args.state ?: State.getDefaultInstance()
@@ -145,7 +147,7 @@ class HintsAndSolutionDialogFragment :
       isHintRevealed,
       solutionIndex,
       isSolutionRevealed,
-      profileId
+      profileId,
     )
   }
 
@@ -157,17 +159,24 @@ class HintsAndSolutionDialogFragment :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
 
-    val args = HintsAndSolutionDialogFragmentStateBundle.newBuilder().apply {
-      this.addAllCurrentExpandedItems(expandedItemsList)
-      if (index != null)
-        this.hintIndex = index!!
-      if (this@HintsAndSolutionDialogFragment.isHintRevealed != null)
-        this.isHintRevealed = this@HintsAndSolutionDialogFragment.isHintRevealed!!
-      if (this@HintsAndSolutionDialogFragment.solutionIndex != null)
-        this.solutionIndex = this@HintsAndSolutionDialogFragment.solutionIndex!!
-      if (this@HintsAndSolutionDialogFragment.isSolutionRevealed != null)
-        this.isSolutionRevealed = this@HintsAndSolutionDialogFragment.isSolutionRevealed!!
-    }.build()
+    val args =
+      HintsAndSolutionDialogFragmentStateBundle
+        .newBuilder()
+        .apply {
+          this.addAllCurrentExpandedItems(expandedItemsList)
+          if (index != null) {
+            this.hintIndex = index!!
+          }
+          if (this@HintsAndSolutionDialogFragment.isHintRevealed != null) {
+            this.isHintRevealed = this@HintsAndSolutionDialogFragment.isHintRevealed!!
+          }
+          if (this@HintsAndSolutionDialogFragment.solutionIndex != null) {
+            this.solutionIndex = this@HintsAndSolutionDialogFragment.solutionIndex!!
+          }
+          if (this@HintsAndSolutionDialogFragment.isSolutionRevealed != null) {
+            this.isSolutionRevealed = this@HintsAndSolutionDialogFragment.isSolutionRevealed!!
+          }
+        }.build()
     outState.putProto(HINT_AND_SOLUTION_DIALOG_FRAGMENT_STATE_KEY, args)
   }
 
@@ -179,18 +188,24 @@ class HintsAndSolutionDialogFragment :
     hintsAndSolutionDialogFragmentPresenter.handleRevealSolution()
   }
 
-  override fun onRevealHintClicked(index: Int?, isHintRevealed: Boolean?) {
+  override fun onRevealHintClicked(
+    index: Int?,
+    isHintRevealed: Boolean?,
+  ) {
     this.index = index
     this.isHintRevealed = isHintRevealed
     hintsAndSolutionDialogFragmentPresenter.onRevealHintClicked(index, isHintRevealed)
   }
 
-  override fun onRevealSolutionClicked(solutionIndex: Int?, isSolutionRevealed: Boolean?) {
+  override fun onRevealSolutionClicked(
+    solutionIndex: Int?,
+    isSolutionRevealed: Boolean?,
+  ) {
     this.solutionIndex = solutionIndex
     this.isSolutionRevealed = isSolutionRevealed
     hintsAndSolutionDialogFragmentPresenter.onRevealSolutionClicked(
       solutionIndex,
-      isSolutionRevealed
+      isSolutionRevealed,
     )
   }
 

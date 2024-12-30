@@ -111,7 +111,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = LicenseListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class LicenseListFragmentTest {
   @get:Rule
@@ -142,13 +142,13 @@ class LicenseListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(
         allOf(
-          hasComponent(LicenseTextViewerActivity::class.java.name)
-        )
+          hasComponent(LicenseTextViewerActivity::class.java.name),
+        ),
       )
     }
   }
@@ -160,13 +160,13 @@ class LicenseListFragmentTest {
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).perform(click())
       intended(
         allOf(
-          hasComponent(LicenseTextViewerActivity::class.java.name)
-        )
+          hasComponent(LicenseTextViewerActivity::class.java.name),
+        ),
       )
     }
   }
@@ -175,13 +175,13 @@ class LicenseListFragmentTest {
   fun openLicenseListActivity_dependencyIndex0_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
@@ -192,13 +192,13 @@ class LicenseListFragmentTest {
     launch<LicenseListActivity>(createLicenseListActivity(0)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
@@ -208,23 +208,23 @@ class LicenseListFragmentTest {
   fun openLicenseListActivity_dependencyIndex1_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(1)).use {
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_1))))
       onView(withText(R.string.license_name_1)).check(matches(isCompletelyDisplayed()))
     }
@@ -235,23 +235,23 @@ class LicenseListFragmentTest {
     launch<LicenseListActivity>(createLicenseListActivity(1)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
           position = 0,
-        )
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_1))))
       onView(withText(R.string.license_name_1)).check(matches(isCompletelyDisplayed()))
     }
@@ -261,13 +261,13 @@ class LicenseListFragmentTest {
   fun openLicenseListActivity_dependencyIndex2_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(2)).use {
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
     }
@@ -278,13 +278,13 @@ class LicenseListFragmentTest {
     launch<LicenseListActivity>(createLicenseListActivity(2)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
     }
@@ -294,23 +294,23 @@ class LicenseListFragmentTest {
   fun openLicenseListActivity_dependencyIndex3_displaysCorrectListOfLicenses() {
     launch<LicenseListActivity>(createLicenseListActivity(3)).use {
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
@@ -321,23 +321,23 @@ class LicenseListFragmentTest {
     launch<LicenseListActivity>(createLicenseListActivity(3)).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(0)
+        scrollToPosition<RecyclerView.ViewHolder>(0),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 0
-        )
+          position = 0,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_2))))
       onView(withText(R.string.license_name_2)).check(matches(isCompletelyDisplayed()))
       onView(withId(R.id.license_list_fragment_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(1)
+        scrollToPosition<RecyclerView.ViewHolder>(1),
       )
       onView(
         atPosition(
           recyclerViewId = R.id.license_list_fragment_recycler_view,
-          position = 1
-        )
+          position = 1,
+        ),
       ).check(matches(hasDescendant(withText(R.string.license_name_0))))
       onView(withText(R.string.license_name_0)).check(matches(isCompletelyDisplayed()))
     }
@@ -350,16 +350,19 @@ class LicenseListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.license_list_fragment_placeholder) as LicenseListFragment
+        var fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.license_list_fragment_placeholder) as LicenseListFragment
 
-        val arguments = checkNotNull(fragment.arguments) {
-          "Expected arguments to be passed to LicenseListFragment"
-        }
-        val args = arguments.getProto(
-          "LicenseListFragment.arguments",
-          LicenseListFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(fragment.arguments) {
+            "Expected arguments to be passed to LicenseListFragment"
+          }
+        val args =
+          arguments.getProto(
+            "LicenseListFragment.arguments",
+            LicenseListFragmentArguments.getDefaultInstance(),
+          )
         val receivedDependencyIndex = args.dependencyIndex
         val receivedIsMultipane = args.isMultipane
 
@@ -369,12 +372,11 @@ class LicenseListFragmentTest {
     }
   }
 
-  private fun createLicenseListActivity(dependencyIndex: Int): Intent {
-    return LicenseListActivity.createLicenseListActivityIntent(
+  private fun createLicenseListActivity(dependencyIndex: Int): Intent =
+    LicenseListActivity.createLicenseListActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      dependencyIndex
+      dependencyIndex,
     )
-  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -409,12 +411,10 @@ class LicenseListFragmentTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
-
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -423,9 +423,13 @@ class LicenseListFragmentTest {
     fun inject(licenseListFragmentTest: LicenseListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLicenseListFragmentTest_TestApplicationComponent.builder()
+      DaggerLicenseListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -434,9 +438,12 @@ class LicenseListFragmentTest {
       component.inject(licenseListFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

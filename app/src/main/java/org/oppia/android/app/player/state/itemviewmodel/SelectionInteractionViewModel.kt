@@ -27,19 +27,21 @@ import javax.inject.Inject
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
   CHECKBOXES,
-  RADIO_BUTTONS
+  RADIO_BUTTONS,
 }
 
 /** Enum to the store the errors of selection input. */
-enum class SelectionInputError(@StringRes private var error: Int?) {
+enum class SelectionInputError(
+  @StringRes private var error: Int?,
+) {
   VALID(error = null),
-  EMPTY_INPUT(error = R.string.selection_error_empty_input);
+  EMPTY_INPUT(error = R.string.selection_error_empty_input),
+  ;
 
   /**
    * Returns the string corresponding to this error's string resources, or null if there is none.
    */
-  fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? =
-    error?.let(resourceHandler::getStringInLocale)
+  fun getErrorMessageFromStringRes(resourceHandler: AppLanguageResourceHandler): String? = error?.let(resourceHandler::getStringInLocale)
 }
 
 /** [StateItemViewModel] for multiple or item-selection input choice list. */
@@ -47,13 +49,15 @@ class SelectionInteractionViewModel private constructor(
   val entityId: String,
   val hasConversationView: Boolean,
   interaction: Interaction,
-  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver, // ktlint-disable max-line-length
+  private val interactionAnswerErrorOrAvailabilityCheckReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+  @Suppress("ktlint:standard:max-line-length")
   val isSplitView: Boolean,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
   private val resourceHandler: AppLanguageResourceHandler,
-  userAnswerState: UserAnswerState
-) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
+  userAnswerState: UserAnswerState,
+) : StateItemViewModel(ViewType.SELECTION_INTERACTION),
+  InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
   private val choiceSubtitledHtmls: List<SubtitledHtml> by lazy {
@@ -90,17 +94,20 @@ class SelectionInteractionViewModel private constructor(
   val selectedItemText =
     ObservableField(
       resourceHandler.getStringInLocale(
-        R.string.state_fragment_item_selection_no_items_selected_hint_text
-      )
+        R.string.state_fragment_item_selection_no_items_selected_hint_text,
+      ),
     )
 
   init {
     val callback: Observable.OnPropertyChangedCallback =
       object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+        override fun onPropertyChanged(
+          sender: Observable,
+          propertyId: Int,
+        ) {
           interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
             pendingAnswerError,
-            inputAnswerAvailable = true // Allow blank answer submission.
+            inputAnswerAvailable = true, // Allow blank answer submission.
           )
         }
       }
@@ -110,7 +117,7 @@ class SelectionInteractionViewModel private constructor(
     // Initializing with default values so that submit button is enabled by default.
     interactionAnswerErrorOrAvailabilityCheckReceiver.onPendingAnswerErrorOrAvailabilityCheck(
       pendingAnswerError = null,
-      inputAnswerAvailable = true
+      inputAnswerAvailable = true,
     )
 
     if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
@@ -126,42 +133,61 @@ class SelectionInteractionViewModel private constructor(
     checkPendingAnswerError(userAnswerState.answerErrorCategory)
   }
 
-  override fun getUserAnswerState(): UserAnswerState {
-    return UserAnswerState.newBuilder().apply {
-      this.itemSelection = ItemSelectionAnswerState.newBuilder().addAllSelectedIndexes(
-        selectedItems
-      ).build()
-      this.answerErrorCategory = answerErrorCetegory
-    }.build()
-  }
+  override fun getUserAnswerState(): UserAnswerState =
+    UserAnswerState
+      .newBuilder()
+      .apply {
+        this.itemSelection =
+          ItemSelectionAnswerState
+            .newBuilder()
+            .addAllSelectedIndexes(
+              selectedItems,
+            ).build()
+        this.answerErrorCategory = answerErrorCetegory
+      }.build()
 
-  override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
-    val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
-    val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
-    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
-      translationController.extractString(subtitledHtml, translationContext)
-    }
-    if (interactionId == "ItemSelectionInput") {
-      answer = InteractionObject.newBuilder().apply {
-        setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
-          addAllContentIds(
-            selectedItemSubtitledHtmls.map { subtitledHtml ->
-              TranslatableHtmlContentId.newBuilder().apply {
-                contentId = subtitledHtml.contentId
+  override fun getPendingAnswer(): UserAnswer =
+    UserAnswer
+      .newBuilder()
+      .apply {
+        val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
+        val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
+        val itemHtmls =
+          selectedItemSubtitledHtmls.map { subtitledHtml ->
+            translationController.extractString(subtitledHtml, translationContext)
+          }
+        if (interactionId == "ItemSelectionInput") {
+          answer =
+            InteractionObject
+              .newBuilder()
+              .apply {
+                setOfTranslatableHtmlContentIds =
+                  SetOfTranslatableHtmlContentIds
+                    .newBuilder()
+                    .apply {
+                      addAllContentIds(
+                        selectedItemSubtitledHtmls.map { subtitledHtml ->
+                          TranslatableHtmlContentId
+                            .newBuilder()
+                            .apply {
+                              contentId = subtitledHtml.contentId
+                            }.build()
+                        },
+                      )
+                    }.build()
               }.build()
-            }
-          )
-        }.build()
+          htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+        } else if (selectedItems.size == 1) {
+          answer =
+            InteractionObject
+              .newBuilder()
+              .apply {
+                nonNegativeInt = selectedItems.first()
+              }.build()
+          htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+        }
+        writtenTranslationContext = translationContext
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
-    } else if (selectedItems.size == 1) {
-      answer = InteractionObject.newBuilder().apply {
-        nonNegativeInt = selectedItems.first()
-      }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
-    }
-    writtenTranslationContext = translationContext
-  }.build()
 
   /**
    * It checks the pending error for the current selection input, and correspondingly
@@ -169,40 +195,42 @@ class SelectionInteractionViewModel private constructor(
    */
   override fun checkPendingAnswerError(category: AnswerErrorCategory): String? {
     answerErrorCetegory = category
-    pendingAnswerError = when (category) {
-      AnswerErrorCategory.REAL_TIME -> {
-        null
+    pendingAnswerError =
+      when (category) {
+        AnswerErrorCategory.REAL_TIME -> {
+          null
+        }
+        AnswerErrorCategory.SUBMIT_TIME ->
+          getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
+        else -> null
       }
-      AnswerErrorCategory.SUBMIT_TIME ->
-        getSubmitTimeError().getErrorMessageFromStringRes(resourceHandler)
-      else -> null
-    }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
   }
 
   /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
-    return when (itemHtmls.size) {
+  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String =
+    when (itemHtmls.size) {
       0 -> ""
       1 -> itemHtmls.first()
       else -> {
         "<ul><li>${itemHtmls.joinToString(separator = "</li><li>")}</li></ul>"
       }
     }
-  }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */
-  fun getSelectionItemInputType(): SelectionItemInputType {
-    return if (areCheckboxesBound()) {
+  fun getSelectionItemInputType(): SelectionItemInputType =
+    if (areCheckboxesBound()) {
       SelectionItemInputType.CHECKBOXES
     } else {
       SelectionItemInputType.RADIO_BUTTONS
     }
-  }
 
   /** Catalogs an item being clicked by the user and returns whether the item should be considered selected. */
-  fun updateSelection(itemIndex: Int, isCurrentlySelected: Boolean): Boolean {
+  fun updateSelection(
+    itemIndex: Int,
+    isCurrentlySelected: Boolean,
+  ): Boolean {
     checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
     return when {
       isCurrentlySelected -> {
@@ -238,23 +266,23 @@ class SelectionInteractionViewModel private constructor(
     if (selectedItems.size < maxAllowableSelectionCount) {
       selectedItemText.set(
         resourceHandler.getStringInLocale(
-          R.string.state_fragment_item_selection_some_items_selected_hint_text
-        )
+          R.string.state_fragment_item_selection_some_items_selected_hint_text,
+        ),
       )
     }
     if (selectedItems.size == 0) {
       selectedItemText.set(
         resourceHandler.getStringInLocale(
-          R.string.state_fragment_item_selection_no_items_selected_hint_text
-        )
+          R.string.state_fragment_item_selection_no_items_selected_hint_text,
+        ),
       )
     }
     if (selectedItems.size == maxAllowableSelectionCount) {
       selectedItemText.set(
         resourceHandler.getStringInLocaleWithWrapping(
           R.string.state_fragment_item_selection_max_items_selected_hint_text,
-          maxAllowableSelectionCount.toString()
-        )
+          maxAllowableSelectionCount.toString(),
+        ),
       )
     }
   }
@@ -263,12 +291,12 @@ class SelectionInteractionViewModel private constructor(
     if (selectedItems.size == maxAllowableSelectionCount) {
       // All non-selected items should be disabled when the limit is reached.
       enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.forEach { it.set(false) }
-    } else enabledItemsList.forEach { it.set(true) } // Otherwise, all items are available.
+    } else {
+      enabledItemsList.forEach { it.set(true) } // Otherwise, all items are available.
+    }
   }
 
-  private fun areCheckboxesBound(): Boolean {
-    return interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
-  }
+  private fun areCheckboxesBound(): Boolean = interactionId == "ItemSelectionInput" && maxAllowableSelectionCount > 1
 
   private fun updateIsAnswerAvailable() {
     val wasSelectedItemListEmpty = isAnswerAvailable.get()
@@ -277,61 +305,63 @@ class SelectionInteractionViewModel private constructor(
     }
   }
 
-  private fun getSubmitTimeError(): SelectionInputError {
-    return if (selectedItems.isEmpty())
+  private fun getSubmitTimeError(): SelectionInputError =
+    if (selectedItems.isEmpty()) {
       SelectionInputError.EMPTY_INPUT
-    else
+    } else {
       SelectionInputError.VALID
-  }
+    }
 
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
-  class FactoryImpl @Inject constructor(
-    private val translationController: TranslationController,
-    private val resourceHandler: AppLanguageResourceHandler
-  ) : InteractionItemFactory {
-    override fun create(
-      entityId: String,
-      hasConversationView: Boolean,
-      interaction: Interaction,
-      interactionAnswerReceiver: InteractionAnswerReceiver,
-      answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
-      hasPreviousButton: Boolean,
-      isSplitView: Boolean,
-      writtenTranslationContext: WrittenTranslationContext,
-      timeToStartNoticeAnimationMs: Long?,
-      userAnswerState: UserAnswerState
-    ): StateItemViewModel {
-      return SelectionInteractionViewModel(
-        entityId,
-        hasConversationView,
-        interaction,
-        answerErrorReceiver,
-        isSplitView,
-        writtenTranslationContext,
-        translationController,
-        resourceHandler,
-        userAnswerState
-      )
+  class FactoryImpl
+    @Inject
+    constructor(
+      private val translationController: TranslationController,
+      private val resourceHandler: AppLanguageResourceHandler,
+    ) : InteractionItemFactory {
+      override fun create(
+        entityId: String,
+        hasConversationView: Boolean,
+        interaction: Interaction,
+        interactionAnswerReceiver: InteractionAnswerReceiver,
+        answerErrorReceiver: InteractionAnswerErrorOrAvailabilityCheckReceiver,
+        hasPreviousButton: Boolean,
+        isSplitView: Boolean,
+        writtenTranslationContext: WrittenTranslationContext,
+        timeToStartNoticeAnimationMs: Long?,
+        userAnswerState: UserAnswerState,
+      ): StateItemViewModel =
+        SelectionInteractionViewModel(
+          entityId,
+          hasConversationView,
+          interaction,
+          answerErrorReceiver,
+          isSplitView,
+          writtenTranslationContext,
+          translationController,
+          resourceHandler,
+          userAnswerState,
+        )
     }
-  }
 
   companion object {
     private fun computeChoiceItems(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel,
-      enabledItemsList: List<ObservableBoolean>
+      enabledItemsList: List<ObservableBoolean>,
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
-      observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
-        SelectionInteractionContentViewModel(
-          htmlContent = subtitledHtml,
-          hasConversationView = hasConversationView,
-          itemIndex = index,
-          selectionInteractionViewModel = selectionInteractionViewModel,
-          isEnabled = enabledItemsList[index]
-        )
-      }
+      observableList +=
+        choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
+          SelectionInteractionContentViewModel(
+            htmlContent = subtitledHtml,
+            hasConversationView = hasConversationView,
+            itemIndex = index,
+            selectionInteractionViewModel = selectionInteractionViewModel,
+            isEnabled = enabledItemsList[index],
+          )
+        }
       return observableList
     }
   }

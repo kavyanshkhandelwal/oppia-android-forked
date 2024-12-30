@@ -108,7 +108,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = ProfileListFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  qualifiers = "port-xxhdpi",
 )
 class ProfileListFragmentTest {
   @get:Rule
@@ -150,49 +150,49 @@ class ProfileListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Admin"))
+        matches(withText("Admin")),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_list_admin_text
-        )
+          targetViewId = R.id.profile_list_admin_text,
+        ),
       ).check(
-        matches(withText(context.getString(R.string.profile_chooser_admin)))
+        matches(withText(context.getString(R.string.profile_chooser_admin))),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Ben"))
+        matches(withText("Ben")),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_list_admin_text
-        )
+          targetViewId = R.id.profile_list_admin_text,
+        ),
       ).check(
-        matches(not(isDisplayed()))
+        matches(not(isDisplayed())),
       )
     }
   }
@@ -205,49 +205,49 @@ class ProfileListFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Admin"))
+        matches(withText("Admin")),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_list_admin_text
-        )
+          targetViewId = R.id.profile_list_admin_text,
+        ),
       ).check(
-        matches(withText(context.getString(R.string.profile_chooser_admin)))
+        matches(withText(context.getString(R.string.profile_chooser_admin))),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Ben"))
+        matches(withText("Ben")),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_list_admin_text
-        )
+          targetViewId = R.id.profile_list_admin_text,
+        ),
       ).check(
-        matches(not(isDisplayed()))
+        matches(not(isDisplayed())),
       )
     }
   }
@@ -260,101 +260,101 @@ class ProfileListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          0
-        )
+          0,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 0,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Admin"))
+        matches(withText("Admin")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          1
-        )
+          1,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 1,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("A"))
+        matches(withText("A")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          2
-        )
+          2,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 2,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("B"))
+        matches(withText("B")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
+          3,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 3,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("Ben"))
+        matches(withText("Ben")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          4
-        )
+          4,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 4,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("C"))
+        matches(withText("C")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          5
-        )
+          5,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 5,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("D"))
+        matches(withText("D")),
       )
       onView(withId(R.id.profile_list_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
-          6
-        )
+          6,
+        ),
       )
       onView(
         atPositionOnView(
           recyclerViewId = R.id.profile_list_recycler_view,
           position = 6,
-          targetViewId = R.id.profile_list_name
-        )
+          targetViewId = R.id.profile_list_name,
+        ),
       ).check(
-        matches(withText("E"))
+        matches(withText("E")),
       )
     }
   }
@@ -376,16 +376,19 @@ class ProfileListFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
 
-        val profileListFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_list_container) as ProfileListFragment
+        val profileListFragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.profile_list_container) as ProfileListFragment
 
-        val arguments = checkNotNull(profileListFragment.arguments) {
-          "Expected variables to be passed to ProfileListFragment"
-        }
-        val args = arguments.getProto(
-          ProfileListFragment.PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY,
-          ProfileListFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(profileListFragment.arguments) {
+            "Expected variables to be passed to ProfileListFragment"
+          }
+        val args =
+          arguments.getProto(
+            ProfileListFragment.PROFILE_LIST_FRAGMENT_ARGUMENTS_KEY,
+            ProfileListFragmentArguments.getDefaultInstance(),
+          )
         val receivedIsMultipane = args.isMultipane
 
         assertThat(receivedIsMultipane).isEqualTo(false)
@@ -422,8 +425,8 @@ class ProfileListFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
@@ -434,9 +437,13 @@ class ProfileListFragmentTest {
     fun inject(profileListFragmentTest: ProfileListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileListFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileListFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -445,9 +452,12 @@ class ProfileListFragmentTest {
       component.inject(profileListFragmentTest)
     }
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }

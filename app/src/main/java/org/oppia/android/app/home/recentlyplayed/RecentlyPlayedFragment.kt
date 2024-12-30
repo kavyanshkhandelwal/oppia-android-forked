@@ -14,7 +14,9 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Fragment that contains all recently played stories. */
-class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener {
+class RecentlyPlayedFragment :
+  InjectableFragment(),
+  PromotedStoryClickListener {
   companion object {
     const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
 
@@ -22,9 +24,10 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
       val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return RecentlyPlayedFragment().apply {
-        arguments = Bundle().apply {
-          decorateWithUserProfileId(profileId)
-        }
+        arguments =
+          Bundle().apply {
+            decorateWithUserProfileId(profileId)
+          }
       }
     }
   }
@@ -40,7 +43,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ): View? {
     val arguments =
       checkNotNull(arguments) { "Expected arguments to be passed to RecentlyPlayedFragment" }
