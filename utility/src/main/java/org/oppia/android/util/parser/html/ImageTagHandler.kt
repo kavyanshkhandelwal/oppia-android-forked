@@ -21,8 +21,10 @@ private const val CUSTOM_IMG_CAPTION_ATTRIBUTE = "caption-with-value"
  * A custom tag handler for supporting custom Oppia images parsed with [CustomHtmlContentHandler].
  */
 class ImageTagHandler(
-  private val consoleLogger: ConsoleLogger,
-) : CustomHtmlContentHandler.CustomTagHandler {
+
+  private val consoleLogger: ConsoleLogger
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -111,5 +113,12 @@ class ImageTagHandler(
         "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE",
       )
     }
+  }
+
+  override fun getContentDescription(attributes: Attributes): String {
+    val altValue = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    return if (!altValue.isNullOrBlank()) {
+      "Image illustrating $altValue"
+    } else ""
   }
 }

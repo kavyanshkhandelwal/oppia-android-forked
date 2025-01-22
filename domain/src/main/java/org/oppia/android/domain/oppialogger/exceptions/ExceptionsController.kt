@@ -81,68 +81,29 @@ class ExceptionsController
       }
     }
 
-    /** Returns an [ExceptionLog] from this [Throwable]. */
-    private fun Throwable.toExceptionLog(
-      timestampInMillis: Long,
-      exceptionType: ExceptionType,
-    ): ExceptionLog =
-      ExceptionLog
-        .newBuilder()
-        .apply {
-          this@toExceptionLog.message?.let { this.message = it }
-          this.timestampInMillis = timestampInMillis
-          this@toExceptionLog.cause?.let {
-            this.cause = it.toExceptionLog(timestampInMillis, exceptionType)
-          }
-          addAllStacktraceElement(this@toExceptionLog.stackTrace.map(::convertStackTraceElementToLog))
-          this.exceptionType = exceptionType
-        }.build()
 
-    /** Builds the [ExceptionLog.StackTraceElement] from a [stackTraceElement]. */
-    private fun convertStackTraceElementToLog(stackTraceElement: StackTraceElement): ExceptionLog.StackTraceElement =
-      ExceptionLog.StackTraceElement
-        .newBuilder()
-        .setFileName(stackTraceElement.fileName ?: "") // Sometimes the file name is unavailable.
-        .setMethodName(stackTraceElement.methodName)
-        .setLineNumber(stackTraceElement.lineNumber)
-        .setDeclaringClass(stackTraceElement.className)
-        .build()
+  /**
+   * Adds an exception to the storage.
+   *
+   * At first, it checks if the size of the store isn't exceeding [exceptionLogStorageCacheSize].
+   * If the limit is exceeded then the least recent exception is removed from the [exceptionLogStore].
+   * After this, the [exceptionLog] is added to the store.
+   */
+  private fun cacheExceptionLog(exceptionLog: ExceptionLog) {
+    exceptionLogStore.storeDataAsync(true) { oppiaExceptionLogs ->
+      val storeSize = oppiaExceptionLogs.exceptionLogList.size
+      if (storeSize + 1 > exceptionLogStorageCacheSize) {
+        val exceptionLogRemovalIndex = getLeastRecentExceptionIndex(oppiaExceptionLogs)
+        if (exceptionLogRemovalIndex != null) {
+          return@storeDataAsync oppiaExceptionLogs.toBuilder()
+            .removeExceptionLog(exceptionLogRemovalIndex)
+            .addExceptionLog(exceptionLog)
+            .build()
+        } else {
+          val exception =
+            NullPointerException(
+              "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0"
 
-    /**
-     * Adds an exception to the storage.
-     *
-     * At first, it checks if the size of the store isn't exceeding [exceptionLogStorageCacheSize].
-     * If the limit is exceeded then the least recent exception is removed from the [exceptionLogStore].
-     * After this, the [exceptionLog] is added to the store.
-     * */
-    private fun cacheExceptionLog(exceptionLog: ExceptionLog) {
-      exceptionLogStore
-        .storeDataAsync(true) { oppiaExceptionLogs ->
-          val storeSize = oppiaExceptionLogs.exceptionLogList.size
-          if (storeSize + 1 > exceptionLogStorageCacheSize) {
-            val exceptionLogRemovalIndex = getLeastRecentExceptionIndex(oppiaExceptionLogs)
-            if (exceptionLogRemovalIndex != null) {
-              return@storeDataAsync oppiaExceptionLogs
-                .toBuilder()
-                .removeExceptionLog(exceptionLogRemovalIndex)
-                .addExceptionLog(exceptionLog)
-                .build()
-            } else {
-              val exception =
-                NullPointerException(
-                  "Least Recent Exception index absent -- ExceptionLogCacheStoreSize is 0",
-                )
-              consoleLogger.e(EXCEPTIONS_CONTROLLER, exception.toString())
-              exceptionLogger.logException(exception)
-            }
-          }
-          return@storeDataAsync oppiaExceptionLogs.toBuilder().addExceptionLog(exceptionLog).build()
-        }.invokeOnCompletion {
-          it?.let {
-            consoleLogger.e(
-              EXCEPTIONS_CONTROLLER,
-              "Failed to store exception log",
-              it,
             )
           }
         }

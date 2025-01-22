@@ -28,8 +28,10 @@ class MathTagHandler(
   private val assetManager: AssetManager,
   private val lineHeight: Float,
   private val cacheLatexRendering: Boolean,
-  private val application: Application,
-) : CustomHtmlContentHandler.CustomTagHandler {
+
+  private val application: Application
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -146,5 +148,10 @@ class MathTagHandler(
         }
       }
     }
+  }
+
+  override fun getContentDescription(attributes: Attributes): String {
+    val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
+    return mathVal?.let { "Math content $it" } ?: ""
   }
 }

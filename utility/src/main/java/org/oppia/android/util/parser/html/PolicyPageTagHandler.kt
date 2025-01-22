@@ -21,8 +21,10 @@ private const val TERMS_OF_SERVICE = "Terms of Service"
  */
 class PolicyPageTagHandler(
   private val listener: PolicyPageLinkClickListener,
-  private val consoleLogger: ConsoleLogger,
-) : CustomHtmlContentHandler.CustomTagHandler {
+
+  private val consoleLogger: ConsoleLogger
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -87,5 +89,12 @@ class PolicyPageTagHandler(
      * specified policy link.
      */
     fun onPolicyPageLinkClicked(policyType: PolicyType)
+  }
+
+  override fun getContentDescription(attributes: Attributes): String {
+    return when (attributes.getJsonStringValue("link")) {
+      TERMS_OF_SERVICE_PAGE, PRIVACY_POLICY_PAGE -> "Link to "
+      else -> ""
+    }
   }
 }

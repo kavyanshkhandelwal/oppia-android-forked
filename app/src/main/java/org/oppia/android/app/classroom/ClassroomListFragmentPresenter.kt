@@ -66,6 +66,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
@@ -77,32 +78,33 @@ import javax.inject.Inject
 const val CLASSROOM_LIST_SCREEN_TEST_TAG = "TEST_TAG.classroom_list_screen"
 
 /** The presenter for [ClassroomListFragment]. */
-class ClassroomListFragmentPresenter
-  @Inject
-  constructor(
-    private val activity: AppCompatActivity,
-    private val fragment: Fragment,
-    private val profileManagementController: ProfileManagementController,
-    private val topicListController: TopicListController,
-    private val classroomController: ClassroomController,
-    private val oppiaLogger: OppiaLogger,
-    @TopicHtmlParserEntityType private val topicEntityType: String,
-    @StoryHtmlParserEntityType private val storyEntityType: String,
-    private val resourceHandler: AppLanguageResourceHandler,
-    private val dateTimeUtil: DateTimeUtil,
-    private val translationController: TranslationController,
-    private val machineLocale: OppiaLocale.MachineLocale,
-    private val analyticsController: AnalyticsController,
-    @EnableOnboardingFlowV2
-    private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
-    private val appStartupStateController: AppStartupStateController,
-  ) {
-    private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
-    private val exitProfileListener = activity as ExitProfileListener
-    private lateinit var binding: ClassroomListFragmentBinding
-    private lateinit var classroomListViewModel: ClassroomListViewModel
-    private val profileId = activity.intent.extractCurrentUserProfileId()
-    private var onBackPressedCallback: OnBackPressedCallback? = null
+
+class ClassroomListFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val fragment: Fragment,
+  private val profileManagementController: ProfileManagementController,
+  private val topicListController: TopicListController,
+  private val classroomController: ClassroomController,
+  private val oppiaLogger: OppiaLogger,
+  @ClassroomHtmlParserEntityType private val classroomEntityType: String,
+  @TopicHtmlParserEntityType private val topicEntityType: String,
+  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val dateTimeUtil: DateTimeUtil,
+  private val translationController: TranslationController,
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val analyticsController: AnalyticsController,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  private val appStartupStateController: AppStartupStateController
+) {
+  private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
+  private val exitProfileListener = activity as ExitProfileListener
+  private lateinit var binding: ClassroomListFragmentBinding
+  private lateinit var classroomListViewModel: ClassroomListViewModel
+  private val profileId = activity.intent.extractCurrentUserProfileId()
+  private var onBackPressedCallback: OnBackPressedCallback? = null
+
 
     /** Creates and returns the view for the [ClassroomListFragment]. */
     fun handleCreateView(
@@ -119,21 +121,23 @@ class ClassroomListFragmentPresenter
 
       logHomeActivityEvent()
 
-      classroomListViewModel =
-        ClassroomListViewModel(
-          activity,
-          fragment,
-          oppiaLogger,
-          profileId,
-          profileManagementController,
-          topicListController,
-          classroomController,
-          topicEntityType,
-          storyEntityType,
-          resourceHandler,
-          dateTimeUtil,
-          translationController,
-        )
+
+    classroomListViewModel = ClassroomListViewModel(
+      activity,
+      fragment,
+      oppiaLogger,
+      profileId,
+      profileManagementController,
+      topicListController,
+      classroomController,
+      classroomEntityType,
+      topicEntityType,
+      storyEntityType,
+      resourceHandler,
+      dateTimeUtil,
+      translationController
+    )
+
 
       classroomListViewModel.homeItemViewModelListLiveData.observe(activity) {
         refreshComposeView()

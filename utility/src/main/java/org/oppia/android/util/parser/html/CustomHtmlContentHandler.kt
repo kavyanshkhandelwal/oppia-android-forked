@@ -26,6 +26,11 @@ class CustomHtmlContentHandler private constructor(
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
+  private val contentDescriptionBuilder = StringBuilder()
+  private val tagContentDescriptions = mutableMapOf<Int, String>()
+  private var isInListItem = false
+  private var pendingNewline = false
+  private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
 
   override fun endElement(
     uri: String?,
@@ -33,6 +38,9 @@ class CustomHtmlContentHandler private constructor(
     qName: String?,
   ) {
     originalContentHandler?.endElement(uri, localName, qName)
+    if (localName in blockTags) {
+      isInListItem = false
+    }
     currentTrackedTag = null
   }
 
@@ -64,6 +72,11 @@ class CustomHtmlContentHandler private constructor(
     length: Int,
   ) {
     originalContentHandler?.characters(ch, start, length)
+    if (pendingNewline) {
+      contentDescriptionBuilder.append('\n')
+      pendingNewline = false
+    }
+    ch?.let { contentDescriptionBuilder.append(String(it, start, length)) }
   }
 
   override fun endDocument() {
@@ -80,6 +93,10 @@ class CustomHtmlContentHandler private constructor(
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
     currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
+    if (localName in blockTags) {
+      pendingNewline = true
+      isInListItem = true
+    }
     originalContentHandler?.startElement(uri, localName, qName, atts)
   }
 
@@ -142,6 +159,14 @@ class CustomHtmlContentHandler private constructor(
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
         val (_, attributes, openTagIndex) = currentTrackedCustomTag
+
+        val handler = customTagHandlers.getValue(tag)
+        if (handler is ContentDescriptionProvider) {
+          val contentDesc = handler.getContentDescription(attributes)
+          if (contentDesc != null) {
+            tagContentDescriptions[openTagIndex] = contentDesc
+          }
+        }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
         customTagHandlers
           .getValue(tag)
@@ -160,7 +185,26 @@ class CustomHtmlContentHandler private constructor(
     val attributes: Attributes,
     val openTagIndex: Int,
   )
-
+  /**
+   * Returns the complete content description for the processed HTML, including descriptions
+   * from all custom tags.
+   */
+  private fun getContentDescription(): String {
+    val rawDesc = buildString {
+      var lastIndex = 0
+      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
+        if (index > lastIndex) {
+          append(contentDescriptionBuilder.substring(lastIndex, index))
+        }
+        append(description)
+        lastIndex = index
+      }
+      if (lastIndex < contentDescriptionBuilder.length) {
+        append(contentDescriptionBuilder.substring(lastIndex))
+      }
+    }
+    return rawDesc.replace(Regex("\n+"), "\n").trim()
+  }
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
     /**
@@ -210,6 +254,15 @@ class CustomHtmlContentHandler private constructor(
     ) {}
   }
 
+  /** Handler Interface for tag handlers that provide content descriptions. */
+  interface ContentDescriptionProvider {
+    /**
+     * Returns a content description string for this tag based on its attributes,
+     * or null if no description is available.
+     */
+    fun getContentDescription(attributes: Attributes): String?
+  }
+
   /**
    * Retriever of images for custom tag handlers. The built-in Android analog for this class is
    * Html's ImageGetter.
@@ -248,6 +301,24 @@ class CustomHtmlContentHandler private constructor(
   }
 
   companion object {
+    /**
+     * Returns the content description for the HTML content, processing all custom tags that implement
+     * [ContentDescriptionProvider].
+     */
+    fun <T> getContentDescription(
+      html: String,
+      imageRetriever: T?,
+      customTagHandlers: Map<String, CustomTagHandler>
+    ): String where T : Html.ImageGetter, T : ImageRetriever {
+      val handler = CustomHtmlContentHandler(customTagHandlers, imageRetriever)
+      HtmlCompat.fromHtml(
+        "<init-custom-handler/>$html",
+        HtmlCompat.FROM_HTML_MODE_LEGACY,
+        imageRetriever,
+        handler
+      )
+      return handler.getContentDescription()
+    }
     /**
      * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageRetriever]
      * for handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom

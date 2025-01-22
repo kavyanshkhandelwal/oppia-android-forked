@@ -40,8 +40,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -57,8 +55,9 @@ class ClassroomListViewModel(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val classroomEntityType: String,
+  private val topicEntityType: String,
+  private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
@@ -271,7 +270,10 @@ class ClassroomListViewModel(
         ClassroomSummaryViewModel(
           fragment as ClassroomSummaryClickListener,
           ephemeralClassroomSummary,
-          translationController,
+
+          classroomEntityType,
+          translationController
+
         )
       }
 
