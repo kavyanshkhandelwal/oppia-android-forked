@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 /** The ObservableViewModel for [CompletedStoryListFragment]. */
 @FragmentScope
+<<<<<<< HEAD
 class CompletedStoryListViewModel
   @Inject
   constructor(
@@ -37,6 +38,22 @@ class CompletedStoryListViewModel
           ProfileId.newBuilder().setInternalId(internalProfileId).build(),
         ).toLiveData()
     }
+=======
+class CompletedStoryListViewModel @Inject constructor(
+  private val activity: AppCompatActivity,
+  private val intentFactoryShim: IntentFactoryShim,
+  private val topicController: TopicController,
+  private val oppiaLogger: OppiaLogger,
+  private val translationController: TranslationController,
+  @StoryHtmlParserEntityType private val entityType: String
+) : ObservableViewModel() {
+  /** [profileId] needs to be set before any of the live data members can be accessed. */
+  private var profileId: ProfileId = ProfileId.getDefaultInstance()
+
+  private val completedStoryListResultLiveData: LiveData<AsyncResult<CompletedStoryList>> by lazy {
+    topicController.getCompletedStoryList(profileId).toLiveData()
+  }
+>>>>>>> 42210e8069394528330be84c5f4893bb2dafc2bf
 
     private val completedStoryLiveData: LiveData<CompletedStoryList> by lazy {
       Transformations.map(completedStoryListResultLiveData, ::processCompletedStoryListResult)
@@ -47,10 +64,17 @@ class CompletedStoryListViewModel
       Transformations.map(completedStoryLiveData, ::processCompletedStoryList)
     }
 
+<<<<<<< HEAD
     /** Sets internalProfileId to this ViewModel. */
     fun setProfileId(internalProfileId: Int) {
       this.internalProfileId = internalProfileId
     }
+=======
+  /** Sets internalProfileId to this ViewModel. */
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
+  }
+>>>>>>> 42210e8069394528330be84c5f4893bb2dafc2bf
 
     private fun processCompletedStoryListResult(completedStoryListResult: AsyncResult<CompletedStoryList>): CompletedStoryList =
       when (completedStoryListResult) {
@@ -83,3 +107,26 @@ class CompletedStoryListViewModel
       return itemViewModelList
     }
   }
+<<<<<<< HEAD
+=======
+
+  private fun processCompletedStoryList(
+    completedStoryList: CompletedStoryList
+  ): List<CompletedStoryItemViewModel> {
+    val itemViewModelList: MutableList<CompletedStoryItemViewModel> = mutableListOf()
+    itemViewModelList.addAll(
+      completedStoryList.completedStoryList.map { completedStory ->
+        CompletedStoryItemViewModel(
+          activity,
+          profileId,
+          completedStory,
+          entityType,
+          intentFactoryShim,
+          translationController
+        )
+      }
+    )
+    return itemViewModelList
+  }
+}
+>>>>>>> 42210e8069394528330be84c5f4893bb2dafc2bf

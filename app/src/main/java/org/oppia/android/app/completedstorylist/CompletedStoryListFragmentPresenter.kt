@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oppia.android.R
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.CompletedStoryItemBinding
 import org.oppia.android.databinding.CompletedStoryListFragmentBinding
@@ -31,6 +32,7 @@ class CompletedStoryListFragmentPresenter
     ): View? {
       viewModel.setProfileId(internalProfileId)
 
+<<<<<<< HEAD
       binding =
         CompletedStoryListFragmentBinding
           .inflate(
@@ -53,6 +55,15 @@ class CompletedStoryListFragmentPresenter
       }
       return binding.root
     }
+=======
+  /** Initializes and creates the views for [CompletedStoryListFragment]. */
+  fun handleCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    profileId: ProfileId
+  ): View? {
+    viewModel.setProfileId(profileId)
+>>>>>>> 42210e8069394528330be84c5f4893bb2dafc2bf
 
     private fun createRecyclerViewAdapter(): BindableAdapter<CompletedStoryItemViewModel> =
       singleTypeBuilderFactory
